@@ -1,4 +1,5 @@
 import os
+import json
 
 model_path = os.getcwd() + "/models/gmp_wl_24/gmp_wl_24.h5"
 target = "stellar-e"
@@ -6,7 +7,8 @@ target = "stellar-e"
 weights_c_file = "./st_ai_output/src/network_data_params.c"
 
 generate_cmd = f"stedgeai generate --model {model_path} --target {target}"
-validade_cmd = f"stedgeai validate --model {model_path} --target {target}"
+#validade_cmd = f"stedgeai validate --model {model_path} --target {target}"
+validade_cmd = f"stedgeai validate --model {model_path} --target {target} --quiet -v 0"
 
 files_to_build = ["network_data", "network_data_params"]
 compile_cmd  = "make clean && make all && make install && cd ../../../"
@@ -26,9 +28,25 @@ def gen_lib():
 
     return "./st_ai_ws"
 
-def validade_lib(lib_path = "./st_ai_ws/inspector_network/workspace/"):
+def validade_lib(lib_path = "./st_ai_ws/inspector_network/workspace/", exec_path = "./"):
     validade_lib_cmd = validade_cmd + f" --mode target -d lib:{lib_path}"
-    os.system(validade_lib_cmd)
+    os.system(f"cd {exec_path} &&" + validade_lib_cmd)
+
+
+def get_report(exec_path = "./st_ai_ws/"):
+    with open(f"{exec_path}network_report.json", 'r') as f:
+        report = json.load(f)
+    
+    return dict(report)
+
+def get_x_cross_accuracy(exec_path = "./st_ai_ws/"):
+    report = get_report(exec_path)
+
+    for metric in report['val_metrics']:
+        if "X-cross" in metric['desc']:
+            return metric['acc']
+
+    return None
 
 def weights_parser(weights_file = weights_c_file):
     weights = []

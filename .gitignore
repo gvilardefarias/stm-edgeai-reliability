@@ -1,0 +1,5 @@
+fault_campaign/
+.vscode/
+st_ai_ws/
+st_ai_output/
+__pycache__/
