@@ -3,3 +3,6 @@ fault_campaign/
 st_ai_ws/
 st_ai_output/
 __pycache__/
+out_dict.txt
+out
+out*

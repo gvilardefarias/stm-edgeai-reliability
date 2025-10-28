@@ -9,6 +9,7 @@ weights_c_file = "./st_ai_output/src/network_data_params.c"
 generate_cmd = f"stedgeai generate --model {model_path} --target {target}"
 #validade_cmd = f"stedgeai validate --model {model_path} --target {target}"
 validade_cmd = f"stedgeai validate --model {model_path} --target {target} --quiet -v 0"
+#validade_cmd = f"stedgeai validate --model {model_path} --target {target} --quiet -v 0 -b 50"
 
 files_to_build = ["network_data", "network_data_params"]
 compile_cmd  = "make clean && make all && make install && cd ../../../"
