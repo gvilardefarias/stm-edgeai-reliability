@@ -1,5 +1,6 @@
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import os
+import time
 import stm_edgeai_lib
 from contextlib import contextmanager
 
@@ -77,7 +78,13 @@ def sta_fault_campaign(f_bit_positions = gen_f_bit_positions()):
 
     return campaign_results
 
+start = time.time()
 result = sta_fault_campaign()
+end = time.time()
+time_taken = end - start
+
+print("Fault injection campaign completed.")
+print(f"Time taken: {time_taken:.2f} seconds")
 
 with open("out_dict.txt", 'w') as f:
     f.write(str(result))
