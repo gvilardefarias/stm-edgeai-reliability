@@ -1,6 +1,8 @@
+from tracemalloc import start
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+import stm_edgeai_lib as stm
 
 in_file = "out_dict.txt"
 
@@ -35,19 +37,51 @@ def dict_to_df(data_dict):
 
     return df
 
+def compute_per_layer_acc(df, layers_info):
+
+    for layer in layers_info:
+        start_byte = layer['offset']
+        end_byte = layer['size'] + start_byte
+
+        start_weight = start_byte // 8
+        end_weight = end_byte // 8
+
+        start_bit = (start_byte % 8) * 8
+        end_bit = (end_byte % 8) * 8
+
+        layer_df = df[((df['Weight'] >= start_weight) & (df['Bit'] >= start_bit)) & 
+                      ((df['Weight'] < end_weight) | (df['Weight'] == end_weight & (df['Bit'] < end_bit)))]
+        
+
+        layer_acc_sta0 = layer_df[layer_df['Fault Type'] == 'sta0']['Acc'].mean()
+        layer_acc_sta1 = layer_df[layer_df['Fault Type'] == 'sta1']['Acc'].mean()
+        layer_acc = layer_df['Acc'].mean()
+        layer['reliability'] = {'accuracy': {'sta0': layer_acc_sta0, 'sta1': layer_acc_sta1, 'overall': layer_acc}}
+
+        print(f"Layer: {layer}")
+        #print(layer_df)
+        print(start_weight, end_weight, start_bit, end_bit)
+        print(layer)
+#        print(layer_acc)
+#        print("")
+
+
 df = dict_to_df(data_dict)
 
-pivot = df.pivot_table(index=['Weight', 'Bit'], columns='Fault Type', values='Acc').reset_index()
-pivot['label'] = pivot['Weight'].astype(str) + ':' + pivot['Bit'].astype(str)
-plot_df = pivot.set_index('label')[['sta0', 'sta1']]
+print(stm.get_layers_info())
+compute_per_layer_acc(df, stm.get_layers_info())
 
-ax = plot_df.plot(kind='bar', figsize=(12, 4))
-ax.set_xlabel('Weight:Bit')
-ax.set_ylabel('Acc')
-ax.legend(title='Fault Type', fontsize=10)
-ax.tick_params(axis='x', rotation=45)
-plt.tight_layout()
-plt.show()
+#pivot = df.pivot_table(index=['Weight', 'Bit'], columns='Fault Type', values='Acc').reset_index()
+#pivot['label'] = pivot['Weight'].astype(str) + ':' + pivot['Bit'].astype(str)
+#plot_df = pivot.set_index('label')[['sta0', 'sta1']]
+#
+#ax = plot_df.plot(kind='bar', figsize=(12, 4))
+#ax.set_xlabel('Weight:Bit')
+#ax.set_ylabel('Acc')
+#ax.legend(title='Fault Type', fontsize=10)
+#ax.tick_params(axis='x', rotation=45)
+#plt.tight_layout()
+#plt.show()
 
 #ax = df.plot(kind='bar', y = 'Fault Type', x = 'Weight')
 #plt.rcParams.update({'font.size': 16})

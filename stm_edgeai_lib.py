@@ -50,6 +50,7 @@ def get_x_cross_accuracy(exec_path = "./st_ai_ws/"):
 
     return None
 
+
 def weights_parser(weights_file = weights_c_file):
     weights = []
     with open(weights_file, 'r') as f:
@@ -105,3 +106,17 @@ def weights_file_gen(weights, out_file = "network_data_params.c", weights_file =
 
     with open(out_file, 'w') as o:
         o.write(str_file)
+
+
+def get_c_model_info(c_model_info_file = "./st_ai_ws/network_c_graph.json"):
+    with open(c_model_info_file, 'r') as f:
+        model_info = json.load(f)
+    
+    return dict(model_info)
+
+def get_layers_info(c_model_info_file = "./st_ai_ws/network_c_graph.json"):
+    c_model_info = get_c_model_info(c_model_info_file)
+
+    layers_info = c_model_info['weights']['weights_array']['buffer_offsets']
+
+    return layers_info
