@@ -2,38 +2,36 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
-in_file = "out_dict.txt"
 
-with open(in_file, 'r') as f:
-    data = f.read()
-    data_dict = eval(data)
+def per_layer_sta_bd(acc_drop_df):
+    plot_acc_drop_df = acc_drop_df.set_index('layer_name')[['sta0', 'sta1']]
+    plot_mean_drop_df = acc_drop_df.set_index('layer_name')[['mean']]
 
+    ax = plot_acc_drop_df.plot(kind='bar', figsize=(10, 6), width=0.8)
 
-sta0 = pd.DataFrame.from_dict(data_dict['sta0'], orient='index')
-sta1 = pd.DataFrame.from_dict(data_dict['sta1'], orient='index')
+    plot_mean_drop_df.plot(kind='line', marker='o', color='black', ax=ax)
 
-for b in sta0:
-    for w in sta0.index:
-        sta0.at[w, b] = 100 - float(sta0.at[w, b][:-1])
-for b in sta1:
-    for w in sta1.index:
-        sta1.at[w, b] = 100 - float(sta1.at[w, b][:-1])
+    ax.set_xlabel('Layer')
+    ax.set_ylabel('Accuracy drop (%)')
+    ax.set_title('Per-layer accuracy drop')
+    ax.legend(title='Fault Type')
+    ax.set_ylim(0,100)
+    plt.xticks(rotation=45, ha='right')
+    plt.tight_layout()
+    plt.show()
 
+def per_layer_sta_ov(acc_drop_df):
+    plot_mean_drop_df = acc_drop_df.set_index('layer_name')[['mean']]
+    plot_std_df = acc_drop_df.set_index('layer_name')[['std']]
 
-df = pd.DataFrame()
-df['sta0'] = sta0.stack()
-df['sta1'] = sta1.stack()
-#print(df['sta0'].index.get_level_values(0))
-#print(df.loc[df['sta1'] > 1])
+    plt.errorbar(plot_mean_drop_df.index, plot_mean_drop_df['mean'], yerr=plot_std_df['std'], fmt='o', ecolor='red', capsize=5)
+    ax = plt.gca()
 
-df = df.loc[(df['sta0'].index.get_level_values(0) < 45) &
-             (df['sta0'].index.get_level_values(0) > 5)]
-
-ax = df.plot(kind='bar')
-plt.rcParams.update({'font.size': 16})
-plt.xlabel('Weight Index and Bit Position', fontsize=18)
-plt.ylabel('Accuracy Drop (%)', fontsize=18)
-ax.legend(fontsize=18) 
-ax.tick_params(axis='x', labelsize=16, rotation=45)
-ax.tick_params(axis='y', labelsize=16)
-plt.show()
+    ax.set_xlabel('Layer')
+    ax.set_ylabel('Mean Accuracy drop (%)')
+    ax.set_title('Per-layer mean accuracy drop with standard deviation')
+    ax.legend().set_visible(False)
+    ax.set_ylim(0,100)
+    plt.xticks(rotation=45, ha='right')
+    plt.tight_layout()
+    plt.show()

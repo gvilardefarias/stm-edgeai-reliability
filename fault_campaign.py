@@ -17,7 +17,7 @@ def inject_sta_fault(data, f_type, f_idx, f_bit):
     return (data, prev_value != data[f_idx])
 
 
-def simulate_fault(weights, f_type, f_idx, f_bit):
+def simulate_fault(weights, f_type, f_idx, f_bit, remove_files = True):
     f_id = f"{f_type}_w{f_idx}_b{f_bit}"
 
     work_path = os.getcwd() + f"/fault_campaign/{f_id}/"
@@ -33,18 +33,24 @@ def simulate_fault(weights, f_type, f_idx, f_bit):
         stm_edgeai_lib.weights_file_gen(faulty_weights, out_file=f"{lib_path}generated/network_data_params.c", weights_file=f"{work_path}../../st_ai_output/src/network_data_params.c")
         stm_edgeai_lib.compile_lib(lib_path)
         stm_edgeai_lib.validade_lib(lib_path, exec_path=work_path)
-        return (stm_edgeai_lib.get_x_cross_accuracy(f"{work_path}st_ai_ws/"), f_type, f_idx, f_bit)
+        accuracy = stm_edgeai_lib.get_x_cross_accuracy(f"{work_path}st_ai_ws/")
     else:
         os.system(f"cp -r ./st_ai_ws ./fault_campaign/{f_id}/")
-        return (stm_edgeai_lib.get_x_cross_accuracy(f"{work_path}st_ai_ws/"), f_type, f_idx, f_bit)
+        accuracy = stm_edgeai_lib.get_x_cross_accuracy(f"{work_path}st_ai_ws/")
 
-def gen_f_bit_positions(f_bit_range = 1, f_bit_start = 62, f_bit_step = 32):
+    if remove_files:
+        os.system(f"rm -rf {work_path}")
+    
+    return (accuracy, f_type, f_idx, f_bit)
+
+#def gen_f_bit_positions(f_bit_range = 16, f_bit_start = 62, f_bit_step = 32):
+def gen_f_bit_positions(f_bit_range = 3, f_bit_start = 62, f_bit_step = 32):
     f_bit_positions = []
     for start in range(f_bit_start, -1, -f_bit_step):
         f_bit_positions.extend(list(range(start, start - f_bit_range, -1)))
     return f_bit_positions
 
-def sta_fault_campaign(f_bit_positions = gen_f_bit_positions()):
+def sta_fault_campaign(f_bit_positions = gen_f_bit_positions(), remove_files = True):
     campaign_results = {}
 
     golden_lib = stm_edgeai_lib.gen_lib()
@@ -67,7 +73,7 @@ def sta_fault_campaign(f_bit_positions = gen_f_bit_positions()):
                 for f_bit in f_bit_positions:
                     campaign_results[f_type][f_idx][f_bit] = None
 
-                    futures.append(executor.submit(simulate_fault, weights.copy(), f_type, f_idx, f_bit))
+                    futures.append(executor.submit(simulate_fault, weights.copy(), f_type, f_idx, f_bit, remove_files))
 
         for future in as_completed(futures):
             try:

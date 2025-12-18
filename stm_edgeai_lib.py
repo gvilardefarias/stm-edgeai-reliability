@@ -114,6 +114,14 @@ def get_c_model_info(c_model_info_file = "./st_ai_ws/network_c_graph.json"):
     
     return dict(model_info)
 
+def set_layers_info(layers_info, c_model_info_file = "./st_ai_ws/network_c_graph.json"):
+    c_model_info = get_c_model_info(c_model_info_file)
+
+    c_model_info['weights']['weights_array']['buffer_offsets'] = layers_info
+
+    with open(c_model_info_file, 'w') as f:
+        json.dump(c_model_info, f, indent=4)
+
 def get_layers_info(c_model_info_file = "./st_ai_ws/network_c_graph.json"):
     c_model_info = get_c_model_info(c_model_info_file)
 

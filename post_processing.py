@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import stm_edgeai_lib as stm
+import graph_gen as gg
 
 in_file = "out_dict.txt"
 
@@ -38,6 +39,7 @@ def dict_to_df(data_dict):
     return df
 
 def compute_per_layer_acc(df, layers_info):
+    acc_drop = []
 
     for layer in layers_info:
         start_byte = layer['offset']
@@ -51,43 +53,34 @@ def compute_per_layer_acc(df, layers_info):
 
         layer_df = df[((df['Weight'] >= start_weight) & (df['Bit'] >= start_bit)) & 
                       ((df['Weight'] < end_weight) | (df['Weight'] == end_weight & (df['Bit'] < end_bit)))]
-        
 
+        df.loc[((df['Weight'] >= start_weight) & (df['Bit'] >= start_bit)) & 
+                      ((df['Weight'] < end_weight) | (df['Weight'] == end_weight & (df['Bit'] < end_bit))), "layer_name"] = layer["buffer_name"]
+        
         layer_acc_sta0 = layer_df[layer_df['Fault Type'] == 'sta0']['Acc'].mean()
         layer_acc_sta1 = layer_df[layer_df['Fault Type'] == 'sta1']['Acc'].mean()
         layer_acc = layer_df['Acc'].mean()
-        layer['reliability'] = {'accuracy': {'sta0': layer_acc_sta0, 'sta1': layer_acc_sta1, 'overall': layer_acc}}
+        layer_std = layer_df['Acc'].std()
+        layer['reliability'] = {'accuracy_drop': {'sta0': 100 - layer_acc_sta0, 'sta1': 100 - layer_acc_sta1, 'mean': 100 - layer_acc, 'std': layer_std}}
 
-        print(f"Layer: {layer}")
-        #print(layer_df)
-        print(start_weight, end_weight, start_bit, end_bit)
-        print(layer)
-#        print(layer_acc)
-#        print("")
+        acc_drop.append({
+            'layer_name': layer['buffer_name'],
+            'sta0': 100 - layer_acc_sta0,
+            'sta1': 100 - layer_acc_sta1,
+            'mean': 100 - layer_acc,
+            'std': layer_std
+        })  
 
+    acc_drop_df = pd.DataFrame(acc_drop)
+    return acc_drop_df
 
 df = dict_to_df(data_dict)
 
-print(stm.get_layers_info())
-compute_per_layer_acc(df, stm.get_layers_info())
+layers_info  = stm.get_layers_info()
+acc_drop_df = compute_per_layer_acc(df, layers_info)
 
-#pivot = df.pivot_table(index=['Weight', 'Bit'], columns='Fault Type', values='Acc').reset_index()
-#pivot['label'] = pivot['Weight'].astype(str) + ':' + pivot['Bit'].astype(str)
-#plot_df = pivot.set_index('label')[['sta0', 'sta1']]
-#
-#ax = plot_df.plot(kind='bar', figsize=(12, 4))
-#ax.set_xlabel('Weight:Bit')
-#ax.set_ylabel('Acc')
-#ax.legend(title='Fault Type', fontsize=10)
-#ax.tick_params(axis='x', rotation=45)
-#plt.tight_layout()
-#plt.show()
+stm.set_layers_info(layers_info)
 
-#ax = df.plot(kind='bar', y = 'Fault Type', x = 'Weight')
-#plt.rcParams.update({'font.size': 16})
-#plt.xlabel('Weight Index and Bit Position', fontsize=18)
-#plt.ylabel('Accuracy (%)', fontsize=18)
-#ax.legend(fontsize=18) 
-#ax.tick_params(axis='x', labelsize=16, rotation=45)
-#ax.tick_params(axis='y', labelsize=16)
-#plt.show()
+print(acc_drop_df)
+#gg.per_layer_sta_bd(acc_drop_df)
+gg.per_layer_sta_ov(acc_drop_df)
