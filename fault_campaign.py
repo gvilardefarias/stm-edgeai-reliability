@@ -2,9 +2,8 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 import os
 import time
 import stm_edgeai_lib
-from contextlib import contextmanager
 
-n_th = 32
+n_th = 16
 
 def inject_sta_fault(data, f_type, f_idx, f_bit):
     prev_value = data[f_idx]
@@ -44,7 +43,8 @@ def simulate_fault(weights, f_type, f_idx, f_bit, remove_files = True):
     return (accuracy, f_type, f_idx, f_bit)
 
 #def gen_f_bit_positions(f_bit_range = 16, f_bit_start = 62, f_bit_step = 32):
-def gen_f_bit_positions(f_bit_range = 3, f_bit_start = 62, f_bit_step = 32):
+#def gen_f_bit_positions(f_bit_range = 3, f_bit_start = 62, f_bit_step = 32):
+def gen_f_bit_positions(f_bit_range = 2, f_bit_start = 63, f_bit_step = 8):
     f_bit_positions = []
     for start in range(f_bit_start, -1, -f_bit_step):
         f_bit_positions.extend(list(range(start, start - f_bit_range, -1)))
@@ -61,8 +61,8 @@ def sta_fault_campaign(f_bit_positions = gen_f_bit_positions(), remove_files = T
     os.system("rm -rf ./fault_campaign/*")
     os.system(f"cp -r {golden_lib} ./fault_campaign/golden/")
 
-#    with ProcessPoolExecutor(max_workers=n_th) as executor:
-    with ProcessPoolExecutor() as executor:
+    with ProcessPoolExecutor(max_workers=n_th) as executor:
+#    with ProcessPoolExecutor() as executor:
         futures = []
         weights = stm_edgeai_lib.weights_parser()
 

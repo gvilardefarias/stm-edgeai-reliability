@@ -5,7 +5,7 @@ import numpy as np
 import stm_edgeai_lib as stm
 import graph_gen as gg
 
-in_file = "out_dict.txt"
+in_file = "out_files/out_dict_16b.txt"
 
 with open(in_file, 'r') as f:
     data = f.read()
@@ -71,16 +71,16 @@ def compute_per_layer_acc(df, layers_info):
             'std': layer_std
         })  
 
-    acc_drop_df = pd.DataFrame(acc_drop)
-    return acc_drop_df
+    layers_df = pd.DataFrame(acc_drop)
+    return layers_df
 
 df = dict_to_df(data_dict)
 
 layers_info  = stm.get_layers_info()
-acc_drop_df = compute_per_layer_acc(df, layers_info)
+layers_df = compute_per_layer_acc(df, layers_info)
 
 stm.set_layers_info(layers_info)
 
-print(acc_drop_df)
-#gg.per_layer_sta_bd(acc_drop_df)
-gg.per_layer_sta_ov(acc_drop_df)
+print(df)
+#gg.per_layer_sta_bd(layers_df)
+gg.per_layer_sta_ov(layers_df)
