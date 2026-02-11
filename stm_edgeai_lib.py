@@ -1,10 +1,10 @@
 import os
 import json
 
-model_path = os.getcwd() + "/models/gmp_wl_24/gmp_wl_24.h5"
-dataset_path = os.getcwd() + "/datasets/gmp/val_data.npy"
-#model_path = os.getcwd() + "/models/miniresnet/miniresnet_1stacks_64x50_tl.h5"
-#dataset_path = None
+#model_path = os.getcwd() + "/models/gmp_wl_24/gmp_wl_24.h5"
+#dataset_path = os.getcwd() + "/datasets/gmp/val_data.npy"
+model_path = os.getcwd() + "/models/miniresnet/miniresnet_1stacks_64x50_tl.h5"
+dataset_path = None
 target = "stellar-e"
 
 weights_c_file = "./st_ai_output/src/network_data_params.c"
@@ -13,12 +13,13 @@ generate_cmd = f"stedgeai generate --model {model_path} --target {target}"
 if dataset_path:
     validade_cmd = f"stedgeai validate --model {model_path} --target {target} --quiet -v 0 -vi {dataset_path}"
 else:
-    validade_cmd = f"stedgeai validate --model {model_path} --target {target} --quiet -v 0 -b 50"
+    validade_cmd = f"stedgeai validate --model {model_path} --target {target} --quiet -v 0 -b 100"
 
 files_to_build = ["network_data", "network_data_params"]
 compile_cmd  = "make clean && make all && make install && cd ../../../"
 
 def compile_lib(build_path = "./st_ai_ws/inspector_network/workspace/"):
+    print("compile", build_path)
     os.system(f"cd {build_path} && " + compile_cmd)
 
 def gen_lib():
@@ -35,6 +36,7 @@ def gen_lib():
 
 def validade_lib(lib_path = "./st_ai_ws/inspector_network/workspace/", exec_path = "./"):
     validade_lib_cmd = validade_cmd + f" --mode target -d lib:{lib_path}"
+    print("validade", validade_lib_cmd)
     os.system(f"cd {exec_path} &&" + validade_lib_cmd)
 
 
@@ -49,9 +51,9 @@ def get_x_cross_accuracy(exec_path = "./st_ai_ws/"):
 
     for metric in report['val_metrics']:
         if "X-cross" in metric['desc']:
-            return metric['acc']
+            return metric['acc'], metric
 
-    return None
+    return None, None
 
 
 def weights_parser(weights_file = weights_c_file):
