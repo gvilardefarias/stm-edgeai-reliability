@@ -4,7 +4,7 @@ import json
 #model_path = os.getcwd() + "/models/gmp_wl_24/gmp_wl_24.h5"
 #dataset_path = os.getcwd() + "/datasets/gmp/val_data.npy"
 model_path = os.getcwd() + "/models/miniresnet/miniresnet_1stacks_64x50_tl.h5"
-dataset_path = None
+dataset_path = os.getcwd() + "/datasets/miniresnet/miniresnet_dataset.npy"
 target = "stellar-e"
 
 weights_c_file = "./st_ai_output/src/network_data_params.c"

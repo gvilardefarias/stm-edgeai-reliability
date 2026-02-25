@@ -41,7 +41,7 @@ def per_layer_sta_ov(acc_drop_df):
     ax.set_ylabel('Mean Accuracy drop (%)')
     ax.set_title('Per-layer mean accuracy drop with standard deviation')
     ax.legend().set_visible(False)
-    ax.set_ylim(0,25)
+    ax.set_ylim(0,60)
     plt.xticks(rotation=45, ha='right')
     plt.tight_layout()
     #plt.subplots_adjust(bottom=0.2)

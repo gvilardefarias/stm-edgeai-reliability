@@ -5,7 +5,8 @@ import numpy as np
 import stm_edgeai_lib as stm
 import graph_gen as gg
 
-in_file = "out_files/out_dict_16b.txt"
+#in_file = "out_files/out_dict_16b.txt"
+in_file = "out_dict.txt"
 
 with open(in_file, 'r') as f:
     data = f.read()
@@ -74,13 +75,27 @@ def compute_per_layer_acc(df, layers_info):
     layers_df = pd.DataFrame(acc_drop)
     return layers_df
 
-df = dict_to_df(data_dict)
+def plot_per_layer_acc(data_dict):
+    df = dict_to_df(data_dict)
 
-layers_info  = stm.get_layers_info()
-layers_df = compute_per_layer_acc(df, layers_info)
+    layers_info  = stm.get_layers_info()
+    layers_df = compute_per_layer_acc(df, layers_info)
 
-stm.set_layers_info(layers_info)
+    stm.set_layers_info(layers_info)
 
-print(df)
-#gg.per_layer_sta_bd(layers_df)
-gg.per_layer_sta_ov(layers_df)
+    #gg.per_layer_sta_bd(layers_df)
+    gg.per_layer_sta_ov(layers_df)
+
+def get_unsimulated_faults(data_dict):
+    unsimulated_faults = []
+    for fault_type in data_dict:
+        for weight in data_dict[fault_type]:
+            for bit in data_dict[fault_type][weight]:
+                if data_dict[fault_type][weight][bit] == None:
+                    unsimulated_faults.append((fault_type, weight, bit))
+    
+    return unsimulated_faults
+
+if __name__ == "__main__":
+    #plot_per_layer_acc(data_dict)
+    unsimulated_faults = find_unsimulated_faults(data_dict)

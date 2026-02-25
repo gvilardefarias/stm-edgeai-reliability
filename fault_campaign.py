@@ -2,11 +2,20 @@ from concurrent.futures import FIRST_COMPLETED, ProcessPoolExecutor, as_complete
 import os
 import time
 import stm_edgeai_lib
+import argparse
+import post_processing
 
-n_th = 64
+n_th = 128
 WEIGHTS = None
 golden_acc = "100.00%"
 golden_report = None
+save_report = False
+continue_cmp = False
+
+parser = argparse.ArgumentParser(description='Run STA fault injection campaign.')
+parser.add_argument('--continue_cmp', action='store_true', help='Continue an existing campaign by simulating only the unsimulated faults.', default=False)
+args = parser.parse_args()
+continue_cmp = args.continue_cmp
 
 def inject_sta_fault(data, f_type, f_idx, f_bit):
     prev_value = data[f_idx]
@@ -55,7 +64,7 @@ def gen_f_bit_positions(f_bit_range = 16, f_bit_start = 63, f_bit_step = 32):
         f_bit_positions.extend(list(range(start, start - f_bit_range, -1)))
     return f_bit_positions
 
-def sta_fault_campaign(f_bit_positions = gen_f_bit_positions(), remove_files = True):
+def sta_fault_campaign(f_bit_positions = gen_f_bit_positions(), remove_files = True, save_report = False):
     global WEIGHTS, golden_acc, golden_report
     campaign_results = {}
     report_results = {}
@@ -73,8 +82,8 @@ def sta_fault_campaign(f_bit_positions = gen_f_bit_positions(), remove_files = T
     runing_futures = set()
     WEIGHTS = stm_edgeai_lib.weights_parser()
 
-    with ProcessPoolExecutor(max_workers=n_th) as executor:
-#    with ProcessPoolExecutor() as executor:
+#    with ProcessPoolExecutor(max_workers=n_th) as executor:
+    with ProcessPoolExecutor() as executor:
         for f_type in ["sta0", "sta1"]:
             campaign_results[f_type] = {}
             report_results[f_type] = {}
@@ -91,7 +100,8 @@ def sta_fault_campaign(f_bit_positions = gen_f_bit_positions(), remove_files = T
                             try:
                                 acc_result, report, f_type_r, f_idx_r, f_bit_r = future.result()
                                 campaign_results[f_type_r][f_idx_r][f_bit_r] = acc_result
-                                report_results[f_type_r][f_idx_r][f_bit_r] = report
+                                if save_report:
+                                    report_results[f_type_r][f_idx_r][f_bit_r] = report
                             except Exception as e:
                                 print(f"Error occurred: {e}")
                     
@@ -102,22 +112,84 @@ def sta_fault_campaign(f_bit_positions = gen_f_bit_positions(), remove_files = T
             try:
                 acc_result, report, f_type, f_idx, f_bit = future.result()
                 campaign_results[f_type][f_idx][f_bit] = acc_result
-                report_results[f_type][f_idx][f_bit] = report
+                if save_report:
+                    report_results[f_type][f_idx][f_bit] = report
             except Exception as e:
                 print(f"Error occurred: {e}")
 
     return campaign_results, report_results
 
-start = time.time()
-result, report_results = sta_fault_campaign()
-end = time.time()
-time_taken = end - start
+# TODO implement save_report
+def continue_sta_fault_campaign(campaign_results, faults, remove_files = True, save_report = False):
+    global WEIGHTS, golden_acc, golden_report
+    report_results = {}
 
-print("Fault injection campaign completed.")
-print(f"Time taken: {time_taken:.2f} seconds")
+    golden_acc, golden_report = stm_edgeai_lib.get_x_cross_accuracy(f"./fault_campaign/golden/")
 
-with open("out_dict.txt", 'w') as f:
-    f.write(str(result))
+    runing_futures = set()
+    WEIGHTS = stm_edgeai_lib.weights_parser()
 
-with open("report_results.txt", 'w') as f:
-    f.write(str(report_results))
+    #with ProcessPoolExecutor(max_workers=n_th) as executor:
+    with ProcessPoolExecutor() as executor:
+        for f_type, f_idx, f_bit in faults:
+            if len(runing_futures) >= 2*n_th:
+                done, runing_futures = wait(runing_futures, return_when=FIRST_COMPLETED)
+                for future in done:
+                    try:
+                        acc_result, report, f_type_r, f_idx_r, f_bit_r = future.result()
+                        campaign_results[f_type_r][f_idx_r][f_bit_r] = acc_result
+                        if save_report:
+                            report_results[f_type_r][f_idx_r][f_bit_r] = report
+                    except Exception as e:
+                        print(f"Error occurred: {e}")
+            
+            future = executor.submit(simulate_fault, f_type, f_idx, f_bit, remove_files)
+            runing_futures.add(future)
+
+        for future in as_completed(runing_futures):
+            try:
+                acc_result, report, f_type, f_idx, f_bit = future.result()
+                campaign_results[f_type][f_idx][f_bit] = acc_result
+                if save_report:
+                    report_results[f_type][f_idx][f_bit] = report
+            except Exception as e:
+                print(f"Error occurred: {e}")
+
+    return campaign_results, report_results
+
+if __name__ == "__main__":
+    if not continue_cmp:
+        start = time.time()
+        result, report_results = sta_fault_campaign(save_report=save_report)
+        end = time.time()
+        time_taken = end - start
+    
+        print("Fault injection campaign completed.")
+        print(f"Time taken: {time_taken:.2f} seconds")
+    
+        with open("out_dict.txt", 'w') as f:
+            f.write(str(result))
+    
+        if save_report:
+            with open("report_results.txt", 'w') as f:
+                f.write(str(report_results))
+    else:
+        data_dict = None
+        with open("out_dict.txt", 'r') as f:
+            data = f.read()
+            data_dict = eval(data)
+        faults_to_simulate = post_processing.get_unsimulated_faults(data_dict)
+        print(f"Continuing campaign with {len(faults_to_simulate)} faults to simulate.")
+        start = time.time()
+        result, report_results = continue_sta_fault_campaign(data_dict, faults_to_simulate, save_report=save_report)
+        end = time.time()
+        time_taken = end - start
+        print("Fault injection campaign completed.")
+        print(f"Time taken: {time_taken:.2f} seconds")
+
+        with open("out_dict_new.txt", 'w') as f:
+            f.write(str(result))
+        
+        if save_report:
+            with open("report_results_new.txt", 'w') as f:
+                f.write(str(report_results))
