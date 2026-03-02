@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    human_activity_recognition.h
   * @author  AST Embedded Analytics Research Platform
-  * @date    2026-02-27T16:55:43+0100
+  * @date    2026-03-02T16:03:18+0100
   * @brief   ST.AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * @attention
@@ -23,12 +23,12 @@
 
 /*****************************************************************************/
 /*  Original model name and signature  */
-#define STAI_HUMAN_ACTIVITY_RECOGNITION_ORIGIN_MODEL_NAME         "har_tmr_voter"
-#define STAI_HUMAN_ACTIVITY_RECOGNITION_ORIGIN_MODEL_SIGNATURE    "0xc02d594132b798939f69c9e42d116d46"
+#define STAI_HUMAN_ACTIVITY_RECOGNITION_ORIGIN_MODEL_NAME         "har_tmr_voter_custom"
+#define STAI_HUMAN_ACTIVITY_RECOGNITION_ORIGIN_MODEL_SIGNATURE    "0x9c97dc0eb648bddbe02aa1ec6832cb1a"
 
 /*  Generated model name and signature  */
 #define STAI_HUMAN_ACTIVITY_RECOGNITION_MODEL_NAME                "human_activity_recognition"
-#define STAI_HUMAN_ACTIVITY_RECOGNITION_MODEL_SIGNATURE           (0x3dc305166263e5e1)
+#define STAI_HUMAN_ACTIVITY_RECOGNITION_MODEL_SIGNATURE           (0x3ab46f6328d9a293)
 
 
 /*****************************************************************************/
@@ -40,10 +40,10 @@
 #define STAI_HUMAN_ACTIVITY_RECOGNITION_FLAGS               (STAI_FLAG_INPUTS|STAI_FLAG_OUTPUTS|STAI_FLAG_WEIGHTS)
 
 /*  Macro to declare number of network C nodes generated  */
-#define STAI_HUMAN_ACTIVITY_RECOGNITION_NODES_NUM           (5)
+#define STAI_HUMAN_ACTIVITY_RECOGNITION_NODES_NUM           (9)
 
 /*  Macro to declare number macc for generated network model  */
-#define STAI_HUMAN_ACTIVITY_RECOGNITION_MACC_NUM            (67168)
+#define STAI_HUMAN_ACTIVITY_RECOGNITION_MACC_NUM            (76944)
 
 /*  Macros to declare input buffers characteristics  */
 #define STAI_HUMAN_ACTIVITY_RECOGNITION_IN_NUM              (1)
@@ -101,31 +101,31 @@
 
 /*****************************************************************************/
 /*  Macros to declare activations buffers characteristics  */
-#define STAI_HUMAN_ACTIVITY_RECOGNITION_ACTIVATIONS_SIZE              (4352)
-#define STAI_HUMAN_ACTIVITY_RECOGNITION_ACTIVATIONS_SIZE_BYTES        (4352)
+#define STAI_HUMAN_ACTIVITY_RECOGNITION_ACTIVATIONS_SIZE              (15360)
+#define STAI_HUMAN_ACTIVITY_RECOGNITION_ACTIVATIONS_SIZE_BYTES        (15360)
 #define STAI_HUMAN_ACTIVITY_RECOGNITION_ACTIVATIONS_ALIGNMENTS \
   { 4}
 #define STAI_HUMAN_ACTIVITY_RECOGNITION_ACTIVATIONS_SIZES \
-  { 4352}
+  { 15360}
 #define STAI_HUMAN_ACTIVITY_RECOGNITION_ACTIVATIONS_NUM               (1)
 
 #define STAI_HUMAN_ACTIVITY_RECOGNITION_ACTIVATION_1_FLAGS      (STAI_FLAG_ACTIVATIONS)
-#define STAI_HUMAN_ACTIVITY_RECOGNITION_ACTIVATION_1_SIZE       (4352)
-#define STAI_HUMAN_ACTIVITY_RECOGNITION_ACTIVATION_1_SIZE_BYTES (4352)
+#define STAI_HUMAN_ACTIVITY_RECOGNITION_ACTIVATION_1_SIZE       (15360)
+#define STAI_HUMAN_ACTIVITY_RECOGNITION_ACTIVATION_1_SIZE_BYTES (15360)
 #define STAI_HUMAN_ACTIVITY_RECOGNITION_ACTIVATION_1_ALIGNMENT  4
 /*  Macros to declare weights buffers characteristics  */
 
 #define STAI_HUMAN_ACTIVITY_RECOGNITION_WEIGHTS_NUM                  (1)
-#define STAI_HUMAN_ACTIVITY_RECOGNITION_WEIGHTS_SIZE                  (5840)
-#define STAI_HUMAN_ACTIVITY_RECOGNITION_WEIGHTS_SIZE_BYTES            (5840)
+#define STAI_HUMAN_ACTIVITY_RECOGNITION_WEIGHTS_SIZE                  (5848)
+#define STAI_HUMAN_ACTIVITY_RECOGNITION_WEIGHTS_SIZE_BYTES            (5848)
 #define STAI_HUMAN_ACTIVITY_RECOGNITION_WEIGHTS_ALIGNMENTS \
   { 4}
 #define STAI_HUMAN_ACTIVITY_RECOGNITION_WEIGHTS_SIZES \
-  { 5840}
+  { 5848}
 #define STAI_HUMAN_ACTIVITY_RECOGNITION_WEIGHTS_NUM        (1)
 #define STAI_HUMAN_ACTIVITY_RECOGNITION_WEIGHT_1_FLAGS       ((STAI_FLAG_PREALLOCATED))
-#define STAI_HUMAN_ACTIVITY_RECOGNITION_WEIGHT_1_SIZE        (5840)
-#define STAI_HUMAN_ACTIVITY_RECOGNITION_WEIGHT_1_SIZE_BYTES  (5840)
+#define STAI_HUMAN_ACTIVITY_RECOGNITION_WEIGHT_1_SIZE        (5848)
+#define STAI_HUMAN_ACTIVITY_RECOGNITION_WEIGHT_1_SIZE_BYTES  (5848)
 
 
 /*****************************************************************************/

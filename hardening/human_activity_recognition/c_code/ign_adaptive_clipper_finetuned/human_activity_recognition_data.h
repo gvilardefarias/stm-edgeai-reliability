@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    human_activity_recognition_data.h
   * @author  AST Embedded Analytics Research Platform
-  * @date    2026-02-27T16:55:43+0100
+  * @date    2026-03-02T17:39:36+0100
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * Copyright (c) 2026 STMicroelectronics.
@@ -18,6 +18,6 @@
 #define STAI_HUMAN_ACTIVITY_RECOGNITION_DATA_H
 #include "stai.h"
 STAI_ALIGNED(8)
-extern const uint64_t g_human_activity_recognition_weights_array[730];
+extern const uint64_t g_human_activity_recognition_weights_array[688];
 #endif  /* STAI_HUMAN_ACTIVITY_RECOGNITION_DATA_H */
 
