@@ -1,0 +1,278 @@
+ST Edge AI Core v4.0.0-20500 359356bb0
+Created date          : 2026-03-04 16:32:36
+Parameters            : validate -m /home/apo/stm32ai-modelzoo/human_activity_recognition/st_gmp/ST_pretrainedmodel_public_dataset/WISDM/st_gmp_wl_24/HAR_bias_tmr.h5 --custom custom_voter.json --target stm32h7 -n human_activity_recognition -c low -o c_code/tmr_bias_validate/ -vi /home/apo/stm32ai-modelzoo-services/human_activity_recognition/validate/mean_tmr/val_inputs.npy -vo /home/apo/stm32ai-modelzoo-services/human_activity_recognition/validate/mean_tmr/val_labels.npy
+
+Exec/report summary (validate)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+model file         :   /home/apo/stm32ai-modelzoo/human_activity_recognition/st_gmp/ST_pretrainedmodel_public_dataset/WISDM/st_gmp_wl_24/HAR_bias_tmr.h5   
+type               :   keras                                                                                                                               
+c_name             :   human_activity_recognition                                                                                                          
+compression        :   low                                                                                                                                 
+options            :   allocate-inputs, allocate-outputs, use-lite-runtime, use-st-ai                                                                      
+optimization       :   balanced                                                                                                                            
+target/series      :   stm32h7                                                                                                                             
+workspace dir      :   /home/apo/stm32ai-modelzoo-services/human_activity_recognition/st_ai_ws                                                             
+output dir         :   /home/apo/stm32ai-modelzoo-services/human_activity_recognition/c_code/tmr_bias_validate                                             
+vinput files       :   /home/apo/stm32ai-modelzoo-services/human_activity_recognition/validate/mean_tmr/val_inputs.npy                                     
+voutput files      :   /home/apo/stm32ai-modelzoo-services/human_activity_recognition/validate/mean_tmr/val_labels.npy                                     
+model_fmt          :   float                                                                                                                               
+model_name         :   HAR_bias_tmr                                                                                                                        
+model_hash         :   0x29e0e5879c19b823fa4cf39ae09be759                                                                                                  
+params #           :   1,526 items (5.96 KiB)                                                                                                              
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+input 1/1          :   'input_layer', f32(1x24x3x1), 288 Bytes, activations                                                                                
+output 1/1         :   'activation', f32(1x4), 16 Bytes, activations                                                                                       
+macc               :   67,168                                                                                                                              
+weights (ro)       :   6,032 B (5.89 KiB) (1 segment) / -72(-1.2%) vs float model                                                                          
+activations (rw)   :   7,680 B (7.50 KiB) (1 segment) *                                                                                                    
+ram (total)        :   7,680 B (7.50 KiB) = 7,680 + 0 + 0                                                                                                  
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+(*) 'input'/'output' buffers are allocated in the activations buffer
+
+Model name - HAR_bias_tmr
+------ ------------------------------------------------------- --------------------- ------------- -------- --------------------------- --- --------------- ----------------- --------------------- 
+m_id   layer (type,original)                                   oshape                param/size        macc                connected to   | c_size          c_macc            c_type                
+------ ------------------------------------------------------- --------------------- ------------- -------- --------------------------- --- --------------- ----------------- --------------------- 
+0      input_layer (Input, InputLayer)                         [b:1,h:24,w:3,c:1]                                                         |                                   
+------ ------------------------------------------------------- --------------------- ------------- -------- --------------------------- --- --------------- ----------------- --------------------- 
+1      batch_normalization (ScaleBias, BatchNormalization)     [b:1,h:24,w:3,c:1]    2/8                144                 input_layer   | -8(-100.0%)     -144(-100.0%)     
+------ ------------------------------------------------------- --------------------- ------------- -------- --------------------------- --- --------------- ----------------- --------------------- 
+2      conv2d_nobias (Conv2D, Conv2D)                          [b:1,h:20,w:3,c:16]   80/320           4,800         batch_normalization   | +64(+20.0%)     +16(+0.3%)        Conv2D_[0]            
+------ ------------------------------------------------------- --------------------- ------------- -------- --------------------------- --- --------------- ----------------- --------------------- 
+3      conv2d_tmr_bias (Custom, TMRBiasLayer)                  [b:1,h:20,w:3,c:16]   48/192                               conv2d_nobias   |                                   Custom_[1]            
+------ ------------------------------------------------------- --------------------- ------------- -------- --------------------------- --- --------------- ----------------- --------------------- 
+4      batch_normalization_1 (ScaleBias, BatchNormalization)   [b:1,h:20,w:3,c:16]   32/128           1,920             conv2d_tmr_bias   | -128(-100.0%)   -1,920(-100.0%)   
+------ ------------------------------------------------------- --------------------- ------------- -------- --------------------------- --- --------------- ----------------- --------------------- 
+5      conv2d_1 (Conv2D, Conv2D)                               [b:1,h:16,w:3,c:16]   1,296/5,184     61,456       batch_normalization_1   |                                   Conv2D_[2]            
+------ ------------------------------------------------------- --------------------- ------------- -------- --------------------------- --- --------------- ----------------- --------------------- 
+6      global_max_pooling2d_pool (Pool, GlobalMaxPooling2D)    [b:1,h:1,w:1,c:16]                       768                    conv2d_1   |                                   Pool_[3]              
+       global_max_pooling2d (Reshape, GlobalMaxPooling2D)      [b:1,c:16]                                     global_max_pooling2d_pool   |                                   
+------ ------------------------------------------------------- --------------------- ------------- -------- --------------------------- --- --------------- ----------------- --------------------- 
+8      dense (Dense, Dense)                                    [b:1,c:4]             68/272              68        global_max_pooling2d   |                                   Dense_[4]             
+------ ------------------------------------------------------- --------------------- ------------- -------- --------------------------- --- --------------- ----------------- --------------------- 
+9      activation (Nonlinearity, Activation)                   [b:1,c:4]                                 60                       dense   |                                   Nonlinearity_[o][5]   
+------ ------------------------------------------------------- --------------------- ------------- -------- --------------------------- --- --------------- ----------------- --------------------- 
+model/c-model: macc=69,216/67,168 -2,048(-3.0%) weights=6,104/6,032 -72(-1.2%) activations=--/7,680 io=--/0
+
+
+
+Generated C-graph summary
+------------------------------------------------------------------------------------------------------------------------
+model name            : HAR_bias_tmr
+c-name                : human_activity_recognition
+c-node #              : 6
+c-array #             : 18
+activations size      : 7680 (1 segment)
+weights size          : 6032 (1 segment)
+macc                  : 67168
+inputs                : ['input_layer_output']
+outputs               : ['activation_output']
+
+C-Arrays (18)
+------ ---------------------------------- ----------- ------------------------- ------------- --------- 
+c_id   name (*_array)                     item/size   domain/mem-pool           c-type        comment   
+------ ---------------------------------- ----------- ------------------------- ------------- --------- 
+0      activation_output                  4/16        activations/**default**   float         /output   
+1      conv2d_1_bias                      16/64       weights/weights           const float             
+2      conv2d_1_output                    768/3072    activations/**default**   float                   
+3      conv2d_1_scratch0                  80/320      activations/**default**   float                   
+4      conv2d_1_weights                   1280/5120   weights/weights           const float             
+5      conv2d_nobias_bias                 16/64       weights/weights           const float             
+6      conv2d_nobias_output               960/3840    activations/**default**   float                   
+7      conv2d_nobias_scratch0             5/20        activations/**default**   float                   
+8      conv2d_nobias_weights              80/320      weights/weights           const float             
+9      conv2d_tmr_bias_output             960/3840    activations/**default**   float                   
+10     conv2d_tmr_bias_param_0            16/64       weights/weights           const float             
+11     conv2d_tmr_bias_param_1            16/64       weights/weights           const float             
+12     conv2d_tmr_bias_param_2            16/64       weights/weights           const float             
+13     dense_bias                         4/16        weights/weights           const float             
+14     dense_output                       4/16        activations/**default**   float                   
+15     dense_weights                      64/256      weights/weights           const float             
+16     global_max_pooling2d_pool_output   16/64       activations/**default**   float                   
+17     input_layer_output                 72/288      activations/**default**   float         /input    
+------ ---------------------------------- ----------- ------------------------- ------------- --------- 
+
+C-Layers (6)
+------ --------------------------- ---- --------------- ------- ------ ------------------------------------- -------------------- 
+c_id   name (*_layer)              id   layer_type      macc    rom    tensors                               shape (array id)     
+------ --------------------------- ---- --------------- ------- ------ ------------------------------------- -------------------- 
+0      conv2d_nobias               2    Conv2D          4816    384    I: input_layer_output                 f32(1x24x3x1) (17)   
+                                                                       S: conv2d_nobias_scratch0                                  
+                                                                       W: conv2d_nobias_weights              f32(16x5x1x1) (8)    
+                                                                       W: conv2d_nobias_bias                 f32(16) (5)          
+                                                                       O: conv2d_nobias_output               f32(1x20x3x16) (6)   
+------ --------------------------- ---- --------------- ------- ------ ------------------------------------- -------------------- 
+1      conv2d_tmr_bias             3    Custom          0       192    I: conv2d_nobias_output               f32(1x20x3x16) (6)   
+                                                                       W: conv2d_tmr_bias_param_0            f32(16) (10)         
+                                                                       W: conv2d_tmr_bias_param_1            f32(16) (11)         
+                                                                       W: conv2d_tmr_bias_param_2            f32(16) (12)         
+                                                                       O: conv2d_tmr_bias_output             f32(1x20x3x16) (9)   
+------ --------------------------- ---- --------------- ------- ------ ------------------------------------- -------------------- 
+2      conv2d_1                    5    Conv2D          61456   5184   I: conv2d_tmr_bias_output             f32(1x20x3x16) (9)   
+                                                                       S: conv2d_1_scratch0                                       
+                                                                       W: conv2d_1_weights                   f32(16x5x1x16) (4)   
+                                                                       W: conv2d_1_bias                      f32(16) (1)          
+                                                                       O: conv2d_1_output                    f32(1x16x3x16) (2)   
+------ --------------------------- ---- --------------- ------- ------ ------------------------------------- -------------------- 
+3      global_max_pooling2d_pool   6    Pool            768     0      I: conv2d_1_output                    f32(1x16x3x16) (2)   
+                                                                       O: global_max_pooling2d_pool_output   f32(1x1x1x16) (16)   
+------ --------------------------- ---- --------------- ------- ------ ------------------------------------- -------------------- 
+4      dense                       8    Dense           68      272    I: global_max_pooling2d_pool_output   f32(1x1x1x16) (16)   
+                                                                       W: dense_weights                      f32(4x16) (15)       
+                                                                       W: dense_bias                         f32(4) (13)          
+                                                                       O: dense_output                       f32(1x4) (14)        
+------ --------------------------- ---- --------------- ------- ------ ------------------------------------- -------------------- 
+5      activation                  9    Nonlinearity    60      0      I: dense_output                       f32(1x4) (14)        
+                                                                       O: activation_output                  f32(1x4) (0)         
+------ --------------------------- ---- --------------- ------- ------ ------------------------------------- -------------------- 
+ 
+Setting validation data...
+ loading file: /home/apo/stm32ai-modelzoo-services/human_activity_recognition/validate/mean_tmr/val_inputs.npy
+ loading file: /home/apo/stm32ai-modelzoo-services/human_activity_recognition/validate/mean_tmr/val_labels.npy
+   samples are reshaped: (11440, 4) -> (11440, 1, 1, 4)
+   I[1]: (11440, 24, 3, 1)/float32, min/max=[-29.350760, 41.592674], mean/std=[0.361251, 5.286551]
+   O[1]: (11440, 1, 1, 4)/float32, min/max=[0.000000, 1.000000], mean/std=[0.250000, 0.433013]
+ 
+Running the ST.AI c-model (AI RUNNER)...(name=human_activity_recognition, mode=HOST)
+
+ DLL Driver v2.0 - Direct Python binding (/home/apo/stm32ai-modelzoo-services/human_activity_recognition/st_ai_ws/inspector_human_activity_recognition/workspace/lib/libai_human_activity_recognition.so) ['human_activity_recognition']
+  
+  Summary 'human_activity_recognition' - ['human_activity_recognition']
+  --------------------------------------------------------------------------
+  I[1/1] 'input_1'    :   f32[1,24,3,1], 288 Bytes, in activations buffer   
+  O[1/1] 'output_1'   :   f32[1,4], 16 Bytes, in activations buffer         
+  n_nodes             :   6                                                 
+  activations         :   7680                                              
+  weights             :   6032                                              
+  macc                :   67168                                             
+  hash                :   0x29e0e5879c19b823fa4cf39ae09be759                
+  compile_datetime    :   Mar  4 2026 15:38:29                              
+  --------------------------------------------------------------------------
+  protocol            :   DLL Driver v2.0 - Direct Python binding           
+  tools               :   ST.AI (st-ai api) v4.0.0                          
+  runtime lib         :   v12.0.0                                           
+  capabilities        :   IO_ONLY, PER_LAYER, PER_LAYER_WITH_DATA           
+  device.desc         :   x86_64, , Linux                                   
+  --------------------------------------------------------------------------
+ 
+ NOTE: The duration and execution time per layer are just indications. They depend on the host machine's workload.
+
+  
+  ST.AI Profiling results v2.0 - "human_activity_recognition"
+  ------------------------------------------------------------
+  nb sample(s)   :   11440                                    
+  duration       :   0.091 ms by sample (0.080/0.197/0.014)   
+  macc           :   67168                                    
+  ------------------------------------------------------------
+  
+  Statistic per tensor
+  --------------------------------------------------------------------------------------
+  tensor   #       type[shape]:size          min      max     mean      std  name       
+  --------------------------------------------------------------------------------------
+  I.0      11440   f32[1,24,3,1]:288     -29.351   41.593    0.361    5.287  input_1    
+  O.0      11440   f32[1,4]:16             0.000    1.000    0.250    0.344  output_1   
+  --------------------------------------------------------------------------------------
+ 
+Saving validation data...
+ output directory: /home/apo/stm32ai-modelzoo-services/human_activity_recognition/c_code/tmr_bias_validate
+ creating /home/apo/stm32ai-modelzoo-services/human_activity_recognition/c_code/tmr_bias_validate/human_activity_recognition_val_io.npz
+ m_outputs_1: (11440, 4)/float32, min/max=[0.000000, 0.999998], mean/std=[0.250000, 0.344207], activation
+ c_outputs_1: (11440, 1, 1, 4)/float32, min/max=[0.000000, 0.999998], mean/std=[0.250000, 0.344207], activation
+
+ 
+Computing the metrics...
+
+ Accuracy report #1 for the generated HOST C-model
+ ----------------------------------------------------------------------------------------------------
+ notes: - computed against the provided ground truth values
+        - 11440 samples (4 items per sample)
+
+  acc=83.33% rmse=0.244355634 mae=0.128731355 l2r=0.574392915 mean=0.000000 std=0.244358 snr=6.218953 nse=0.681556 cos=0.872720 
+ 
+  Confusion matrix (axis=-1) - 4 classes (11440 samples)
+  ----------------------------
+  C0      3309   .   16   146 
+  C1        .  1161  16    7  
+  C2       144  23  1171 1053 
+  C3       85    .   417 3892 
+
+ Accuracy report #1 for the reference model
+ ----------------------------------------------------------------------------------------------------
+ notes: - computed against the provided ground truth values
+        - 11440 samples (4 items per sample)
+
+  acc=83.33% rmse=0.244355634 mae=0.128731355 l2r=0.574392915 mean=0.000000 std=0.244358 snr=6.218953 nse=0.681556 cos=0.872720 
+ 
+  Confusion matrix (axis=-1) - 4 classes (11440 samples)
+  ----------------------------
+  C0      3309   .   16   146 
+  C1        .  1161  16    7  
+  C2       144  23  1171 1053 
+  C3       85    .   417 3892 
+
+ Cross accuracy report #1 (reference vs C-model)
+ ----------------------------------------------------------------------------------------------------
+ notes: - the output of the reference model is used as ground truth/reference value
+        - 11440 samples (4 items per sample)
+
+  acc=100.00% rmse=0.000000067 mae=0.000000031 l2r=0.000000156 mean=-0.000000 std=0.000000 snr=136.114302 nse=1.000000 cos=1.000000 
+ 
+  Confusion matrix (axis=-1) - 4 classes (11440 samples)
+  ----------------------------
+  C0      3538   .    .    .  
+  C1        .  1184   .    .  
+  C2        .    .  1620   .  
+  C3        .    .    .  5098 
+
+
+Number of operations per c-layer
+------- ------ --------------------------------------- -------- -------------- 
+c_id    m_id   name (type)                                  #op           type 
+------- ------ --------------------------------------- -------- -------------- 
+0       2      conv2d_nobias (Conv2D)                     4,816   smul_f32_f32 
+1       3      conv2d_tmr_bias (Custom)                       0   smul_f32_f32 
+2       5      conv2d_1 (Conv2D)                         61,456   smul_f32_f32 
+3       6      global_max_pooling2d_pool (Pool_Max)         768   smul_f32_f32 
+4       8      dense (Dense)                                 68   smul_f32_f32 
+5       9      activation (Nonlinearity)                     60     op_f32_f32 
+------- ------ --------------------------------------- -------- -------------- 
+total                                                    67,168 
+
+Number of operation types
+---------------- -------- ----------- 
+operation type          #           % 
+---------------- -------- ----------- 
+smul_f32_f32       67,108       99.9% 
+op_f32_f32             60        0.1% 
+
+Complexity report (model)
+------ --------------------------- ------------------------- ------------------------- ------ -------- ------------------ 
+m_id   name                        c_macc                    c_rom                     c_id   c_dur    l2r (X-CROSS)      
+------ --------------------------- ------------------------- ------------------------- ------ -------- ------------------ 
+2      conv2d_nobias               ||                 7.2%   ||                 6.4%   [0]     26.7%                      
+3      conv2d_tmr_bias             |                  0.0%   |                  3.2%   [1]      5.0%                      
+5      conv2d_1                    ||||||||||||||||  91.5%   ||||||||||||||||  85.9%   [2]     66.6%                      
+6      global_max_pooling2d_pool   |                  1.1%   |                  0.0%   [3]      0.8%                      
+8      dense                       |                  0.1%   |                  4.5%   [4]      0.3%                      
+9      activation                  |                  0.1%   |                  0.0%   [5]      0.5%   1.56417357e-07 *   
+------ --------------------------- ------------------------- ------------------------- ------ -------- ------------------ 
+macc=67,168 weights=6,032 act=7,680 ram_io=0
+
+Evaluation report (summary)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Output              acc       rmse          mae           l2r           mean        std        snr          nse        cos        tensor                                     
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+HOST c-model #1     83.33%    0.244355634   0.128731355   0.574392915   0.000000    0.244358   6.218953     0.681556   0.872720   'activation', 11440 x f32(1x4), m_id=[9]   
+original model #1   83.33%    0.244355634   0.128731355   0.574392915   0.000000    0.244358   6.218953     0.681556   0.872720   'activation', 11440 x f32(1x4), m_id=[9]   
+X-cross #1          100.00%   0.000000067   0.000000031   0.000000156   -0.000000   0.000000   136.114302   1.000000   1.000000   'activation', 11440 x f32(1x4), m_id=[9]   
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ acc  : Accuracy (class, axis=-1)
+ rmse : Root Mean Squared Error
+ mae  : Mean Absolute Error
+ l2r  : L2 relative error
+ mean : Mean error
+ std  : Standard deviation error
+ snr  : Signal-to-Noise Ratio (SNR), bigger is better
+ nse  : Nash-Sutcliffe efficiency criteria, bigger is better, best=1, range=(-inf, 1]
+ cos  : COsine Similarity, bigger is better, best=1, range=(0, 1]
