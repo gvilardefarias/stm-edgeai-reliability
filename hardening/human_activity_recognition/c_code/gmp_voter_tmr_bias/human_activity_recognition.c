@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    human_activity_recognition.c
   * @author  AST Embedded Analytics Research Platform
-  * @date    2026-03-03T11:51:47+0100
+  * @date    2026-03-04T15:21:13+0100
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * @attention
@@ -25,9 +25,9 @@
 #include "human_activity_recognition_data.h"
 #include "stai_events.h"
 
-#include "ai_lite_inspect.h"
-
 #include "lite_operators.h"
+
+#include "ai_lite_inspect.h"
 /*****************************************************************************/
 #define STAI_INTERNAL_API_MAJOR               (1)
 #define STAI_INTERNAL_API_MINOR               (0)
@@ -152,8 +152,8 @@
 
 
 /*****************************************************************************/
-#define _STAI_HUMAN_ACTIVITY_RECOGNITION_MODEL_SIGNATURE     "0x90ea10d2335d6fa34b22d4cc7a54a1bb"
-#define _STAI_HUMAN_ACTIVITY_RECOGNITION_DATETIME            "2026-03-03T11:51:47+0100"
+#define _STAI_HUMAN_ACTIVITY_RECOGNITION_MODEL_SIGNATURE     "0x29e0e5879c19b823fa4cf39ae09be759"
+#define _STAI_HUMAN_ACTIVITY_RECOGNITION_DATETIME            "2026-03-04T15:21:13+0100"
 #define _STAI_HUMAN_ACTIVITY_RECOGNITION_COMPILE_DATETIME    __DATE__ " " __TIME__
 
 #define _STAI_CONTEXT_ALIGNMENT        STAI_HUMAN_ACTIVITY_RECOGNITION_CONTEXT_ALIGNMENT
@@ -209,7 +209,7 @@ static const stai_network_info g_human_activity_recognition_info = {
       STAI_HUMAN_ACTIVITY_RECOGNITION_ACTIVATION_1_FLAGS,
       STAI_FORMAT_U8,
       STAI_HUMAN_ACTIVITY_RECOGNITION_ACTIVATION_1_SIZE_BYTES,
-      STAI_DECLARE_ARRAY(int32_t, 1, 11828),
+      STAI_DECLARE_ARRAY(int32_t, 1, 7680),
       STAI_EMPTY_ARRAY(),
       STAI_EMPTY_ARRAY()),
     },
@@ -219,7 +219,7 @@ static const stai_network_info g_human_activity_recognition_info = {
       STAI_HUMAN_ACTIVITY_RECOGNITION_WEIGHT_1_FLAGS,
       STAI_FORMAT_U8,
       STAI_HUMAN_ACTIVITY_RECOGNITION_WEIGHT_1_SIZE_BYTES,
-      STAI_DECLARE_ARRAY(int32_t, 1, 5848),
+      STAI_DECLARE_ARRAY(int32_t, 1, 6032),
       STAI_EMPTY_ARRAY(),
       STAI_EMPTY_ARRAY()),
     },
@@ -322,35 +322,37 @@ stai_return_code stai_human_activity_recognition_deinit(
 }
 
 /*****************************************************************************/
+void custom_init_TMRBiasLayer(ai_layer* layer);
 
+void custom_forward_TMRBiasLayer(ai_layer* layer);
 
 
 
 
 /* Array#0 */
 AI_ARRAY_OBJ_DECLARE(
-  conv2d_tmr2_output_array, AI_ARRAY_FORMAT_FLOAT,
+  conv2d_nobias_output_array, AI_ARRAY_FORMAT_FLOAT,
   NULL, NULL, 960, AI_STATIC)
 
 /* Array#1 */
 AI_ARRAY_OBJ_DECLARE(
-  conv2d_tmr1_output_array, AI_ARRAY_FORMAT_FLOAT,
+  conv2d_tmr_bias_output_array, AI_ARRAY_FORMAT_FLOAT,
   NULL, NULL, 960, AI_STATIC)
 
 /* Array#2 */
 AI_ARRAY_OBJ_DECLARE(
-  conv2d_mean_voter_left_0_output_array, AI_ARRAY_FORMAT_FLOAT,
-  NULL, NULL, 960, AI_STATIC)
+  conv2d_tmr_bias_param_0_array, AI_ARRAY_FORMAT_FLOAT,
+  NULL, NULL, 16, AI_STATIC)
 
 /* Array#3 */
 AI_ARRAY_OBJ_DECLARE(
-  conv2d_tmr3_output_array, AI_ARRAY_FORMAT_FLOAT,
-  NULL, NULL, 960, AI_STATIC)
+  conv2d_tmr_bias_param_1_array, AI_ARRAY_FORMAT_FLOAT,
+  NULL, NULL, 16, AI_STATIC)
 
 /* Array#4 */
 AI_ARRAY_OBJ_DECLARE(
-  conv2d_mean_voter_output_array, AI_ARRAY_FORMAT_FLOAT,
-  NULL, NULL, 960, AI_STATIC)
+  conv2d_tmr_bias_param_2_array, AI_ARRAY_FORMAT_FLOAT,
+  NULL, NULL, 16, AI_STATIC)
 
 /* Array#5 */
 AI_ARRAY_OBJ_DECLARE(
@@ -366,88 +368,72 @@ AI_ARRAY_OBJ_DECLARE(
 
 /* Tensor #0 */
 AI_TENSOR_OBJ_DECLARE(
-  conv2d_mean_voter_left_0_output, AI_STATIC,
-  8, 0x0,
+  conv2d_nobias_output, AI_STATIC,
+  6, 0x0,
   AI_SHAPE_INIT(4, 1, 16, 3, 20), AI_STRIDE_INIT(4, 4, 4, 64, 192),
-  1, &conv2d_mean_voter_left_0_output_array, NULL)
+  1, &conv2d_nobias_output_array, NULL)
 
 /* Tensor #1 */
 AI_TENSOR_OBJ_DECLARE(
-  conv2d_tmr1_output, AI_STATIC,
-  10, 0x0,
+  conv2d_tmr_bias_output, AI_STATIC,
+  9, 0x0,
   AI_SHAPE_INIT(4, 1, 16, 3, 20), AI_STRIDE_INIT(4, 4, 4, 64, 192),
-  1, &conv2d_tmr1_output_array, NULL)
+  1, &conv2d_tmr_bias_output_array, NULL)
 
 /* Tensor #2 */
 AI_TENSOR_OBJ_DECLARE(
-  conv2d_tmr2_output, AI_STATIC,
-  12, 0x0,
-  AI_SHAPE_INIT(4, 1, 16, 3, 20), AI_STRIDE_INIT(4, 4, 4, 64, 192),
-  1, &conv2d_tmr2_output_array, NULL)
+  conv2d_tmr_bias_param_0, AI_STATIC,
+  10, 0x0,
+  AI_SHAPE_INIT(4, 1, 16, 1, 1), AI_STRIDE_INIT(4, 4, 4, 64, 64),
+  1, &conv2d_tmr_bias_param_0_array, NULL)
 
 /* Tensor #3 */
 AI_TENSOR_OBJ_DECLARE(
-  conv2d_mean_voter_output, AI_STATIC,
-  9, 0x0,
-  AI_SHAPE_INIT(4, 1, 16, 3, 20), AI_STRIDE_INIT(4, 4, 4, 64, 192),
-  1, &conv2d_mean_voter_output_array, NULL)
+  conv2d_tmr_bias_param_1, AI_STATIC,
+  11, 0x0,
+  AI_SHAPE_INIT(4, 1, 16, 1, 1), AI_STRIDE_INIT(4, 4, 4, 64, 64),
+  1, &conv2d_tmr_bias_param_1_array, NULL)
 
 /* Tensor #4 */
 AI_TENSOR_OBJ_DECLARE(
-  conv2d_tmr3_output, AI_STATIC,
-  15, 0x0,
-  AI_SHAPE_INIT(4, 1, 16, 3, 20), AI_STRIDE_INIT(4, 4, 4, 64, 192),
-  1, &conv2d_tmr3_output_array, NULL)
+  conv2d_tmr_bias_param_2, AI_STATIC,
+  12, 0x0,
+  AI_SHAPE_INIT(4, 1, 16, 1, 1), AI_STRIDE_INIT(4, 4, 4, 64, 64),
+  1, &conv2d_tmr_bias_param_2_array, NULL)
 
 /* Tensor #5 */
 AI_TENSOR_OBJ_DECLARE(
   conv2d_1_output, AI_STATIC,
-  5, 0x0,
+  2, 0x0,
   AI_SHAPE_INIT(4, 1, 16, 3, 16), AI_STRIDE_INIT(4, 4, 4, 64, 192),
   1, &conv2d_1_output_array, NULL)
 
 /* Tensor #6 */
 AI_TENSOR_OBJ_DECLARE(
   global_max_pooling2d_pool_output, AI_STATIC,
-  21, 0x0,
+  16, 0x0,
   AI_SHAPE_INIT(4, 1, 16, 1, 1), AI_STRIDE_INIT(4, 4, 4, 64, 64),
   1, &global_max_pooling2d_pool_output_array, NULL)
 
 
 AI_TENSOR_CHAIN_OBJ_DECLARE(
-  conv2d_mean_voter_left_0_chain, AI_STATIC_CONST, 4,
-  AI_TENSOR_LIST_OBJ_INIT(AI_FLAG_NONE, 2, &conv2d_tmr1_output, &conv2d_tmr2_output),
-  AI_TENSOR_LIST_OBJ_INIT(AI_FLAG_NONE, 1, &conv2d_mean_voter_left_0_output),
-  AI_TENSOR_LIST_OBJ_EMPTY,
+  conv2d_tmr_bias_chain, AI_STATIC_CONST, 4,
+  AI_TENSOR_LIST_OBJ_INIT(AI_FLAG_NONE, 1, &conv2d_nobias_output),
+  AI_TENSOR_LIST_OBJ_INIT(AI_FLAG_NONE, 1, &conv2d_tmr_bias_output),
+  AI_TENSOR_LIST_OBJ_INIT(AI_FLAG_NONE, 3, &conv2d_tmr_bias_param_0, &conv2d_tmr_bias_param_1, &conv2d_tmr_bias_param_2),
   AI_TENSOR_LIST_OBJ_EMPTY
 )
 
 AI_LAYER_OBJ_DECLARE(
-  conv2d_mean_voter_left_0_layer, 5,
-  ELTWISE_TYPE, 0x0, NULL,
-  eltwise, forward_eltwise,
-  &conv2d_mean_voter_left_0_chain,
-  NULL, &conv2d_mean_voter_left_0_layer, AI_STATIC, 
-  .operation = ai_sum_f32, 
-  .buffer_operation = ai_sum_buffer_f32, 
-)
-
-AI_TENSOR_CHAIN_OBJ_DECLARE(
-  conv2d_mean_voter_chain, AI_STATIC_CONST, 4,
-  AI_TENSOR_LIST_OBJ_INIT(AI_FLAG_NONE, 2, &conv2d_mean_voter_left_0_output, &conv2d_tmr3_output),
-  AI_TENSOR_LIST_OBJ_INIT(AI_FLAG_NONE, 1, &conv2d_mean_voter_output),
-  AI_TENSOR_LIST_OBJ_EMPTY,
-  AI_TENSOR_LIST_OBJ_EMPTY
-)
-
-AI_LAYER_OBJ_DECLARE(
-  conv2d_mean_voter_layer, 6,
-  ELTWISE_TYPE, 0x0, NULL,
-  eltwise, forward_eltwise,
-  &conv2d_mean_voter_chain,
-  NULL, &conv2d_mean_voter_layer, AI_STATIC, 
-  .operation = ai_sum_f32, 
-  .buffer_operation = ai_sum_buffer_f32, 
+  conv2d_tmr_bias_layer, 3,
+  CUSTOM_TYPE, 0x1, NULL,
+  custom, custom_forward_TMRBiasLayer,
+  &conv2d_tmr_bias_chain,
+  NULL, &conv2d_tmr_bias_layer, AI_STATIC, 
+  .state = AI_HANDLE_PTR(NULL), 
+  .init = AI_LAYER_FUNC(custom_init_TMRBiasLayer), 
+  .update = AI_LAYER_FUNC(NULL), 
+  .destroy = AI_LAYER_FUNC(NULL), 
 )
 
 AI_TENSOR_CHAIN_OBJ_DECLARE(
@@ -459,7 +445,7 @@ AI_TENSOR_CHAIN_OBJ_DECLARE(
 )
 
 AI_LAYER_OBJ_DECLARE(
-  global_max_pooling2d_pool_layer, 8,
+  global_max_pooling2d_pool_layer, 6,
   POOL_TYPE, 0x0, NULL,
   pool, forward_mp,
   &global_max_pooling2d_pool_chain,
@@ -469,90 +455,50 @@ AI_LAYER_OBJ_DECLARE(
   .pool_pad = AI_SHAPE_INIT(4, 0, 0, 0, 0), 
 )
 /**  Hybrid layers declarations section  *************************************/
-void forward_lite_eltwise_conv2d_mean_voter_left_0(_stai_human_activity_recognition_context* net_ctx)
+void forward_lite_TMRBiasLayer_conv2d_tmr_bias(_stai_human_activity_recognition_context* net_ctx)
 {
-  conv2d_tmr1_output_array.data = AI_PTR(net_ctx->_activations[0] + 7988);
-  conv2d_tmr1_output_array.data_start = AI_PTR(net_ctx->_activations[0] + 7988);
-  conv2d_tmr2_output_array.data = AI_PTR(net_ctx->_activations[0] + 4148);
-  conv2d_tmr2_output_array.data_start = AI_PTR(net_ctx->_activations[0] + 4148);
-  conv2d_mean_voter_left_0_output_array.data = AI_PTR(net_ctx->_activations[0] + 7988);
-  conv2d_mean_voter_left_0_output_array.data_start = AI_PTR(net_ctx->_activations[0] + 7988);
-  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_START_CB(5, 2, { conv2d_tmr1_output.data->data,conv2d_tmr2_output.data->data});
-  forward_eltwise(&conv2d_mean_voter_left_0_layer);
-  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_STOP_CB(5, 1, { conv2d_mean_voter_left_0_output.data->data});
-}
-void forward_lite_eltwise_conv2d_mean_voter(_stai_human_activity_recognition_context* net_ctx)
-{
-  conv2d_mean_voter_left_0_output_array.data = AI_PTR(net_ctx->_activations[0] + 7988);
-  conv2d_mean_voter_left_0_output_array.data_start = AI_PTR(net_ctx->_activations[0] + 7988);
-  conv2d_tmr3_output_array.data = AI_PTR(net_ctx->_activations[0] + 308);
-  conv2d_tmr3_output_array.data_start = AI_PTR(net_ctx->_activations[0] + 308);
-  conv2d_mean_voter_output_array.data = AI_PTR(net_ctx->_activations[0] + 4148);
-  conv2d_mean_voter_output_array.data_start = AI_PTR(net_ctx->_activations[0] + 4148);
-  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_START_CB(6, 2, { conv2d_mean_voter_left_0_output.data->data,conv2d_tmr3_output.data->data});
-  forward_eltwise(&conv2d_mean_voter_layer);
-  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_STOP_CB(6, 1, { conv2d_mean_voter_output.data->data});
+  conv2d_nobias_output_array.data = AI_PTR(net_ctx->_activations[0] + 3840);
+  conv2d_nobias_output_array.data_start = AI_PTR(net_ctx->_activations[0] + 3840);
+  conv2d_tmr_bias_param_0_array.data = AI_PTR(net_ctx->_weights[0] + 384);
+  conv2d_tmr_bias_param_0_array.data_start = AI_PTR(net_ctx->_weights[0] + 384);
+  conv2d_tmr_bias_param_1_array.data = AI_PTR(net_ctx->_weights[0] + 448);
+  conv2d_tmr_bias_param_1_array.data_start = AI_PTR(net_ctx->_weights[0] + 448);
+  conv2d_tmr_bias_param_2_array.data = AI_PTR(net_ctx->_weights[0] + 512);
+  conv2d_tmr_bias_param_2_array.data_start = AI_PTR(net_ctx->_weights[0] + 512);
+  conv2d_tmr_bias_output_array.data = AI_PTR(net_ctx->_activations[0] + 0);
+  conv2d_tmr_bias_output_array.data_start = AI_PTR(net_ctx->_activations[0] + 0);
+  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_START_CB(3, 1, { conv2d_nobias_output.data->data});
+  custom_forward_TMRBiasLayer(&conv2d_tmr_bias_layer);
+  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_STOP_CB(3, 1, { conv2d_tmr_bias_output.data->data});
 }
 void forward_lite_mp_global_max_pooling2d_pool(_stai_human_activity_recognition_context* net_ctx)
 {
-  conv2d_1_output_array.data = AI_PTR(net_ctx->_activations[0] + 320);
-  conv2d_1_output_array.data_start = AI_PTR(net_ctx->_activations[0] + 320);
+  conv2d_1_output_array.data = AI_PTR(net_ctx->_activations[0] + 4160);
+  conv2d_1_output_array.data_start = AI_PTR(net_ctx->_activations[0] + 4160);
   global_max_pooling2d_pool_output_array.data = AI_PTR(net_ctx->_activations[0] + 0);
   global_max_pooling2d_pool_output_array.data_start = AI_PTR(net_ctx->_activations[0] + 0);
-  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_START_CB(8, 1, { conv2d_1_output.data->data});
+  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_START_CB(6, 1, { conv2d_1_output.data->data});
   forward_mp(&global_max_pooling2d_pool_layer);
-  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_STOP_CB(8, 1, { global_max_pooling2d_pool_output.data->data});
+  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_STOP_CB(6, 1, { global_max_pooling2d_pool_output.data->data});
 }
 
 /*****************************************************************************/
 
 
-
-static const ai_u32 conv2d_tmr3_t_in_0_shape_ch_const_u32 = 1;
-static const ai_u32 conv2d_tmr3_t_out_0_shape_ch_const_u32 = 16;
-static const ai_u32 conv2d_tmr3_t_in_0_shape_w_const_u32 = 3;
-static const ai_u32 conv2d_tmr3_t_in_0_shape_h_const_u32 = 24;
-static const ai_u32 conv2d_tmr3_t_out_0_shape_w_const_u32 = 3;
-static const ai_u32 conv2d_tmr3_t_out_0_shape_h_const_u32 = 20;
-static const ai_u32 conv2d_tmr3_t_weight_0_shape_w_const_u32 = 1;
-static const ai_u32 conv2d_tmr3_t_weight_0_shape_h_const_u32 = 5;
-static const ai_i32 conv2d_tmr3_l_pad_W_0_const_s32 = 0;
-static const ai_i32 conv2d_tmr3_l_pad_H_0_const_s32 = 0;
-static const ai_u16 conv2d_tmr3_l_stride_1_const_u16 = 1;
-static const ai_u16 conv2d_tmr3_l_stride_0_const_u16 = 1;
-static const ai_u16 conv2d_tmr3_l_dilation_H_const_u16 = 1;
-static const ai_u16 conv2d_tmr3_l_dilation_W_const_u16 = 1;
-
-static const ai_u32 conv2d_tmr2_t_in_0_shape_ch_const_u32 = 1;
-static const ai_u32 conv2d_tmr2_t_out_0_shape_ch_const_u32 = 16;
-static const ai_u32 conv2d_tmr2_t_in_0_shape_w_const_u32 = 3;
-static const ai_u32 conv2d_tmr2_t_in_0_shape_h_const_u32 = 24;
-static const ai_u32 conv2d_tmr2_t_out_0_shape_w_const_u32 = 3;
-static const ai_u32 conv2d_tmr2_t_out_0_shape_h_const_u32 = 20;
-static const ai_u32 conv2d_tmr2_t_weight_0_shape_w_const_u32 = 1;
-static const ai_u32 conv2d_tmr2_t_weight_0_shape_h_const_u32 = 5;
-static const ai_i32 conv2d_tmr2_l_pad_W_0_const_s32 = 0;
-static const ai_i32 conv2d_tmr2_l_pad_H_0_const_s32 = 0;
-static const ai_u16 conv2d_tmr2_l_stride_1_const_u16 = 1;
-static const ai_u16 conv2d_tmr2_l_stride_0_const_u16 = 1;
-static const ai_u16 conv2d_tmr2_l_dilation_H_const_u16 = 1;
-static const ai_u16 conv2d_tmr2_l_dilation_W_const_u16 = 1;
-
-static const ai_u32 conv2d_tmr1_t_in_0_shape_ch_const_u32 = 1;
-static const ai_u32 conv2d_tmr1_t_out_0_shape_ch_const_u32 = 16;
-static const ai_u32 conv2d_tmr1_t_in_0_shape_w_const_u32 = 3;
-static const ai_u32 conv2d_tmr1_t_in_0_shape_h_const_u32 = 24;
-static const ai_u32 conv2d_tmr1_t_out_0_shape_w_const_u32 = 3;
-static const ai_u32 conv2d_tmr1_t_out_0_shape_h_const_u32 = 20;
-static const ai_u32 conv2d_tmr1_t_weight_0_shape_w_const_u32 = 1;
-static const ai_u32 conv2d_tmr1_t_weight_0_shape_h_const_u32 = 5;
-static const ai_i32 conv2d_tmr1_l_pad_W_0_const_s32 = 0;
-static const ai_i32 conv2d_tmr1_l_pad_H_0_const_s32 = 0;
-static const ai_u16 conv2d_tmr1_l_stride_1_const_u16 = 1;
-static const ai_u16 conv2d_tmr1_l_stride_0_const_u16 = 1;
-static const ai_u16 conv2d_tmr1_l_dilation_H_const_u16 = 1;
-static const ai_u16 conv2d_tmr1_l_dilation_W_const_u16 = 1;
-
+static const ai_u32 conv2d_nobias_t_in_0_shape_ch_const_u32 = 1;
+static const ai_u32 conv2d_nobias_t_out_0_shape_ch_const_u32 = 16;
+static const ai_u32 conv2d_nobias_t_in_0_shape_w_const_u32 = 3;
+static const ai_u32 conv2d_nobias_t_in_0_shape_h_const_u32 = 24;
+static const ai_u32 conv2d_nobias_t_out_0_shape_w_const_u32 = 3;
+static const ai_u32 conv2d_nobias_t_out_0_shape_h_const_u32 = 20;
+static const ai_u32 conv2d_nobias_t_weight_0_shape_w_const_u32 = 1;
+static const ai_u32 conv2d_nobias_t_weight_0_shape_h_const_u32 = 5;
+static const ai_i32 conv2d_nobias_l_pad_W_0_const_s32 = 0;
+static const ai_i32 conv2d_nobias_l_pad_H_0_const_s32 = 0;
+static const ai_u16 conv2d_nobias_l_stride_1_const_u16 = 1;
+static const ai_u16 conv2d_nobias_l_stride_0_const_u16 = 1;
+static const ai_u16 conv2d_nobias_l_dilation_H_const_u16 = 1;
+static const ai_u16 conv2d_nobias_l_dilation_W_const_u16 = 1;
 
 
 static const ai_u32 conv2d_1_t_in_0_shape_ch_const_u32 = 16;
@@ -593,90 +539,40 @@ stai_return_code stai_human_activity_recognition_run(
                   STAI_ERROR_NETWORK_INVALID_WEIGHTS_PTR, net_ctx->_return_code)
 
 
-  /* LITE_KERNEL_SECTION BEGIN batch_normalization */
+  /* LITE_KERNEL_SECTION BEGIN conv2d_nobias */
   {
-      ai_float* batch_normalization_t_out_0_ptr_f32 = (ai_float*)(net_ctx->_activations[0] + 0);
-    const ai_float* batch_normalization_t_in_0_ptr_const_f32 = (ai_float*)(net_ctx->_inputs[0] + 0);
-    const ai_float* batch_normalization_t_weight_0_ptr_const_f32 = (ai_float*)(net_ctx->_weights[0] + 0);
-    const ai_float* batch_normalization_t_weight_1_ptr_const_f32 = (ai_float*)(net_ctx->_weights[0] + 4);
+      const ai_float* conv2d_nobias_t_in_0_ptr_const_f32 = (ai_float*)(net_ctx->_inputs[0] + 0);
+    ai_float* conv2d_nobias_t_out_0_ptr_f32 = (ai_float*)(net_ctx->_activations[0] + 3840);
+    const ai_u8* conv2d_nobias_t_weight_0_ptr_const_u8 = (ai_u8*)(net_ctx->_weights[0] + 0);
+    const ai_u8* conv2d_nobias_t_weight_1_ptr_const_u8 = (ai_u8*)(net_ctx->_weights[0] + 320);
+    ai_float* conv2d_nobias_t_scratch_0_ptr_f32 = (ai_float*)(net_ctx->_activations[0] + 3820);
   
-  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_START_CB(1, 1, {(stai_ptr) batch_normalization_t_in_0_ptr_const_f32});
+  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_START_CB(2, 1, {(stai_ptr) conv2d_nobias_t_in_0_ptr_const_f32});
     
-  forward_lite_bn_if32of32wf32(batch_normalization_t_out_0_ptr_f32, batch_normalization_t_in_0_ptr_const_f32, batch_normalization_t_weight_0_ptr_const_f32, batch_normalization_t_weight_1_ptr_const_f32, (ai_u32)(72), (ai_size)(1));
+  forward_lite_conv2d_if32of32wf32(conv2d_nobias_t_in_0_ptr_const_f32, conv2d_nobias_t_out_0_ptr_f32, conv2d_nobias_t_weight_0_ptr_const_u8, conv2d_nobias_t_weight_1_ptr_const_u8, conv2d_nobias_t_scratch_0_ptr_f32, conv2d_nobias_t_in_0_shape_ch_const_u32, conv2d_nobias_t_out_0_shape_ch_const_u32, conv2d_nobias_t_in_0_shape_w_const_u32, conv2d_nobias_t_in_0_shape_h_const_u32, conv2d_nobias_t_out_0_shape_w_const_u32, conv2d_nobias_t_out_0_shape_h_const_u32, conv2d_nobias_t_weight_0_shape_w_const_u32, conv2d_nobias_t_weight_0_shape_h_const_u32, conv2d_nobias_l_pad_W_0_const_s32, conv2d_nobias_l_pad_H_0_const_s32, conv2d_nobias_l_stride_1_const_u16, conv2d_nobias_l_stride_0_const_u16, 5, 1, conv2d_nobias_l_dilation_H_const_u16, conv2d_nobias_l_dilation_W_const_u16, (ai_size)(1));
     
-  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_STOP_CB(1, 1, {(stai_ptr) batch_normalization_t_out_0_ptr_f32});
+  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_STOP_CB(2, 1, {(stai_ptr) conv2d_nobias_t_out_0_ptr_f32});
   }
-  /* LITE_KERNEL_SECTION END batch_normalization */
-  /* LITE_KERNEL_SECTION BEGIN conv2d_tmr3 */
-  {
-      const ai_float* conv2d_tmr3_t_in_0_ptr_const_f32 = (ai_float*)(net_ctx->_activations[0] + 0);
-    ai_float* conv2d_tmr3_t_out_0_ptr_f32 = (ai_float*)(net_ctx->_activations[0] + 308);
-    const ai_u8* conv2d_tmr3_t_weight_0_ptr_const_u8 = (ai_u8*)(net_ctx->_weights[0] + 8);
-    const ai_u8* conv2d_tmr3_t_weight_1_ptr_const_u8 = (ai_u8*)(net_ctx->_weights[0] + 328);
-    ai_float* conv2d_tmr3_t_scratch_0_ptr_f32 = (ai_float*)(net_ctx->_activations[0] + 288);
-  
-  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_START_CB(4, 1, {(stai_ptr) conv2d_tmr3_t_in_0_ptr_const_f32});
-    
-  forward_lite_conv2d_if32of32wf32(conv2d_tmr3_t_in_0_ptr_const_f32, conv2d_tmr3_t_out_0_ptr_f32, conv2d_tmr3_t_weight_0_ptr_const_u8, conv2d_tmr3_t_weight_1_ptr_const_u8, conv2d_tmr3_t_scratch_0_ptr_f32, conv2d_tmr3_t_in_0_shape_ch_const_u32, conv2d_tmr3_t_out_0_shape_ch_const_u32, conv2d_tmr3_t_in_0_shape_w_const_u32, conv2d_tmr3_t_in_0_shape_h_const_u32, conv2d_tmr3_t_out_0_shape_w_const_u32, conv2d_tmr3_t_out_0_shape_h_const_u32, conv2d_tmr3_t_weight_0_shape_w_const_u32, conv2d_tmr3_t_weight_0_shape_h_const_u32, conv2d_tmr3_l_pad_W_0_const_s32, conv2d_tmr3_l_pad_H_0_const_s32, conv2d_tmr3_l_stride_1_const_u16, conv2d_tmr3_l_stride_0_const_u16, 5, 1, conv2d_tmr3_l_dilation_H_const_u16, conv2d_tmr3_l_dilation_W_const_u16, (ai_size)(1));
-    
-  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_STOP_CB(4, 1, {(stai_ptr) conv2d_tmr3_t_out_0_ptr_f32});
-  }
-  /* LITE_KERNEL_SECTION END conv2d_tmr3 */
-  /* LITE_KERNEL_SECTION BEGIN conv2d_tmr2 */
-  {
-      const ai_float* conv2d_tmr2_t_in_0_ptr_const_f32 = (ai_float*)(net_ctx->_activations[0] + 0);
-    ai_float* conv2d_tmr2_t_out_0_ptr_f32 = (ai_float*)(net_ctx->_activations[0] + 4148);
-    const ai_u8* conv2d_tmr2_t_weight_0_ptr_const_u8 = (ai_u8*)(net_ctx->_weights[0] + 8);
-    const ai_u8* conv2d_tmr2_t_weight_1_ptr_const_u8 = (ai_u8*)(net_ctx->_weights[0] + 328);
-    ai_float* conv2d_tmr2_t_scratch_0_ptr_f32 = (ai_float*)(net_ctx->_activations[0] + 288);
-  
-  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_START_CB(3, 1, {(stai_ptr) conv2d_tmr2_t_in_0_ptr_const_f32});
-    
-  forward_lite_conv2d_if32of32wf32(conv2d_tmr2_t_in_0_ptr_const_f32, conv2d_tmr2_t_out_0_ptr_f32, conv2d_tmr2_t_weight_0_ptr_const_u8, conv2d_tmr2_t_weight_1_ptr_const_u8, conv2d_tmr2_t_scratch_0_ptr_f32, conv2d_tmr2_t_in_0_shape_ch_const_u32, conv2d_tmr2_t_out_0_shape_ch_const_u32, conv2d_tmr2_t_in_0_shape_w_const_u32, conv2d_tmr2_t_in_0_shape_h_const_u32, conv2d_tmr2_t_out_0_shape_w_const_u32, conv2d_tmr2_t_out_0_shape_h_const_u32, conv2d_tmr2_t_weight_0_shape_w_const_u32, conv2d_tmr2_t_weight_0_shape_h_const_u32, conv2d_tmr2_l_pad_W_0_const_s32, conv2d_tmr2_l_pad_H_0_const_s32, conv2d_tmr2_l_stride_1_const_u16, conv2d_tmr2_l_stride_0_const_u16, 5, 1, conv2d_tmr2_l_dilation_H_const_u16, conv2d_tmr2_l_dilation_W_const_u16, (ai_size)(1));
-    
-  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_STOP_CB(3, 1, {(stai_ptr) conv2d_tmr2_t_out_0_ptr_f32});
-  }
-  /* LITE_KERNEL_SECTION END conv2d_tmr2 */
-  /* LITE_KERNEL_SECTION BEGIN conv2d_tmr1 */
-  {
-      const ai_float* conv2d_tmr1_t_in_0_ptr_const_f32 = (ai_float*)(net_ctx->_activations[0] + 0);
-    ai_float* conv2d_tmr1_t_out_0_ptr_f32 = (ai_float*)(net_ctx->_activations[0] + 7988);
-    const ai_u8* conv2d_tmr1_t_weight_0_ptr_const_u8 = (ai_u8*)(net_ctx->_weights[0] + 8);
-    const ai_u8* conv2d_tmr1_t_weight_1_ptr_const_u8 = (ai_u8*)(net_ctx->_weights[0] + 328);
-    ai_float* conv2d_tmr1_t_scratch_0_ptr_f32 = (ai_float*)(net_ctx->_activations[0] + 288);
-  
-  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_START_CB(2, 1, {(stai_ptr) conv2d_tmr1_t_in_0_ptr_const_f32});
-    
-  forward_lite_conv2d_if32of32wf32(conv2d_tmr1_t_in_0_ptr_const_f32, conv2d_tmr1_t_out_0_ptr_f32, conv2d_tmr1_t_weight_0_ptr_const_u8, conv2d_tmr1_t_weight_1_ptr_const_u8, conv2d_tmr1_t_scratch_0_ptr_f32, conv2d_tmr1_t_in_0_shape_ch_const_u32, conv2d_tmr1_t_out_0_shape_ch_const_u32, conv2d_tmr1_t_in_0_shape_w_const_u32, conv2d_tmr1_t_in_0_shape_h_const_u32, conv2d_tmr1_t_out_0_shape_w_const_u32, conv2d_tmr1_t_out_0_shape_h_const_u32, conv2d_tmr1_t_weight_0_shape_w_const_u32, conv2d_tmr1_t_weight_0_shape_h_const_u32, conv2d_tmr1_l_pad_W_0_const_s32, conv2d_tmr1_l_pad_H_0_const_s32, conv2d_tmr1_l_stride_1_const_u16, conv2d_tmr1_l_stride_0_const_u16, 5, 1, conv2d_tmr1_l_dilation_H_const_u16, conv2d_tmr1_l_dilation_W_const_u16, (ai_size)(1));
-    
-  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_STOP_CB(2, 1, {(stai_ptr) conv2d_tmr1_t_out_0_ptr_f32});
-  }
-  /* LITE_KERNEL_SECTION END conv2d_tmr1 */
-  /* LITE_KERNEL_SECTION BEGIN conv2d_mean_voter_left_0 */
+  /* LITE_KERNEL_SECTION END conv2d_nobias */
+  /* LITE_KERNEL_SECTION BEGIN conv2d_tmr_bias */
   {
     
-  forward_lite_eltwise_conv2d_mean_voter_left_0(net_ctx);
+  forward_lite_TMRBiasLayer_conv2d_tmr_bias(net_ctx);
   }
-  /* LITE_KERNEL_SECTION END conv2d_mean_voter_left_0 */
-  /* LITE_KERNEL_SECTION BEGIN conv2d_mean_voter */
-  {
-    
-  forward_lite_eltwise_conv2d_mean_voter(net_ctx);
-  }
-  /* LITE_KERNEL_SECTION END conv2d_mean_voter */
+  /* LITE_KERNEL_SECTION END conv2d_tmr_bias */
   /* LITE_KERNEL_SECTION BEGIN conv2d_1 */
   {
-      const ai_float* conv2d_1_t_in_0_ptr_const_f32 = (ai_float*)(net_ctx->_activations[0] + 4148);
-    ai_float* conv2d_1_t_out_0_ptr_f32 = (ai_float*)(net_ctx->_activations[0] + 320);
-    const ai_u8* conv2d_1_t_weight_0_ptr_const_u8 = (ai_u8*)(net_ctx->_weights[0] + 392);
-    const ai_u8* conv2d_1_t_weight_1_ptr_const_u8 = (ai_u8*)(net_ctx->_weights[0] + 5512);
-    ai_float* conv2d_1_t_scratch_0_ptr_f32 = (ai_float*)(net_ctx->_activations[0] + 0);
+      const ai_float* conv2d_1_t_in_0_ptr_const_f32 = (ai_float*)(net_ctx->_activations[0] + 0);
+    ai_float* conv2d_1_t_out_0_ptr_f32 = (ai_float*)(net_ctx->_activations[0] + 4160);
+    const ai_u8* conv2d_1_t_weight_0_ptr_const_u8 = (ai_u8*)(net_ctx->_weights[0] + 576);
+    const ai_u8* conv2d_1_t_weight_1_ptr_const_u8 = (ai_u8*)(net_ctx->_weights[0] + 5696);
+    ai_float* conv2d_1_t_scratch_0_ptr_f32 = (ai_float*)(net_ctx->_activations[0] + 3840);
   
-  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_START_CB(7, 1, {(stai_ptr) conv2d_1_t_in_0_ptr_const_f32});
+  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_START_CB(5, 1, {(stai_ptr) conv2d_1_t_in_0_ptr_const_f32});
     
   forward_lite_conv2d_if32of32wf32(conv2d_1_t_in_0_ptr_const_f32, conv2d_1_t_out_0_ptr_f32, conv2d_1_t_weight_0_ptr_const_u8, conv2d_1_t_weight_1_ptr_const_u8, conv2d_1_t_scratch_0_ptr_f32, conv2d_1_t_in_0_shape_ch_const_u32, conv2d_1_t_out_0_shape_ch_const_u32, conv2d_1_t_in_0_shape_w_const_u32, conv2d_1_t_in_0_shape_h_const_u32, conv2d_1_t_out_0_shape_w_const_u32, conv2d_1_t_out_0_shape_h_const_u32, conv2d_1_t_weight_0_shape_w_const_u32, conv2d_1_t_weight_0_shape_h_const_u32, conv2d_1_l_pad_W_0_const_s32, conv2d_1_l_pad_H_0_const_s32, conv2d_1_l_stride_1_const_u16, conv2d_1_l_stride_0_const_u16, 5, 1, conv2d_1_l_dilation_H_const_u16, conv2d_1_l_dilation_W_const_u16, (ai_size)(1));
     
-  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_STOP_CB(7, 1, {(stai_ptr) conv2d_1_t_out_0_ptr_f32});
+  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_STOP_CB(5, 1, {(stai_ptr) conv2d_1_t_out_0_ptr_f32});
   }
   /* LITE_KERNEL_SECTION END conv2d_1 */
   /* LITE_KERNEL_SECTION BEGIN global_max_pooling2d_pool */
@@ -690,18 +586,18 @@ stai_return_code stai_human_activity_recognition_run(
       forward_lite_dense_if32of32wf32_args arg_30f51e = {
       .output = (float*)(net_ctx->_activations[0] + 64),
       .input = (float*)(net_ctx->_activations[0] + 0),
-      .weights = (float*)(net_ctx->_weights[0] + 5576),
-      .bias = (float*)(net_ctx->_weights[0] + 5832),
+      .weights = (float*)(net_ctx->_weights[0] + 5760),
+      .bias = (float*)(net_ctx->_weights[0] + 6016),
       .n_channel_in = 16,
       .n_channel_out = 4,
       .n_elements = 1,
     };
   
-  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_START_CB(10, 1, {(stai_ptr) (float*)(net_ctx->_activations[0] + 0)});
+  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_START_CB(8, 1, {(stai_ptr) (float*)(net_ctx->_activations[0] + 0)});
     
   forward_lite_dense_if32of32wf32((forward_lite_dense_if32of32wf32_args*)&arg_30f51e);
     
-  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_STOP_CB(10, 1, {(stai_ptr) (float*)(net_ctx->_activations[0] + 64)});
+  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_STOP_CB(8, 1, {(stai_ptr) (float*)(net_ctx->_activations[0] + 64)});
   }
   /* LITE_KERNEL_SECTION END dense */
   /* LITE_KERNEL_SECTION BEGIN activation */
@@ -709,11 +605,11 @@ stai_return_code stai_human_activity_recognition_run(
       ai_handle activation_t_out_0_ptr_handle = (ai_handle)(net_ctx->_outputs[0] + 0);
     const ai_handle activation_t_in_0_ptr_const_handle = (ai_handle)(net_ctx->_activations[0] + 64);
   
-  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_START_CB(11, 1, {(stai_ptr) activation_t_in_0_ptr_const_handle});
+  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_START_CB(9, 1, {(stai_ptr) activation_t_in_0_ptr_const_handle});
     
   forward_lite_nl_softmax_if32of32(activation_t_out_0_ptr_handle, activation_t_in_0_ptr_const_handle, activation_t_in_0_shape_ch_prod_const_s32, 1, 4);
     
-  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_STOP_CB(11, 1, {(stai_ptr) activation_t_out_0_ptr_handle});
+  _STAI_HUMAN_ACTIVITY_RECOGNITION_EVENT_NODE_STOP_CB(9, 1, {(stai_ptr) activation_t_out_0_ptr_handle});
   }
   /* LITE_KERNEL_SECTION END activation */
   return net_ctx->_return_code;
@@ -851,7 +747,7 @@ const uintptr_t _activations_alignment[] = STAI_HUMAN_ACTIVITY_RECOGNITION_ACTIV
                     STAI_ERROR_INVALID_BUFFER_ALIGNMENT, net_ctx->_return_code)
     net_ctx->_activations[idx] = activations[idx];
   }
-  net_ctx->_inputs[0] = activations[0] + 0;
+  net_ctx->_inputs[0] = activations[0] + 3532;
 
   net_ctx->_outputs[0] = activations[0] + 0;
 _stai_human_activity_recognition_check(net_ctx);
