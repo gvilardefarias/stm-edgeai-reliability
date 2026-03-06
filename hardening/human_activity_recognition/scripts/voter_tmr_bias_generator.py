@@ -101,7 +101,7 @@ if __name__ == "__main__":
     # Ensure these match your environment
     base_model = "/home/apo/stm32ai-modelzoo/human_activity_recognition/st_gmp/ST_pretrainedmodel_public_dataset/WISDM/st_gmp_wl_24/st_gmp_wl_24.keras"
     target = "conv2d" # Changed from "conv2d_bias" to target the layer itself
-    output_h5 = "/home/apo/stm32ai-modelzoo/human_activity_recognition/st_gmp/ST_pretrainedmodel_public_dataset/WISDM/st_gmp_wl_24/HAR_bias_tmr.h5"
+    output_h5 = "/home/apo/stm32ai-modelzoo/human_activity_recognition/HAR_bias_tmr_1.h5"
     
     if os.path.exists(base_model):
         build_bias_tmr_model(base_model, target, output_h5)

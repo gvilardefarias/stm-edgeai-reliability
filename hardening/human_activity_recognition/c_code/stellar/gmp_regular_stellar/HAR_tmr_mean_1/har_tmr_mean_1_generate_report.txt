@@ -1,0 +1,180 @@
+ST Edge AI Core v1.0.0-19895
+Created date          : 2026-03-05 11:45:18
+Parameters            : generate -m HAR_tmr_mean_1.tflite --target stellar-e --c-api st-ai -n HAR_tmr_mean_1 -c low -o /home/apo/stm32ai-modelzoo-services/human_activity_recognition/c_code/regular_stellar/HAR_tmr_mean_1
+
+Exec/report summary (generate)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+model file         :   /home/apo/stm32ai-modelzoo/human_activity_recognition/st_gmp/ST_pretrainedmodel_public_dataset/WISDM/st_gmp_wl_24/HAR_tmr_mean_1.tflite   
+type               :   tflite                                                                                                                                    
+c_name             :   har_tmr_mean_1                                                                                                                            
+compression        :   low                                                                                                                                       
+options            :   use-lite-runtime, use-st-ai                                                                                                               
+optimization       :   balanced                                                                                                                                  
+target/series      :   stellar-e                                                                                                                                 
+workspace dir      :   /home/apo/stm32ai-modelzoo/human_activity_recognition/st_gmp/ST_pretrainedmodel_public_dataset/WISDM/st_gmp_wl_24/st_ai_ws                
+output dir         :   /home/apo/stm32ai-modelzoo-services/human_activity_recognition/c_code/regular_stellar/HAR_tmr_mean_1                                      
+model_fmt          :   float                                                                                                                                     
+model_name         :   HAR_tmr_mean_1                                                                                                                            
+model_hash         :   0xc36821b3bf28e0cb09ef6719e89c5aa8                                                                                                        
+params #           :   1,493 items (5.83 KiB)                                                                                                                    
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+input 1/1          :   'serving_default_input_layer0', f32(1x24x3x1), 288 Bytes, user                                                                            
+output 1/1         :   'nl_9', f32(1x4), 16 Bytes, user                                                                                                          
+macc               :   69,088                                                                                                                                    
+weights (ro)       :   5,840 B (5.70 KiB) (1 segment) / -132(-2.2%) vs float model                                                                               
+activations (rw)   :   7,680 B (7.50 KiB) (1 segment)                                                                                                            
+ram (total)        :   7,984 B (7.80 KiB) = 7,680 + 288 + 16                                                                                                     
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Model name - HAR_tmr_mean_1
+------ ----------------------------------------------------------------- --------------------- ------------- -------- ------------------------------------------------- --- ----------------- ------------------- --------------------- 
+m_id   layer (type,original)                                             oshape                param/size        macc                                      connected to   | c_size            c_macc              c_type                
+------ ----------------------------------------------------------------- --------------------- ------------- -------- ------------------------------------------------- --- ----------------- ------------------- --------------------- 
+0      serving_default_input_layer0 (Input, )                            [b:1,h:24,w:3,c:1]                                                                               | +384(+100.0%)     +4,816(+100.0%)     Conv2D_[0]            
+       conv2d_0 (Conv2D, CONV_2D)                                        [b:1,h:20,w:3,c:16]   96/384           4,816                      serving_default_input_layer0   | -384(-100.0%)     -4,816(-100.0%)     
+------ ----------------------------------------------------------------- --------------------- ------------- -------- ------------------------------------------------- --- ----------------- ------------------- --------------------- 
+1      eltwise_1 (Eltwise, ADD)                                          [b:1,h:20,w:3,c:16]                      960                                          conv2d_0   |                                       Eltwise/add_[1]       
+                                                                                                                                                               conv2d_0   | 
+------ ----------------------------------------------------------------- --------------------- ------------- -------- ------------------------------------------------- --- ----------------- ------------------- --------------------- 
+2      eltwise_2 (Eltwise, ADD)                                          [b:1,h:20,w:3,c:16]                      960                                         eltwise_1   |                                       Eltwise/add_[2]       
+                                                                                                                                                               conv2d_0   | 
+------ ----------------------------------------------------------------- --------------------- ------------- -------- ------------------------------------------------- --- ----------------- ------------------- --------------------- 
+3      arith_constant4 (Placeholder, )                                   []                    1/4                                                                        | -4(-100.0%)                           
+       eltwise_3 (Eltwise, MUL)                                          [b:1,h:20,w:3,c:16]                      960                                         eltwise_2   |                   -960(-100.0%)       
+                                                                                                                                                        arith_constant4   | 
+------ ----------------------------------------------------------------- --------------------- ------------- -------- ------------------------------------------------- --- ----------------- ------------------- --------------------- 
+4      HAD_tmr_1_batch_normalization_1_2_batchnorm_mul (Placeholder, )   [c:16]                16/64                                                                      | -64(-100.0%)                          
+       eltwise_4 (Eltwise, MUL)                                          [b:1,h:20,w:3,c:16]                      960                                         eltwise_3   |                   -960(-100.0%)       
+                                                                                                                        HAD_tmr_1_batch_normalization_1_2_batchnorm_mul   | 
+------ ----------------------------------------------------------------- --------------------- ------------- -------- ------------------------------------------------- --- ----------------- ------------------- --------------------- 
+5      HAD_tmr_1_batch_normalization_1_2_batchnorm_sub (Placeholder, )   [c:16]                16/64                                                                      | -64(-100.0%)                          
+       eltwise_5 (Eltwise, ADD)                                          [b:1,h:20,w:3,c:16]                      960                                         eltwise_4   |                   -960(-100.0%)       
+                                                                                                                        HAD_tmr_1_batch_normalization_1_2_batchnorm_sub   | 
+------ ----------------------------------------------------------------- --------------------- ------------- -------- ------------------------------------------------- --- ----------------- ------------------- --------------------- 
+6      conv2d_6 (Conv2D, CONV_2D)                                        [b:1,h:16,w:3,c:16]   1,296/5,184     61,456                                         eltwise_5   | -5,184(-100.0%)   -61,456(-100.0%)    
+------ ----------------------------------------------------------------- --------------------- ------------- -------- ------------------------------------------------- --- ----------------- ------------------- --------------------- 
+7      pool_7 (Pool, REDUCE_MAX)                                         [b:1,h:1,w:1,c:16]                       768                                          conv2d_6   | +5,184(+100.0%)   +61,456(+8002.1%)   Conv2D_[3]            
+       reshape_7_reshape (Reshape, REDUCE_MAX)                           [b:1,c:16]                                                                              pool_7   |                                       
+------ ----------------------------------------------------------------- --------------------- ------------- -------- ------------------------------------------------- --- ----------------- ------------------- --------------------- 
+8      arith_constant3 (Placeholder, )                                   [h:4,c:16]            64/256                                                                     | +16(+6.2%)        +68(+100.0%)        Dense_[4]             
+       arith_constant (Placeholder, )                                    [c:4]                 4/16                                                                       | -16(-100.0%)                          
+       gemm_8 (Gemm, FULLY_CONNECTED)                                    [b:1,c:4]                                 68                                 reshape_7_reshape   |                   -68(-100.0%)        
+                                                                                                                                                        arith_constant3   | 
+                                                                                                                                                         arith_constant   | 
+------ ----------------------------------------------------------------- --------------------- ------------- -------- ------------------------------------------------- --- ----------------- ------------------- --------------------- 
+9      nl_9 (Nonlinearity, SOFTMAX)                                      [b:1,c:4]                                 60                                            gemm_8   |                                       Nonlinearity_[o][5]   
+------ ----------------------------------------------------------------- --------------------- ------------- -------- ------------------------------------------------- --- ----------------- ------------------- --------------------- 
+model/c-model: macc=71,968/69,088 -2,880(-4.0%) weights=5,972/5,840 -132(-2.2%) activations=--/7,680 io=--/304
+
+
+
+Generated C-graph summary
+------------------------------------------------------------------------------------------------------------------------
+model name            : HAR_tmr_mean_1
+c-name                : har_tmr_mean_1
+c-node #              : 6
+c-array #             : 16
+activations size      : 7680 (1 segment)
+weights size          : 5840 (1 segment)
+macc                  : 69088
+inputs                : ['serving_default_input_layer0_output']
+outputs               : ['nl_9_output']
+
+C-Arrays (16)
+------ ------------------------------------- ----------- ------------------------- ------------- --------- 
+c_id   name (*_array)                        item/size   domain/mem-pool           c-type        comment   
+------ ------------------------------------- ----------- ------------------------- ------------- --------- 
+0      conv2d_0_bias                         16/64       weights/weights           const float             
+1      conv2d_0_output                       960/3840    activations/**default**   float                   
+2      conv2d_0_scratch0                     5/20        activations/**default**   float                   
+3      conv2d_0_weights                      80/320      weights/weights           const float             
+4      conv2d_6_bias                         16/64       weights/weights           const float             
+5      conv2d_6_output                       16/64       activations/**default**   float                   
+6      conv2d_6_scratch0                     80/320      activations/**default**   float                   
+7      conv2d_6_scratch1                     768/3072    activations/**default**   float                   
+8      conv2d_6_weights                      1280/5120   weights/weights           const float             
+9      eltwise_1_output                      960/3840    activations/**default**   float                   
+10     eltwise_2_output                      960/3840    activations/**default**   float                   
+11     gemm_8_bias                           4/16        weights/weights           const float             
+12     gemm_8_output                         4/16        activations/**default**   float                   
+13     gemm_8_weights                        64/256      weights/weights           const float             
+14     nl_9_output                           4/16        user/                     float         /output   
+15     serving_default_input_layer0_output   72/288      user/                     float         /input    
+------ ------------------------------------- ----------- ------------------------- ------------- --------- 
+
+C-Layers (6)
+------ ---------------- ---- --------------- ------- ------ ---------------------------------------- --------------------- 
+c_id   name (*_layer)   id   layer_type      macc    rom    tensors                                  shape (array id)      
+------ ---------------- ---- --------------- ------- ------ ---------------------------------------- --------------------- 
+0      conv2d_0         0    Conv2D          4816    384    I: serving_default_input_layer0_output   f32(1x24x3x1) (15)    
+                                                            S: conv2d_0_scratch0                                           
+                                                            W: conv2d_0_weights                      f32(16x5x1x1) (3)     
+                                                            W: conv2d_0_bias                         f32(16) (0)           
+                                                            O: conv2d_0_output                       f32(1x20x3x16) (1)    
+------ ---------------- ---- --------------- ------- ------ ---------------------------------------- --------------------- 
+1      eltwise_1        1    Eltwise/add     960     0      I: conv2d_0_output                       f32(1x20x3x16) (1)    
+                                                            I: conv2d_0_output                       f32(1x20x3x16) (1)    
+                                                            O: eltwise_1_output                      f32(1x20x3x16) (9)    
+------ ---------------- ---- --------------- ------- ------ ---------------------------------------- --------------------- 
+2      eltwise_2        2    Eltwise/add     960     0      I: eltwise_1_output                      f32(1x20x3x16) (9)    
+                                                            I: conv2d_0_output                       f32(1x20x3x16) (9)    
+                                                            O: eltwise_2_output                      f32(1x20x3x16) (10)   
+------ ---------------- ---- --------------- ------- ------ ---------------------------------------- --------------------- 
+3      conv2d_6         7    Conv2D          62224   5184   I: eltwise_2_output                      f32(1x20x3x16) (10)   
+                                                            S: conv2d_6_scratch0                                           
+                                                            S: conv2d_6_scratch1                                           
+                                                            W: conv2d_6_weights                      f32(16x5x1x16) (8)    
+                                                            W: conv2d_6_bias                         f32(16) (4)           
+                                                            O: conv2d_6_output                       f32(1x1x1x16) (5)     
+------ ---------------- ---- --------------- ------- ------ ---------------------------------------- --------------------- 
+4      gemm_8           8    Dense           68      272    I: conv2d_6_output                       f32(1x1x1x16) (5)     
+                                                            W: gemm_8_weights                        f32(4x16) (13)        
+                                                            W: gemm_8_bias                           f32(4) (11)           
+                                                            O: gemm_8_output                         f32(1x4) (12)         
+------ ---------------- ---- --------------- ------- ------ ---------------------------------------- --------------------- 
+5      nl_9             9    Nonlinearity    60      0      I: gemm_8_output                         f32(1x4) (12)         
+                                                            O: nl_9_output                           f32(1x4) (14)         
+------ ---------------- ---- --------------- ------- ------ ---------------------------------------- --------------------- 
+
+
+
+Number of operations per c-layer
+------- ------ ------------------------- -------- -------------- 
+c_id    m_id   name (type)                    #op           type 
+------- ------ ------------------------- -------- -------------- 
+0       0      conv2d_0 (Conv2D)            4,816   smul_f32_f32 
+1       1      eltwise_1 (Eltwise/add)        960     op_f32_f32 
+2       2      eltwise_2 (Eltwise/add)        960     op_f32_f32 
+3       7      conv2d_6 (Conv2D)           62,224   smul_f32_f32 
+4       8      gemm_8 (Dense)                  68   smul_f32_f32 
+5       9      nl_9 (Nonlinearity)             60     op_f32_f32 
+------- ------ ------------------------- -------- -------------- 
+total                                      69,088 
+
+Number of operation types
+---------------- -------- ----------- 
+operation type          #           % 
+---------------- -------- ----------- 
+smul_f32_f32       67,108       97.1% 
+op_f32_f32          1,980        2.9% 
+
+Complexity report (model)
+------ ------------------------------ ------------------------- ------------------------- ------ 
+m_id   name                           c_macc                    c_rom                     c_id   
+------ ------------------------------ ------------------------- ------------------------- ------ 
+0      serving_default_input_layer0   ||                 7.0%   ||                 6.6%   [0]    
+1      eltwise_1                      |                  1.4%   |                  0.0%   [1]    
+2      eltwise_2                      |                  1.4%   |                  0.0%   [2]    
+7      pool_7                         ||||||||||||||||  90.1%   ||||||||||||||||  88.8%   [3]    
+8      arith_constant3                |                  0.1%   |                  4.7%   [4]    
+9      nl_9                           |                  0.1%   |                  0.0%   [5]    
+------ ------------------------------ ------------------------- ------------------------- ------ 
+macc=69,088 weights=5,840 act=7,680 ram_io=304
+
+Generated files (5)
+----------------------------------------------------------------------------------------------------------------------------------- 
+/home/apo/stm32ai-modelzoo-services/human_activity_recognition/c_code/regular_stellar/HAR_tmr_mean_1/inc/har_tmr_mean_1_data.h      
+/home/apo/stm32ai-modelzoo-services/human_activity_recognition/c_code/regular_stellar/HAR_tmr_mean_1/src/har_tmr_mean_1_data.c      
+/home/apo/stm32ai-modelzoo-services/human_activity_recognition/c_code/regular_stellar/HAR_tmr_mean_1/inc/har_tmr_mean_1.h           
+/home/apo/stm32ai-modelzoo-services/human_activity_recognition/c_code/regular_stellar/HAR_tmr_mean_1/src/har_tmr_mean_1.c           
+/home/apo/stm32ai-modelzoo-services/human_activity_recognition/c_code/regular_stellar/HAR_tmr_mean_1/inc/har_tmr_mean_1_details.h   

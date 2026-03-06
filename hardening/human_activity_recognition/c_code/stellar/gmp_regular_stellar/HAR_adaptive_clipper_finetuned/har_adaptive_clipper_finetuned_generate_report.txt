@@ -1,0 +1,148 @@
+ST Edge AI Core v1.0.0-19895
+Created date          : 2026-03-05 11:44:43
+Parameters            : generate -m HAR_adaptive_clipper_finetuned.tflite --target stellar-e --c-api st-ai -n HAR_adaptive_clipper_finetuned -c low -o /home/apo/stm32ai-modelzoo-services/human_activity_recognition/c_code/regular_stellar/HAR_adaptive_clipper_finetuned
+
+Exec/report summary (generate)
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+model file         :   /home/apo/stm32ai-modelzoo/human_activity_recognition/st_gmp/ST_pretrainedmodel_public_dataset/WISDM/st_gmp_wl_24/HAR_adaptive_clipper_finetuned.tflite   
+type               :   tflite                                                                                                                                                    
+c_name             :   har_adaptive_clipper_finetuned                                                                                                                            
+compression        :   low                                                                                                                                                       
+options            :   use-lite-runtime, use-st-ai                                                                                                                               
+optimization       :   balanced                                                                                                                                                  
+target/series      :   stellar-e                                                                                                                                                 
+workspace dir      :   /home/apo/stm32ai-modelzoo/human_activity_recognition/st_gmp/ST_pretrainedmodel_public_dataset/WISDM/st_gmp_wl_24/st_ai_ws                                
+output dir         :   /home/apo/stm32ai-modelzoo-services/human_activity_recognition/c_code/regular_stellar/HAR_adaptive_clipper_finetuned                                      
+model_fmt          :   float                                                                                                                                                     
+model_name         :   HAR_adaptive_clipper_finetuned                                                                                                                            
+model_hash         :   0x080ef8247c3f37ed0fa15f54db05bd10                                                                                                                        
+params #           :   1,460 items (5.70 KiB)                                                                                                                                    
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+input 1/1          :   'serving_default_input_layer0', f32(1x24x3x1), 288 Bytes, user                                                                                            
+output 1/1         :   'nl_4', f32(1x4), 16 Bytes, user                                                                                                                          
+macc               :   67,168                                                                                                                                                    
+weights (ro)       :   5,840 B (5.70 KiB) (1 segment)                                                                                                                            
+activations (rw)   :   7,296 B (7.12 KiB) (1 segment)                                                                                                                            
+ram (total)        :   7,600 B (7.42 KiB) = 7,296 + 288 + 16                                                                                                                     
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Model name - HAR_adaptive_clipper_finetuned
+------ ----------------------------------------- --------------------- ------------- -------- ------------------------------ --- ----------------- ------------------- --------------------- 
+m_id   layer (type,original)                     oshape                param/size        macc                   connected to   | c_size            c_macc              c_type                
+------ ----------------------------------------- --------------------- ------------- -------- ------------------------------ --- ----------------- ------------------- --------------------- 
+0      serving_default_input_layer0 (Input, )    [b:1,h:24,w:3,c:1]                                                            | +384(+100.0%)     +4,816(+100.0%)     Conv2D_[0]            
+       conv2d_0 (Conv2D, CONV_2D)                [b:1,h:20,w:3,c:16]   96/384           4,816   serving_default_input_layer0   | -384(-100.0%)     -4,816(-100.0%)     
+------ ----------------------------------------- --------------------- ------------- -------- ------------------------------ --- ----------------- ------------------- --------------------- 
+1      conv2d_1 (Conv2D, CONV_2D)                [b:1,h:16,w:3,c:16]   1,296/5,184     61,456                       conv2d_0   | -5,184(-100.0%)   -61,456(-100.0%)    
+------ ----------------------------------------- --------------------- ------------- -------- ------------------------------ --- ----------------- ------------------- --------------------- 
+2      pool_2 (Pool, REDUCE_MAX)                 [b:1,h:1,w:1,c:16]                       768                       conv2d_1   | +5,184(+100.0%)   +61,456(+8002.1%)   Conv2D_[1]            
+       reshape_2_reshape (Reshape, REDUCE_MAX)   [b:1,c:16]                                                           pool_2   |                                       
+------ ----------------------------------------- --------------------- ------------- -------- ------------------------------ --- ----------------- ------------------- --------------------- 
+3      arith_constant3 (Placeholder, )           [h:4,c:16]            64/256                                                  | +16(+6.2%)        +68(+100.0%)        Dense_[2]             
+       arith_constant (Placeholder, )            [c:4]                 4/16                                                    | -16(-100.0%)                          
+       gemm_3 (Gemm, FULLY_CONNECTED)            [b:1,c:4]                                 68              reshape_2_reshape   |                   -68(-100.0%)        
+                                                                                                             arith_constant3   | 
+                                                                                                              arith_constant   | 
+------ ----------------------------------------- --------------------- ------------- -------- ------------------------------ --- ----------------- ------------------- --------------------- 
+4      nl_4 (Nonlinearity, SOFTMAX)              [b:1,c:4]                                 60                         gemm_3   |                                       Nonlinearity_[o][3]   
+------ ----------------------------------------- --------------------- ------------- -------- ------------------------------ --- ----------------- ------------------- --------------------- 
+model/c-model: macc=67,168/67,168  weights=5,840/5,840  activations=--/7,296 io=--/304
+
+
+
+Generated C-graph summary
+------------------------------------------------------------------------------------------------------------------------
+model name            : HAR_adaptive_clipper_finetuned
+c-name                : har_adaptive_clipper_finetuned
+c-node #              : 4
+c-array #             : 14
+activations size      : 7296 (1 segment)
+weights size          : 5840 (1 segment)
+macc                  : 67168
+inputs                : ['serving_default_input_layer0_output']
+outputs               : ['nl_4_output']
+
+C-Arrays (14)
+------ ------------------------------------- ----------- ------------------------- ------------- --------- 
+c_id   name (*_array)                        item/size   domain/mem-pool           c-type        comment   
+------ ------------------------------------- ----------- ------------------------- ------------- --------- 
+0      conv2d_0_bias                         16/64       weights/weights           const float             
+1      conv2d_0_output                       960/3840    activations/**default**   float                   
+2      conv2d_0_scratch0                     5/20        activations/**default**   float                   
+3      conv2d_0_weights                      80/320      weights/weights           const float             
+4      conv2d_1_bias                         16/64       weights/weights           const float             
+5      conv2d_1_output                       16/64       activations/**default**   float                   
+6      conv2d_1_scratch0                     80/320      activations/**default**   float                   
+7      conv2d_1_scratch1                     768/3072    activations/**default**   float                   
+8      conv2d_1_weights                      1280/5120   weights/weights           const float             
+9      gemm_3_bias                           4/16        weights/weights           const float             
+10     gemm_3_output                         4/16        activations/**default**   float                   
+11     gemm_3_weights                        64/256      weights/weights           const float             
+12     nl_4_output                           4/16        user/                     float         /output   
+13     serving_default_input_layer0_output   72/288      user/                     float         /input    
+------ ------------------------------------- ----------- ------------------------- ------------- --------- 
+
+C-Layers (4)
+------ ---------------- ---- --------------- ------- ------ ---------------------------------------- -------------------- 
+c_id   name (*_layer)   id   layer_type      macc    rom    tensors                                  shape (array id)     
+------ ---------------- ---- --------------- ------- ------ ---------------------------------------- -------------------- 
+0      conv2d_0         0    Conv2D          4816    384    I: serving_default_input_layer0_output   f32(1x24x3x1) (13)   
+                                                            S: conv2d_0_scratch0                                          
+                                                            W: conv2d_0_weights                      f32(16x5x1x1) (3)    
+                                                            W: conv2d_0_bias                         f32(16) (0)          
+                                                            O: conv2d_0_output                       f32(1x20x3x16) (1)   
+------ ---------------- ---- --------------- ------- ------ ---------------------------------------- -------------------- 
+1      conv2d_1         2    Conv2D          62224   5184   I: conv2d_0_output                       f32(1x20x3x16) (1)   
+                                                            S: conv2d_1_scratch0                                          
+                                                            S: conv2d_1_scratch1                                          
+                                                            W: conv2d_1_weights                      f32(16x5x1x16) (8)   
+                                                            W: conv2d_1_bias                         f32(16) (4)          
+                                                            O: conv2d_1_output                       f32(1x1x1x16) (5)    
+------ ---------------- ---- --------------- ------- ------ ---------------------------------------- -------------------- 
+2      gemm_3           3    Dense           68      272    I: conv2d_1_output                       f32(1x1x1x16) (5)    
+                                                            W: gemm_3_weights                        f32(4x16) (11)       
+                                                            W: gemm_3_bias                           f32(4) (9)           
+                                                            O: gemm_3_output                         f32(1x4) (10)        
+------ ---------------- ---- --------------- ------- ------ ---------------------------------------- -------------------- 
+3      nl_4             4    Nonlinearity    60      0      I: gemm_3_output                         f32(1x4) (10)        
+                                                            O: nl_4_output                           f32(1x4) (12)        
+------ ---------------- ---- --------------- ------- ------ ---------------------------------------- -------------------- 
+
+
+
+Number of operations per c-layer
+------- ------ --------------------- -------- -------------- 
+c_id    m_id   name (type)                #op           type 
+------- ------ --------------------- -------- -------------- 
+0       0      conv2d_0 (Conv2D)        4,816   smul_f32_f32 
+1       2      conv2d_1 (Conv2D)       62,224   smul_f32_f32 
+2       3      gemm_3 (Dense)              68   smul_f32_f32 
+3       4      nl_4 (Nonlinearity)         60     op_f32_f32 
+------- ------ --------------------- -------- -------------- 
+total                                  67,168 
+
+Number of operation types
+---------------- -------- ----------- 
+operation type          #           % 
+---------------- -------- ----------- 
+smul_f32_f32       67,108       99.9% 
+op_f32_f32             60        0.1% 
+
+Complexity report (model)
+------ ------------------------------ ------------------------- ------------------------- ------ 
+m_id   name                           c_macc                    c_rom                     c_id   
+------ ------------------------------ ------------------------- ------------------------- ------ 
+0      serving_default_input_layer0   ||                 7.2%   ||                 6.6%   [0]    
+2      pool_2                         ||||||||||||||||  92.6%   ||||||||||||||||  88.8%   [1]    
+3      arith_constant3                |                  0.1%   |                  4.7%   [2]    
+4      nl_4                           |                  0.1%   |                  0.0%   [3]    
+------ ------------------------------ ------------------------- ------------------------- ------ 
+macc=67,168 weights=5,840 act=7,296 ram_io=304
+
+Generated files (5)
+------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+/home/apo/stm32ai-modelzoo-services/human_activity_recognition/c_code/regular_stellar/HAR_adaptive_clipper_finetuned/inc/har_adaptive_clipper_finetuned_data.h      
+/home/apo/stm32ai-modelzoo-services/human_activity_recognition/c_code/regular_stellar/HAR_adaptive_clipper_finetuned/src/har_adaptive_clipper_finetuned_data.c      
+/home/apo/stm32ai-modelzoo-services/human_activity_recognition/c_code/regular_stellar/HAR_adaptive_clipper_finetuned/inc/har_adaptive_clipper_finetuned.h           
+/home/apo/stm32ai-modelzoo-services/human_activity_recognition/c_code/regular_stellar/HAR_adaptive_clipper_finetuned/src/har_adaptive_clipper_finetuned.c           
+/home/apo/stm32ai-modelzoo-services/human_activity_recognition/c_code/regular_stellar/HAR_adaptive_clipper_finetuned/inc/har_adaptive_clipper_finetuned_details.h   

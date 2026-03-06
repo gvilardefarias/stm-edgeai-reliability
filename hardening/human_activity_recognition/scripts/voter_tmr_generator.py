@@ -1,9 +1,9 @@
 import os
+# Force TensorFlow to use Keras 2 (Compatible with ST Edge AI v1)
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 import tensorflow as tf
 import numpy as np
-
-# Suppress warnings
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 def build_tmr_model(original_model_path, target_layer_name, save_path):
     print(f"Loading original model: {original_model_path}")
@@ -40,17 +40,9 @@ def build_tmr_model(original_model_path, target_layer_name, save_path):
             # 4. MAJORITY VOTER LAYER
             def majority_voter(tensors):
                 o1, o2, o3 = tensors
-                
-                # Check equalities
-                # Note: In floating point, exact equality is rare unless error is injected.
-                # For TMR in hardware simulation, we look for matches.
                 o1_eq_o2 = tf.equal(o1, o2)
                 o1_eq_o3 = tf.equal(o1, o3)
                 o2_eq_o3 = tf.equal(o2, o3)
-                
-                # Logic: If (o1 == o2) or (o1 == o3), result is o1. 
-                # Otherwise, if (o2 == o3), result is o2.
-                # Else (no majority), fallback to o1 (or average).
                 res = tf.where(tf.logical_or(o1_eq_o2, o1_eq_o3), o1, 
                                tf.where(o2_eq_o3, o2, o1))
                 return res
@@ -71,9 +63,8 @@ def build_tmr_model(original_model_path, target_layer_name, save_path):
     return tmr_model
 
 if __name__ == "__main__":
-    # Ensure these variables match your environment
     base_model = "/home/apo/stm32ai-modelzoo/human_activity_recognition/st_gmp/ST_pretrainedmodel_public_dataset/WISDM/st_gmp_wl_24/st_gmp_wl_24.keras"
-    target = "conv2d_bias" 
+    target = "conv2d" 
     output_h5 = "/home/apo/stm32ai-modelzoo/human_activity_recognition/st_gmp/ST_pretrainedmodel_public_dataset/WISDM/st_gmp_wl_24/HAR_tmr_voter.h5"
     
     if os.path.exists(base_model):
