@@ -1,0 +1,261 @@
+ST Edge AI Core v1.0.0-19895
+Created date          : 2026-03-11 11:36:04
+Parameters            : validate -m hardening/hardened_models/ign/adaptive_clipper.h5 --target stellar-e --valinput datasets/gmp/val_inputs.npy --valoutput datasets/gmp/val_labels.npy -o hardening/validation/ign/adaptive_clipper/
+
+Exec/report summary (validate)
+------------------------------------------------------------------------------------------------------------
+model file         :   /home/apo/stm-edgeai-reliability/hardening/hardened_models/ign/adaptive_clipper.h5   
+type               :   keras                                                                                
+c_name             :   network                                                                              
+compression        :   lossless                                                                             
+optimization       :   balanced                                                                             
+target/series      :   stellar-e                                                                            
+workspace dir      :   /home/apo/stm-edgeai-reliability/st_ai_ws                                            
+output dir         :   /home/apo/stm-edgeai-reliability/hardening/validation/ign/adaptive_clipper           
+vinput files       :   /home/apo/stm-edgeai-reliability/datasets/gmp/val_inputs.npy                         
+vinput files       :   /home/apo/stm-edgeai-reliability/datasets/gmp/val_labels.npy                         
+voutput files      :   /home/apo/stm-edgeai-reliability/datasets/gmp/val_labels.npy                         
+model_fmt          :   float                                                                                
+model_name         :   adaptive_clipper                                                                     
+model_hash         :   0xb0b5cdc55d9dd14d8efff4aea357be43                                                   
+params #           :   3,064 items (11.97 KiB)                                                              
+------------------------------------------------------------------------------------------------------------
+input 1/1          :   'input_1', f32(1x24x3x1), 288 Bytes, user                                            
+output 1/1         :   'dense_1', f32(1x4), 16 Bytes, user                                                  
+macc               :   15,052                                                                               
+weights (ro)       :   12,256 B (11.97 KiB) (1 segment)                                                     
+activations (rw)   :   1,792 B (1.75 KiB) (1 segment)                                                       
+ram (total)        :   2,096 B (2.05 KiB) = 1,792 + 288 + 16                                                
+------------------------------------------------------------------------------------------------------------
+
+Model name - adaptive_clipper
+------ ----------------------------------------- -------------------- -------------- -------- -------------------- --- ----------------- ------------------- ------------------------------- 
+m_id   layer (type,original)                     oshape               param/size         macc         connected to   | c_size            c_macc              c_type                          
+------ ----------------------------------------- -------------------- -------------- -------- -------------------- --- ----------------- ------------------- ------------------------------- 
+0      input_1 (Input, InputLayer)               [b:1,h:24,w:3,c:1]                                                  |                                       
+------ ----------------------------------------- -------------------- -------------- -------- -------------------- --- ----------------- ------------------- ------------------------------- 
+1      conv2d (Conv2D, Conv2D)                   [b:1,h:9,w:3,c:24]   408/1,632        10,392              input_1   | -1,632(-100.0%)   -10,392(-100.0%)    
+------ ----------------------------------------- -------------------- -------------- -------- -------------------- --- ----------------- ------------------- ------------------------------- 
+2      activation_clipper (Nonlinearity, ReLU)   [b:1,h:9,w:3,c:24]                       648               conv2d   |                   -648(-100.0%)       
+------ ----------------------------------------- -------------------- -------------- -------- -------------------- --- ----------------- ------------------- ------------------------------- 
+3      max_pooling2d (Pool, MaxPooling2D)        [b:1,h:3,w:3,c:24]                       648   activation_clipper   | +1,632(+100.0%)   +11,688(+1803.7%)   Conv2D_[0]                      
+------ ----------------------------------------- -------------------- -------------- -------- -------------------- --- ----------------- ------------------- ------------------------------- 
+4      flatten (Reshape, Flatten)                [b:1,c:216]                                         max_pooling2d   |                                       
+------ ----------------------------------------- -------------------- -------------- -------- -------------------- --- ----------------- ------------------- ------------------------------- 
+5      dense (Dense, Dense)                      [b:1,c:12]           2,604/10,416      2,604              flatten   |                                       Dense_[1]                       
+------ ----------------------------------------- -------------------- -------------- -------- -------------------- --- ----------------- ------------------- ------------------------------- 
+7      dense_1_dense (Dense, Dense)              [b:1,c:4]            52/208               52                dense   |                   +60(+115.4%)        Dense_/Nonlinearity_[o][2, 3]   
+       dense_1 (Nonlinearity, Dense)             [b:1,c:4]                                 60        dense_1_dense   |                   -60(-100.0%)        
+------ ----------------------------------------- -------------------- -------------- -------- -------------------- --- ----------------- ------------------- ------------------------------- 
+model/c-model: macc=14,404/15,052 +648(+4.5%) weights=12,256/12,256  activations=--/1,792 io=--/304
+
+
+
+Generated C-graph summary
+------------------------------------------------------------------------------------------------------------------------
+model name            : adaptive_clipper
+c-name                : network
+c-node #              : 4
+c-array #             : 13
+activations size      : 1792 (1 segment)
+weights size          : 12256 (1 segment)
+macc                  : 15052
+inputs                : ['input_1_output']
+outputs               : ['dense_1_output']
+
+C-Arrays (13)
+------ ----------------------- ------------ ------------------------- ------------- --------- 
+c_id   name (*_array)          item/size    domain/mem-pool           c-type        comment   
+------ ----------------------- ------------ ------------------------- ------------- --------- 
+0      conv2d_bias             24/96        weights/weights           const float             
+1      conv2d_output           216/864      activations/**default**   float                   
+2      conv2d_scratch0         16/64        activations/**default**   float                   
+3      conv2d_scratch1         216/864      activations/**default**   float                   
+4      conv2d_weights          384/1536     weights/weights           const float             
+5      dense_1_dense_bias      4/16         weights/weights           const float             
+6      dense_1_dense_output    4/16         activations/**default**   float                   
+7      dense_1_dense_weights   48/192       weights/weights           const float             
+8      dense_1_output          4/16         user/                     float         /output   
+9      dense_bias              12/48        weights/weights           const float             
+10     dense_output            12/48        activations/**default**   float                   
+11     dense_weights           2592/10368   weights/weights           const float             
+12     input_1_output          72/288       user/                     float         /input    
+------ ----------------------- ------------ ------------------------- ------------- --------- 
+
+C-Layers (4)
+------ ---------------- ---- --------------- ------- ------- -------------------------- -------------------- 
+c_id   name (*_layer)   id   layer_type      macc    rom     tensors                    shape (array id)     
+------ ---------------- ---- --------------- ------- ------- -------------------------- -------------------- 
+0      conv2d           3    Conv2D          12336   1632    I: input_1_output          f32(1x24x3x1) (12)   
+                                                             S: conv2d_scratch0                              
+                                                             S: conv2d_scratch1                              
+                                                             W: conv2d_weights          f32(24x16x1x1) (4)   
+                                                             W: conv2d_bias             f32(24) (0)          
+                                                             O: conv2d_output           f32(1x3x3x24) (1)    
+------ ---------------- ---- --------------- ------- ------- -------------------------- -------------------- 
+1      dense            5    Dense           2604    10416   I: conv2d_output           f32(1x3x3x24) (1)    
+                                                             W: dense_weights           f32(12x216) (11)     
+                                                             W: dense_bias              f32(12) (9)          
+                                                             O: dense_output            f32(1x12) (10)       
+------ ---------------- ---- --------------- ------- ------- -------------------------- -------------------- 
+2      dense_1_dense    7    Dense           52      208     I: dense_output            f32(1x12) (10)       
+                                                             W: dense_1_dense_weights   f32(4x12) (7)        
+                                                             W: dense_1_dense_bias      f32(4) (5)           
+                                                             O: dense_1_dense_output    f32(1x4) (6)         
+------ ---------------- ---- --------------- ------- ------- -------------------------- -------------------- 
+3      dense_1          7    Nonlinearity    60      0       I: dense_1_dense_output    f32(1x4) (6)         
+                                                             O: dense_1_output          f32(1x4) (8)         
+------ ---------------- ---- --------------- ------- ------- -------------------------- -------------------- 
+ 
+Setting validation data...
+ loading file: /home/apo/stm-edgeai-reliability/datasets/gmp/val_inputs.npy
+ loading file: /home/apo/stm-edgeai-reliability/datasets/gmp/val_labels.npy
+ - samples are reshaped: (11440, 4) -> (11440, 1, 1, 4)
+ I[1]: (11440, 24, 3, 1)/float32, min/max=[-29.351, 41.593], mean/std=[0.361, 5.287], input_1
+ O[1]: (11440, 1, 1, 4)/float32, min/max=[0.000, 1.000], mean/std=[0.250, 0.433], dense_1
+ 
+Running the STM AI c-model (AI RUNNER)...(name=network, mode=HOST)
+
+ X86 shared lib (/home/apo/stm-edgeai-reliability/st_ai_ws/inspector_network/workspace/lib/libai_network.so) ['network']
+  
+  Summary 'network' - ['network']
+  -----------------------------------------------------------------
+  inputs/ouputs      :   1/1                                       
+  input_1            :   f32[1,24,3,1], 288 Bytes, user            
+  output_1           :   f32[1,1,1,4], 16 Bytes, user              
+  n_nodes            :   4                                         
+  compile_datetime   :   Mar 11 2026 11:35:49                      
+  activations        :   1792                                      
+  weights            :   12256                                     
+  macc               :   15052                                     
+  -----------------------------------------------------------------
+  tools              :   Legacy ST.AI 1.0.0                        
+  capabilities       :   IO_ONLY, PER_LAYER, PER_LAYER_WITH_DATA   
+  device             :   x86_64, , Linux                           
+  -----------------------------------------------------------------
+ 
+ NOTE: duration and exec time per layer is just an indication. They are dependent of the HOST-machine work-load.
+
+  
+  ST.AI Profiling results v1.2 - "network"
+  ------------------------------------------------------------
+  nb sample(s)   :   11440                                    
+  duration       :   0.052 ms by sample (0.043/0.153/0.013)   
+  macc           :   15052                                    
+  ------------------------------------------------------------
+   
+   Inference time per node
+   -------------------------------------------------------------------------------
+   c_id    m_id   type                   dur (ms)       %   cumul     name        
+   -------------------------------------------------------------------------------
+   0       3      Conv2dPool (0x109)        0.047   89.8%   89.8%     ai_node_0   
+   1       5      Dense (0x104)             0.003    6.0%   95.8%     ai_node_1   
+   2       7      Dense (0x104)             0.001    1.1%   96.9%     ai_node_2   
+   3       7      NL (0x107)                0.001    1.7%   98.7%     ai_node_3   
+   -------------------------------------------------------------------------------
+   total                                    0.052                                 
+   -------------------------------------------------------------------------------
+   
+   Statistic per tensor
+   --------------------------------------------------------------------------------------
+   tensor   #       type[shape]:size          min      max     mean      std  name       
+   --------------------------------------------------------------------------------------
+   I.0      11440   f32[1,24,3,1]:288     -29.351   41.593    0.361    5.287  input_1    
+   O.0      11440   f32[1,1,1,4]:16         0.000    1.000    0.250    0.397  output_1   
+   --------------------------------------------------------------------------------------
+ 
+Saving validation data...
+ output directory: /home/apo/stm-edgeai-reliability/hardening/validation/ign/adaptive_clipper
+ creating /home/apo/stm-edgeai-reliability/hardening/validation/ign/adaptive_clipper/network_val_io.npz
+ m_outputs_1: (11440, 1, 1, 4)/float32, min/max=[0.000, 1.000], mean/std=[0.250, 0.397], dense_1
+ c_outputs_1: (11440, 1, 1, 4)/float32, min/max=[0.000, 1.000], mean/std=[0.250, 0.397], dense_1
+
+ 
+Computing the metrics...
+
+ Accuracy report #1 for the generated HOST C-model
+ ----------------------------------------------------------------------------------------------------
+ notes: - computed against the provided ground truth values
+        - 11440 samples (4 items per sample)
+
+  acc=91.47%, rmse=0.180913419, mae=0.062806085, l2r=0.385775715, nse=0.825, cos=0.932
+
+  4 classes (11440 samples)
+  ----------------------------
+  C0      3349   .   74   48  
+  C1        .  1156  28    .  
+  C2       123  11  1930  327 
+  C3       20    .   345 4029 
+
+ Accuracy report #1 for the reference model
+ ----------------------------------------------------------------------------------------------------
+ notes: - computed against the provided ground truth values
+        - 11440 samples (4 items per sample)
+
+  acc=91.47%, rmse=0.180913419, mae=0.062806092, l2r=0.385775685, nse=0.825, cos=0.932
+
+  4 classes (11440 samples)
+  ----------------------------
+  C0      3349   .   74   48  
+  C1        .  1156  28    .  
+  C2       123  11  1930  327 
+  C3       20    .   345 4029 
+
+ Cross accuracy report #1 (reference vs C-model)
+ ----------------------------------------------------------------------------------------------------
+ notes: - the output of the reference model is used as ground truth/reference value
+        - 11440 samples (4 items per sample)
+
+  acc=100.00%, rmse=0.000000069, mae=0.000000029, l2r=0.000000148, nse=1.000, cos=1.000
+
+  4 classes (11440 samples)
+  ----------------------------
+  C0      3492   .    .    .  
+  C1        .  1167   .    .  
+  C2        .    .  2377   .  
+  C3        .    .    .  4404 
+
+
+Number of operations per c-layer
+------- ------ ------------------------ -------- -------------- 
+c_id    m_id   name (type)                   #op           type 
+------- ------ ------------------------ -------- -------------- 
+0       3      conv2d (Conv2D)            12,336   smul_f32_f32 
+1       5      dense (Dense)               2,604   smul_f32_f32 
+2       7      dense_1_dense (Dense)          52   smul_f32_f32 
+3       7      dense_1 (Nonlinearity)         60     op_f32_f32 
+------- ------ ------------------------ -------- -------------- 
+total                                     15,052 
+
+Number of operation types
+---------------- -------- ----------- 
+operation type          #           % 
+---------------- -------- ----------- 
+smul_f32_f32       14,992       99.6% 
+op_f32_f32             60        0.4% 
+
+Complexity report (model)
+------ --------------- ------------------------- ------------------------- -------- -------- ------------------ 
+m_id   name            c_macc                    c_rom                     c_id     c_dur    l2r (X-CROSS)      
+------ --------------- ------------------------- ------------------------- -------- -------- ------------------ 
+3      max_pooling2d   ||||||||||||||||  82.0%   |||               13.3%   [0]       91.0%                      
+5      dense           ||||              17.3%   ||||||||||||||||  85.0%   [1]        6.1%                      
+7      dense_1_dense   |                  0.7%   |                  1.7%   [2, 3]     2.9%   1.48026302e-07 *   
+------ --------------- ------------------------- ------------------------- -------- -------- ------------------ 
+macc=15,052 weights=12,256 act=1,792 ram_io=304
+
+Evaluation report (summary)
+---------------------------------------------------------------------------------------------------------------------------------------------
+Output              acc       rmse        mae         l2r         mean         std         nse         cos         tensor                    
+---------------------------------------------------------------------------------------------------------------------------------------------
+HOST c-model #1     91.47%    0.1809134   0.0628061   0.3857757   0.0000000    0.1809154   0.8254457   0.9322628   dense_1, (4,), m_id=[7]   
+original model #1   91.47%    0.1809134   0.0628061   0.3857757   0.0000000    0.1809154   0.8254457   0.9322628   dense_1, (4,), m_id=[7]   
+X-cross #1          100.00%   0.0000001   0.0000000   0.0000001   -0.0000000   0.0000001   1.0000000   1.0000000   dense_1, (4,), m_id=[7]   
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+ acc  : Classification accuracy (all classes)
+ rmse : Root Mean Squared Error
+ mae  : Mean Absolute Error
+ l2r  : L2 relative error
+ nse  : Nash-Sutcliffe efficiency criteria, bigger is better, best=1, range=(-inf, 1]
+ cos  : COsine Similarity, bigger is better, best=1, range=(0, 1]

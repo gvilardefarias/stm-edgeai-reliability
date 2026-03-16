@@ -1,5 +1,0 @@
-{
-    "TMRBiasLayer": {
-        "python": "/home/apo/stm32ai-modelzoo-services/human_activity_recognition/tmr_bias_layer.py"
-    }
-}

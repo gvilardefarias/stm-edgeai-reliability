@@ -1,0 +1,6 @@
+{
+    "AdaptiveClipper": {
+        "python": "/home/apo/stm-edgeai-reliability/hardening/custom_layers/adaptive_clipper.py",
+        "c": "/home/apo/stm-edgeai-reliability/hardening/custom_layers/adaptive_clipper_impl.c"
+    }
+}

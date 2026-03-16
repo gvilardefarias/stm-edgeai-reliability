@@ -1,101 +1,135 @@
-from tracemalloc import start
-import matplotlib.pyplot as plt
-import pandas as pd
-import numpy as np
-import stm_edgeai_lib as stm
-import graph_gen as gg
+import os
+import json
 
-#in_file = "out_files/out_dict_16b.txt"
-in_file = "out_dict.txt"
+model_path = os.getcwd() + "/hardening/hardened_models/gmp/HAR_bias_tmr.h5"
+dataset_path = os.getcwd() + "/datasets/gmp/val_data.npy"
+#model_path = os.getcwd() + "/models/miniresnet/miniresnet_1stacks_64x50_tl.h5"
+#dataset_path = os.getcwd() + "/datasets/miniresnet/miniresnet_dataset.npy"
+target = "stellar-e"
 
-with open(in_file, 'r') as f:
-    data = f.read()
-    data_dict = eval(data)
+weights_c_file = "./st_ai_output/src/network_data_params.c"
 
-def dict_to_df(data_dict):
-    sta0 = pd.DataFrame.from_dict(data_dict['sta0'], orient='index')
-    sta1 = pd.DataFrame.from_dict(data_dict['sta1'], orient='index')
+generate_cmd = f"stedgeai generate --model {model_path} --target {target}"
+if dataset_path:
+    validade_cmd = f"stedgeai validate --model {model_path} --target {target} --quiet -v 0 -vi {dataset_path}"
+else:
+    validade_cmd = f"stedgeai validate --model {model_path} --target {target} --quiet -v 0 -b 100"
 
-    for b in sta0:
-        for w in sta0.index:
-            sta0.at[w, b] = float(sta0.at[w, b][:-1])
-    for b in sta1:
-        for w in sta1.index:
-            sta1.at[w, b] = float(sta1.at[w, b][:-1])
+files_to_build = ["network_data", "network_data_params"]
+compile_cmd  = "make clean && make all && make install && cd ../../../"
 
+def compile_lib(build_path = "./st_ai_ws/inspector_network/workspace/"):
+    print("compile", build_path)
+    os.system(f"cd {build_path} && " + compile_cmd)
 
-    sta0= sta0.reset_index(names=['Weight'])
-    sta0 = sta0.melt(id_vars=sta0.columns[0], var_name='Bit', value_name='Acc')
-    sta0 = sta0.set_index(['Weight','Bit'])
-    sta1 = sta1.reset_index(names=['Weight'])
-    sta1 = sta1.melt(id_vars=sta1.columns[0], var_name='Bit', value_name='Acc')
-    sta1 = sta1.set_index(['Weight','Bit'])
+def gen_lib():
+    os.system(generate_cmd)
+    os.system(validade_cmd)
 
-    df = pd.DataFrame()
-    df['sta1'] = sta1
-    df['sta0'] = sta0
-    df = df.reset_index().sort_values(['Weight', 'Bit']).reset_index(drop=True)
-    df = df.melt(id_vars=['Weight', 'Bit'], var_name='Fault Type', value_name='Acc')
-
-    return df
-
-def compute_per_layer_acc(df, layers_info):
-    acc_drop = []
-
-    for layer in layers_info:
-        start_byte = layer['offset']
-        end_byte = layer['size'] + start_byte
-
-        start_weight = start_byte // 8
-        end_weight = end_byte // 8
-
-        start_bit = (start_byte % 8) * 8
-        end_bit = (end_byte % 8) * 8
-
-        layer_df = df[((df['Weight'] >= start_weight) & (df['Bit'] >= start_bit)) & 
-                      ((df['Weight'] < end_weight) | (df['Weight'] == end_weight & (df['Bit'] < end_bit)))]
-
-        df.loc[((df['Weight'] >= start_weight) & (df['Bit'] >= start_bit)) & 
-                      ((df['Weight'] < end_weight) | (df['Weight'] == end_weight & (df['Bit'] < end_bit))), "layer_name"] = layer["buffer_name"]
-        
-        layer_acc_sta0 = layer_df[layer_df['Fault Type'] == 'sta0']['Acc'].mean()
-        layer_acc_sta1 = layer_df[layer_df['Fault Type'] == 'sta1']['Acc'].mean()
-        layer_acc = layer_df['Acc'].mean()
-        layer_std = layer_df['Acc'].std()
-        layer['reliability'] = {'accuracy_drop': {'sta0': 100 - layer_acc_sta0, 'sta1': 100 - layer_acc_sta1, 'mean': 100 - layer_acc, 'std': layer_std}}
-
-        acc_drop.append({
-            'layer_name': layer['buffer_name'],
-            'sta0': 100 - layer_acc_sta0,
-            'sta1': 100 - layer_acc_sta1,
-            'mean': 100 - layer_acc,
-            'std': layer_std
-        })  
-
-    layers_df = pd.DataFrame(acc_drop)
-    return layers_df
-
-def plot_per_layer_acc(data_dict):
-    df = dict_to_df(data_dict)
-
-    layers_info  = stm.get_layers_info()
-    layers_df = compute_per_layer_acc(df, layers_info)
-
-    stm.set_layers_info(layers_info)
-
-    #gg.per_layer_sta_bd(layers_df)
-    gg.per_layer_sta_ov(layers_df)
-
-def get_unsimulated_faults(data_dict):
-    unsimulated_faults = []
-    for fault_type in data_dict:
-        for weight in data_dict[fault_type]:
-            for bit in data_dict[fault_type][weight]:
-                if data_dict[fault_type][weight][bit] == None:
-                    unsimulated_faults.append((fault_type, weight, bit))
+    for f in files_to_build:
+        os.system(f"cp ./st_ai_output/src/{f}.c ./st_ai_ws/inspector_network/workspace/generated/")
+        os.system(f"cp ./st_ai_output/inc/{f}.h ./st_ai_ws/inspector_network/workspace/generated/")
     
-    return unsimulated_faults
+    compile_lib()
 
-if __name__ == "__main__":
-    #plot_per_layer_acc(data_dict)
-    unsimulated_faults = find_unsimulated_faults(data_dict)
+    return "./st_ai_ws"
+
+def validade_lib(lib_path = "./st_ai_ws/inspector_network/workspace/", exec_path = "./"):
+    validade_lib_cmd = validade_cmd + f" --mode target -d lib:{lib_path}"
+    print("validade", validade_lib_cmd)
+    os.system(f"cd {exec_path} &&" + validade_lib_cmd)
+
+
+def get_report(exec_path = "./st_ai_ws/"):
+    with open(f"{exec_path}network_report.json", 'r') as f:
+        report = json.load(f)
+    
+    return dict(report)
+
+def get_x_cross_accuracy(exec_path = "./st_ai_ws/"):
+    report = get_report(exec_path)
+
+    for metric in report['val_metrics']:
+        if "X-cross" in metric['desc']:
+            return metric['acc'], metric
+
+    return None, None
+
+
+def weights_parser(weights_file = weights_c_file):
+    weights = []
+    with open(weights_file, 'r') as f:
+        lines = f.readlines()
+        start = False
+        for line in lines:
+            if "s_network_weights_array_u64" in line:
+                start = True
+                continue
+            if start:
+                if "};" in line:
+                    break
+
+                line = line.replace(" ", "")
+                line = line.replace("U", "")
+                line = line.replace("\n", "")
+                nums = line.split(",")
+                for num in nums:
+                    if num != "":
+                        weights.append(int(num,0))
+    return weights
+
+def w_to_string(weights):
+    str_o = ""
+
+    for w in weights:
+        str_o += f"{hex(w)}U,"
+    
+    str_o = str_o[:-1] + "\n"
+
+    return str_o
+
+def weights_file_gen(weights, out_file = "network_data_params.c", weights_file = weights_c_file):
+    str_file = ""
+
+    with open(weights_file, 'r') as f:
+        lines = f.readlines()
+        start = False
+        stop = False
+        for line in lines:
+            if "s_network_weights_array_u64[" in line and "{" in line:
+                start = True
+                str_file += line
+            elif start and not stop:
+                if "};" in line:
+                    str_file += w_to_string(weights)
+                    str_file += line
+                    stop = True
+            elif start and stop:
+                str_file += line
+            else:
+                str_file += line
+
+    with open(out_file, 'w') as o:
+        o.write(str_file)
+
+
+def get_c_model_info(c_model_info_file = "./st_ai_ws/network_c_graph.json"):
+    with open(c_model_info_file, 'r') as f:
+        model_info = json.load(f)
+    
+    return dict(model_info)
+
+def set_layers_info(layers_info, c_model_info_file = "./st_ai_ws/network_c_graph.json"):
+    c_model_info = get_c_model_info(c_model_info_file)
+
+    c_model_info['weights']['weights_array']['buffer_offsets'] = layers_info
+
+    with open(c_model_info_file, 'w') as f:
+        json.dump(c_model_info, f, indent=4)
+
+def get_layers_info(c_model_info_file = "./st_ai_ws/network_c_graph.json"):
+    c_model_info = get_c_model_info(c_model_info_file)
+
+    layers_info = c_model_info['weights']['weights_array']['buffer_offsets']
+
+    return layers_infod

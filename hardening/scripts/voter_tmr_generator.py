@@ -1,0 +1,77 @@
+import os
+# Force TensorFlow to use Keras 2 (Compatible with ST Edge AI v1)
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
+import tensorflow as tf
+import numpy as np
+import sys
+# Make sure python can find your custom layers
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'custom_layers')))
+from majority_voter_layer import MajorityVoterLayer
+
+def build_tmr_model(original_model_path, target_layer_name, save_path):
+    print(f"Loading original model: {original_model_path}")
+    model = tf.keras.models.load_model(original_model_path)
+    
+    input_layer = tf.keras.Input(shape=model.input_shape[1:])
+    x = input_layer
+    
+    for layer in model.layers:
+        if isinstance(layer, tf.keras.layers.InputLayer):
+            continue
+            
+        if layer.name == target_layer_name:
+            print(f"--- TRIPLICATING LAYER: {target_layer_name} ---")
+            
+            # 1. Clone the layer 3 times
+            config = layer.get_config()
+            layers = []
+            for i in range(1, 4):
+                config['name'] = f"{layer.name}_tmr{i}"
+                l = layer.__class__.from_config(config)
+                layers.append(l)
+            
+            # 2. Pass current input through all 3 branches
+            out_1 = layers[0](x)
+            out_2 = layers[1](x)
+            out_3 = layers[2](x)
+            
+            # 3. Set identical weights
+            weights = layer.get_weights()
+            for l in layers:
+                l.set_weights(weights)
+            
+            # 4. MAJORITY VOTER LAYER
+            def majority_voter(tensors):
+                o1, o2, o3 = tensors
+                o1_eq_o2 = tf.equal(o1, o2)
+                o1_eq_o3 = tf.equal(o1, o3)
+                o2_eq_o3 = tf.equal(o2, o3)
+                res = tf.where(tf.logical_or(o1_eq_o2, o1_eq_o3), o1, 
+                               tf.where(o2_eq_o3, o2, o1))
+                return res
+            
+            x = MajorityVoterLayer(name=f"{layer.name}_voter")([out_1, out_2, out_3])
+            print("--- MAJORITY VOTER LAYER ADDED ---")
+            
+        else:
+            config = layer.get_config()
+            new_layer = layer.__class__.from_config(config)
+            x = new_layer(x)
+            new_layer.set_weights(layer.get_weights())
+            
+    tmr_model = tf.keras.Model(inputs=input_layer, outputs=x, name="HandPosture_TMR")
+    print("\nSaving new TMR model to:", save_path)
+    tmr_model.save(save_path, save_format='h5')
+    print("Done!")
+    return tmr_model
+
+if __name__ == "__main__":
+    base_model = "/home/apo/stm-edgeai-reliability/hardening/human_activity_recognition/base_models/gmp/gmp_wl_24.h5"
+    target = "conv2d" 
+    output_h5 = "/home/apo/stm-edgeai-reliability/hardening/human_activity_recognition/hardened_models/gmp/HAR_tmr_voter.h5"
+    
+    if os.path.exists(base_model):
+        build_tmr_model(base_model, target, output_h5)
+    else:
+        print(f"Error: Could not find {base_model}")
