@@ -1,8 +1,8 @@
-fault_campaign/
+sw/fault_campaign/
 .vscode/
-st_ai_ws/
-st_ai_output/
-__pycache__/
-out_dict.txt
-out
-out*
+sw/st_ai_ws/
+sw/st_ai_output/
+sw/__pycache__/
+sw/out_dict.txt
+sw/out
+sw/out*
