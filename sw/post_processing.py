@@ -8,10 +8,6 @@ import graph_gen as gg
 #in_file = "out_files/out_dict_16b.txt"
 in_file = "out_dict.txt"
 
-with open(in_file, 'r') as f:
-    data = f.read()
-    data_dict = eval(data)
-
 def dict_to_df(data_dict):
     sta0 = pd.DataFrame.from_dict(data_dict['sta0'], orient='index')
     sta1 = pd.DataFrame.from_dict(data_dict['sta1'], orient='index')
@@ -97,5 +93,9 @@ def get_unsimulated_faults(data_dict):
     return unsimulated_faults
 
 if __name__ == "__main__":
-    #plot_per_layer_acc(data_dict)
-    unsimulated_faults = find_unsimulated_faults(data_dict)
+    with open(in_file, 'r') as f:
+        data = f.read()
+        data_dict = eval(data)
+
+    plot_per_layer_acc(data_dict)
+#    unsimulated_faults = get_unsimulated_faults(data_dict)

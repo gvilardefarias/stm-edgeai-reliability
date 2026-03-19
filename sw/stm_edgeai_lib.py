@@ -3,8 +3,10 @@ import json
 
 #model_path = os.getcwd() + "/models/gmp_wl_24/gmp_wl_24.h5"
 #dataset_path = os.getcwd() + "/datasets/gmp/val_data.npy"
-model_path = os.getcwd() + "/models/miniresnet/miniresnet_1stacks_64x50_tl.h5"
-dataset_path = os.getcwd() + "/datasets/miniresnet/miniresnet_dataset.npy"
+#model_path = os.getcwd() + "/models/miniresnet/miniresnet_1stacks_64x50_tl.h5"
+#dataset_path = os.getcwd() + "/datasets/miniresnet/miniresnet_dataset.npy"
+model_path = os.getcwd() + "/models/hand_posture/CNN2D_ST_HandPosture_8classes.h5"
+dataset_path = os.getcwd() + "/datasets/handposture/hand_val_images.npy"
 target = "stellar-e"
 
 weights_c_file = "./st_ai_output/src/network_data_params.c"
