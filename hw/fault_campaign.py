@@ -479,16 +479,15 @@ def compute_metrics(ai_profiler, quant_params, ai_outputs, tfl_internals, tfl_ou
     p_fn('')
 
 
-def save_ai_tensors(inputs, ai_profiler, ai_outputs, logger):
+def save_tensors(inputs, ai_profiler, ai_outputs, logger, dir_="./"):
     """Save the tensors in a npz file"""  # noqa:DAR101,DAR201
 
     # tag is used as key
-    dir_ = pathlib.Path("./")
-
+    dir_ = pathlib.Path(dir_)
     _arr_dict = {}
-    f_name = dir_ / 'tensors_stm_ai.npz'
+    f_name = dir_ / 'tensors_ai.npz'
 
-    logger.info(' Saving STM AI data... {}'.format(f_name))
+    logger.info(' Saving AI data... {}'.format(f_name))
 
     for idx, in_ in enumerate(inputs):
         _arr_dict['I.{}'.format(idx)] = in_
@@ -504,6 +503,17 @@ def save_ai_tensors(inputs, ai_profiler, ai_outputs, logger):
                     _arr_dict[key] = data
 
     np.savez(f_name, **_arr_dict)
+
+def save_classifications(classifications, logger, dir_="./"):
+    """Save the classifications"""
+
+    dir_ = pathlib.Path(dir_)
+    f_name = dir_ / 'classifications.txt'
+
+    logger.info(' Saving classifications... {}'.format(f_name))
+
+    with open(f_name, 'w') as f:
+        f.write(str(list(classifications)))
 
 
 def gen_f_bit_positions(f_bit_range = 16, f_bit_start = 63, f_bit_step = 32):
@@ -610,11 +620,15 @@ def run(args, logger):
     logger.info('Invoking STM AI model... (requested mode: {})'.format(mode))
 
     if args.f_inject:
+        os.makedirs("./fault_campaign", exist_ok=True)
+        os.makedirs("./fault_campaign/ref", exist_ok=True)
+
         if h5_model is not None:
             ref = invoke_h5_model(h5_model, inputs)
             ref_shape = ref.shape
-            # TODO save reference results before classification in files
+            save_tensors(inputs, None, ref, logger, dir_="./fault_campaign/ref")
             ref = ref.argmax(axis=1)
+            save_classifications(ref, logger, dir_="./fault_campaign/ref")
 
             logger.info(f'first5 ref - {ref[:5]}')
 
@@ -635,9 +649,12 @@ def run(args, logger):
         with ThreadPoolExecutor() as executor:
             for f_idx in range(args.f_w_size):
                 for f_bit in f_bit_positions:
-                    # TODO save results in files
+                    os.makedirs(f"./fault_campaign/w{f_idx}_b{f_bit}", exist_ok=True)
+
                     f_campaign_results[f_idx][f_bit] = f_campaign_results[f_idx][f_bit].reshape(ref_shape)
+                    save_tensors(inputs, None, f_campaign_results[f_idx][f_bit], logger, dir_=f"./fault_campaign/w{f_idx}_b{f_bit}")
                     f_campaign_results[f_idx][f_bit] = f_campaign_results[f_idx][f_bit].argmax(axis=1)
+                    save_classifications(f_campaign_results[f_idx][f_bit], logger, dir_=f"./fault_campaign/w{f_idx}_b{f_bit}")
                     future_to_f_loc[executor.submit(calc_acc, ref, f_campaign_results[f_idx][f_bit])] = (f_idx, f_bit)
 
         for future in as_completed(future_to_f_loc):
@@ -646,6 +663,9 @@ def run(args, logger):
             f_campaign_results[f_idx][f_bit] = acc
             logger.info(f'Fault in bit {f_bit} of the weight {f_idx} - Accuracy: {acc}')
         stai_end_time = perf_counter()
+
+        with open("out_dict.txt", 'w') as f:
+            f.write(str(f_campaign_results))
 
     return 0
 
