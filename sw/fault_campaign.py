@@ -12,10 +12,13 @@ golden_report = None
 save_report = False
 continue_cmp = False
 
+model_path = os.getcwd() + "/models/hand_posture/CNN2D_ST_HandPosture_8classes.h5"
+dataset_path = os.getcwd() + "/datasets/handposture/hand_val_images.npy"
+
 parser = argparse.ArgumentParser(description='Run STA fault injection campaign.')
+parser.add_argument('--model_path', type=str, default=model_path, help='Path to the model file.')
+parser.add_argument('--dataset_path', type=str, default=dataset_path, help='Path to the dataset file.')
 parser.add_argument('--continue_cmp', action='store_true', help='Continue an existing campaign by simulating only the unsimulated faults.', default=False)
-args = parser.parse_args()
-continue_cmp = args.continue_cmp
 
 def inject_sta_fault(data, f_type, f_idx, f_bit):
     prev_value = data[f_idx]
@@ -158,6 +161,13 @@ def continue_sta_fault_campaign(campaign_results, faults, remove_files = True, s
     return campaign_results, report_results
 
 if __name__ == "__main__":
+    args = parser.parse_args()
+    continue_cmp = args.continue_cmp
+    model_path = args.model_path
+    dataset_path = args.dataset_path
+
+    stm_edgeai_lib.init(model_path, dataset_path)
+
     if not continue_cmp:
         start = time.time()
         result, report_results = sta_fault_campaign(save_report=save_report)

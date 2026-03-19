@@ -1,24 +1,22 @@
 import os
 import json
 
-#model_path = os.getcwd() + "/models/gmp_wl_24/gmp_wl_24.h5"
-#dataset_path = os.getcwd() + "/datasets/gmp/val_data.npy"
-#model_path = os.getcwd() + "/models/miniresnet/miniresnet_1stacks_64x50_tl.h5"
-#dataset_path = os.getcwd() + "/datasets/miniresnet/miniresnet_dataset.npy"
-model_path = os.getcwd() + "/models/hand_posture/CNN2D_ST_HandPosture_8classes.h5"
-dataset_path = os.getcwd() + "/datasets/handposture/hand_val_images.npy"
 target = "stellar-e"
 
 weights_c_file = "./st_ai_output/src/network_data_params.c"
 
-generate_cmd = f"stedgeai generate --model {model_path} --target {target}"
-if dataset_path:
-    validade_cmd = f"stedgeai validate --model {model_path} --target {target} --quiet -v 0 -vi {dataset_path}"
-else:
-    validade_cmd = f"stedgeai validate --model {model_path} --target {target} --quiet -v 0 -b 100"
+generate_cmd = None
+validade_cmd = None
 
 files_to_build = ["network_data", "network_data_params"]
 compile_cmd  = "make clean && make all && make install && cd ../../../"
+
+def init(model_path, dataset_path = None):
+    generate_cmd = f"stedgeai generate --model {model_path} --target {target}"
+    if dataset_path:
+        validade_cmd = f"stedgeai validate --model {model_path} --target {target} --quiet -v 0 -vi {dataset_path}"
+    else:
+        validade_cmd = f"stedgeai validate --model {model_path} --target {target} --quiet -v 0 -b 100"
 
 def compile_lib(build_path = "./st_ai_ws/inspector_network/workspace/"):
     print("compile", build_path)
