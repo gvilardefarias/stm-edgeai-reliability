@@ -39,7 +39,7 @@ def build_tmr_model(original_model_path, target_layer_name, save_path):
             # 3. Set identical weights
             weights = layer.get_weights()
             for l in layers:
-                l.set_weights(weights)
+                l.set_weights([w.copy() for w in weights])
             
             # 4. MAJORITY VOTER LAYER
             def majority_voter(tensors):
