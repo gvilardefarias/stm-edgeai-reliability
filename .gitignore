@@ -6,3 +6,7 @@ sw/__pycache__/
 sw/out_dict.txt
 sw/out
 sw/out*
+hw/fault_campaign/
+hw/out_dict.txt
+hw/out
+hw/out*
