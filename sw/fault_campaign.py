@@ -16,6 +16,7 @@ model_path = os.getcwd() + "/models/hand_posture/CNN2D_ST_HandPosture_8classes.h
 dataset_path = os.getcwd() + "/datasets/handposture/hand_val_images.npy"
 golden_path = None
 custom_path = None
+fault_model = ['sta0', 'sta1']
 
 def inject_sta_fault(data, f_type, f_idx, f_bit):
     prev_value = data[f_idx]
@@ -24,6 +25,8 @@ def inject_sta_fault(data, f_type, f_idx, f_bit):
         data[f_idx] &= ~(1 << f_bit)
     elif f_type == "sta1":
         data[f_idx] |= (1 << f_bit)
+    elif f_type == "bf":
+        data[f_idx] ^= (1 << f_bit)
     
     return (data, prev_value != data[f_idx])
 
@@ -64,7 +67,7 @@ def gen_f_bit_positions(f_bit_range = 16, f_bit_start = 63, f_bit_step = 32):
         f_bit_positions.extend(list(range(start, start - f_bit_range, -1)))
     return f_bit_positions
 
-def sta_fault_campaign(f_bit_positions = gen_f_bit_positions(), remove_files = True, save_report = False):
+def sta_fault_campaign(f_bit_positions = gen_f_bit_positions(), fault_model = ['sta0', 'sta1'], remove_files = True, save_report = False):
     global WEIGHTS, golden_acc, golden_report
     campaign_results = {}
     report_results = {}
@@ -84,7 +87,7 @@ def sta_fault_campaign(f_bit_positions = gen_f_bit_positions(), remove_files = T
 
 #    with ProcessPoolExecutor(max_workers=n_th) as executor:
     with ProcessPoolExecutor() as executor:
-        for f_type in ["sta0", "sta1"]:
+        for f_type in fault_model:
             campaign_results[f_type] = {}
             report_results[f_type] = {}
             for f_idx in range(len(WEIGHTS)):
@@ -93,6 +96,9 @@ def sta_fault_campaign(f_bit_positions = gen_f_bit_positions(), remove_files = T
                 for f_bit in f_bit_positions:
                     campaign_results[f_type][f_idx][f_bit] = None
                     report_results[f_type][f_idx][f_bit] = None
+
+                    future = executor.submit(simulate_fault, f_type, f_idx, f_bit, remove_files)
+                    runing_futures.add(future)
 
                     if len(runing_futures) >= 2*n_th:
                         done, runing_futures = wait(runing_futures, return_when=FIRST_COMPLETED)
@@ -104,9 +110,6 @@ def sta_fault_campaign(f_bit_positions = gen_f_bit_positions(), remove_files = T
                                     report_results[f_type_r][f_idx_r][f_bit_r] = report
                             except Exception as e:
                                 print(f"Error occurred: {e}")
-                    
-                    future = executor.submit(simulate_fault, f_type, f_idx, f_bit, remove_files)
-                    runing_futures.add(future)
 
         for future in as_completed(runing_futures):
             try:
@@ -120,6 +123,7 @@ def sta_fault_campaign(f_bit_positions = gen_f_bit_positions(), remove_files = T
     return campaign_results, report_results
 
 # TODO implement save_report
+# TODO implement also for bit flipping new architecture
 def continue_sta_fault_campaign(campaign_results, faults, remove_files = True, save_report = False):
     global WEIGHTS, golden_acc, golden_report
     report_results = {}
@@ -132,6 +136,9 @@ def continue_sta_fault_campaign(campaign_results, faults, remove_files = True, s
     #with ProcessPoolExecutor() as executor:
     with ProcessPoolExecutor(max_workers=n_th) as executor:
         for f_type, f_idx, f_bit in faults:
+            future = executor.submit(simulate_fault, f_type, f_idx, f_bit, remove_files)
+            runing_futures.add(future)
+
             if len(runing_futures) >= 2*n_th:
                 done, runing_futures = wait(runing_futures, return_when=FIRST_COMPLETED)
                 for future in done:
@@ -142,9 +149,6 @@ def continue_sta_fault_campaign(campaign_results, faults, remove_files = True, s
                             report_results[f_type_r][f_idx_r][f_bit_r] = report
                     except Exception as e:
                         print(f"Error occurred: {e}")
-            
-            future = executor.submit(simulate_fault, f_type, f_idx, f_bit, remove_files)
-            runing_futures.add(future)
 
         for future in as_completed(runing_futures):
             try:
@@ -164,6 +168,7 @@ if __name__ == "__main__":
     parser.add_argument('--golden_path', type=str, default=None, help='Path to golden C files')
     parser.add_argument('--continue_cmp', action='store_true', help='Continue an existing campaign by simulating only the unsimulated faults.', default=False)
     parser.add_argument('--custom', type=str, default=None, help='Path to custom config file for model hardening.')
+    parser.add_argument('--bit_flip', action='store_true', help='Bit flip campaign', default=False)
 
     args = parser.parse_args()
     continue_cmp = args.continue_cmp
@@ -173,12 +178,14 @@ if __name__ == "__main__":
         golden_path = os.getcwd() + "/" + args.golden_path
     if args.custom is not None:
         custom_path = os.getcwd() + "/" + args.custom
+    if args.bit_flip:
+        fault_model = ['bf']
 
     stm_edgeai_lib.init(model_path, dataset_path, custom_path)
 
     if not continue_cmp:
         start = time.time()
-        result, report_results = sta_fault_campaign(save_report=save_report)
+        result, report_results = sta_fault_campaign(save_report=save_report, fault_model=fault_model)
         end = time.time()
         time_taken = end - start
     
