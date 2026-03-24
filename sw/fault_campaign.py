@@ -5,7 +5,7 @@ import stm_edgeai_lib
 import argparse
 import post_processing
 
-n_th = 128
+n_th = 64
 WEIGHTS = None
 golden_acc = "100.00%"
 golden_report = None
@@ -14,11 +14,8 @@ continue_cmp = False
 
 model_path = os.getcwd() + "/models/hand_posture/CNN2D_ST_HandPosture_8classes.h5"
 dataset_path = os.getcwd() + "/datasets/handposture/hand_val_images.npy"
-
-parser = argparse.ArgumentParser(description='Run STA fault injection campaign.')
-parser.add_argument('--model_path', type=str, default=model_path, help='Path to the model file.')
-parser.add_argument('--dataset_path', type=str, default=dataset_path, help='Path to the dataset file.')
-parser.add_argument('--continue_cmp', action='store_true', help='Continue an existing campaign by simulating only the unsimulated faults.', default=False)
+golden_path = None
+custom_path = None
 
 def inject_sta_fault(data, f_type, f_idx, f_bit):
     prev_value = data[f_idx]
@@ -132,8 +129,8 @@ def continue_sta_fault_campaign(campaign_results, faults, remove_files = True, s
     runing_futures = set()
     WEIGHTS = stm_edgeai_lib.weights_parser()
 
-    #with ProcessPoolExecutor(max_workers=n_th) as executor:
-    with ProcessPoolExecutor() as executor:
+    #with ProcessPoolExecutor() as executor:
+    with ProcessPoolExecutor(max_workers=n_th) as executor:
         for f_type, f_idx, f_bit in faults:
             if len(runing_futures) >= 2*n_th:
                 done, runing_futures = wait(runing_futures, return_when=FIRST_COMPLETED)
@@ -161,12 +158,23 @@ def continue_sta_fault_campaign(campaign_results, faults, remove_files = True, s
     return campaign_results, report_results
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Run STA fault injection campaign.')
+    parser.add_argument('--model_path', type=str, default=model_path, help='Path to the model file.')
+    parser.add_argument('--dataset_path', type=str, default=dataset_path, help='Path to the dataset file.')
+    parser.add_argument('--golden_path', type=str, default=None, help='Path to golden C files')
+    parser.add_argument('--continue_cmp', action='store_true', help='Continue an existing campaign by simulating only the unsimulated faults.', default=False)
+    parser.add_argument('--custom', type=str, default=None, help='Path to custom config file for model hardening.')
+
     args = parser.parse_args()
     continue_cmp = args.continue_cmp
-    model_path = args.model_path
-    dataset_path = args.dataset_path
+    model_path = os.getcwd() + "/" + args.model_path
+    dataset_path = os.getcwd() + "/" + args.dataset_path
+    if args.golden_path is not None:
+        golden_path = os.getcwd() + "/" + args.golden_path
+    if args.custom is not None:
+        custom_path = os.getcwd() + "/" + args.custom
 
-    stm_edgeai_lib.init(model_path, dataset_path)
+    stm_edgeai_lib.init(model_path, dataset_path, custom_path)
 
     if not continue_cmp:
         start = time.time()

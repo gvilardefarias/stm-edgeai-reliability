@@ -11,12 +11,18 @@ validade_cmd = None
 files_to_build = ["network_data", "network_data_params"]
 compile_cmd  = "make clean && make all && make install && cd ../../../"
 
-def init(model_path, dataset_path = None):
+def init(model_path, dataset_path = None, custom_path = None):
+    global generate_cmd, validade_cmd
+
     generate_cmd = f"stedgeai generate --model {model_path} --target {target}"
     if dataset_path:
         validade_cmd = f"stedgeai validate --model {model_path} --target {target} --quiet -v 0 -vi {dataset_path}"
     else:
         validade_cmd = f"stedgeai validate --model {model_path} --target {target} --quiet -v 0 -b 100"
+    
+    if custom_path:
+        generate_cmd += f" --custom {custom_path}"
+        validade_cmd += f" --custom {custom_path}"
 
 def compile_lib(build_path = "./st_ai_ws/inspector_network/workspace/"):
     print("compile", build_path)

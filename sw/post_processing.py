@@ -6,7 +6,8 @@ import stm_edgeai_lib as stm
 import graph_gen as gg
 
 #in_file = "out_files/out_dict_16b.txt"
-in_file = "out_dict.txt"
+#in_file = "out_dict.txt"
+in_file = "out_files/gmp/out_dict_16bof32_dataset.txt"
 
 def dict_to_df(data_dict):
     sta0 = pd.DataFrame.from_dict(data_dict['sta0'], orient='index')
@@ -74,6 +75,8 @@ def compute_per_layer_acc(df, layers_info):
 def plot_per_layer_acc(data_dict):
     df = dict_to_df(data_dict)
 
+    # TODO fix when we are checking a model that was not compiled
+    # this path is hard coded in the lib
     layers_info  = stm.get_layers_info()
     layers_df = compute_per_layer_acc(df, layers_info)
 
