@@ -126,7 +126,7 @@ def load_h5_model(h5_file):
     if not h5_file:
         return None
 
-    model = tf.keras.models.load_model(h5_file)
+    model = tf.keras.models.load_model(h5_file, compile=False)
 
     return model
 
