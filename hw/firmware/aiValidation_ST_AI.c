@@ -26,18 +26,20 @@
  */
 
 #define FI_CAMPAIGN 1
-//#define FC_IN_SIZE 317
-#define FC_IN_SIZE 6
+#define FC_IN_SIZE 317
+//#define FC_IN_SIZE 6
 
+#define W_SIZE 730
 #define FC_W_SIZE 730
-#define FC_BIT_RANGE 4
+//#define FC_W_SIZE 2
+#define FC_BIT_RANGE 16
 #define FC_BIT_START 63
 #define FC_BIT_STEP 32
 
 #if defined(FI_CAMPAIGN)
 #include "stai.h"
 STAI_ALIGNED(8)
-extern uint64_t g_network_weights_array[FC_W_SIZE];
+extern uint64_t g_network_weights_array[W_SIZE];
 #endif
 
 
@@ -881,14 +883,15 @@ static void _reset_states(const reqMsg *req, struct ai_network_exec_ctx *ctx)
 #if defined(FI_CAMPAIGN)
 void w_bit_flip(int w_idx, int b_idx)
 {
-  //g_network_weights_array[w_idx] ^= (1U << b_idx);
-  g_network_weights_array[w_idx + b_idx] = ~g_network_weights_array[w_idx + b_idx];
+  // TODO fix this
+  g_network_weights_array[w_idx] ^= (1U << b_idx);
+  //g_network_weights_array[w_idx + b_idx] = ~g_network_weights_array[w_idx + b_idx];
 }
 
-int b_idx = FC_BIT_START;
-int w_idx = 0;
-int b_start = FC_BIT_START;
-int nnRunCounter = 0;
+//int b_idx = FC_BIT_START;
+//int w_idx = 0;
+//int b_start = FC_BIT_START;
+//int nnRunCounter = 0;
 #endif
 
 void aiPbCmdNNRun(const reqMsg *req, respMsg *resp, void *param)
@@ -920,44 +923,19 @@ void aiPbCmdNNRun(const reqMsg *req, respMsg *resp, void *param)
   ai_input = ctx->inputs.tensors;
   ai_output = ctx->outputs.tensors;
 
-
-#if defined(FI_CAMPAIGN)
-  if(nnRunCounter == 0) {
-    w_bit_flip(w_idx, b_idx);
-    PB_LC_PRINT(ctx->debug, "Starting FI campaign for weight %d, bit %d\r\n", w_idx, b_idx);
-  } else if((nnRunCounter % FC_IN_SIZE) == 0) {
-    w_bit_flip(w_idx, b_idx);
-    if(--b_idx <= b_start - FC_BIT_RANGE){
-      b_start -= FC_BIT_STEP;
-      b_idx = b_start;
-    }
-    if(b_start < 0) {
-      b_start = FC_BIT_START;
-      b_idx = b_start;
-      w_idx++;
-    }
-    w_bit_flip(w_idx, b_idx);
-    PB_LC_PRINT(ctx->debug, "Fault injected in weight %d, bit %d\r\n", w_idx, b_idx);
-  }
-
-  nnRunCounter++;
-
-    PB_LC_PRINT(ctx->debug, "RUN\r\n");
+  PB_LC_PRINT(ctx->debug, "RUN: c-model=%s rtid=%d (c-api=%d)\r\n", ctx->report.c_model_name,
+      _AI_RUNTIME_ID & 0xFF, _AI_RUNTIME_ID >> EnumAiApiRuntime_AI_RT_API_POS);
+  PB_LC_PRINT(ctx->debug, "RUN:  observer=%d/%d, simple_value=%d, direct_write=%d\r\n",
+#if defined(USE_OBSERVER) && USE_OBSERVER == 1
+      ctx->observer_is_enabled, ctx->emit_intermediate_data,
+#else
+      0, 0,
 #endif
+      ctx->simple_value, ctx->direct_write);
 
- // PB_LC_PRINT(ctx->debug, "RUN: c-model=%s rtid=%d (c-api=%d)\r\n", ctx->report.c_model_name,
- //     _AI_RUNTIME_ID & 0xFF, _AI_RUNTIME_ID >> EnumAiApiRuntime_AI_RT_API_POS);
-  //PB_LC_PRINT(ctx->debug, "RUN:  observer=%d/%d, simple_value=%d, direct_write=%d\r\n",
-//#if defined(USE_OBSERVER) && USE_OBSERVER == 1
-//      ctx->observer_is_enabled, ctx->emit_intermediate_data,
-//#else
-//      0, 0,
-//#endif
-//      ctx->simple_value, ctx->direct_write);
-
-  //PB_LC_PRINT(ctx->debug, "RUN: Waiting data (%d bytes).. opt=0x%lx, param=0x%lx\r\n",
-  //    _get_tensor_size_bytes(&ai_input[0]),
-  //    req->opt, req->param);
+  PB_LC_PRINT(ctx->debug, "RUN: Waiting data (%d bytes).. opt=0x%lx, param=0x%lx\r\n",
+      _get_tensor_size_bytes(&ai_input[0]),
+      req->opt, req->param);
 
   /* 1 - Send a ACK (ready to receive a tensor) -------------------- */
   aiPbMgrSendAck(req, resp, EnumState_S_WAITING,
@@ -977,7 +955,7 @@ void aiPbCmdNNRun(const reqMsg *req, respMsg *resp, void *param)
   }
 
 #if defined(USE_OBSERVER) && USE_OBSERVER == 1
-  if (ctx->observer_is_enabled) {
+  if (ctx->observer_is_enabled && FI_CAMPAIGN == 0) {
     ctx->c_idx = 0;
     ctx->tnodes = 0UL;
     ctx->tcom = 0UL;
@@ -990,8 +968,16 @@ void aiPbCmdNNRun(const reqMsg *req, respMsg *resp, void *param)
 #endif
 
   tick = port_hal_get_tick() - tick;
-  //PB_LC_PRINT(ctx->debug, "RUN: %ld ticks to download %d input(s)\r\n", tick, ctx->report.n_inputs);
+  PB_LC_PRINT(ctx->debug, "RUN: %ld ticks to download %d input(s)\r\n", tick, ctx->report.n_inputs);
 
+#if defined(FI_CAMPAIGN)
+  for(int w_idx = 0; w_idx < FC_W_SIZE; w_idx++) {
+    for(int b_start = FC_BIT_START; b_start >= 0 ; b_start -= FC_BIT_STEP) {
+       for(int b_idx = b_start; b_idx > b_start - FC_BIT_RANGE; b_idx--) {
+         w_bit_flip(w_idx, b_idx);
+  
+         PB_LC_PRINT(ctx->debug, "Fault injected in weight %d, bit %d\r\n", w_idx, b_idx);
+#endif
   _reset_states(req, ctx);
 
   MON_ALLOC_RESET();
@@ -999,7 +985,7 @@ void aiPbCmdNNRun(const reqMsg *req, respMsg *resp, void *param)
 
   /* 3 - Processing ------------------------------------------------ */
 #if !defined(SR6X)
-  //PB_LC_PRINT(ctx->debug, "RUN: Processing.. tick=%ld\r\n", port_hal_get_tick());
+  PB_LC_PRINT(ctx->debug, "RUN: Processing.. tick=%ld\r\n", port_hal_get_tick());
 #else
   PB_LC_PRINT(ctx->debug, "RUN: Processing.. tick=%lld\r\n", port_hal_get_tick());
 #endif
@@ -1028,7 +1014,7 @@ void aiPbCmdNNRun(const reqMsg *req, respMsg *resp, void *param)
   MON_ALLOC_DISABLE();
   MON_STACK_EVALUATE();
 
-  //PB_LC_PRINT(ctx->debug, "RUN: Processing done. delta_tick=%ld\r\n", tick);
+  PB_LC_PRINT(ctx->debug, "RUN: Processing done. delta_tick=%ld\r\n", tick);
 
   /* 4 - Send basic report (optional) ------------------------------ */
 #if defined(_APP_STACK_MONITOR_) && _APP_STACK_MONITOR_ == 1 && defined(_IS_GCC_COMPILER) && _IS_GCC_COMPILER
@@ -1043,9 +1029,10 @@ void aiPbCmdNNRun(const reqMsg *req, respMsg *resp, void *param)
   aiOpPerf perf = {dwtCyclesToFloatMs(tend), 0,  2, (uint32_t *)&tend, -1, -1};
 #endif
   
+  // TODO remove this step in the FI campaign
   aiPbMgrSendOperator(req, resp, EnumState_S_PROCESSING, ctx->report.c_model_name, 0, 0, &perf);
 
-  //PB_LC_PRINT(ctx->debug, "RUN: send output tensors\r\n");
+  PB_LC_PRINT(ctx->debug, "RUN: send output tensors\r\n");
   /* 5 - Send all output tensors ----------------------------------- */
   for (int i = 0; i < ctx->report.n_outputs; i++) {
     EnumState state = EnumState_S_PROCESSING;
@@ -1060,6 +1047,13 @@ void aiPbCmdNNRun(const reqMsg *req, respMsg *resp, void *param)
     _send_ai_io_tensor(req, resp, state, &ai_output[i],
         ctx->outputs.address[i], flags, 0.0, 0, false);
   }
+
+#if defined(FI_CAMPAIGN)
+         w_bit_flip(w_idx, b_idx);
+       }
+    }
+  }
+#endif
 }
 
 static aiPbCmdFunc pbCmdFuncTab[] = {
