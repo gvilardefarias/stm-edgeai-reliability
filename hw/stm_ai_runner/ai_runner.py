@@ -761,6 +761,14 @@ class AiRunner:
 
         """
         name_ = self._check_name(kwargs.pop('name', None))
+        FI_enable = kwargs.pop('FI_enable', False)
+
+        if FI_enable:
+            f_w_size = kwargs.pop('f_w_size', 4)
+            f_bit_positions = kwargs.pop('f_bit_positions', [0])
+        else:
+            f_w_size = None
+            f_bit_positions = None
 
         if name_ is None:
             return [], {}
@@ -827,7 +835,7 @@ class AiRunner:
                                                        io_extra_bytes=io_extra_bytes,
                                                        sample_idx=batch,
                                                        option=option,
-                                                       callback=callback, ms_outputs=ms_outputs)
+                                                       callback=callback, ms_outputs=ms_outputs, FI_enable=FI_enable, f_w_size=f_w_size, f_bit_positions=f_bit_positions)
             if batch == 0:
                 outputs = s_outputs
             else:
@@ -842,7 +850,8 @@ class AiRunner:
         if prog_bar:
             prog_bar.close()
 
-        outputs = self._check_outputs(outputs, out_desc, io_mode)
+        if not FI_enable:
+            outputs = self._check_outputs(outputs, out_desc, io_mode)
 
         return outputs, profiler
 

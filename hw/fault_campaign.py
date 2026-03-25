@@ -637,31 +637,30 @@ def run(args, logger):
         f_bit_positions = gen_f_bit_positions(args.f_bit_range, args.f_bit_start, args.f_bit_step)
 
         stai_start_time = perf_counter()
-        for f_idx in range(args.f_w_size):
-            f_campaign_results[f_idx] = {}
-            for f_bit in f_bit_positions:
-                logger.info(f'Simulating fault in bit {f_bit} of the weight {f_idx}')
-                ai_outputs, ai_profiler = session.invoke(inputs, mode=mode)
-                f_campaign_results[f_idx][f_bit] = ai_outputs[0]
+        # TODO we can pass only the amount of faults since the faults are decoded here
+        ai_outputs, ai_profiler = session.invoke(inputs, mode=mode, FI_enable=True, f_w_size=args.f_w_size, f_bit_positions=f_bit_positions)
         
         logger.info('Computing accuracy for the fault injection campaign')
         future_to_f_loc = {}
         with ThreadPoolExecutor() as executor:
-            for f_idx in range(args.f_w_size):
+            f_idx = 0
+            for w_idx in range(args.f_w_size):
+                f_campaign_results[w_idx] = {}
                 for f_bit in f_bit_positions:
-                    os.makedirs(f"./fault_campaign/w{f_idx}_b{f_bit}", exist_ok=True)
+                    os.makedirs(f"./fault_campaign/w{w_idx}_b{f_bit}", exist_ok=True)
 
-                    f_campaign_results[f_idx][f_bit] = f_campaign_results[f_idx][f_bit].reshape(ref_shape)
-                    save_tensors(inputs, None, f_campaign_results[f_idx][f_bit], logger, dir_=f"./fault_campaign/w{f_idx}_b{f_bit}")
-                    f_campaign_results[f_idx][f_bit] = f_campaign_results[f_idx][f_bit].argmax(axis=1)
-                    save_classifications(f_campaign_results[f_idx][f_bit], logger, dir_=f"./fault_campaign/w{f_idx}_b{f_bit}")
-                    future_to_f_loc[executor.submit(calc_acc, ref, f_campaign_results[f_idx][f_bit])] = (f_idx, f_bit)
+                    f_campaign_results[w_idx][f_bit] = ai_outputs[f_idx].reshape(ref_shape)
+                    save_tensors(inputs, None, f_campaign_results[w_idx][f_bit], logger, dir_=f"./fault_campaign/w{w_idx}_b{f_bit}")
+                    f_campaign_results[w_idx][f_bit] = f_campaign_results[w_idx][f_bit].argmax(axis=1)
+                    save_classifications(f_campaign_results[w_idx][f_bit], logger, dir_=f"./fault_campaign/w{w_idx}_b{f_bit}")
+                    future_to_f_loc[executor.submit(calc_acc, ref, f_campaign_results[w_idx][f_bit])] = (w_idx, f_bit)
+                    f_idx += 1
 
         for future in as_completed(future_to_f_loc):
-            f_idx, f_bit = future_to_f_loc[future]
+            w_idx, f_bit = future_to_f_loc[future]
             acc = future.result()
-            f_campaign_results[f_idx][f_bit] = acc
-            logger.info(f'Fault in bit {f_bit} of the weight {f_idx} - Accuracy: {acc}')
+            f_campaign_results[w_idx][f_bit] = acc
+            logger.info(f'Fault in bit {f_bit} of the weight {w_idx} - Accuracy: {acc}')
         stai_end_time = perf_counter()
 
         with open("out_dict.txt", 'w') as f:
@@ -718,7 +717,7 @@ def main():
     parser.add_argument('--f-bit-range', type=int, default=16, help="Fault injection bit range")
     parser.add_argument('--f-bit-start', type=int, default=63, help="Fault injection start bit")
     parser.add_argument('--f-bit-step', type=int, default=32, help="Fault injection bit step")
-    parser.add_argument('--f-w-size', type=int, default=1, help="Fault injection weigth size")
+    parser.add_argument('--f-w-size', type=int, default=730, help="Fault injection weigth size")
     parser.add_argument('--f-inject', action='store_true', help="Enable fault injection")
     args = parser.parse_args()
     logging.basicConfig(format='%(message)s', stream=sys.stdout,

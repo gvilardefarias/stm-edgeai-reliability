@@ -1169,6 +1169,11 @@ class AiPbMsg(AiRunnerDriver):
             raise HwIOError('Should be called with a batch size of 1')
 
         name = kwargs.pop('name', None)
+        FI_enable = kwargs.pop('FI_enable', False)
+
+        if FI_enable:
+            f_w_size = kwargs.pop('f_w_size', 4)
+            f_bit_positions = kwargs.pop('f_bit_positions', [0])
 
         if name is None or name not in self._models:
             raise InvalidParamError('Invalid requested model name: ' + name)
@@ -1230,46 +1235,93 @@ class AiPbMsg(AiRunnerDriver):
             else:
                 self._send_input_buffer(input_, is_last=is_last)
 
-        # receive the features
-        resp = self._receive_features(profiler, callback, model['rt_decoder'])
+        if FI_enable:
+            for w_idx in range(f_w_size):
+                for bit_pos in f_bit_positions:
+                    self._logger.debug(f'Running FI at weight index {w_idx} and bit position {bit_pos}')
+                    #print(f'Running FI at weight index {w_idx} and bit position {bit_pos}')
+                    #TODO remove this step in FI campaigns
+                    # receive the features
+                    resp = self._receive_features(profiler, callback, model['rt_decoder'])
+        
+                    # receive final operation info (model)
+                    if resp is None:
+                        self._logger.debug('-' * 40)
+                        resp = self._waiting_answer(msg_type='op', timeout=50000, state=stm32msg.S_PROCESSING)
+                    # self._send_ack()
+                    self._logger.debug('INFERENCE DONE')
+                    self._logger.debug(op_msg_to_str(resp.op, model['rt_decoder']))
+                    counter_type_ = model['rt_decoder'].counter_desc(resp.op.counter_type)
+                    counters_ = model['rt_decoder'].counter_decode(resp.op.counter_type, resp.op.counters)
+        
+                    # TODO fix this calcule
+                    inference_dur = resp.op.duration
+                    if profiler:
+                        profiler['debug']['counters']['type'] = counter_type_
+                        profiler['debug']['counters']['values'].append(counters_)
+                        profiler['debug']['stack_usage'] = resp.op.stack_used
+                        profiler['debug']['heap_usage'] = resp.op.heap_used
+        
+                    # receive outputs of the model
+                    for idx in range(model['info'].n_outputs):
+                        is_last = (idx + 1) == model['info'].n_outputs
+                        self._logger.debug('RECEIVE OUTPUT TENSOR #{} last={}..'.format(idx, is_last))
+                        state = stm32msg.S_DONE if is_last else stm32msg.S_PROCESSING
+                        resp = self._waiting_answer(msg_type='tensor', timeout=50000, state=state)
+                        tag = 'O_{}'.format(idx)
+                        output, io_tens_, tens_is_last = _decode_tensor_msg(resp, '', tag)
+                        s_outputs.append(output)
+                        if is_last != tens_is_last:
+                            msg = 'Number of received output tensor is not valid'
+                            raise HwIOError(msg)
+                        self._logger.debug(' {}'.format(io_tens_.desc(full=True)))
+                        # if not is_last:
+                        #    self._send_ack()
+        else:
+            # receive the features
+            resp = self._receive_features(profiler, callback, model['rt_decoder'])
 
-        # receive final operation info (model)
-        if resp is None:
-            self._logger.debug('-' * 40)
-            resp = self._waiting_answer(msg_type='op', timeout=50000, state=stm32msg.S_PROCESSING)
-        # self._send_ack()
-        self._logger.debug('INFERENCE DONE')
-        self._logger.debug(op_msg_to_str(resp.op, model['rt_decoder']))
-        counter_type_ = model['rt_decoder'].counter_desc(resp.op.counter_type)
-        counters_ = model['rt_decoder'].counter_decode(resp.op.counter_type, resp.op.counters)
+            # receive final operation info (model)
+            if resp is None:
+                self._logger.debug('-' * 40)
+                resp = self._waiting_answer(msg_type='op', timeout=50000, state=stm32msg.S_PROCESSING)
+            # self._send_ack()
+            self._logger.debug('INFERENCE DONE')
+            self._logger.debug(op_msg_to_str(resp.op, model['rt_decoder']))
+            counter_type_ = model['rt_decoder'].counter_desc(resp.op.counter_type)
+            counters_ = model['rt_decoder'].counter_decode(resp.op.counter_type, resp.op.counters)
 
-        inference_dur = resp.op.duration
-        if profiler:
-            profiler['debug']['counters']['type'] = counter_type_
-            profiler['debug']['counters']['values'].append(counters_)
-            profiler['debug']['stack_usage'] = resp.op.stack_used
-            profiler['debug']['heap_usage'] = resp.op.heap_used
+            inference_dur = resp.op.duration
+            if profiler:
+                profiler['debug']['counters']['type'] = counter_type_
+                profiler['debug']['counters']['values'].append(counters_)
+                profiler['debug']['stack_usage'] = resp.op.stack_used
+                profiler['debug']['heap_usage'] = resp.op.heap_used
 
-        # receive outputs of the model
-        for idx in range(model['info'].n_outputs):
-            is_last = (idx + 1) == model['info'].n_outputs
-            self._logger.debug('RECEIVE OUTPUT TENSOR #{} last={}..'.format(idx, is_last))
-            state = stm32msg.S_DONE if is_last else stm32msg.S_PROCESSING
-            resp = self._waiting_answer(msg_type='tensor', timeout=50000, state=state)
-            tag = 'O_{}'.format(idx)
-            output, io_tens_, tens_is_last = _decode_tensor_msg(resp, '', tag)
-            s_outputs.append(output)
-            if is_last != tens_is_last:
-                msg = 'Number of received output tensor is not valid'
-                raise HwIOError(msg)
-            self._logger.debug(' {}'.format(io_tens_.desc(full=True)))
-            # if not is_last:
-            #    self._send_ack()
+            # receive outputs of the model
+            for idx in range(model['info'].n_outputs):
+                is_last = (idx + 1) == model['info'].n_outputs
+                self._logger.debug('RECEIVE OUTPUT TENSOR #{} last={}..'.format(idx, is_last))
+                state = stm32msg.S_DONE if is_last else stm32msg.S_PROCESSING
+                resp = self._waiting_answer(msg_type='tensor', timeout=50000, state=state)
+                tag = 'O_{}'.format(idx)
+                output, io_tens_, tens_is_last = _decode_tensor_msg(resp, '', tag)
+                s_outputs.append(output)
+                if is_last != tens_is_last:
+                    msg = 'Number of received output tensor is not valid'
+                    raise HwIOError(msg)
+                self._logger.debug(' {}'.format(io_tens_.desc(full=True)))
+                # if not is_last:
+                #    self._send_ack()
 
         if profiler:
             profiler['debug']['exec_times'].append(inference_dur)
             if mode & (AiRunner.Mode.PER_LAYER | AiRunner.Mode.PER_LAYER_WITH_DATA):
-                dur = profiler['c_durations'][-1]
+                # TODO fix it
+                try:
+                    dur = profiler['c_durations'][-1]
+                except:
+                    dur = inference_dur
             else:
                 dur = inference_dur
                 profiler['c_durations'].append(inference_dur)
