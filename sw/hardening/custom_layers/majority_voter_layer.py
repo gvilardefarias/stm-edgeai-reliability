@@ -1,5 +1,6 @@
 import tensorflow as tf
 
+@tf.keras.utils.register_keras_serializable(package="Custom", name="MajorityVoterLayer")
 class MajorityVoterLayer(tf.keras.layers.Layer):
     def __init__(self, **kwargs):
         super(MajorityVoterLayer, self).__init__(**kwargs)

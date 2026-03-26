@@ -43,12 +43,12 @@ def profile_activations(model, representative_data):
         
     return layer_max_dict
 
-def build_adaptive_clipper_model(original_model_path, representative_data):
+def build_adaptive_clipper_model(original_model_path, representative_data, margin=1.1):
     print(f"\nLoading original model: {original_model_path}")
     model = tf.keras.models.load_model(original_model_path)
     
     layer_max_dict = profile_activations(model, representative_data)
-    
+        
     print("\n--- PHASE 2: REBUILDING WITH ADAPTIVE CLIPPERS ---")
     input_layer = tf.keras.Input(shape=model.input_shape[1:])
     x = input_layer
@@ -58,21 +58,54 @@ def build_adaptive_clipper_model(original_model_path, representative_data):
             continue
             
         config = layer.get_config()
-        has_fused_relu = 'activation' in config and config['activation'] == 'relu'
         
+        # Detect all forms of ReLU
+        is_relu = False
+        if isinstance(layer, tf.keras.layers.ReLU):
+            is_relu = True
+        elif isinstance(layer, tf.keras.layers.Activation) and layer.activation.__name__ == 'relu':
+            is_relu = True
+        elif hasattr(layer, 'activation') and layer.activation is not None and getattr(layer.activation, '__name__', None) == 'relu':
+            is_relu = True
+
+        # If it's a fused ReLU, strip it from the original layer config
+        has_fused_relu = False
+        if 'activation' in config:
+            act = config['activation']
+            if isinstance(act, str) and act.lower() == 'relu':
+                has_fused_relu = True
+            elif isinstance(act, dict) and (act.get('config') == 'relu' or act.get('name') == 'relu'):
+                has_fused_relu = True
+        is_activation_relu = False
+        if isinstance(layer, tf.keras.layers.Activation):
+            act = config.get('activation')
+            if isinstance(act, str) and act.lower() == 'relu':
+                is_activation_relu = True
+            elif isinstance(act, dict) and (act.get('config') == 'relu' or act.get('name') == 'relu'):
+                is_activation_relu = True
+
+        # 3. Check for standalone ReLU layers
+        is_standalone_relu = isinstance(layer, tf.keras.layers.ReLU)
+
+        # Strip fused ReLU so we can replace with our clipper
         if has_fused_relu:
-            config['activation'] = 'linear'
-            
-        new_layer = layer.__class__.from_config(config)
-        x = new_layer(x)
-        new_layer.set_weights(layer.get_weights())
-        
-        is_standalone_relu = isinstance(layer, tf.keras.layers.ReLU) and layer.max_value is None
-        
-        if has_fused_relu or is_standalone_relu:
+            if isinstance(config['activation'], dict):
+                config['activation']['config'] = 'linear'
+                config['activation']['name'] = 'linear'
+            else:
+                config['activation'] = 'linear'
+
+        # Skip standalone Activation('relu') — we replace it with the clipper below
+        if is_activation_relu:
+            pass  # Don't add original layer; clipper replaces it
+        else:
+            new_layer = layer.__class__.from_config(config)
+            x = new_layer(x)
+            new_layer.set_weights(layer.get_weights())
+
+        if has_fused_relu or is_standalone_relu or is_activation_relu:
             max_val = layer_max_dict[layer.name]
-            safe_max_val = max(max_val, 0.1) 
-            # Implements HardTanH(x, max(x)) from the paper
+            safe_max_val = max(max_val, 0.1)
             x = tf.keras.layers.ReLU(max_value=safe_max_val, name=f"{layer.name}_clipper")(x)
             print(f"Added Adaptive Clipper to {layer.name:<15} (Ceiling: {safe_max_val:.4f})")
             
@@ -111,8 +144,8 @@ def finetune_clipper_model(model, train_ds, valid_ds, save_path, epochs=10, lear
     return model
 
 if __name__ == "__main__":
-    base_model = "/home/apo/stm-edgeai-reliability/hardening/base_models/ign/ign_wl_24.h5"
-    output_h5 = "/home/apo/stm-edgeai-reliability/hardening/hardened_models/ign/adaptive_clipper_finetuned.h5"
+    base_model = "/home/apo/stm-edgeai-reliability/sw/hardening/base_models/ign/ign_wl_24.h5"
+    output_h5 = "/home/apo/stm-edgeai-reliability/sw/hardening/hardened_models/ign/adaptive_clipper_finetuned.h5"
     
     dataset_path = "/home/apo/stm32ai-modelzoo-services/human_activity_recognition/datasets/WISDM_ar_v1.1/WISDM_ar_v1.1_raw.txt"
     class_names = ['Walking', 'Jogging', 'Stairs', 'Stationary'] 

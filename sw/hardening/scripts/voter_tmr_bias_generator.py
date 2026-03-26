@@ -1,9 +1,10 @@
 import os
 import sys
-import tensorflow as tf
 
-# Suppress warnings
+# Suppress warnings (must be set before importing TF)
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
+import tensorflow as tf
 
 # Import the custom layer
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'custom_layers')))
@@ -67,11 +68,11 @@ def build_bias_tmr_model(original_model_path, target_layer_name, save_path):
 
 if __name__ == "__main__":
     # Ensure these paths match your environment
-    base_model = "/home/apo/stm-edgeai-reliability/hardening/human_activity_recognition/base_models/gmp/gmp_wl_24.h5"
+    base_model = "/home/apo/stm-edgeai-reliability/sw/hardening/base_models/gmp/gmp_wl_24.h5"
     target = "conv2d" 
     
     # Save to the hardened_models directory matching your validation command
-    output_h5 = "/home/apo/stm-edgeai-reliability/hardening/human_activity_recognition/hardened_models/gmp/HAR_bias_tmr_1.h5"
+    output_h5 = "/home/apo/stm-edgeai-reliability/sw/hardening/hardened_models/gmp/HAR_bias_tmr_1.h5"
     
     if os.path.exists(base_model):
         build_bias_tmr_model(base_model, target, output_h5)

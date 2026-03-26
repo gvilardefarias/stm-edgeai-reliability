@@ -1,6 +1,6 @@
 {
     "TMRBiasLayer": {
-        "python": "/home/apo/stm-edgeai-reliability/hardening/custom_layers/tmr_bias_layer.py",
-        "c": "/home/apo/stm-edgeai-reliability/hardening/custom_layers/tmr_bias_layer_impl.c"
+        "python": "/home/apo/stm-edgeai-reliability/sw/hardening/custom_layers/tmr_bias_layer.py",
+        "c": "/home/apo/stm-edgeai-reliability/sw/hardening/custom_layers/tmr_bias_layer_impl.c"
     }
 }

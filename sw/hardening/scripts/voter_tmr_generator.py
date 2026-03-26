@@ -36,21 +36,19 @@ def build_tmr_model(original_model_path, target_layer_name, save_path):
             out_2 = layers[1](x)
             out_3 = layers[2](x)
             
-            # 3. Set identical weights
+            # 3. Set slightly different weights to prevent ST Edge AI deduplication
             weights = layer.get_weights()
-            for l in layers:
-                l.set_weights([w.copy() for w in weights])
+            for i, l in enumerate(layers):
+                epsilon = (i + 1) * 1e-6
+                modified_weights = []
+                for w in weights:
+                    if np.issubdtype(w.dtype, np.floating):
+                        modified_weights.append((w.copy() + epsilon).astype(np.float32))
+                    else:
+                        modified_weights.append(w.copy())
+                l.set_weights(modified_weights)
             
             # 4. MAJORITY VOTER LAYER
-            def majority_voter(tensors):
-                o1, o2, o3 = tensors
-                o1_eq_o2 = tf.equal(o1, o2)
-                o1_eq_o3 = tf.equal(o1, o3)
-                o2_eq_o3 = tf.equal(o2, o3)
-                res = tf.where(tf.logical_or(o1_eq_o2, o1_eq_o3), o1, 
-                               tf.where(o2_eq_o3, o2, o1))
-                return res
-            
             x = MajorityVoterLayer(name=f"{layer.name}_voter")([out_1, out_2, out_3])
             print("--- MAJORITY VOTER LAYER ADDED ---")
             
@@ -67,9 +65,9 @@ def build_tmr_model(original_model_path, target_layer_name, save_path):
     return tmr_model
 
 if __name__ == "__main__":
-    base_model = "/home/apo/stm-edgeai-reliability/hardening/human_activity_recognition/base_models/gmp/gmp_wl_24.h5"
+    base_model = "/home/apo/stm-edgeai-reliability/sw/hardening/base_models/gmp/gmp_wl_24.h5"
     target = "conv2d" 
-    output_h5 = "/home/apo/stm-edgeai-reliability/hardening/human_activity_recognition/hardened_models/gmp/HAR_tmr_voter.h5"
+    output_h5 = "/home/apo/stm-edgeai-reliability/sw/hardening/hardened_models/gmp/HAR_tmr_voter.h5"
     
     if os.path.exists(base_model):
         build_tmr_model(base_model, target, output_h5)

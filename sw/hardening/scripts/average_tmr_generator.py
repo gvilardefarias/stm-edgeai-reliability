@@ -42,15 +42,22 @@ def build_tmr_model(original_model_path, target_layer_name, save_path):
             out_2 = layer_2(x)
             out_3 = layer_3(x)
             
-            # 3. Set the EXACT SAME WEIGHTS for all 3 layers
-            layer_1.set_weights(layer.get_weights())
-            layer_2.set_weights(layer.get_weights())
-            layer_3.set_weights(layer.get_weights())
+            # 3. Set slightly different weights for all 3 layers to avoid deduplication
+            import numpy as np
+            weights = layer.get_weights()
+            for i, l in enumerate([layer_1, layer_2, layer_3]):
+                epsilon = (i + 1) * 1e-6
+                modified_weights = []
+                for w in weights:
+                    if np.issubdtype(w.dtype, np.floating):
+                        modified_weights.append((w.copy() + epsilon).astype(np.float32))
+                    else:
+                        modified_weights.append(w.copy())
+                l.set_weights(modified_weights)
             
             # 4. THE VOTER LAYER
             # We use tf.math.top_k to sort the 3 outputs and take the middle one (the median)
             # This acts as our TMR Voter without requiring complex custom layers!
-                  # 4. THE VOTER LAYER
             x = MedianVoterLayer(name=f"{layer.name}_voter")([out_1, out_2, out_3])
             print("--- MEDIAN VOTER LAYER ADDED ---")
             
@@ -62,7 +69,7 @@ def build_tmr_model(original_model_path, target_layer_name, save_path):
             new_layer.set_weights(layer.get_weights())
             
     # Create the new model
-    tmr_model = tf.keras.Model(inputs=input_layer, outputs=x, name="HAD_tmr")
+    tmr_model = tf.keras.Model(inputs=input_layer, outputs=x, name="HAR_tmr")
     
     print("\nSaving new TMR model to:", save_path)
     # Save as .h5 format specifically for STM32Cube.AI
@@ -72,12 +79,15 @@ def build_tmr_model(original_model_path, target_layer_name, save_path):
 
 if __name__ == "__main__":
     # Update this path to point to one of your actual trained .keras files
-    base_model = "/home/apo/stm-edgeai-reliability/hardening/human_activity_recognition/base_models/gmp/gmp_wl_24.h5"
+    base_model = "/home/apo/stm-edgeai-reliability/sw/hardening/base_models/gmp/gmp_wl_24.h5"
     
     # We will pick a layer to triplicate. Let's assume there is a layer named 'conv2d_1'
     # You can change this to any layer name Gustavo tells you to harden!
     target = "conv2d_1" 
     
-    output_h5 = "/home/apo/stm-edgeai-reliability/hardening/human_activity_recognition/hardened_models/gmp/HAR_avg_tmr.h5"
+    output_h5 = "/home/apo/stm-edgeai-reliability/sw/hardening/hardened_models/gmp/HAR_avg_tmr.h5"
     
-    build_tmr_model(base_model, target, output_h5)
+    if os.path.exists(base_model):
+        build_tmr_model(base_model, target, output_h5)
+    else:
+        print(f"Error: Could not find {base_model}")

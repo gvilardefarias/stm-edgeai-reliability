@@ -13,18 +13,22 @@ class TMRBiasLayer(tf.keras.layers.Layer):
             self.original_bias = None
 
     def build(self, input_shape):
-        # Reverted back to 3 separate copies of the bias to match your .h5 file and C code
         shape = self.original_bias.shape if self.original_bias is not None else (input_shape[-1],)
         init_val = self.original_bias if self.original_bias is not None else np.zeros(shape)
         
+        # Inject epsilons to bypass STEdgeAI deduplication
+        init_val_1 = (init_val + 1e-6).astype(np.float32) if self.original_bias is not None else init_val
+        init_val_2 = (init_val + 2e-6).astype(np.float32) if self.original_bias is not None else init_val
+        init_val_3 = (init_val + 3e-6).astype(np.float32) if self.original_bias is not None else init_val
+        
         self.b1 = self.add_weight(name='b1', shape=shape,
-                                  initializer=tf.keras.initializers.Constant(init_val), 
+                                  initializer=tf.keras.initializers.Constant(init_val_1), 
                                   trainable=False)
         self.b2 = self.add_weight(name='b2', shape=shape, 
-                                  initializer=tf.keras.initializers.Constant(init_val), 
+                                  initializer=tf.keras.initializers.Constant(init_val_2), 
                                   trainable=False)
         self.b3 = self.add_weight(name='b3', shape=shape, 
-                                  initializer=tf.keras.initializers.Constant(init_val), 
+                                  initializer=tf.keras.initializers.Constant(init_val_3), 
                                   trainable=False)
         super().build(input_shape)
 

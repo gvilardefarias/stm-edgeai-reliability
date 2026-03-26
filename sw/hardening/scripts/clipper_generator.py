@@ -53,7 +53,7 @@ def profile_activations(model, representative_data):
         print(f"Layer: {layer.name:<20} | Max Activation: {max_val:.4f}")
         
     return layer_max_dict
-def build_adaptive_clipper_model(original_model_path, representative_data, save_path):
+def build_adaptive_clipper_model(original_model_path, representative_data, save_path, margin=1.1):
     print(f"\nLoading original model: {original_model_path}")
     model = tf.keras.models.load_model(original_model_path)
     
@@ -67,9 +67,17 @@ def build_adaptive_clipper_model(original_model_path, representative_data, save_
         if isinstance(layer, tf.keras.layers.InputLayer):
             continue
             
+        # Detect all forms of ReLU
         config = layer.get_config()
-        
-        # 1. Robust check for fused ReLUs (Conv2D/Dense)
+        is_relu = False
+        if isinstance(layer, tf.keras.layers.ReLU):
+            is_relu = True
+        elif isinstance(layer, tf.keras.layers.Activation) and layer.activation.__name__ == 'relu':
+            is_relu = True
+        elif hasattr(layer, 'activation') and layer.activation is not None and getattr(layer.activation, '__name__', None) == 'relu':
+            is_relu = True
+
+        # If it's a fused ReLU, strip it from the original layer config
         has_fused_relu = False
         if 'activation' in config:
             act = config['activation']
@@ -78,7 +86,6 @@ def build_adaptive_clipper_model(original_model_path, representative_data, save_
             elif isinstance(act, dict) and (act.get('config') == 'relu' or act.get('name') == 'relu'):
                 has_fused_relu = True
                 
-        # 2. Check for standalone Activation('relu') layers
         is_activation_relu = False
         if isinstance(layer, tf.keras.layers.Activation):
             act = config.get('activation')
@@ -126,8 +133,8 @@ def build_adaptive_clipper_model(original_model_path, representative_data, save_
 
 if __name__ == "__main__":
     # Based on the JSON file, this is the actual model you are validating
-    base_model = "/home/apo/stm-edgeai-reliability/hardening/base_models/ign/ign_wl_24.h5"
-    output_h5 = "/home/apo/stm-edgeai-reliability/hardening/hardened_models/ign/adaptive_clipper.h5"
+    base_model = "/home/apo/stm-edgeai-reliability/sw/hardening/base_models/ign/ign_wl_24.h5"
+    output_h5 = "/home/apo/stm-edgeai-reliability/sw/hardening/hardened_models/ign/adaptive_clipper.h5"
     
     dataset_path = "/home/apo/stm32ai-modelzoo-services/human_activity_recognition/datasets/WISDM_ar_v1.1/WISDM_ar_v1.1_raw.txt"
     class_names = ['Walking', 'Jogging', 'Stairs', 'Stationary'] 
