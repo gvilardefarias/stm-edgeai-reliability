@@ -166,9 +166,19 @@ EXAMPLES:
        --st-ai-output st_ai_output/
 """
     parser = argparse.ArgumentParser(description=desc, formatter_class=RawTextHelpFormatter)
-    parser.add_argument("--base-model", required=True, help="Path to original .h5 model")
-    parser.add_argument("--target-layer", required=True, help="Name of the layer triplicated in TMR (e.g. conv2d, conv2d_1)")
-    parser.add_argument("--st-ai-output", required=True, help="Directory containing generated C files (e.g. st_ai_output/)")
+    parser.add_argument("--model", default="hand_posture", choices=["ign", "hand_posture", "miniresnet"], help="Model type")
+    parser.add_argument("--st-ai-output", default="/home/apo/stm-edgeai-reliability/st_ai_output", help="Directory containing generated C files")
     
     args = parser.parse_args()
-    patch_c_weights(args.base_model, args.target_layer, args.st_ai_output)
+    
+    if args.model == 'ign':
+        base_model = "/home/apo/stm-edgeai-reliability/sw/hardening/base_models/ign/ign_wl_24.h5"
+        target = "conv2d"
+    elif args.model == 'hand_posture':
+        base_model = "/home/apo/stm-edgeai-reliability/sw/hardening/base_models/hand_posture/CNN2D_ST_HandPosture_8classes.h5"
+        target = "conv2d"
+    elif args.model == 'miniresnet':
+        base_model = "/home/apo/stm-edgeai-reliability/sw/hardening/base_models/miniresnet/miniresnet_1stacks_64x50_tl.h5"
+        target = "conv2_block1_1_conv"
+
+    patch_c_weights(base_model, target, args.st_ai_output)

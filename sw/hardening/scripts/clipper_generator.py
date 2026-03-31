@@ -2,40 +2,12 @@ import os
 import sys
 import tensorflow as tf
 import numpy as np
+import argparse
+from omegaconf import OmegaConf
 
 # Suppress warnings
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-# 1. Dynamically find the repository root and its parent directory
-current_dir = os.path.abspath(os.getcwd())
-
-if os.path.basename(current_dir) == "human_activity_recognition":
-    repo_root = current_dir
-elif "human_activity_recognition" in os.listdir(current_dir):
-    repo_root = os.path.join(current_dir, "human_activity_recognition")
-else:
-    # Fallback if running from somewhere else entirely
-    repo_root = current_dir
-
-# The repository uses absolute imports (e.g., 'human_activity_recognition.tf.src...')
-# Therefore, Python needs the PARENT directory of the repo in its system path.
-parent_dir = os.path.dirname(repo_root)
-sys.path.append(parent_dir)
-
-# We also add the src folder just in case there are relative imports
-src_path = os.path.join(repo_root, "tf", "src")
-sys.path.append(src_path)
-
-print(f"Added to Python Path: {parent_dir}")
-print(f"Added to Python Path: {src_path}")
-
-# Add the specific directory that contains the 'human_activity_recognition' folder
-modelzoo_path = "/home/apo/stm32ai-modelzoo-services"
-if modelzoo_path not in sys.path:
-    sys.path.append(modelzoo_path)
-
-# Now you can use the standard import because the parent is in the path
-from human_activity_recognition.tf.src.datasets.wisdm import load_wisdm
 def profile_activations(model, representative_data):
     print("--- PROFILING MAXIMUM ACTIVATIONS ---")
     # Create a sub-model that outputs the feature maps of every layer
@@ -53,6 +25,7 @@ def profile_activations(model, representative_data):
         print(f"Layer: {layer.name:<20} | Max Activation: {max_val:.4f}")
         
     return layer_max_dict
+
 def build_adaptive_clipper_model(original_model_path, representative_data, save_path, margin=1.1):
     print(f"\nLoading original model: {original_model_path}")
     model = tf.keras.models.load_model(original_model_path)
@@ -61,15 +34,29 @@ def build_adaptive_clipper_model(original_model_path, representative_data, save_
     
     print("\n--- PHASE 2: REBUILDING WITH ADAPTIVE CLIPPERS ---")
     input_layer = tf.keras.Input(shape=model.input_shape[1:])
-    x = input_layer
+    network_dict = {model.input.name: input_layer}
     
     for layer in model.layers:
         if isinstance(layer, tf.keras.layers.InputLayer):
             continue
             
+        # Determine inputs using functional nodes
+        layer_inputs = []
+        for node in layer._inbound_nodes:
+            node_inputs = node.input_tensors
+            if isinstance(node_inputs, list):
+                for inp in node_inputs:
+                    layer_inputs.append(network_dict[inp.name])
+            else:
+                layer_inputs.append(network_dict[node_inputs.name])
+        
+        if len(layer_inputs) == 1:
+            layer_inputs = layer_inputs[0]
+
         # Detect all forms of ReLU
         config = layer.get_config()
         is_relu = False
+        
         if isinstance(layer, tf.keras.layers.ReLU):
             is_relu = True
         elif isinstance(layer, tf.keras.layers.Activation) and layer.activation.__name__ == 'relu':
@@ -77,7 +64,6 @@ def build_adaptive_clipper_model(original_model_path, representative_data, save_
         elif hasattr(layer, 'activation') and layer.activation is not None and getattr(layer.activation, '__name__', None) == 'relu':
             is_relu = True
 
-        # If it's a fused ReLU, strip it from the original layer config
         has_fused_relu = False
         if 'activation' in config:
             act = config['activation']
@@ -86,18 +72,16 @@ def build_adaptive_clipper_model(original_model_path, representative_data, save_
             elif isinstance(act, dict) and (act.get('config') == 'relu' or act.get('name') == 'relu'):
                 has_fused_relu = True
                 
-        is_activation_relu = False
+        is_activation_layer_relu = False
         if isinstance(layer, tf.keras.layers.Activation):
             act = config.get('activation')
             if isinstance(act, str) and act.lower() == 'relu':
-                is_activation_relu = True
+                is_activation_layer_relu = True
             elif isinstance(act, dict) and (act.get('config') == 'relu' or act.get('name') == 'relu'):
-                is_activation_relu = True
+                is_activation_layer_relu = True
 
-        # 3. Check for standalone ReLU layers
-        is_standalone_relu = isinstance(layer, tf.keras.layers.ReLU)
+        is_standalone_relu_layer = isinstance(layer, tf.keras.layers.ReLU)
         
-        # If it has a fused ReLU, we strip it out so we can add our custom one
         if has_fused_relu:
             if isinstance(config['activation'], dict):
                 config['activation']['config'] = 'linear'
@@ -105,25 +89,30 @@ def build_adaptive_clipper_model(original_model_path, representative_data, save_
             else:
                 config['activation'] = 'linear'
                 
-        # If it's a standalone Activation('relu') layer, we skip adding the original
-        if is_activation_relu:
-            pass # We don't add the original layer to 'x', we will just add the clipper below
+        # Reconstruction
+        if is_activation_layer_relu:
+            x_out = layer_inputs # Skip original activation layer
         else:
-            # Recreate the layer and apply it to 'x'
-            new_layer = layer.__class__.from_config(config)
-            x = new_layer(x)
-            new_layer.set_weights(layer.get_weights())
+            l_obj = layer.__class__.from_config(config)
+            x_out = l_obj(layer_inputs)
+            l_obj.set_weights(layer.get_weights())
         
-        # ADD THE ADAPTIVE CLIPPER
-        if has_fused_relu or is_standalone_relu or is_activation_relu:
+        # Add the Adaptive Clipper
+        if has_fused_relu or is_standalone_relu_layer or is_activation_layer_relu:
             max_val = layer_max_dict[layer.name]
-            safe_max_val = max(max_val, 0.1) 
+            safe_max_val = max(max_val * margin, 0.1) 
             
-            # Implements HardTanH(x, max(x))
-            x = tf.keras.layers.ReLU(max_value=safe_max_val, name=f"{layer.name}_clipper")(x)
+            x_out = tf.keras.layers.ReLU(max_value=safe_max_val, name=f"{layer.name}_clipper")(x_out)
             print(f"Added Adaptive Clipper to {layer.name:<15} (Ceiling: {safe_max_val:.4f})")
             
-    clipper_model = tf.keras.Model(inputs=input_layer, outputs=x, name="HAR_AdaptiveClipper")
+        # Map output tensors
+        if isinstance(layer.output, list):
+            for i, out in enumerate(layer.output):
+                network_dict[out.name] = x_out[i]
+        else:
+            network_dict[layer.output.name] = x_out
+
+    clipper_model = tf.keras.Model(inputs=input_layer, outputs=network_dict[model.output.name], name="HAR_AdaptiveClipper")
     
     print(f"\nSaving hardened model to: {save_path}")
     clipper_model.save(save_path)
@@ -132,42 +121,70 @@ def build_adaptive_clipper_model(original_model_path, representative_data, save_
     return clipper_model
 
 if __name__ == "__main__":
-    # Based on the JSON file, this is the actual model you are validating
-    base_model = "/home/apo/stm-edgeai-reliability/sw/hardening/base_models/ign/ign_wl_24.h5"
-    output_h5 = "/home/apo/stm-edgeai-reliability/sw/hardening/hardened_models/ign/adaptive_clipper.h5"
-    
-    dataset_path = "/home/apo/stm32ai-modelzoo-services/human_activity_recognition/datasets/WISDM_ar_v1.1/WISDM_ar_v1.1_raw.txt"
-    class_names = ['Walking', 'Jogging', 'Stairs', 'Stationary'] 
-    target_shape = (24, 3, 1) # Window Length of 24, 3 axes
-    
-    print(f"Loading real WISDM dataset from {dataset_path}...")
-    
-    # Generate the actual TensorFlow datasets using your repo's utility
-    train_ds, valid_ds, test_ds = load_wisdm(
-        dataset_path=dataset_path,
-        class_names=class_names,
-        input_shape=target_shape,
-        gravity_rot_sup=True,
-        normalization=True,
-        val_split=0.2,
-        test_split=0.2,
-        seed=42,
-        batch_size=200, # Load 200 samples for profiling
-        to_cache=False
-    )
-    
-    if train_ds is None:
-        print("Failed to load dataset. Check the dataset path.")
-        sys.exit(1)
-        
-    print("Extracting representative data batch from the training set...")
-    # Take 1 full batch (200 real physical samples) from the training dataset
-    for x_batch, y_batch in train_ds.take(1):
-        representative_data = x_batch.numpy()
-        
-    print(f"Representative data shape extracted: {representative_data.shape}")
+    parser = argparse.ArgumentParser(description='Generate Adaptive Clipper hardened models.')
+    parser.add_argument('--model', type=str, default='ign', choices=['ign', 'hand_posture', 'miniresnet'], help='Model type')
+    args = parser.parse_args()
 
+    margin = 1.1
+
+    if args.model == 'ign':
+        print("--- CONFIGURING FOR IGN MODEL ---")
+        base_model = "/home/apo/stm-edgeai-reliability/sw/hardening/base_models/ign/ign_wl_24.h5"
+        output_h5 = "/home/apo/stm-edgeai-reliability/sw/hardening/hardened_models/ign/adaptive_clipper.h5"
+        
+        modelzoo_path = "/home/apo/stm32ai-modelzoo-services"
+        sys.path.append(modelzoo_path)
+        from human_activity_recognition.tf.src.datasets.wisdm import load_wisdm
+        
+        dataset_path = "/home/apo/stm32ai-modelzoo-services/human_activity_recognition/datasets/WISDM_ar_v1.1/WISDM_ar_v1.1_raw.txt"
+        class_names = ['Walking', 'Jogging', 'Stairs', 'Stationary'] 
+        target_shape = (24, 3, 1)
+        
+        train_ds, _, _ = load_wisdm(
+            dataset_path=dataset_path,
+            class_names=class_names,
+            input_shape=target_shape,
+            gravity_rot_sup=True,
+            normalization=True,
+            val_split=0.2,
+            test_split=0.2,
+            seed=42,
+            batch_size=200,
+            to_cache=False
+        )
+        for x_batch, _ in train_ds.take(1):
+            representative_data = x_batch.numpy()
+
+    elif args.model == 'hand_posture':
+        print("--- CONFIGURING FOR HAND POSTURE MODEL ---")
+        base_model = "/home/apo/stm-edgeai-reliability/sw/hardening/base_models/hand_posture/CNN2D_ST_HandPosture_8classes.h5"
+        output_h5 = "/home/apo/stm-edgeai-reliability/sw/hardening/hardened_models/hand_posture/adaptive_clipper.h5"
+        
+        modelzoo_root = "/home/apo/stm32ai-modelzoo-services"
+        sys.path.insert(0, modelzoo_root)
+        from hand_posture.tf.wrappers.datasets.st_handposture import get_ST_handposture_dataset
+        
+        config_path = os.path.join(modelzoo_root, "hand_posture", "user_config.yaml")
+        cfg = OmegaConf.load(config_path)
+        cfg.dataset.training_path = "/home/apo/stm32ai-modelzoo-services/hand_posture/datasets/ST_VL53L8CX_handposture_dataset"
+        
+        data_loaders = get_ST_handposture_dataset(cfg)
+        train_ds = data_loaders['train']
+        for images, labels in train_ds.take(1):
+            representative_data = images.numpy()
+
+    elif args.model == 'miniresnet':
+        print("--- CONFIGURING FOR MINIRESNET MODEL ---")
+        base_model = "/home/apo/stm-edgeai-reliability/sw/hardening/base_models/miniresnet/miniresnet_1stacks_64x50_tl.h5"
+        output_h5 = "/home/apo/stm-edgeai-reliability/sw/hardening/hardened_models/miniresnet/adaptive_clipper.h5"
+        
+        # MiniResNet uses a straight .npy dataset
+        dataset_path = "/home/apo/stm-edgeai-reliability/sw/datasets/miniresnet/miniresnet_dataset.npy"
+        representative_data = np.load(dataset_path)[:100] # Take first 100 samples for profiling
+        print(f"Loaded {representative_data.shape[0]} samples for profiling.")
+
+    os.makedirs(os.path.dirname(output_h5), exist_ok=True)
     if os.path.exists(base_model):
-        build_adaptive_clipper_model(base_model, representative_data, output_h5)
+        build_adaptive_clipper_model(base_model, representative_data, output_h5, margin=margin)
     else:
-        print(f"Error: Could not find {base_model}. Make sure the path is correct.")
+        print(f"Error: Could not find {base_model}")

@@ -1,0 +1,153 @@
+ST Edge AI Core v1.0.0-19895
+Created date          : 2026-03-31 11:02:16
+Parameters            : generate -m sw/hardening/hardened_models/hand_posture/adaptive_clipper.h5 --target stellar-e --custom sw/hardening/config/adaptive_clipper_config.json
+
+Exec/report summary (generate)
+------------------------------------------------------------------------------------------------------------------------
+model file         :   /home/apo/stm-edgeai-reliability/sw/hardening/hardened_models/hand_posture/adaptive_clipper.h5   
+type               :   keras                                                                                            
+c_name             :   network                                                                                          
+compression        :   lossless                                                                                         
+optimization       :   balanced                                                                                         
+target/series      :   stellar-e                                                                                        
+workspace dir      :   /home/apo/stm-edgeai-reliability/st_ai_ws                                                        
+output dir         :   /home/apo/stm-edgeai-reliability/st_ai_output                                                    
+model_fmt          :   float                                                                                            
+model_name         :   adaptive_clipper                                                                                 
+model_hash         :   0xfaebef74bcbefab8d55a04026abcbcd2                                                               
+params #           :   2,752 items (10.75 KiB)                                                                          
+------------------------------------------------------------------------------------------------------------------------
+input 1/1          :   'input_1', f32(1x8x8x2), 512 Bytes, user                                                         
+output 1/1         :   'dense_1', f32(1x8), 32 Bytes, user                                                              
+macc               :   8,840                                                                                            
+weights (ro)       :   11,008 B (10.75 KiB) (1 segment)                                                                 
+activations (rw)   :   744 B (744 B) (1 segment)                                                                        
+ram (total)        :   1,288 B (1.26 KiB) = 744 + 512 + 32                                                              
+------------------------------------------------------------------------------------------------------------------------
+
+Model name - adaptive_clipper
+------ ----------------------------------------- ------------------- ------------- ------- -------------------- --- --------------- ------------------ ------------------------------- 
+m_id   layer (type,original)                     oshape              param/size       macc         connected to   | c_size          c_macc             c_type                          
+------ ----------------------------------------- ------------------- ------------- ------- -------------------- --- --------------- ------------------ ------------------------------- 
+0      input_1 (Input, InputLayer)               [b:1,h:8,w:8,c:2]                                                |                                    
+------ ----------------------------------------- ------------------- ------------- ------- -------------------- --- --------------- ------------------ ------------------------------- 
+1      conv2d (Conv2D, Conv2D)                   [b:1,h:6,w:6,c:8]   152/608         5,192              input_1   | -608(-100.0%)   -5,192(-100.0%)    
+------ ----------------------------------------- ------------------- ------------- ------- -------------------- --- --------------- ------------------ ------------------------------- 
+2      activation_clipper (Nonlinearity, ReLU)   [b:1,h:6,w:6,c:8]                     288               conv2d   |                 -288(-100.0%)      
+------ ----------------------------------------- ------------------- ------------- ------- -------------------- --- --------------- ------------------ ------------------------------- 
+3      max_pooling2d (Pool, MaxPooling2D)        [b:1,h:3,w:3,c:8]                     288   activation_clipper   | +608(+100.0%)   +5,768(+2002.8%)   Conv2D_[0]                      
+------ ----------------------------------------- ------------------- ------------- ------- -------------------- --- --------------- ------------------ ------------------------------- 
+5      flatten (Reshape, Flatten)                [b:1,c:72]                                       max_pooling2d   |                                    
+------ ----------------------------------------- ------------------- ------------- ------- -------------------- --- --------------- ------------------ ------------------------------- 
+6      dense (Dense, Dense)                      [b:1,c:32]          2,336/9,344     2,336              flatten   |                                    Dense_[1]                       
+------ ----------------------------------------- ------------------- ------------- ------- -------------------- --- --------------- ------------------ ------------------------------- 
+7      dense_clipper (Nonlinearity, ReLU)        [b:1,c:32]                             32                dense   |                 +32(+100.0%)       Nonlinearity_[2]                
+------ ----------------------------------------- ------------------- ------------- ------- -------------------- --- --------------- ------------------ ------------------------------- 
+8      dense_1_dense (Dense, Dense)              [b:1,c:8]           264/1,056         264        dense_clipper   |                 +120(+45.5%)       Dense_/Nonlinearity_[o][3, 4]   
+       dense_1 (Nonlinearity, Dense)             [b:1,c:8]                             120        dense_1_dense   |                 -120(-100.0%)      
+------ ----------------------------------------- ------------------- ------------- ------- -------------------- --- --------------- ------------------ ------------------------------- 
+model/c-model: macc=8,520/8,840 +320(+3.8%) weights=11,008/11,008  activations=--/744 io=--/544
+
+
+
+Generated C-graph summary
+------------------------------------------------------------------------------------------------------------------------
+model name            : adaptive_clipper
+c-name                : network
+c-node #              : 5
+c-array #             : 14
+activations size      : 744 (1 segment)
+weights size          : 11008 (1 segment)
+macc                  : 8840
+inputs                : ['input_1_output']
+outputs               : ['dense_1_output']
+
+C-Arrays (14)
+------ ----------------------- ----------- ------------------------- ------------- --------- 
+c_id   name (*_array)          item/size   domain/mem-pool           c-type        comment   
+------ ----------------------- ----------- ------------------------- ------------- --------- 
+0      conv2d_bias             8/32        weights/weights           const float             
+1      conv2d_output           72/288      activations/**default**   float                   
+2      conv2d_scratch0         18/72       activations/**default**   float                   
+3      conv2d_scratch1         96/384      activations/**default**   float                   
+4      conv2d_weights          144/576     weights/weights           const float             
+5      dense_1_dense_bias      8/32        weights/weights           const float             
+6      dense_1_dense_output    8/32        activations/**default**   float                   
+7      dense_1_dense_weights   256/1024    weights/weights           const float             
+8      dense_1_output          8/32        user/                     float         /output   
+9      dense_bias              32/128      weights/weights           const float             
+10     dense_clipper_output    32/128      activations/**default**   float                   
+11     dense_output            32/128      activations/**default**   float                   
+12     dense_weights           2304/9216   weights/weights           const float             
+13     input_1_output          128/512     user/                     float         /input    
+------ ----------------------- ----------- ------------------------- ------------- --------- 
+
+C-Layers (5)
+------ ---------------- ---- --------------- ------ ------ -------------------------- ------------------- 
+c_id   name (*_layer)   id   layer_type      macc   rom    tensors                    shape (array id)    
+------ ---------------- ---- --------------- ------ ------ -------------------------- ------------------- 
+0      conv2d           3    Conv2D          6056   608    I: input_1_output          f32(1x8x8x2) (13)   
+                                                           S: conv2d_scratch0                             
+                                                           S: conv2d_scratch1                             
+                                                           W: conv2d_weights          f32(8x3x3x2) (4)    
+                                                           W: conv2d_bias             f32(8) (0)          
+                                                           O: conv2d_output           f32(1x3x3x8) (1)    
+------ ---------------- ---- --------------- ------ ------ -------------------------- ------------------- 
+1      dense            6    Dense           2336   9344   I: conv2d_output           f32(1x3x3x8) (1)    
+                                                           W: dense_weights           f32(32x72) (12)     
+                                                           W: dense_bias              f32(32) (9)         
+                                                           O: dense_output            f32(1x32) (11)      
+------ ---------------- ---- --------------- ------ ------ -------------------------- ------------------- 
+2      dense_clipper    7    Nonlinearity    64     0      I: dense_output            f32(1x32) (11)      
+                                                           O: dense_clipper_output    f32(1x32) (10)      
+------ ---------------- ---- --------------- ------ ------ -------------------------- ------------------- 
+3      dense_1_dense    8    Dense           264    1056   I: dense_clipper_output    f32(1x32) (10)      
+                                                           W: dense_1_dense_weights   f32(8x32) (7)       
+                                                           W: dense_1_dense_bias      f32(8) (5)          
+                                                           O: dense_1_dense_output    f32(1x8) (6)        
+------ ---------------- ---- --------------- ------ ------ -------------------------- ------------------- 
+4      dense_1          8    Nonlinearity    120    0      I: dense_1_dense_output    f32(1x8) (6)        
+                                                           O: dense_1_output          f32(1x8) (8)        
+------ ---------------- ---- --------------- ------ ------ -------------------------- ------------------- 
+
+
+
+Number of operations per c-layer
+------- ------ ------------------------------ ------- -------------- 
+c_id    m_id   name (type)                        #op           type 
+------- ------ ------------------------------ ------- -------------- 
+0       3      conv2d (Conv2D)                  6,056   smul_f32_f32 
+1       6      dense (Dense)                    2,336   smul_f32_f32 
+2       7      dense_clipper (Nonlinearity)        64     op_f32_f32 
+3       8      dense_1_dense (Dense)              264   smul_f32_f32 
+4       8      dense_1 (Nonlinearity)             120     op_f32_f32 
+------- ------ ------------------------------ ------- -------------- 
+total                                           8,840 
+
+Number of operation types
+---------------- ------- ----------- 
+operation type         #           % 
+---------------- ------- ----------- 
+smul_f32_f32       8,656       97.9% 
+op_f32_f32           184        2.1% 
+
+Complexity report (model)
+------ --------------- ------------------------- ------------------------- -------- 
+m_id   name            c_macc                    c_rom                     c_id     
+------ --------------- ------------------------- ------------------------- -------- 
+3      max_pooling2d   ||||||||||||||||  68.5%   |                  5.5%   [0]      
+6      dense           ||||||            26.4%   ||||||||||||||||  84.9%   [1]      
+7      dense_clipper   |                  0.7%   |                  0.0%   [2]      
+8      dense_1_dense   |                  4.3%   ||                 9.6%   [3, 4]   
+------ --------------- ------------------------- ------------------------- -------- 
+macc=8,840 weights=11,008 act=744 ram_io=544
+
+Generated files (7)
+------------------------------------------------------------------------- 
+/home/apo/stm-edgeai-reliability/st_ai_output/inc/network_data_params.h   
+/home/apo/stm-edgeai-reliability/st_ai_output/src/network_data_params.c   
+/home/apo/stm-edgeai-reliability/st_ai_output/inc/network_data.h          
+/home/apo/stm-edgeai-reliability/st_ai_output/src/network_data.c          
+/home/apo/stm-edgeai-reliability/st_ai_output/inc/network_config.h        
+/home/apo/stm-edgeai-reliability/st_ai_output/inc/network.h               
+/home/apo/stm-edgeai-reliability/st_ai_output/src/network.c               
