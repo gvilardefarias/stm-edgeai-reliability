@@ -67,12 +67,12 @@ def gen_f_bit_positions(f_bit_range = 16, f_bit_start = 63, f_bit_step = 32):
         f_bit_positions.extend(list(range(start, start - f_bit_range, -1)))
     return f_bit_positions
 
-def sta_fault_campaign(f_bit_positions = gen_f_bit_positions(), fault_model = ['sta0', 'sta1'], remove_files = True, save_report = False):
+def sta_fault_campaign(f_bit_positions = gen_f_bit_positions(), fault_model = ['sta0', 'sta1'], remove_files = True, save_report = False, golden_path = golden_path):
     global WEIGHTS, golden_acc, golden_report
     campaign_results = {}
     report_results = {}
 
-    golden_lib = stm_edgeai_lib.gen_lib()
+    golden_lib = stm_edgeai_lib.gen_lib(golden_path = golden_path)
 
     os.makedirs("./fault_campaign", exist_ok=True)
     os.makedirs("./fault_campaign/golden", exist_ok=True)
@@ -185,7 +185,7 @@ if __name__ == "__main__":
 
     if not continue_cmp:
         start = time.time()
-        result, report_results = sta_fault_campaign(save_report=save_report, fault_model=fault_model)
+        result, report_results = sta_fault_campaign(save_report=save_report, fault_model=fault_model, golden_path=golden_path)
         end = time.time()
         time_taken = end - start
     

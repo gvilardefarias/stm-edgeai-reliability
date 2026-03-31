@@ -15,10 +15,11 @@ def init(model_path, dataset_path = None, custom_path = None):
     global generate_cmd, validade_cmd
 
     generate_cmd = f"stedgeai generate --model {model_path} --target {target}"
+    # TODO add no-check only if using hardening model
     if dataset_path:
-        validade_cmd = f"stedgeai validate --model {model_path} --target {target} --quiet -v 0 -vi {dataset_path}"
+        validade_cmd = f"stedgeai validate --model {model_path} --target {target} --quiet -v 0 -vi {dataset_path} --no-check"
     else:
-        validade_cmd = f"stedgeai validate --model {model_path} --target {target} --quiet -v 0 -b 100"
+        validade_cmd = f"stedgeai validate --model {model_path} --target {target} --quiet -v 0 -b 100 --no-check"
     
     if custom_path:
         generate_cmd += f" --custom {custom_path}"
@@ -28,9 +29,15 @@ def compile_lib(build_path = "./st_ai_ws/inspector_network/workspace/"):
     print("compile", build_path)
     os.system(f"cd {build_path} && " + compile_cmd)
 
-def gen_lib():
-    os.system(generate_cmd)
-    os.system(validade_cmd)
+def gen_lib(golden_path = None):
+    if golden_path is None:
+        os.system(generate_cmd)
+        os.system(validade_cmd)
+    else:
+        os.system(f"rm -rf ./st_ai_output/")
+        os.system(f"rm -rf ./st_ai_ws/")
+        os.system(f"cp -r {golden_path}/st_ai_output/ .")
+        os.system(f"cp -r {golden_path}/st_ai_ws/ .")
 
     for f in files_to_build:
         os.system(f"cp ./st_ai_output/src/{f}.c ./st_ai_ws/inspector_network/workspace/generated/")

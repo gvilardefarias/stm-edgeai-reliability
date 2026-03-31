@@ -11,7 +11,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'custom_layers')))
 from majority_voter_layer import MajorityVoterLayer
 
-def build_tmr_model(original_model_path, target_layer_name, save_path):
+def build_tmr_model(original_model_path, target_layer_name, save_path, add_error = True):
     print(f"Loading original model: {original_model_path}")
     model = tf.keras.models.load_model(original_model_path)
     
@@ -49,10 +49,10 @@ def build_tmr_model(original_model_path, target_layer_name, save_path):
                 out = l_obj(layer_inputs)
                 
                 # Apply epsilon to weights to bypass deduplication
-                epsilon = (i + 1) * 1e-6
+                epsilon = (i) * 1e-6
                 modified_weights = []
                 for w in weights:
-                    if np.issubdtype(w.dtype, np.floating):
+                    if np.issubdtype(w.dtype, np.floating) and add_error:
                         modified_weights.append((w.copy() + epsilon).astype(np.float32))
                     else:
                         modified_weights.append(w.copy())
@@ -93,17 +93,21 @@ if __name__ == "__main__":
         base_model = "/home/apo/stm-edgeai-reliability/sw/hardening/base_models/ign/ign_wl_24.h5"
         target = "conv2d" 
         output_h5 = "/home/apo/stm-edgeai-reliability/sw/hardening/hardened_models/ign/HAR_voter_tmr.h5"
+        output_h5_golden = "/home/apo/stm-edgeai-reliability/sw/hardening/hardened_models/ign/HAR_voter_tmr_golden.h5"
     elif args.model == 'hand_posture':
         base_model = "/home/apo/stm-edgeai-reliability/sw/hardening/base_models/hand_posture/CNN2D_ST_HandPosture_8classes.h5"
         target = "conv2d" 
         output_h5 = "/home/apo/stm-edgeai-reliability/sw/hardening/hardened_models/hand_posture/HAR_voter_tmr.h5"
+        output_h5_golden = "/home/apo/stm-edgeai-reliability/sw/hardening/hardened_models/hand_posture/HAR_voter_tmr_golden.h5"
     elif args.model == 'miniresnet':
         base_model = "/home/apo/stm-edgeai-reliability/sw/hardening/base_models/miniresnet/miniresnet_1stacks_64x50_tl.h5"
         target = "conv2_block1_1_conv" 
         output_h5 = "/home/apo/stm-edgeai-reliability/sw/hardening/hardened_models/miniresnet/HAR_voter_tmr.h5"
+        output_h5_golden = "/home/apo/stm-edgeai-reliability/sw/hardening/hardened_models/miniresnet/HAR_voter_tmr_golden.h5"
 
     os.makedirs(os.path.dirname(output_h5), exist_ok=True)
     if os.path.exists(base_model):
-        build_tmr_model(base_model, target, output_h5)
+        build_tmr_model(base_model, target, output_h5, add_error=True)
+        build_tmr_model(base_model, target, output_h5_golden, add_error=False)
     else:
         print(f"Error: Could not find {base_model}")

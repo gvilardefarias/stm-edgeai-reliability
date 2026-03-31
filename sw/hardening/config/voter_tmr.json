@@ -1,6 +1,6 @@
 {
     "MajorityVoterLayer": {
-        "python": "/home/apo/stm-edgeai-reliability/sw/hardening/custom_layers/majority_voter_layer.py",
-        "c": "/home/apo/stm-edgeai-reliability/sw/hardening/custom_layers/my_custom_voter.c"
+        "python": "/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/custom_layers/majority_voter_layer.py",
+        "c": "/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/custom_layers/my_custom_voter.c"
     }
 }
