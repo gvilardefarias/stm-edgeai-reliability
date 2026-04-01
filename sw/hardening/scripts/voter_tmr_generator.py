@@ -113,12 +113,11 @@ if __name__ == "__main__":
         output_h5 = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/miniresnet/bias_tmr.h5")
     elif args.model == 'gmp':
         base_model = os.path.join(PRJ_ROOT, "sw/hardening/base_models/gmp/gmp_wl_24.h5")
-        target = "conv2_block1_1_conv" 
+        target = "conv2d" 
         output_h5 = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/gmp/voter_tmr.h5")
 
     os.makedirs(os.path.dirname(output_h5), exist_ok=True)
     if os.path.exists(base_model):
         build_tmr_model(base_model, target, output_h5, add_error=True)
-        build_tmr_model(base_model, target, output_h5_golden, add_error=False)
     else:
         print(f"Error: Could not find {base_model}")

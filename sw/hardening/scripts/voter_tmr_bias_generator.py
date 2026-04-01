@@ -105,7 +105,7 @@ if __name__ == "__main__":
     elif args.model == 'miniresnet':
         base_model = os.path.join(PRJ_ROOT, "sw/hardening/base_models/miniresnet/miniresnet_1stacks_64x50_tl.h5")
         target = "conv2_block1_1_conv" 
-        output_h5 = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/miniresnet/bias_tmr.h5")
+        output_h5 = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/gmp/bias_tmr.h5")
     elif args.model == 'gmp':
         base_model = os.path.join(PRJ_ROOT, "sw/hardening/base_models/gmp/gmp_wl_24.h5")
         target = "conv2d" 
