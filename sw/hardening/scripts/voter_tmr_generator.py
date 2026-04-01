@@ -86,7 +86,7 @@ def build_tmr_model(original_model_path, target_layer_name, save_path, add_error
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate Voter TMR hardened models.')
-    parser.add_argument('--model', type=str, default='hand_posture', choices=['ign', 'hand_posture', 'miniresnet'], help='Model type')
+    parser.add_argument('--model', type=str, default='hand_posture', choices=['gmp', 'ign', 'hand_posture', 'miniresnet'], help='Model type')
     args = parser.parse_args()
 
     # Dynamic project root detection
@@ -98,6 +98,11 @@ if __name__ == "__main__":
         target = "conv2d" 
         output_h5 = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/ign/HAR_voter_tmr.h5")
         output_h5_golden = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/ign/HAR_voter_tmr_golden.h5")
+    elif args.model == 'gmp':
+        base_model = os.path.join(PRJ_ROOT, "sw/hardening/base_models/gmp/gmp_wl_24.h5")
+        target = "conv2d_1" 
+        output_h5 = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/gmp/HAR_voter_tmr.h5")
+        output_h5_golden = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/gmp/HAR_voter_tmr_golden.h5")
     elif args.model == 'hand_posture':
         base_model = os.path.join(PRJ_ROOT, "sw/hardening/base_models/hand_posture/CNN2D_ST_HandPosture_8classes.h5")
         target = "conv2d" 
