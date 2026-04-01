@@ -71,10 +71,6 @@ void custom_forward_MajorityVoterLayer(ai_layer* layer)
       return;
   }
 
-  switch (l->id)
-  {
-    case AI_LAYER_CUSTOM_CONV2D_VOTER_ID:
-    {
       /* USER CODE BEGINS HERE */
       // CORRECT ST Edge AI Data Access macro instead of ->data
       ai_float *d_in0 = ai_tensor_get_data(t_in0).float32;
@@ -96,14 +92,10 @@ void custom_forward_MajorityVoterLayer(ai_layer* layer)
           } else if (v2 == v3) {
               d_out[i] = v2;
           } else {
-              d_out[i] = v1; // Fallback to branch 1 if all 3 are completely different
+              d_out[i] = -1; // indicates error
           }
       }
       /* USER CODE ENDS HERE */
-    } break;
-  
-    default: break;
-  }
 
   ai_layer_custom_release(layer);
 }
