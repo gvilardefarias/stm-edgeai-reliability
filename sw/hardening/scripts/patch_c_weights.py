@@ -143,42 +143,40 @@ if __name__ == '__main__':
     import argparse
     from argparse import RawTextHelpFormatter
     
+    # Dynamic project root detection
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    PRJ_ROOT = os.path.abspath(os.path.join(script_dir, '..', '..', '..'))
+    
+    default_st_ai_output = os.path.join(PRJ_ROOT, "st_ai_output")
+
     desc = """
 Patch ST Edge AI weights with mathematically pristine bits to bypass TMR deduplication.
 
 EXAMPLES:
   1. Voter TMR (targets 'conv2d'):
-     python patch_c_weights.py \\
-       --base-model sw/hardening/base_models/gmp/gmp_wl_24.h5 \\
-       --target-layer conv2d \\
+     python patch_c_weights.py \
+       --model hand_posture \
        --st-ai-output st_ai_output/
 
   2. Average/Median TMR (targets 'conv2d_1'):
-     python patch_c_weights.py \\
-       --base-model sw/hardening/base_models/gmp/gmp_wl_24.h5 \\
-       --target-layer conv2d_1 \\
-       --st-ai-output st_ai_output/
-
-  3. Bias TMR (targets 'conv2d' bias only):
-     python patch_c_weights.py \\
-       --base-model sw/hardening/base_models/gmp/gmp_wl_24.h5 \\
-       --target-layer conv2d \\
+     python patch_c_weights.py \
+       --model ign \
        --st-ai-output st_ai_output/
 """
     parser = argparse.ArgumentParser(description=desc, formatter_class=RawTextHelpFormatter)
     parser.add_argument("--model", default="hand_posture", choices=["ign", "hand_posture", "miniresnet"], help="Model type")
-    parser.add_argument("--st-ai-output", default="/home/apo/stm-edgeai-reliability/st_ai_output", help="Directory containing generated C files")
+    parser.add_argument("--st-ai-output", default=default_st_ai_output, help="Directory containing generated C files")
     
     args = parser.parse_args()
     
     if args.model == 'ign':
-        base_model = "/home/apo/stm-edgeai-reliability/sw/hardening/base_models/ign/ign_wl_24.h5"
+        base_model = os.path.join(PRJ_ROOT, "sw/hardening/base_models/ign/ign_wl_24.h5")
         target = "conv2d"
     elif args.model == 'hand_posture':
-        base_model = "/home/apo/stm-edgeai-reliability/sw/hardening/base_models/hand_posture/CNN2D_ST_HandPosture_8classes.h5"
+        base_model = os.path.join(PRJ_ROOT, "sw/hardening/base_models/hand_posture/CNN2D_ST_HandPosture_8classes.h5")
         target = "conv2d"
     elif args.model == 'miniresnet':
-        base_model = "/home/apo/stm-edgeai-reliability/sw/hardening/base_models/miniresnet/miniresnet_1stacks_64x50_tl.h5"
+        base_model = os.path.join(PRJ_ROOT, "sw/hardening/base_models/miniresnet/miniresnet_1stacks_64x50_tl.h5")
         target = "conv2_block1_1_conv"
 
     patch_c_weights(base_model, target, args.st_ai_output)

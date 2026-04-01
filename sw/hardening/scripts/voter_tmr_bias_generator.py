@@ -90,18 +90,22 @@ if __name__ == "__main__":
     parser.add_argument('--model', type=str, default='hand_posture', choices=['ign', 'hand_posture', 'miniresnet'], help='Model type')
     args = parser.parse_args()
 
+    # Dynamic project root detection
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    PRJ_ROOT = os.path.abspath(os.path.join(script_dir, '..', '..', '..'))
+
     if args.model == 'ign':
-        base_model = "/home/apo/stm-edgeai-reliability/sw/hardening/base_models/ign/ign_wl_24.h5"
+        base_model = os.path.join(PRJ_ROOT, "sw/hardening/base_models/ign/ign_wl_24.h5")
         target = "conv2d" 
-        output_h5 = "/home/apo/stm-edgeai-reliability/sw/hardening/hardened_models/ign/HAR_bias_tmr.h5"
+        output_h5 = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/ign/HAR_bias_tmr.h5")
     elif args.model == 'hand_posture':
-        base_model = "/home/apo/stm-edgeai-reliability/sw/hardening/base_models/hand_posture/CNN2D_ST_HandPosture_8classes.h5"
+        base_model = os.path.join(PRJ_ROOT, "sw/hardening/base_models/hand_posture/CNN2D_ST_HandPosture_8classes.h5")
         target = "conv2d" 
-        output_h5 = "/home/apo/stm-edgeai-reliability/sw/hardening/hardened_models/hand_posture/tmr_bias.h5"
+        output_h5 = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/hand_posture/tmr_bias.h5")
     elif args.model == 'miniresnet':
-        base_model = "/home/apo/stm-edgeai-reliability/sw/hardening/base_models/miniresnet/miniresnet_1stacks_64x50_tl.h5"
+        base_model = os.path.join(PRJ_ROOT, "sw/hardening/base_models/miniresnet/miniresnet_1stacks_64x50_tl.h5")
         target = "conv2_block1_1_conv" 
-        output_h5 = "/home/apo/stm-edgeai-reliability/sw/hardening/hardened_models/miniresnet/tmr_bias.h5"
+        output_h5 = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/miniresnet/tmr_bias.h5")
 
     os.makedirs(os.path.dirname(output_h5), exist_ok=True)
     

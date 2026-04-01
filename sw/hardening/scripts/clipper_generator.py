@@ -121,22 +121,30 @@ def build_adaptive_clipper_model(original_model_path, representative_data, save_
     return clipper_model
 
 if __name__ == "__main__":
+    # Dynamic project root detection
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    PRJ_ROOT = os.path.abspath(os.path.join(script_dir, '..', '..', '..'))
+    
+    # Default modelzoo path in home directory
+    default_modelzoo_path = os.path.expanduser("~/stm32ai-modelzoo-services")
+
     parser = argparse.ArgumentParser(description='Generate Adaptive Clipper hardened models.')
     parser.add_argument('--model', type=str, default='ign', choices=['ign', 'hand_posture', 'miniresnet'], help='Model type')
+    parser.add_argument('--modelzoo-path', type=str, default=default_modelzoo_path, help='Path to stm32ai-modelzoo-services')
     args = parser.parse_args()
 
+    modelzoo_path = args.modelzoo_path
     margin = 1.1
 
     if args.model == 'ign':
-        print("--- CONFIGURING FOR IGN MODEL ---")
-        base_model = "/home/apo/stm-edgeai-reliability/sw/hardening/base_models/ign/ign_wl_24.h5"
-        output_h5 = "/home/apo/stm-edgeai-reliability/sw/hardening/hardened_models/ign/adaptive_clipper.h5"
+        print(f"--- CONFIGURING FOR IGN MODEL (ModelZoo: {modelzoo_path}) ---")
+        base_model = os.path.join(PRJ_ROOT, "sw/hardening/base_models/ign/ign_wl_24.h5")
+        output_h5 = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/ign/adaptive_clipper.h5")
         
-        modelzoo_path = "/home/apo/stm32ai-modelzoo-services"
         sys.path.append(modelzoo_path)
         from human_activity_recognition.tf.src.datasets.wisdm import load_wisdm
         
-        dataset_path = "/home/apo/stm32ai-modelzoo-services/human_activity_recognition/datasets/WISDM_ar_v1.1/WISDM_ar_v1.1_raw.txt"
+        dataset_path = os.path.join(modelzoo_path, "human_activity_recognition/datasets/WISDM_ar_v1.1/WISDM_ar_v1.1_raw.txt")
         class_names = ['Walking', 'Jogging', 'Stairs', 'Stationary'] 
         target_shape = (24, 3, 1)
         
@@ -156,17 +164,16 @@ if __name__ == "__main__":
             representative_data = x_batch.numpy()
 
     elif args.model == 'hand_posture':
-        print("--- CONFIGURING FOR HAND POSTURE MODEL ---")
-        base_model = "/home/apo/stm-edgeai-reliability/sw/hardening/base_models/hand_posture/CNN2D_ST_HandPosture_8classes.h5"
-        output_h5 = "/home/apo/stm-edgeai-reliability/sw/hardening/hardened_models/hand_posture/adaptive_clipper.h5"
+        print(f"--- CONFIGURING FOR HAND POSTURE MODEL (ModelZoo: {modelzoo_path}) ---")
+        base_model = os.path.join(PRJ_ROOT, "sw/hardening/base_models/hand_posture/CNN2D_ST_HandPosture_8classes.h5")
+        output_h5 = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/hand_posture/adaptive_clipper.h5")
         
-        modelzoo_root = "/home/apo/stm32ai-modelzoo-services"
-        sys.path.insert(0, modelzoo_root)
+        sys.path.insert(0, modelzoo_path)
         from hand_posture.tf.wrappers.datasets.st_handposture import get_ST_handposture_dataset
         
-        config_path = os.path.join(modelzoo_root, "hand_posture", "user_config.yaml")
+        config_path = os.path.join(modelzoo_path, "hand_posture", "user_config.yaml")
         cfg = OmegaConf.load(config_path)
-        cfg.dataset.training_path = "/home/apo/stm32ai-modelzoo-services/hand_posture/datasets/ST_VL53L8CX_handposture_dataset"
+        cfg.dataset.training_path = os.path.join(modelzoo_path, "hand_posture/datasets/ST_VL53L8CX_handposture_dataset")
         
         data_loaders = get_ST_handposture_dataset(cfg)
         train_ds = data_loaders['train']
@@ -175,11 +182,11 @@ if __name__ == "__main__":
 
     elif args.model == 'miniresnet':
         print("--- CONFIGURING FOR MINIRESNET MODEL ---")
-        base_model = "/home/apo/stm-edgeai-reliability/sw/hardening/base_models/miniresnet/miniresnet_1stacks_64x50_tl.h5"
-        output_h5 = "/home/apo/stm-edgeai-reliability/sw/hardening/hardened_models/miniresnet/adaptive_clipper.h5"
+        base_model = os.path.join(PRJ_ROOT, "sw/hardening/base_models/miniresnet/miniresnet_1stacks_64x50_tl.h5")
+        output_h5 = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/miniresnet/adaptive_clipper.h5")
         
         # MiniResNet uses a straight .npy dataset
-        dataset_path = "/home/apo/stm-edgeai-reliability/sw/datasets/miniresnet/miniresnet_dataset.npy"
+        dataset_path = os.path.join(PRJ_ROOT, "sw/datasets/miniresnet/miniresnet_dataset.npy")
         representative_data = np.load(dataset_path)[:100] # Take first 100 samples for profiling
         print(f"Loaded {representative_data.shape[0]} samples for profiling.")
 

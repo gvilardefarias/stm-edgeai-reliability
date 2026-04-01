@@ -6,28 +6,7 @@ import numpy as np
 # Suppress warnings
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-# 1. Dynamically find the repository root and its parent directory
-current_dir = os.path.abspath(os.getcwd())
-
-if os.path.basename(current_dir) == "human_activity_recognition":
-    repo_root = current_dir
-elif "human_activity_recognition" in os.listdir(current_dir):
-    repo_root = os.path.join(current_dir, "human_activity_recognition")
-else:
-    repo_root = current_dir
-
-parent_dir = os.path.dirname(repo_root)
-sys.path.append(parent_dir)
-
-src_path = os.path.join(repo_root, "tf", "src")
-sys.path.append(src_path)
-# Add the specific directory that contains the 'human_activity_recognition' folder
-modelzoo_path = "/home/apo/stm32ai-modelzoo-services"
-if modelzoo_path not in sys.path:
-    sys.path.append(modelzoo_path)
-
-# Now you can use the standard import because the parent is in the path
-from human_activity_recognition.tf.src.datasets.wisdm import load_wisdm
+# Path setup depends on argparse which is now in __main__
 def profile_activations(model, representative_data):
     print("\n--- PHASE 1: PROFILING MAXIMUM ACTIVATIONS ---")
     extractor = tf.keras.Model(inputs=model.inputs, 
@@ -144,10 +123,31 @@ def finetune_clipper_model(model, train_ds, valid_ds, save_path, epochs=10, lear
     return model
 
 if __name__ == "__main__":
-    base_model = "/home/apo/stm-edgeai-reliability/sw/hardening/base_models/ign/ign_wl_24.h5"
-    output_h5 = "/home/apo/stm-edgeai-reliability/sw/hardening/hardened_models/ign/adaptive_clipper_finetuned.h5"
+    import argparse
     
-    dataset_path = "/home/apo/stm32ai-modelzoo-services/human_activity_recognition/datasets/WISDM_ar_v1.1/WISDM_ar_v1.1_raw.txt"
+    # Dynamic project root detection
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    PRJ_ROOT = os.path.abspath(os.path.join(script_dir, '..', '..', '..'))
+    
+    # Default modelzoo path
+    default_modelzoo_path = os.path.expanduser("~/stm32ai-modelzoo-services")
+    
+    parser = argparse.ArgumentParser(description='Finetune Adaptive Clipper hardened models.')
+    parser.add_argument('--modelzoo-path', type=str, default=default_modelzoo_path, help='Path to stm32ai-modelzoo-services')
+    args = parser.parse_args()
+    
+    modelzoo_path = args.modelzoo_path
+    
+    if modelzoo_path not in sys.path:
+        sys.path.append(modelzoo_path)
+    
+    # Now import load_wisdm after adding to path
+    from human_activity_recognition.tf.src.datasets.wisdm import load_wisdm
+
+    base_model = os.path.join(PRJ_ROOT, "sw/hardening/base_models/ign/ign_wl_24.h5")
+    output_h5 = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/ign/adaptive_clipper_finetuned.h5")
+    
+    dataset_path = os.path.join(modelzoo_path, "human_activity_recognition/datasets/WISDM_ar_v1.1/WISDM_ar_v1.1_raw.txt")
     class_names = ['Walking', 'Jogging', 'Stairs', 'Stationary'] 
     target_shape = (24, 3, 1) 
     
