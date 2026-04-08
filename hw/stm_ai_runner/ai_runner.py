@@ -830,12 +830,16 @@ class AiRunner:
                 ms_outputs = None
             if callback:
                 callback.on_sample_begin(batch)
-            s_outputs, s_dur = self._drv.invoke_sample(s_inputs, name=name_,
-                                                       profiler=profiler, mode=mode,
-                                                       io_extra_bytes=io_extra_bytes,
-                                                       sample_idx=batch,
-                                                       option=option,
-                                                       callback=callback, ms_outputs=ms_outputs, FI_enable=FI_enable, f_w_size=f_w_size, f_bit_positions=f_bit_positions)
+            try:
+                s_outputs, s_dur = self._drv.invoke_sample(s_inputs, name=name_,
+                                                           profiler=profiler, mode=mode,
+                                                           io_extra_bytes=io_extra_bytes,
+                                                           sample_idx=batch,
+                                                           option=option,
+                                                           callback=callback, ms_outputs=ms_outputs, FI_enable=FI_enable, f_w_size=f_w_size, f_bit_positions=f_bit_positions)
+            except:
+                break
+
             if batch == 0:
                 outputs = s_outputs
             else:

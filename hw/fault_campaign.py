@@ -619,6 +619,7 @@ def run(args, logger):
 
     logger.info('Invoking STM AI model... (requested mode: {})'.format(mode))
 
+    ai_outputs_s = None
     if args.f_inject:
         os.makedirs("./fault_campaign", exist_ok=True)
         os.makedirs("./fault_campaign/ref", exist_ok=True)
@@ -631,36 +632,53 @@ def run(args, logger):
             save_classifications(ref, logger, dir_="./fault_campaign/ref")
 
             logger.info(f'first5 ref - {ref[:5]}')
+        
+        if os.path.exists('checkpoint.npy'):
+            logger.info('Loading checkpoint data...')
+            ai_outputs_s = np.load('checkpoint.npy', allow_pickle=True).tolist()
+            batch_exec = ai_outputs_s[0].shape[0]
+            inputs_s = inputs
+            inputs[0] = inputs[0][batch_exec:]
 
         logger.info('Starting fault injection campaign')
         f_campaign_results = {}
         f_bit_positions = gen_f_bit_positions(args.f_bit_range, args.f_bit_start, args.f_bit_step)
 
         stai_start_time = perf_counter()
-        # TODO we can pass only the amount of faults since the faults are decoded here
+        # TODO we can pass only the amount of faults since the faults are decoded outside
         ai_outputs, ai_profiler = session.invoke(inputs, mode=mode, FI_enable=True, f_w_size=args.f_w_size, f_bit_positions=f_bit_positions)
         
-        logger.info('Computing accuracy for the fault injection campaign')
-        future_to_f_loc = {}
-        with ThreadPoolExecutor() as executor:
-            f_idx = 0
-            for w_idx in range(args.f_w_size):
-                f_campaign_results[w_idx] = {}
-                for f_bit in f_bit_positions:
-                    os.makedirs(f"./fault_campaign/w{w_idx}_b{f_bit}", exist_ok=True)
+        if ai_outputs_s != None:
+            for idx, out_ in enumerate(ai_outputs):
+                ai_outputs[idx] = np.append(ai_outputs_s[idx], out_, axis=0)
+        
+        if ai_outputs[0].size != np.prod(ref_shape) and ai_outputs[0].size > 0:
+            ai_outputs = np.array(ai_outputs, dtype=object)
+            np.save('checkpoint.npy', ai_outputs, allow_pickle=True)
 
-                    f_campaign_results[w_idx][f_bit] = ai_outputs[f_idx].reshape(ref_shape)
-                    save_tensors(inputs, None, f_campaign_results[w_idx][f_bit], logger, dir_=f"./fault_campaign/w{w_idx}_b{f_bit}")
-                    f_campaign_results[w_idx][f_bit] = f_campaign_results[w_idx][f_bit].argmax(axis=1)
-                    save_classifications(f_campaign_results[w_idx][f_bit], logger, dir_=f"./fault_campaign/w{w_idx}_b{f_bit}")
-                    future_to_f_loc[executor.submit(calc_acc, ref, f_campaign_results[w_idx][f_bit])] = (w_idx, f_bit)
-                    f_idx += 1
+            return 1
+        else:
+            logger.info('Computing accuracy for the fault injection campaign')
+            future_to_f_loc = {}
+            with ThreadPoolExecutor() as executor:
+                f_idx = 0
+                for w_idx in range(args.f_w_size):
+                    f_campaign_results[w_idx] = {}
+                    for f_bit in f_bit_positions:
+                        os.makedirs(f"./fault_campaign/w{w_idx}_b{f_bit}", exist_ok=True)
 
-        for future in as_completed(future_to_f_loc):
-            w_idx, f_bit = future_to_f_loc[future]
-            acc = future.result()
-            f_campaign_results[w_idx][f_bit] = acc
-            logger.info(f'Fault in bit {f_bit} of the weight {w_idx} - Accuracy: {acc}')
+                        f_campaign_results[w_idx][f_bit] = ai_outputs[f_idx].reshape(ref_shape)
+                        save_tensors(inputs_s, None, f_campaign_results[w_idx][f_bit], logger, dir_=f"./fault_campaign/w{w_idx}_b{f_bit}")
+                        f_campaign_results[w_idx][f_bit] = f_campaign_results[w_idx][f_bit].argmax(axis=1)
+                        save_classifications(f_campaign_results[w_idx][f_bit], logger, dir_=f"./fault_campaign/w{w_idx}_b{f_bit}")
+                        future_to_f_loc[executor.submit(calc_acc, ref, f_campaign_results[w_idx][f_bit])] = (w_idx, f_bit)
+                        f_idx += 1
+
+            for future in as_completed(future_to_f_loc):
+                w_idx, f_bit = future_to_f_loc[future]
+                acc = future.result()
+                f_campaign_results[w_idx][f_bit] = acc
+                logger.info(f'Fault in bit {f_bit} of the weight {w_idx} - Accuracy: {acc}')
         stai_end_time = perf_counter()
 
         with open("out_dict.txt", 'w') as f:
