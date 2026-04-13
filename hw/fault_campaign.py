@@ -683,6 +683,8 @@ def run(args, logger):
                 acc = future.result()
                 f_campaign_results[w_idx][f_bit] = acc
                 logger.info(f'Fault in bit {f_bit} of the weight {w_idx} - Accuracy: {acc}')
+            
+            os.remove('checkpoint.npy')
         stai_end_time = perf_counter()
 
         with open("out_dict.txt", 'w') as f:
