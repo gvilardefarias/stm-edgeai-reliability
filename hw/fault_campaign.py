@@ -635,10 +635,13 @@ def run(args, logger):
         
         if os.path.exists('checkpoint.npy'):
             logger.info('Loading checkpoint data...')
-            ai_outputs_s = np.load('checkpoint.npy', allow_pickle=True).tolist()
+            ai_outputs_s = np.load('checkpoint.npy', allow_pickle=True)
             batch_exec = ai_outputs_s[0].shape[0]
             inputs_s = inputs
             inputs[0] = inputs[0][batch_exec:]
+            warm_started = True
+        else:
+            warm_started = False
 
         logger.info('Starting fault injection campaign')
         f_campaign_results = {}
@@ -648,7 +651,7 @@ def run(args, logger):
         # TODO we can pass only the amount of faults since the faults are decoded outside
         ai_outputs, ai_profiler = session.invoke(inputs, mode=mode, FI_enable=True, f_w_size=args.f_w_size, f_bit_positions=f_bit_positions)
         
-        if ai_outputs_s != None:
+        if warm_started:
             for idx, out_ in enumerate(ai_outputs):
                 ai_outputs[idx] = np.append(ai_outputs_s[idx], out_, axis=0)
         
@@ -656,6 +659,7 @@ def run(args, logger):
             ai_outputs = np.array(ai_outputs, dtype=object)
             np.save('checkpoint.npy', ai_outputs, allow_pickle=True)
 
+            print('Checkpoint saved, run the script again to continue the fault injection campaign.')
             return 1
         else:
             logger.info('Computing accuracy for the fault injection campaign')
