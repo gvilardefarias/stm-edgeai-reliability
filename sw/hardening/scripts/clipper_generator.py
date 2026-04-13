@@ -187,7 +187,7 @@ if __name__ == "__main__":
         
         # MiniResNet uses a straight .npy dataset
         dataset_path = os.path.join(PRJ_ROOT, "sw/datasets/miniresnet/miniresnet_dataset.npy")
-        representative_data = np.load(dataset_path)[:100] # Take first 100 samples for profiling
+        representative_data = np.load(dataset_path)#[:100] # Take first 100 samples for profiling
         print(f"Loaded {representative_data.shape[0]} samples for profiling.")
 
     os.makedirs(os.path.dirname(output_h5), exist_ok=True)

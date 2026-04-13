@@ -1,7 +1,7 @@
 {
     "_allocate_inputs": 0,
     "_allocate_outputs": 0,
-    "cli_parameters": "validate --model sw/hardening/hardened_models/hand_posture/hand_posture_tmr.h5 --target stellar-e --custom sw/hardening/config/voter_tmr.json -vi sw/datasets/handposture/hand_val_images.npy -vo sw/datasets/handposture/hand_val_labels.npy --mode host -d library",
+    "cli_parameters": "validate --model ../../../hardened_models/hand_posture/voter_tmr.h5 --target stellar-e --custom ../../../config/voter_tmr.json -vi ../../../../datasets/handposture/hand_val_images.npy --no-check --mode target -d lib:st_ai_ws/inspector_network/workspace/",
     "cli_version": {
         "extra": "19895",
         "major": 1,
@@ -11,12 +11,12 @@
     "cli_version_str": "1.0.0-19895",
     "code_size": 0,
     "compression": [],
-    "date_time": "2026-03-31T10:30:15+0200",
+    "date_time": "2026-04-02T17:09:47+0200",
     "error": 0,
     "error_str": [],
     "exec_cmd": "validate",
     "exec_duration": 0.0,
-    "hash": "0x86b4ab8b09ad8c1edf157dc408dd1774",
+    "hash": "0xbdec3114de423393f4d6b64147e0bdec",
     "inputs": [
         "input_1"
     ],
@@ -47,160 +47,11 @@
             "type": "Input"
         },
         {
-            "c_id": [
-                2
-            ],
+            "c_id": [],
             "extras": {
                 "n_macc": 5192,
                 "n_params": 152,
                 "psize": 608,
-                "rom_output": {
-                    "c_size": 1152,
-                    "fmt": {
-                        "format": "float"
-                    },
-                    "shape": [
-                        6,
-                        8,
-                        6
-                    ]
-                },
-                "rom_size": 608
-            },
-            "id": 1,
-            "inputs": [
-                "input_1"
-            ],
-            "name": "conv2d_tmr1",
-            "original": "Conv2D",
-            "type": "Conv2D"
-        },
-        {
-            "c_id": [
-                1
-            ],
-            "extras": {
-                "n_macc": 5192,
-                "n_params": 152,
-                "psize": 608,
-                "rom_output": {
-                    "c_size": 1152,
-                    "fmt": {
-                        "format": "float"
-                    },
-                    "shape": [
-                        6,
-                        8,
-                        6
-                    ]
-                },
-                "rom_size": 608
-            },
-            "id": 2,
-            "inputs": [
-                "input_1"
-            ],
-            "name": "conv2d_tmr2",
-            "original": "Conv2D",
-            "type": "Conv2D"
-        },
-        {
-            "c_id": [
-                0
-            ],
-            "extras": {
-                "n_macc": 5192,
-                "n_params": 152,
-                "psize": 608,
-                "rom_output": {
-                    "c_size": 1152,
-                    "fmt": {
-                        "format": "float"
-                    },
-                    "shape": [
-                        6,
-                        8,
-                        6
-                    ]
-                },
-                "rom_size": 608
-            },
-            "id": 3,
-            "inputs": [
-                "input_1"
-            ],
-            "name": "conv2d_tmr3",
-            "original": "Conv2D",
-            "type": "Conv2D"
-        },
-        {
-            "c_id": [
-                3
-            ],
-            "extras": {
-                "n_macc": 0,
-                "n_params": 0,
-                "psize": 0,
-                "rom_output": {
-                    "c_size": 1152,
-                    "fmt": {
-                        "format": "float"
-                    },
-                    "shape": [
-                        6,
-                        8,
-                        6
-                    ]
-                },
-                "rom_size": 0
-            },
-            "id": 4,
-            "inputs": [
-                "conv2d_tmr1",
-                "conv2d_tmr2",
-                "conv2d_tmr3"
-            ],
-            "name": "conv2d_voter",
-            "original": "MajorityVoterLayer",
-            "type": "Custom"
-        },
-        {
-            "c_id": [
-                4
-            ],
-            "extras": {
-                "n_macc": 288,
-                "n_params": 0,
-                "psize": 0,
-                "rom_output": {
-                    "c_size": 1152,
-                    "fmt": {
-                        "format": "float"
-                    },
-                    "shape": [
-                        6,
-                        8,
-                        6
-                    ]
-                },
-                "rom_size": 0
-            },
-            "id": 5,
-            "inputs": [
-                "conv2d_voter"
-            ],
-            "name": "activation",
-            "original": "Activation",
-            "type": "Nonlinearity"
-        },
-        {
-            "c_id": [
-                5
-            ],
-            "extras": {
-                "n_macc": 288,
-                "n_params": 0,
-                "psize": 0,
                 "rom_output": {
                     "c_size": 288,
                     "fmt": {
@@ -214,7 +65,41 @@
                 },
                 "rom_size": 0
             },
-            "id": 6,
+            "id": 1,
+            "inputs": [
+                "input_1"
+            ],
+            "name": "conv2d",
+            "original": "Conv2D",
+            "type": "Conv2D"
+        },
+        {
+            "c_id": [],
+            "extras": {
+                "n_macc": 288,
+                "n_params": 0,
+                "psize": 0,
+                "rom_size": 0
+            },
+            "id": 2,
+            "inputs": [
+                "conv2d"
+            ],
+            "name": "activation",
+            "original": "Activation",
+            "type": "Nonlinearity"
+        },
+        {
+            "c_id": [
+                0
+            ],
+            "extras": {
+                "n_macc": 288,
+                "n_params": 0,
+                "psize": 0,
+                "rom_size": 608
+            },
+            "id": 3,
             "inputs": [
                 "activation"
             ],
@@ -230,7 +115,7 @@
                 "psize": 0,
                 "rom_size": 0
             },
-            "id": 8,
+            "id": 5,
             "inputs": [
                 "max_pooling2d"
             ],
@@ -240,8 +125,8 @@
         },
         {
             "c_id": [
-                6,
-                7
+                5,
+                6
             ],
             "extras": {
                 "n_macc": 2336,
@@ -258,11 +143,11 @@
                 },
                 "rom_size": 9344
             },
-            "id": 9,
+            "id": 6,
             "inputs": [
                 "flatten"
             ],
-            "name": "dense_dense",
+            "name": "dense_tmr1_dense",
             "original": "Dense",
             "type": "Dense"
         },
@@ -283,13 +168,148 @@
                 },
                 "rom_size": 0
             },
-            "id": 9,
+            "id": 6,
             "inputs": [
-                "dense_dense"
+                "dense_tmr1_dense"
             ],
-            "name": "dense",
+            "name": "dense_tmr1",
             "original": "Dense",
             "type": "Nonlinearity"
+        },
+        {
+            "c_id": [
+                3,
+                4
+            ],
+            "extras": {
+                "n_macc": 2336,
+                "n_params": 2336,
+                "psize": 9344,
+                "rom_output": {
+                    "c_size": 128,
+                    "fmt": {
+                        "format": "float"
+                    },
+                    "shape": [
+                        32
+                    ]
+                },
+                "rom_size": 9344
+            },
+            "id": 7,
+            "inputs": [
+                "flatten"
+            ],
+            "name": "dense_tmr2_dense",
+            "original": "Dense",
+            "type": "Dense"
+        },
+        {
+            "c_id": [],
+            "extras": {
+                "n_macc": 32,
+                "n_params": 0,
+                "psize": 0,
+                "rom_output": {
+                    "c_size": 128,
+                    "fmt": {
+                        "format": "float"
+                    },
+                    "shape": [
+                        32
+                    ]
+                },
+                "rom_size": 0
+            },
+            "id": 7,
+            "inputs": [
+                "dense_tmr2_dense"
+            ],
+            "name": "dense_tmr2",
+            "original": "Dense",
+            "type": "Nonlinearity"
+        },
+        {
+            "c_id": [
+                1,
+                2
+            ],
+            "extras": {
+                "n_macc": 2336,
+                "n_params": 2336,
+                "psize": 9344,
+                "rom_output": {
+                    "c_size": 128,
+                    "fmt": {
+                        "format": "float"
+                    },
+                    "shape": [
+                        32
+                    ]
+                },
+                "rom_size": 9344
+            },
+            "id": 8,
+            "inputs": [
+                "flatten"
+            ],
+            "name": "dense_tmr3_dense",
+            "original": "Dense",
+            "type": "Dense"
+        },
+        {
+            "c_id": [],
+            "extras": {
+                "n_macc": 32,
+                "n_params": 0,
+                "psize": 0,
+                "rom_output": {
+                    "c_size": 128,
+                    "fmt": {
+                        "format": "float"
+                    },
+                    "shape": [
+                        32
+                    ]
+                },
+                "rom_size": 0
+            },
+            "id": 8,
+            "inputs": [
+                "dense_tmr3_dense"
+            ],
+            "name": "dense_tmr3",
+            "original": "Dense",
+            "type": "Nonlinearity"
+        },
+        {
+            "c_id": [
+                7
+            ],
+            "extras": {
+                "n_macc": 0,
+                "n_params": 0,
+                "psize": 0,
+                "rom_output": {
+                    "c_size": 128,
+                    "fmt": {
+                        "format": "float"
+                    },
+                    "shape": [
+                        32
+                    ]
+                },
+                "rom_size": 0
+            },
+            "id": 9,
+            "inputs": [
+                "dense_tmr1",
+                "dense_tmr2",
+                "dense_tmr3"
+            ],
+            "name": "dense_voter",
+            "original": "MajorityVoterLayer",
+            "type": "Custom"
         },
         {
             "c_id": [
@@ -313,7 +333,7 @@
             },
             "id": 10,
             "inputs": [
-                "dense"
+                "dense_voter"
             ],
             "name": "dense_1_dense",
             "original": "Dense",
@@ -346,11 +366,11 @@
         }
     ],
     "model_files": [
-        "/home/apo/stm-edgeai-reliability/sw/hardening/hardened_models/hand_posture/hand_posture_tmr.h5"
+        "/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/hardened_models/hand_posture/voter_tmr.h5"
     ],
-    "model_n_params": 3056,
-    "model_name": "hand_posture_tmr",
-    "model_size": 12224,
+    "model_n_params": 7424,
+    "model_name": "voter_tmr",
+    "model_size": 29696,
     "model_type": "keras",
     "name": "network",
     "outputs": [
@@ -360,7 +380,7 @@
         512,
         32
     ],
-    "ram_size": 4608,
+    "ram_size": 744,
     "report_version": 1.1,
     "rom_cfact": 1.0,
     "rom_heap_inspector": 2048,
@@ -371,7 +391,7 @@
             "name": "input_1"
         }
     ],
-    "rom_n_macc": 18904,
+    "rom_n_macc": 13256,
     "rom_outputs": [
         {
             "c_size": 32,
@@ -379,47 +399,23 @@
             "name": "dense_1"
         }
     ],
-    "rom_size": 12224,
+    "rom_size": 29696,
     "strategy": "",
     "tools_api_version": "1.0.0-19895",
     "tools_version": "1.0.0-19895",
-    "val_error": NaN,
+    "val_error": 3.6423764981918794e-07,
     "val_error_desc": "x-cross (l2r) #1",
     "val_metrics": [
         {
-            "acc": "2.88%",
-            "cos": NaN,
-            "desc": "HOST c-model #1",
-            "l2r": NaN,
-            "mae": NaN,
-            "mean": NaN,
-            "nse": NaN,
-            "rmse": NaN,
-            "std": NaN,
-            "ts_name": "dense_1, (8,), m_id=[10]"
-        },
-        {
-            "acc": "70.60%",
-            "cos": 0.7349354028701782,
-            "desc": "original model #1",
-            "l2r": 0.7506105303764343,
-            "mae": 0.07612835615873337,
-            "mean": 3.3848683855808304e-09,
-            "nse": 0.4233978137983542,
-            "rmse": 0.2511361539363861,
-            "std": 0.2511430084705353,
-            "ts_name": "dense_1, (8,), m_id=[10]"
-        },
-        {
-            "acc": "3.36%",
-            "cos": NaN,
+            "acc": "100.00%",
+            "cos": 1.0,
             "desc": "X-cross #1",
-            "l2r": NaN,
-            "mae": NaN,
-            "mean": NaN,
-            "nse": NaN,
-            "rmse": NaN,
-            "std": NaN,
+            "l2r": 3.6423764981918794e-07,
+            "mae": 2.31571348763282e-08,
+            "mean": -3.7500627603215264e-10,
+            "nse": 0.9999999999998458,
+            "rmse": 1.218651135559412e-07,
+            "std": 1.2186787046175596e-07,
             "ts_name": "dense_1, (8,), m_id=[10]"
         }
     ]

@@ -1,0 +1,462 @@
+ST Edge AI Core v1.0.0-19895
+Created date          : 2026-04-03 12:39:39
+Parameters            : validate --model ../../../hardened_models/miniresnet/voter_tmr.h5 --target stellar-e --custom ../../../config/voter_tmr.json -vi ../../../../datasets/miniresnet/miniresnet_dataset.npy --no-check --mode target -d lib:st_ai_ws/inspector_network/workspace/
+
+Exec/report summary (validate)
+-------------------------------------------------------------------------------------------------------------------------------------------
+model file         :   /home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/hardened_models/miniresnet/voter_tmr.h5             
+type               :   keras                                                                                                               
+c_name             :   network                                                                                                             
+compression        :   lossless                                                                                                            
+optimization       :   balanced                                                                                                            
+target/series      :   stellar-e                                                                                                           
+workspace dir      :   /home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/miniresnet/tmr_voter/st_ai_ws       
+output dir         :   /home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/miniresnet/tmr_voter/st_ai_output   
+vinput files       :   /home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/datasets/miniresnet/miniresnet_dataset.npy                    
+model_fmt          :   float                                                                                                               
+model_name         :   voter_tmr                                                                                                           
+model_hash         :   0xaf1392c7bcf24ef3ab3fd3d99adc54b2                                                                                  
+params #           :   200,010 items (781.29 KiB)                                                                                          
+-------------------------------------------------------------------------------------------------------------------------------------------
+input 1/1          :   'input_1', f32(1x64x50x1), 12.50 KBytes, user                                                                       
+output 1/1         :   'new_head', f32(1x10), 40 Bytes, user                                                                               
+macc               :   11,697,824                                                                                                          
+weights (ro)       :   797,480 B (778.79 KiB) (1 segment) / -2,560(-0.3%) vs float model                                                   
+activations (rw)   :   238,592 B (233.00 KiB) (1 segment)                                                                                  
+ram (total)        :   251,432 B (245.54 KiB) = 238,592 + 12,800 + 40                                                                      
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+Model name - voter_tmr
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+m_id   layer (type,original)                                    oshape                 param/size              macc                connected to   | c_size                c_macc                  c_type                            
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+0      input_1 (Input, InputLayer)                              [b:1,h:64,w:50,c:1]                                                               |                                               
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+1      conv1_pad (Pad, ZeroPadding2D)                           [b:1,h:70,w:56,c:1]                                                     input_1   | +12,800(+100.0%)      +2,508,864(+100.0%)     Conv2D_[0]                        
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+2      conv1_conv (Conv2D, Conv2D)                              [b:1,h:32,w:25,c:64]   3,200/12,800       2,508,864                   conv1_pad   | -12,800(-100.0%)      -2,508,864(-100.0%)     
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+3      conv1_bn (ScaleBias, BatchNormalization)                 [b:1,h:32,w:25,c:64]   128/512              102,400                  conv1_conv   | -512(-100.0%)         -102,400(-100.0%)       
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+4      conv1_relu (Nonlinearity, Activation)                    [b:1,h:32,w:25,c:64]                         51,200                    conv1_bn   |                                               Nonlinearity_[1]                  
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+5      pool1_pad (Pad, ZeroPadding2D)                           [b:1,h:34,w:27,c:64]                                                 conv1_relu   |                                               Pad_[2]                           
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+6      pool1_pool (Pool, MaxPooling2D)                          [b:1,h:16,w:13,c:64]                        119,808                   pool1_pad   |                                               Pool_[3]                          
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+7      conv2_block1_1_conv (Conv2D, Conv2D)                     [b:1,h:8,w:7,c:64]     4,160/16,640         229,440                  pool1_pool   | -16,640(-100.0%)      -229,440(-100.0%)       
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+8      conv2_block1_1_bn (ScaleBias, BatchNormalization)        [b:1,h:8,w:7,c:64]     128/512                7,168         conv2_block1_1_conv   | +16,128(+3150.0%)     +222,272(+3100.9%)      Conv2D_[5]                        
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+9      conv2_block1_1_relu (Nonlinearity, Activation)           [b:1,h:8,w:7,c:64]                            3,584           conv2_block1_1_bn   |                                               Nonlinearity_[6]                  
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+10     conv2_block1_2_conv (Conv2D, Conv2D)                     [b:1,h:8,w:7,c:64]     36,928/147,712     2,064,448         conv2_block1_1_relu   | -147,712(-100.0%)     -2,064,448(-100.0%)     
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+11     conv2_block1_0_conv (Conv2D, Conv2D)                     [b:1,h:8,w:7,c:64]     4,160/16,640         229,440                  pool1_pool   | -16,640(-100.0%)      -229,440(-100.0%)       
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+12     conv2_block1_2_bn (ScaleBias, BatchNormalization)        [b:1,h:8,w:7,c:64]     128/512                7,168         conv2_block1_2_conv   | +147,200(+28750.0%)   +2,057,280(+28700.9%)   Conv2D_[7]                        
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+13     conv2_block1_0_bn (ScaleBias, BatchNormalization)        [b:1,h:8,w:7,c:64]     128/512                7,168         conv2_block1_0_conv   | +16,128(+3150.0%)     +222,272(+3100.9%)      Conv2D_[4]                        
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+14     conv2_block1_2_relu (Nonlinearity, Activation)           [b:1,h:8,w:7,c:64]                            3,584           conv2_block1_2_bn   |                                               Nonlinearity_[8]                  
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+15     conv2_block1_add (Eltwise, Add)                          [b:1,h:8,w:7,c:64]                            3,584           conv2_block1_0_bn   |                                               Eltwise/add_[9]                   
+                                                                                                                            conv2_block1_2_relu   | 
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+16     conv2_block1_out (Nonlinearity, Activation)              [b:1,h:8,w:7,c:64]                            3,584            conv2_block1_add   |                                               Nonlinearity_[10]                 
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+17     conv2_block2_1_conv (Conv2D, Conv2D)                     [b:1,h:8,w:7,c:64]     4,160/16,640         229,440            conv2_block1_out   | -16,640(-100.0%)      -229,440(-100.0%)       
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+18     conv2_block2_1_bn (ScaleBias, BatchNormalization)        [b:1,h:8,w:7,c:64]     128/512                7,168         conv2_block2_1_conv   | +16,128(+3150.0%)     +222,272(+3100.9%)      Conv2D_[11]                       
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+19     conv2_block2_1_relu (Nonlinearity, Activation)           [b:1,h:8,w:7,c:64]                            3,584           conv2_block2_1_bn   |                                               Nonlinearity_[12]                 
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+20     conv2_block2_2_conv_tmr1 (Conv2D, Conv2D)                [b:1,h:8,w:7,c:64]     36,928/147,712     2,064,448         conv2_block2_1_relu   |                                               Conv2D_[15]                       
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+21     conv2_block2_2_conv_tmr2 (Conv2D, Conv2D)                [b:1,h:8,w:7,c:64]     36,928/147,712     2,064,448         conv2_block2_1_relu   |                                               Conv2D_[14]                       
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+22     conv2_block2_2_conv_tmr3 (Conv2D, Conv2D)                [b:1,h:8,w:7,c:64]     36,928/147,712     2,064,448         conv2_block2_1_relu   |                                               Conv2D_[13]                       
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+23     conv2_block2_2_conv_voter (Custom, MajorityVoterLayer)   [b:1,h:8,w:7,c:64]                                     conv2_block2_2_conv_tmr1   |                                               Custom_[16]                       
+                                                                                                                       conv2_block2_2_conv_tmr2   | 
+                                                                                                                       conv2_block2_2_conv_tmr3   | 
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+24     conv2_block2_2_bn (ScaleBias, BatchNormalization)        [b:1,h:8,w:7,c:64]     128/512                7,168   conv2_block2_2_conv_voter   |                                               ScaleBias_[17]                    
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+25     conv2_block2_2_relu (Nonlinearity, Activation)           [b:1,h:8,w:7,c:64]                            3,584           conv2_block2_2_bn   |                                               Nonlinearity_[18]                 
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+26     conv2_block2_add (Eltwise, Add)                          [b:1,h:8,w:7,c:64]                            3,584            conv2_block1_out   |                                               Eltwise/add_[19]                  
+                                                                                                                            conv2_block2_2_relu   | 
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+27     conv2_block2_out (Nonlinearity, Activation)              [b:1,h:8,w:7,c:64]                            3,584            conv2_block2_add   |                                               Nonlinearity_[20]                 
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+28     flatten (Reshape, Flatten)                               [b:1,c:3584]                                                   conv2_block2_out   |                                               
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+29     new_head_dense (Dense, Dense)                            [b:1,c:10]             35,850/143,400        35,850                     flatten   |                       +150(+0.4%)             Dense_/Nonlinearity_[o][21, 22]   
+       new_head (Nonlinearity, Dense)                           [b:1,c:10]                                      150              new_head_dense   |                       -150(-100.0%)           
+------ -------------------------------------------------------- ---------------------- ---------------- ----------- --------------------------- --- --------------------- ----------------------- --------------------------------- 
+model/c-model: macc=11,828,896/11,697,824 -131,072(-1.1%) weights=800,040/797,480 -2,560(-0.3%) activations=--/238,592 io=--/12,840
+
+
+
+Generated C-graph summary
+------------------------------------------------------------------------------------------------------------------------
+model name            : voter_tmr
+c-name                : network
+c-node #              : 23
+c-array #             : 52
+activations size      : 238592 (1 segment)
+weights size          : 797480 (1 segment)
+macc                  : 11697824
+inputs                : ['input_1_output']
+outputs               : ['new_head_output']
+
+C-Arrays (52)
+------ ----------------------------------- -------------- ------------------------- ------------- --------- 
+c_id   name (*_array)                      item/size      domain/mem-pool           c-type        comment   
+------ ----------------------------------- -------------- ------------------------- ------------- --------- 
+0      conv1_conv_bias                     64/256         weights/weights           const float             
+1      conv1_conv_output                   51200/204800   activations/**default**   float                   
+2      conv1_conv_scratch0                 49/196         activations/**default**   float                   
+3      conv1_conv_weights                  3136/12544     weights/weights           const float             
+4      conv1_relu_output                   51200/204800   activations/**default**   float                   
+5      conv2_block1_0_conv_bias            64/256         weights/weights           const float             
+6      conv2_block1_0_conv_output          3584/14336     activations/**default**   float                   
+7      conv2_block1_0_conv_scratch0        64/256         activations/**default**   float                   
+8      conv2_block1_0_conv_weights         4096/16384     weights/weights           const float             
+9      conv2_block1_1_conv_bias            64/256         weights/weights           const float             
+10     conv2_block1_1_conv_output          3584/14336     activations/**default**   float                   
+11     conv2_block1_1_conv_scratch0        64/256         activations/**default**   float                   
+12     conv2_block1_1_conv_weights         4096/16384     weights/weights           const float             
+13     conv2_block1_1_relu_output          3584/14336     activations/**default**   float                   
+14     conv2_block1_2_conv_bias            64/256         weights/weights           const float             
+15     conv2_block1_2_conv_output          3584/14336     activations/**default**   float                   
+16     conv2_block1_2_conv_scratch0        576/2304       activations/**default**   float                   
+17     conv2_block1_2_conv_weights         36864/147456   weights/weights           const float             
+18     conv2_block1_2_relu_output          3584/14336     activations/**default**   float                   
+19     conv2_block1_add_output             3584/14336     activations/**default**   float                   
+20     conv2_block1_out_output             3584/14336     activations/**default**   float                   
+21     conv2_block2_1_conv_bias            64/256         weights/weights           const float             
+22     conv2_block2_1_conv_output          3584/14336     activations/**default**   float                   
+23     conv2_block2_1_conv_scratch0        64/256         activations/**default**   float                   
+24     conv2_block2_1_conv_weights         4096/16384     weights/weights           const float             
+25     conv2_block2_1_relu_output          3584/14336     activations/**default**   float                   
+26     conv2_block2_2_bn_bias              64/256         weights/weights           const float             
+27     conv2_block2_2_bn_output            3584/14336     activations/**default**   float                   
+28     conv2_block2_2_bn_scale             64/256         weights/weights           const float             
+29     conv2_block2_2_conv_tmr1_bias       64/256         weights/weights           const float             
+30     conv2_block2_2_conv_tmr1_output     3584/14336     activations/**default**   float                   
+31     conv2_block2_2_conv_tmr1_scratch0   576/2304       activations/**default**   float                   
+32     conv2_block2_2_conv_tmr1_weights    36864/147456   weights/weights           const float             
+33     conv2_block2_2_conv_tmr2_bias       64/256         weights/weights           const float             
+34     conv2_block2_2_conv_tmr2_output     3584/14336     activations/**default**   float                   
+35     conv2_block2_2_conv_tmr2_scratch0   576/2304       activations/**default**   float                   
+36     conv2_block2_2_conv_tmr2_weights    36864/147456   weights/weights           const float             
+37     conv2_block2_2_conv_tmr3_bias       64/256         weights/weights           const float             
+38     conv2_block2_2_conv_tmr3_output     3584/14336     activations/**default**   float                   
+39     conv2_block2_2_conv_tmr3_scratch0   576/2304       activations/**default**   float                   
+40     conv2_block2_2_conv_tmr3_weights    36864/147456   weights/weights           const float             
+41     conv2_block2_2_conv_voter_output    3584/14336     activations/**default**   float                   
+42     conv2_block2_2_relu_output          3584/14336     activations/**default**   float                   
+43     conv2_block2_add_output             3584/14336     activations/**default**   float                   
+44     conv2_block2_out_output             3584/14336     activations/**default**   float                   
+45     input_1_output                      3200/12800     user/                     float         /input    
+46     new_head_dense_bias                 10/40          weights/weights           const float             
+47     new_head_dense_output               10/40          activations/**default**   float                   
+48     new_head_dense_weights              35840/143360   weights/weights           const float             
+49     new_head_output                     10/40          user/                     float         /output   
+50     pool1_pad_output                    58752/235008   activations/**default**   float                   
+51     pool1_pool_output                   13312/53248    activations/**default**   float                   
+------ ----------------------------------- -------------- ------------------------- ------------- --------- 
+
+C-Layers (23)
+------ --------------------------- ---- --------------- --------- -------- -------------------------------------- ---------------------- 
+c_id   name (*_layer)              id   layer_type      macc      rom      tensors                                shape (array id)       
+------ --------------------------- ---- --------------- --------- -------- -------------------------------------- ---------------------- 
+0      conv1_conv                  1    Conv2D          2508864   12800    I: input_1_output                      f32(1x64x50x1) (45)    
+                                                                           S: conv1_conv_scratch0                                        
+                                                                           W: conv1_conv_weights                  f32(64x7x7x1) (3)      
+                                                                           W: conv1_conv_bias                     f32(64) (0)            
+                                                                           O: conv1_conv_output                   f32(1x32x25x64) (1)    
+------ --------------------------- ---- --------------- --------- -------- -------------------------------------- ---------------------- 
+1      conv1_relu                  4    Nonlinearity    51200     0        I: conv1_conv_output                   f32(1x32x25x64) (1)    
+                                                                           O: conv1_relu_output                   f32(1x32x25x64) (4)    
+------ --------------------------- ---- --------------- --------- -------- -------------------------------------- ---------------------- 
+2      pool1_pad                   5    Pad             0         0        I: conv1_relu_output                   f32(1x32x25x64) (4)    
+                                                                           O: pool1_pad_output                    f32(1x34x27x64) (50)   
+------ --------------------------- ---- --------------- --------- -------- -------------------------------------- ---------------------- 
+3      pool1_pool                  6    Pool            119808    0        I: pool1_pad_output                    f32(1x34x27x64) (50)   
+                                                                           O: pool1_pool_output                   f32(1x16x13x64) (51)   
+------ --------------------------- ---- --------------- --------- -------- -------------------------------------- ---------------------- 
+4      conv2_block1_0_conv         13   Conv2D          229440    16640    I: pool1_pool_output                   f32(1x16x13x64) (51)   
+                                                                           S: conv2_block1_0_conv_scratch0                               
+                                                                           W: conv2_block1_0_conv_weights         f32(64x1x1x64) (8)     
+                                                                           W: conv2_block1_0_conv_bias            f32(64) (5)            
+                                                                           O: conv2_block1_0_conv_output          f32(1x8x7x64) (6)      
+------ --------------------------- ---- --------------- --------- -------- -------------------------------------- ---------------------- 
+5      conv2_block1_1_conv         8    Conv2D          229440    16640    I: pool1_pool_output                   f32(1x16x13x64) (51)   
+                                                                           S: conv2_block1_1_conv_scratch0                               
+                                                                           W: conv2_block1_1_conv_weights         f32(64x1x1x64) (12)    
+                                                                           W: conv2_block1_1_conv_bias            f32(64) (9)            
+                                                                           O: conv2_block1_1_conv_output          f32(1x8x7x64) (10)     
+------ --------------------------- ---- --------------- --------- -------- -------------------------------------- ---------------------- 
+6      conv2_block1_1_relu         9    Nonlinearity    3584      0        I: conv2_block1_1_conv_output          f32(1x8x7x64) (10)     
+                                                                           O: conv2_block1_1_relu_output          f32(1x8x7x64) (13)     
+------ --------------------------- ---- --------------- --------- -------- -------------------------------------- ---------------------- 
+7      conv2_block1_2_conv         12   Conv2D          2064448   147712   I: conv2_block1_1_relu_output          f32(1x8x7x64) (13)     
+                                                                           S: conv2_block1_2_conv_scratch0                               
+                                                                           W: conv2_block1_2_conv_weights         f32(64x3x3x64) (17)    
+                                                                           W: conv2_block1_2_conv_bias            f32(64) (14)           
+                                                                           O: conv2_block1_2_conv_output          f32(1x8x7x64) (15)     
+------ --------------------------- ---- --------------- --------- -------- -------------------------------------- ---------------------- 
+8      conv2_block1_2_relu         14   Nonlinearity    3584      0        I: conv2_block1_2_conv_output          f32(1x8x7x64) (15)     
+                                                                           O: conv2_block1_2_relu_output          f32(1x8x7x64) (18)     
+------ --------------------------- ---- --------------- --------- -------- -------------------------------------- ---------------------- 
+9      conv2_block1_add            15   Eltwise/add     3584      0        I: conv2_block1_0_conv_output          f32(1x8x7x64) (6)      
+                                                                           I: conv2_block1_2_relu_output          f32(1x8x7x64) (6)      
+                                                                           O: conv2_block1_add_output             f32(1x8x7x64) (19)     
+------ --------------------------- ---- --------------- --------- -------- -------------------------------------- ---------------------- 
+10     conv2_block1_out            16   Nonlinearity    3584      0        I: conv2_block1_add_output             f32(1x8x7x64) (19)     
+                                                                           O: conv2_block1_out_output             f32(1x8x7x64) (20)     
+------ --------------------------- ---- --------------- --------- -------- -------------------------------------- ---------------------- 
+11     conv2_block2_1_conv         18   Conv2D          229440    16640    I: conv2_block1_out_output             f32(1x8x7x64) (20)     
+                                                                           S: conv2_block2_1_conv_scratch0                               
+                                                                           W: conv2_block2_1_conv_weights         f32(64x1x1x64) (24)    
+                                                                           W: conv2_block2_1_conv_bias            f32(64) (21)           
+                                                                           O: conv2_block2_1_conv_output          f32(1x8x7x64) (22)     
+------ --------------------------- ---- --------------- --------- -------- -------------------------------------- ---------------------- 
+12     conv2_block2_1_relu         19   Nonlinearity    3584      0        I: conv2_block2_1_conv_output          f32(1x8x7x64) (22)     
+                                                                           O: conv2_block2_1_relu_output          f32(1x8x7x64) (25)     
+------ --------------------------- ---- --------------- --------- -------- -------------------------------------- ---------------------- 
+13     conv2_block2_2_conv_tmr3    22   Conv2D          2064448   147712   I: conv2_block2_1_relu_output          f32(1x8x7x64) (25)     
+                                                                           S: conv2_block2_2_conv_tmr3_scratch0                          
+                                                                           W: conv2_block2_2_conv_tmr3_weights    f32(64x3x3x64) (40)    
+                                                                           W: conv2_block2_2_conv_tmr3_bias       f32(64) (37)           
+                                                                           O: conv2_block2_2_conv_tmr3_output     f32(1x8x7x64) (38)     
+------ --------------------------- ---- --------------- --------- -------- -------------------------------------- ---------------------- 
+14     conv2_block2_2_conv_tmr2    21   Conv2D          2064448   147712   I: conv2_block2_1_relu_output          f32(1x8x7x64) (25)     
+                                                                           S: conv2_block2_2_conv_tmr2_scratch0                          
+                                                                           W: conv2_block2_2_conv_tmr2_weights    f32(64x3x3x64) (36)    
+                                                                           W: conv2_block2_2_conv_tmr2_bias       f32(64) (33)           
+                                                                           O: conv2_block2_2_conv_tmr2_output     f32(1x8x7x64) (34)     
+------ --------------------------- ---- --------------- --------- -------- -------------------------------------- ---------------------- 
+15     conv2_block2_2_conv_tmr1    20   Conv2D          2064448   147712   I: conv2_block2_1_relu_output          f32(1x8x7x64) (25)     
+                                                                           S: conv2_block2_2_conv_tmr1_scratch0                          
+                                                                           W: conv2_block2_2_conv_tmr1_weights    f32(64x3x3x64) (32)    
+                                                                           W: conv2_block2_2_conv_tmr1_bias       f32(64) (29)           
+                                                                           O: conv2_block2_2_conv_tmr1_output     f32(1x8x7x64) (30)     
+------ --------------------------- ---- --------------- --------- -------- -------------------------------------- ---------------------- 
+16     conv2_block2_2_conv_voter   23   Custom          0         0        I: conv2_block2_2_conv_tmr1_output     f32(1x8x7x64) (30)     
+                                                                           I: conv2_block2_2_conv_tmr2_output     f32(1x8x7x64) (30)     
+                                                                           I: conv2_block2_2_conv_tmr3_output     f32(1x8x7x64) (30)     
+                                                                           O: conv2_block2_2_conv_voter_output    f32(1x8x7x64) (41)     
+------ --------------------------- ---- --------------- --------- -------- -------------------------------------- ---------------------- 
+17     conv2_block2_2_bn           24   ScaleBias       7168      512      I: conv2_block2_2_conv_voter_output    f32(1x8x7x64) (41)     
+                                                                           W: conv2_block2_2_bn_scale             f32(64) (28)           
+                                                                           W: conv2_block2_2_bn_bias              f32(64) (26)           
+                                                                           O: conv2_block2_2_bn_output            f32(1x8x7x64) (27)     
+------ --------------------------- ---- --------------- --------- -------- -------------------------------------- ---------------------- 
+18     conv2_block2_2_relu         25   Nonlinearity    3584      0        I: conv2_block2_2_bn_output            f32(1x8x7x64) (27)     
+                                                                           O: conv2_block2_2_relu_output          f32(1x8x7x64) (42)     
+------ --------------------------- ---- --------------- --------- -------- -------------------------------------- ---------------------- 
+19     conv2_block2_add            26   Eltwise/add     3584      0        I: conv2_block1_out_output             f32(1x8x7x64) (20)     
+                                                                           I: conv2_block2_2_relu_output          f32(1x8x7x64) (20)     
+                                                                           O: conv2_block2_add_output             f32(1x8x7x64) (43)     
+------ --------------------------- ---- --------------- --------- -------- -------------------------------------- ---------------------- 
+20     conv2_block2_out            27   Nonlinearity    3584      0        I: conv2_block2_add_output             f32(1x8x7x64) (43)     
+                                                                           O: conv2_block2_out_output             f32(1x8x7x64) (44)     
+------ --------------------------- ---- --------------- --------- -------- -------------------------------------- ---------------------- 
+21     new_head_dense              29   Dense           35850     143400   I: conv2_block2_out_output             f32(1x8x7x64) (44)     
+                                                                           W: new_head_dense_weights              f32(10x3584) (48)      
+                                                                           W: new_head_dense_bias                 f32(10) (46)           
+                                                                           O: new_head_dense_output               f32(1x10) (47)         
+------ --------------------------- ---- --------------- --------- -------- -------------------------------------- ---------------------- 
+22     new_head                    29   Nonlinearity    150       0        I: new_head_dense_output               f32(1x10) (47)         
+                                                                           O: new_head_output                     f32(1x10) (49)         
+------ --------------------------- ---- --------------- --------- -------- -------------------------------------- ---------------------- 
+ 
+Setting validation data...
+ loading file: /home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/datasets/miniresnet/miniresnet_dataset.npy
+ I[1]: (404, 64, 50, 1)/float32, min/max=[-80.000, 0.000], mean/std=[-39.277, 19.208], input_1
+ No output/reference samples are provided
+ 
+Running the STM AI c-model (AI RUNNER)...(name=network, mode=TARGET)
+
+ X86 shared lib (st_ai_ws/inspector_network/workspace/lib/libai_network.so) ['network']
+  
+  Summary 'network' - ['network']
+  -----------------------------------------------------------------
+  inputs/ouputs      :   1/1                                       
+  input_1            :   f32[1,64,50,1], 12800 Bytes, user         
+  output_1           :   f32[1,1,1,10], 40 Bytes, user             
+  n_nodes            :   23                                        
+  compile_datetime   :   Apr  3 2026 12:39:23                      
+  activations        :   238592                                    
+  weights            :   797480                                    
+  macc               :   11697824                                  
+  -----------------------------------------------------------------
+  tools              :   Legacy ST.AI 1.0.0                        
+  capabilities       :   IO_ONLY, PER_LAYER, PER_LAYER_WITH_DATA   
+  device             :   x86_64, x86_64, Linux                     
+  -----------------------------------------------------------------
+ Warning: C-network signature checking has been skipped
+ 
+ 
+ NOTE: duration and exec time per layer is just an indication. They are dependent of the HOST-machine work-load.
+
+  
+  ST.AI Profiling results v1.2 - "network"
+  -------------------------------------------------------------
+  nb sample(s)   :   404                                       
+  duration       :   9.691 ms by sample (9.367/14.814/0.393)   
+  macc           :   11697824                                  
+  -------------------------------------------------------------
+   
+   Inference time per node
+   ------------------------------------------------------------------------------
+   c_id    m_id   type                dur (ms)       %    cumul     name         
+   ------------------------------------------------------------------------------
+   0       1      Conv2D (0x103)         2.053   21.2%    21.2%     ai_node_0    
+   1       4      NL (0x107)             0.126    1.3%    22.5%     ai_node_1    
+   2       5      Pad (0x116)            0.034    0.3%    22.8%     ai_node_2    
+   3       6      Pool (0x10b)           0.021    0.2%    23.1%     ai_node_3    
+   4       13     Conv2D (0x103)         0.173    1.8%    24.8%     ai_node_4    
+   5       8      Conv2D (0x103)         0.173    1.8%    26.6%     ai_node_5    
+   6       9      NL (0x107)             0.001    0.0%    26.6%     ai_node_6    
+   7       12     Conv2D (0x103)         1.715   17.7%    44.3%     ai_node_7    
+   8       14     NL (0x107)             0.001    0.0%    44.3%     ai_node_8    
+   9       15     Eltwise (0x113)        0.001    0.0%    44.3%     ai_node_9    
+   10      16     NL (0x107)             0.001    0.0%    44.4%     ai_node_10   
+   11      18     Conv2D (0x103)         0.173    1.8%    46.1%     ai_node_11   
+   12      19     NL (0x107)             0.001    0.0%    46.1%     ai_node_12   
+   13      22     Conv2D (0x103)         1.719   17.7%    63.9%     ai_node_13   
+   14      21     Conv2D (0x103)         1.733   17.9%    81.8%     ai_node_14   
+   15      20     Conv2D (0x103)         1.710   17.6%    99.4%     ai_node_15   
+   16      23     Custom (0x182)         0.014    0.1%    99.6%     ai_node_16   
+   17      24     BN (0x102)             0.001    0.0%    99.6%     ai_node_17   
+   18      25     NL (0x107)             0.001    0.0%    99.6%     ai_node_18   
+   19      26     Eltwise (0x113)        0.001    0.0%    99.6%     ai_node_19   
+   20      27     NL (0x107)             0.001    0.0%    99.6%     ai_node_20   
+   21      29     Dense (0x104)          0.037    0.4%   100.0%     ai_node_21   
+   22      29     NL (0x107)             0.001    0.0%   100.0%     ai_node_22   
+   ------------------------------------------------------------------------------
+   total                                 9.689                                   
+   ------------------------------------------------------------------------------
+   
+   Statistic per tensor
+   ---------------------------------------------------------------------------------------
+   tensor   #     type[shape]:size             min     max      mean      std  name       
+   ---------------------------------------------------------------------------------------
+   I.0      404   f32[1,64,50,1]:12800     -80.000   0.000   -39.277   19.208  input_1    
+   O.0      404   f32[1,1,1,10]:40           0.000   1.000     0.100    0.274  output_1   
+   ---------------------------------------------------------------------------------------
+ 
+Saving validation data...
+ output directory: /home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/miniresnet/tmr_voter/st_ai_output
+ creating /home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/miniresnet/tmr_voter/st_ai_output/network_val_io.npz
+ m_outputs_1: (404, 1, 1, 10)/float32, min/max=[0.000, 1.000], mean/std=[0.100, 0.274], new_head
+ c_outputs_1: (404, 1, 1, 10)/float32, min/max=[0.000, 1.000], mean/std=[0.100, 0.274], new_head
+
+ 
+Computing the metrics...
+
+ Cross accuracy report #1 (reference vs C-model)
+ ----------------------------------------------------------------------------------------------------
+ notes: - the output of the reference model is used as ground truth/reference value
+        - 404 samples (10 items per sample)
+
+  acc=100.00%, rmse=0.000000360, mae=0.000000088, l2r=0.000001233, nse=1.000, cos=1.000
+
+  10 classes (404 samples)
+  ----------------------------------------------------------
+  C0       39    .    .    .    .    .    .    .    .    .  
+  C1        .   51    .    .    .    .    .    .    .    .  
+  C2        .    .   44    .    .    .    .    .    .    .  
+  C3        .    .    .   39    .    .    .    .    .    .  
+  C4        .    .    .    .   32    .    .    .    .    .  
+  C5        .    .    .    .    .   54    .    .    .    .  
+  C6        .    .    .    .    .    .   41    .    .    .  
+  C7        .    .    .    .    .    .    .   30    .    .  
+  C8        .    .    .    .    .    .    .    .   56    .  
+  C9        .    .    .    .    .    .    .    .    .   18  
+
+
+Number of operations per c-layer
+------- ------ ------------------------------------ ------------ -------------- 
+c_id    m_id   name (type)                                   #op           type 
+------- ------ ------------------------------------ ------------ -------------- 
+0       1      conv1_conv (Conv2D)                     2,508,864   smul_f32_f32 
+1       4      conv1_relu (Nonlinearity)                  51,200     op_f32_f32 
+2       5      pool1_pad (Pad)                                 0   smul_f32_f32 
+3       6      pool1_pool (Pool)                         119,808   smul_f32_f32 
+4       13     conv2_block1_0_conv (Conv2D)              229,440   smul_f32_f32 
+5       8      conv2_block1_1_conv (Conv2D)              229,440   smul_f32_f32 
+6       9      conv2_block1_1_relu (Nonlinearity)          3,584     op_f32_f32 
+7       12     conv2_block1_2_conv (Conv2D)            2,064,448   smul_f32_f32 
+8       14     conv2_block1_2_relu (Nonlinearity)          3,584     op_f32_f32 
+9       15     conv2_block1_add (Eltwise/add)              3,584     op_f32_f32 
+10      16     conv2_block1_out (Nonlinearity)             3,584     op_f32_f32 
+11      18     conv2_block2_1_conv (Conv2D)              229,440   smul_f32_f32 
+12      19     conv2_block2_1_relu (Nonlinearity)          3,584     op_f32_f32 
+13      22     conv2_block2_2_conv_tmr3 (Conv2D)       2,064,448   smul_f32_f32 
+14      21     conv2_block2_2_conv_tmr2 (Conv2D)       2,064,448   smul_f32_f32 
+15      20     conv2_block2_2_conv_tmr1 (Conv2D)       2,064,448   smul_f32_f32 
+16      23     conv2_block2_2_conv_voter (Custom)              0   smul_f32_f32 
+17      24     conv2_block2_2_bn (ScaleBias)               7,168   smul_f32_f32 
+18      25     conv2_block2_2_relu (Nonlinearity)          3,584     op_f32_f32 
+19      26     conv2_block2_add (Eltwise/add)              3,584     op_f32_f32 
+20      27     conv2_block2_out (Nonlinearity)             3,584     op_f32_f32 
+21      29     new_head_dense (Dense)                     35,850   smul_f32_f32 
+22      29     new_head (Nonlinearity)                       150     op_f32_f32 
+------- ------ ------------------------------------ ------------ -------------- 
+total                                                 11,697,824 
+
+Number of operation types
+---------------- ------------ ----------- 
+operation type              #           % 
+---------------- ------------ ----------- 
+smul_f32_f32       11,617,802       99.3% 
+op_f32_f32             80,022        0.7% 
+
+Complexity report (model)
+------ --------------------------- ------------------------- ------------------------- ---------- -------- ------------------ 
+m_id   name                        c_macc                    c_rom                     c_id       c_dur    l2r (X-CROSS)      
+------ --------------------------- ------------------------- ------------------------- ---------- -------- ------------------ 
+1      conv1_pad                   ||||||||||||||||  21.4%   ||                 1.6%   [0]         21.2%                      
+4      conv1_relu                  |                  0.4%   |                  0.0%   [1]          1.3%                      
+5      pool1_pad                   |                  0.0%   |                  0.0%   [2]          0.3%                      
+6      pool1_pool                  |                  1.0%   |                  0.0%   [3]          0.2%                      
+8      conv2_block1_1_bn           ||                 2.0%   ||                 2.1%   [5]          1.8%                      
+9      conv2_block1_1_relu         |                  0.0%   |                  0.0%   [6]          0.0%                      
+12     conv2_block1_2_bn           |||||||||||||     17.6%   ||||||||||||||||  18.5%   [7]         17.7%                      
+13     conv2_block1_0_bn           ||                 2.0%   ||                 2.1%   [4]          1.8%                      
+14     conv2_block1_2_relu         |                  0.0%   |                  0.0%   [8]          0.0%                      
+15     conv2_block1_add            |                  0.0%   |                  0.0%   [9]          0.0%                      
+16     conv2_block1_out            |                  0.0%   |                  0.0%   [10]         0.0%                      
+18     conv2_block2_1_bn           ||                 2.0%   ||                 2.1%   [11]         1.8%                      
+19     conv2_block2_1_relu         |                  0.0%   |                  0.0%   [12]         0.0%                      
+20     conv2_block2_2_conv_tmr1    |||||||||||||     17.6%   ||||||||||||||||  18.5%   [15]        17.7%                      
+21     conv2_block2_2_conv_tmr2    |||||||||||||     17.6%   ||||||||||||||||  18.5%   [14]        17.8%                      
+22     conv2_block2_2_conv_tmr3    |||||||||||||     17.6%   ||||||||||||||||  18.5%   [13]        17.7%                      
+23     conv2_block2_2_conv_voter   |                  0.0%   |                  0.0%   [16]         0.1%                      
+24     conv2_block2_2_bn           |                  0.1%   |                  0.1%   [17]         0.0%                      
+25     conv2_block2_2_relu         |                  0.0%   |                  0.0%   [18]         0.0%                      
+26     conv2_block2_add            |                  0.0%   |                  0.0%   [19]         0.0%                      
+27     conv2_block2_out            |                  0.0%   |                  0.0%   [20]         0.0%                      
+29     new_head_dense              |                  0.3%   |||||||||||||||   18.0%   [21, 22]     0.4%   1.23272969e-06 *   
+------ --------------------------- ------------------------- ------------------------- ---------- -------- ------------------ 
+macc=11,697,824 weights=797,480 act=238,592 ram_io=12,840
+
+Evaluation report (summary)
+-----------------------------------------------------------------------------------------------------------------------------------------
+Output       acc       rmse        mae         l2r         mean         std         nse         cos         tensor                       
+-----------------------------------------------------------------------------------------------------------------------------------------
+X-cross #1   100.00%   0.0000004   0.0000001   0.0000012   -0.0000000   0.0000004   1.0000000   1.0000000   new_head, (10,), m_id=[29]   
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+ acc  : Classification accuracy (all classes)
+ rmse : Root Mean Squared Error
+ mae  : Mean Absolute Error
+ l2r  : L2 relative error
+ nse  : Nash-Sutcliffe efficiency criteria, bigger is better, best=1, range=(-inf, 1]
+ cos  : COsine Similarity, bigger is better, best=1, range=(0, 1]

@@ -1,153 +1,154 @@
 ST Edge AI Core v1.0.0-19895
-Created date          : 2026-03-31 10:27:54
-Parameters            : generate -m sw/hardening/hardened_models/hand_posture/hand_posture_tmr.h5 --target stellar-e --custom sw/hardening/config/voter_tmr.json
+Created date          : 2026-04-02 17:00:16
+Parameters            : generate --model ../../../hardened_models/hand_posture/voter_tmr.h5 --target stellar-e --custom ../../../config/voter_tmr.json -vi ../../../../datasets/handposture/hand_val_images.npy
 
 Exec/report summary (generate)
-------------------------------------------------------------------------------------------------------------------------
-model file         :   /home/apo/stm-edgeai-reliability/sw/hardening/hardened_models/hand_posture/hand_posture_tmr.h5   
-type               :   keras                                                                                            
-c_name             :   network                                                                                          
-compression        :   lossless                                                                                         
-optimization       :   balanced                                                                                         
-target/series      :   stellar-e                                                                                        
-workspace dir      :   /home/apo/stm-edgeai-reliability/st_ai_ws                                                        
-output dir         :   /home/apo/stm-edgeai-reliability/st_ai_output                                                    
-model_fmt          :   float                                                                                            
-model_name         :   hand_posture_tmr                                                                                 
-model_hash         :   0x86b4ab8b09ad8c1edf157dc408dd1774                                                               
-params #           :   3,056 items (11.94 KiB)                                                                          
-------------------------------------------------------------------------------------------------------------------------
-input 1/1          :   'input_1', f32(1x8x8x2), 512 Bytes, user                                                         
-output 1/1         :   'dense_1', f32(1x8), 32 Bytes, user                                                              
-macc               :   18,904                                                                                           
-weights (ro)       :   12,224 B (11.94 KiB) (1 segment)                                                                 
-activations (rw)   :   4,608 B (4.50 KiB) (1 segment)                                                                   
-ram (total)        :   5,152 B (5.03 KiB) = 4,608 + 512 + 32                                                            
-------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------
+model file         :   /home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/hardened_models/hand_posture/voter_tmr.h5             
+type               :   keras                                                                                                                 
+c_name             :   network                                                                                                               
+compression        :   lossless                                                                                                              
+optimization       :   balanced                                                                                                              
+target/series      :   stellar-e                                                                                                             
+workspace dir      :   /home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/voter_tmr/st_ai_ws       
+output dir         :   /home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/voter_tmr/st_ai_output   
+vinput files       :   /home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/datasets/handposture/hand_val_images.npy                        
+model_fmt          :   float                                                                                                                 
+model_name         :   voter_tmr                                                                                                             
+model_hash         :   0xbdec3114de423393f4d6b64147e0bdec                                                                                    
+params #           :   7,424 items (29.00 KiB)                                                                                               
+---------------------------------------------------------------------------------------------------------------------------------------------
+input 1/1          :   'input_1', f32(1x8x8x2), 512 Bytes, user                                                                              
+output 1/1         :   'dense_1', f32(1x8), 32 Bytes, user                                                                                   
+macc               :   13,256                                                                                                                
+weights (ro)       :   29,696 B (29.00 KiB) (1 segment)                                                                                      
+activations (rw)   :   744 B (744 B) (1 segment)                                                                                             
+ram (total)        :   1,288 B (1.26 KiB) = 744 + 512 + 32                                                                                   
+---------------------------------------------------------------------------------------------------------------------------------------------
 
-Model name - hand_posture_tmr
------- ------------------------------------------- ------------------- ------------- ------- --------------- --- -------- --------------- ------------------------------- 
-m_id   layer (type,original)                       oshape              param/size       macc    connected to   | c_size   c_macc          c_type                          
------- ------------------------------------------- ------------------- ------------- ------- --------------- --- -------- --------------- ------------------------------- 
-0      input_1 (Input, InputLayer)                 [b:1,h:8,w:8,c:2]                                           |                          
------- ------------------------------------------- ------------------- ------------- ------- --------------- --- -------- --------------- ------------------------------- 
-1      conv2d_tmr1 (Conv2D, Conv2D)                [b:1,h:6,w:6,c:8]   152/608         5,192         input_1   |                          Conv2D_[2]                      
------- ------------------------------------------- ------------------- ------------- ------- --------------- --- -------- --------------- ------------------------------- 
-2      conv2d_tmr2 (Conv2D, Conv2D)                [b:1,h:6,w:6,c:8]   152/608         5,192         input_1   |                          Conv2D_[1]                      
------- ------------------------------------------- ------------------- ------------- ------- --------------- --- -------- --------------- ------------------------------- 
-3      conv2d_tmr3 (Conv2D, Conv2D)                [b:1,h:6,w:6,c:8]   152/608         5,192         input_1   |                          Conv2D_[0]                      
------- ------------------------------------------- ------------------- ------------- ------- --------------- --- -------- --------------- ------------------------------- 
-4      conv2d_voter (Custom, MajorityVoterLayer)   [b:1,h:6,w:6,c:8]                             conv2d_tmr1   |                          Custom_[3]                      
-                                                                                                 conv2d_tmr2   | 
-                                                                                                 conv2d_tmr3   | 
------- ------------------------------------------- ------------------- ------------- ------- --------------- --- -------- --------------- ------------------------------- 
-5      activation (Nonlinearity, Activation)       [b:1,h:6,w:6,c:8]                     288    conv2d_voter   |                          Nonlinearity_[4]                
------- ------------------------------------------- ------------------- ------------- ------- --------------- --- -------- --------------- ------------------------------- 
-6      max_pooling2d (Pool, MaxPooling2D)          [b:1,h:3,w:3,c:8]                     288      activation   |                          Pool_[5]                        
------- ------------------------------------------- ------------------- ------------- ------- --------------- --- -------- --------------- ------------------------------- 
-8      flatten (Reshape, Flatten)                  [b:1,c:72]                                  max_pooling2d   |                          
------- ------------------------------------------- ------------------- ------------- ------- --------------- --- -------- --------------- ------------------------------- 
-9      dense_dense (Dense, Dense)                  [b:1,c:32]          2,336/9,344     2,336         flatten   |          +32(+1.4%)      Dense_/Nonlinearity_[6, 7]      
-       dense (Nonlinearity, Dense)                 [b:1,c:32]                             32     dense_dense   |          -32(-100.0%)    
------- ------------------------------------------- ------------------- ------------- ------- --------------- --- -------- --------------- ------------------------------- 
-10     dense_1_dense (Dense, Dense)                [b:1,c:8]           264/1,056         264           dense   |          +120(+45.5%)    Dense_/Nonlinearity_[o][8, 9]   
-       dense_1 (Nonlinearity, Dense)               [b:1,c:8]                             120   dense_1_dense   |          -120(-100.0%)   
------- ------------------------------------------- ------------------- ------------- ------- --------------- --- -------- --------------- ------------------------------- 
-model/c-model: macc=18,904/18,904  weights=12,224/12,224  activations=--/4,608 io=--/544
+Model name - voter_tmr
+------ ------------------------------------------ ------------------- ------------- ------- ------------------ --- --------------- ------------------ ------------------------------- 
+m_id   layer (type,original)                      oshape              param/size       macc       connected to   | c_size          c_macc             c_type                          
+------ ------------------------------------------ ------------------- ------------- ------- ------------------ --- --------------- ------------------ ------------------------------- 
+0      input_1 (Input, InputLayer)                [b:1,h:8,w:8,c:2]                                              |                                    
+------ ------------------------------------------ ------------------- ------------- ------- ------------------ --- --------------- ------------------ ------------------------------- 
+1      conv2d (Conv2D, Conv2D)                    [b:1,h:6,w:6,c:8]   152/608         5,192            input_1   | -608(-100.0%)   -5,192(-100.0%)    
+------ ------------------------------------------ ------------------- ------------- ------- ------------------ --- --------------- ------------------ ------------------------------- 
+2      activation (Nonlinearity, Activation)      [b:1,h:6,w:6,c:8]                     288             conv2d   |                 -288(-100.0%)      
+------ ------------------------------------------ ------------------- ------------- ------- ------------------ --- --------------- ------------------ ------------------------------- 
+3      max_pooling2d (Pool, MaxPooling2D)         [b:1,h:3,w:3,c:8]                     288         activation   | +608(+100.0%)   +5,480(+1902.8%)   Conv2D_[0]                      
+------ ------------------------------------------ ------------------- ------------- ------- ------------------ --- --------------- ------------------ ------------------------------- 
+5      flatten (Reshape, Flatten)                 [b:1,c:72]                                     max_pooling2d   |                                    
+------ ------------------------------------------ ------------------- ------------- ------- ------------------ --- --------------- ------------------ ------------------------------- 
+6      dense_tmr1_dense (Dense, Dense)            [b:1,c:32]          2,336/9,344     2,336            flatten   |                 +32(+1.4%)         Dense_/Nonlinearity_[5, 6]      
+       dense_tmr1 (Nonlinearity, Dense)           [b:1,c:32]                             32   dense_tmr1_dense   |                 -32(-100.0%)       
+------ ------------------------------------------ ------------------- ------------- ------- ------------------ --- --------------- ------------------ ------------------------------- 
+7      dense_tmr2_dense (Dense, Dense)            [b:1,c:32]          2,336/9,344     2,336            flatten   |                 +32(+1.4%)         Dense_/Nonlinearity_[3, 4]      
+       dense_tmr2 (Nonlinearity, Dense)           [b:1,c:32]                             32   dense_tmr2_dense   |                 -32(-100.0%)       
+------ ------------------------------------------ ------------------- ------------- ------- ------------------ --- --------------- ------------------ ------------------------------- 
+8      dense_tmr3_dense (Dense, Dense)            [b:1,c:32]          2,336/9,344     2,336            flatten   |                 +32(+1.4%)         Dense_/Nonlinearity_[1, 2]      
+       dense_tmr3 (Nonlinearity, Dense)           [b:1,c:32]                             32   dense_tmr3_dense   |                 -32(-100.0%)       
+------ ------------------------------------------ ------------------- ------------- ------- ------------------ --- --------------- ------------------ ------------------------------- 
+9      dense_voter (Custom, MajorityVoterLayer)   [b:1,c:32]                                        dense_tmr1   |                                    Custom_[7]                      
+                                                                                                    dense_tmr2   | 
+                                                                                                    dense_tmr3   | 
+------ ------------------------------------------ ------------------- ------------- ------- ------------------ --- --------------- ------------------ ------------------------------- 
+10     dense_1_dense (Dense, Dense)               [b:1,c:8]           264/1,056         264        dense_voter   |                 +120(+45.5%)       Dense_/Nonlinearity_[o][8, 9]   
+       dense_1 (Nonlinearity, Dense)              [b:1,c:8]                             120      dense_1_dense   |                 -120(-100.0%)      
+------ ------------------------------------------ ------------------- ------------- ------- ------------------ --- --------------- ------------------ ------------------------------- 
+model/c-model: macc=13,256/13,256  weights=29,696/29,696  activations=--/744 io=--/544
 
 
 
 Generated C-graph summary
 ------------------------------------------------------------------------------------------------------------------------
-model name            : hand_posture_tmr
+model name            : voter_tmr
 c-name                : network
 c-node #              : 10
-c-array #             : 24
-activations size      : 4608 (1 segment)
-weights size          : 12224 (1 segment)
-macc                  : 18904
+c-array #             : 23
+activations size      : 744 (1 segment)
+weights size          : 29696 (1 segment)
+macc                  : 13256
 inputs                : ['input_1_output']
 outputs               : ['dense_1_output']
 
-C-Arrays (24)
------- ----------------------- ----------- ------------------------- ------------- --------- 
-c_id   name (*_array)          item/size   domain/mem-pool           c-type        comment   
------- ----------------------- ----------- ------------------------- ------------- --------- 
-0      activation_output       288/1152    activations/**default**   float                   
-1      conv2d_tmr1_bias        8/32        weights/weights           const float             
-2      conv2d_tmr1_output      288/1152    activations/**default**   float                   
-3      conv2d_tmr1_scratch0    18/72       activations/**default**   float                   
-4      conv2d_tmr1_weights     144/576     weights/weights           const float             
-5      conv2d_tmr2_bias        8/32        weights/weights           const float             
-6      conv2d_tmr2_output      288/1152    activations/**default**   float                   
-7      conv2d_tmr2_scratch0    18/72       activations/**default**   float                   
-8      conv2d_tmr2_weights     144/576     weights/weights           const float             
-9      conv2d_tmr3_bias        8/32        weights/weights           const float             
-10     conv2d_tmr3_output      288/1152    activations/**default**   float                   
-11     conv2d_tmr3_scratch0    18/72       activations/**default**   float                   
-12     conv2d_tmr3_weights     144/576     weights/weights           const float             
-13     conv2d_voter_output     288/1152    activations/**default**   float                   
-14     dense_1_dense_bias      8/32        weights/weights           const float             
-15     dense_1_dense_output    8/32        activations/**default**   float                   
-16     dense_1_dense_weights   256/1024    weights/weights           const float             
-17     dense_1_output          8/32        user/                     float         /output   
-18     dense_dense_bias        32/128      weights/weights           const float             
-19     dense_dense_output      32/128      activations/**default**   float                   
-20     dense_dense_weights     2304/9216   weights/weights           const float             
-21     dense_output            32/128      activations/**default**   float                   
-22     input_1_output          128/512     user/                     float         /input    
-23     max_pooling2d_output    72/288      activations/**default**   float                   
------- ----------------------- ----------- ------------------------- ------------- --------- 
+C-Arrays (23)
+------ -------------------------- ----------- ------------------------- ------------- --------- 
+c_id   name (*_array)             item/size   domain/mem-pool           c-type        comment   
+------ -------------------------- ----------- ------------------------- ------------- --------- 
+0      conv2d_bias                8/32        weights/weights           const float             
+1      conv2d_output              72/288      activations/**default**   float                   
+2      conv2d_scratch0            18/72       activations/**default**   float                   
+3      conv2d_scratch1            96/384      activations/**default**   float                   
+4      conv2d_weights             144/576     weights/weights           const float             
+5      dense_1_dense_bias         8/32        weights/weights           const float             
+6      dense_1_dense_output       8/32        activations/**default**   float                   
+7      dense_1_dense_weights      256/1024    weights/weights           const float             
+8      dense_1_output             8/32        user/                     float         /output   
+9      dense_tmr1_dense_bias      32/128      weights/weights           const float             
+10     dense_tmr1_dense_output    32/128      activations/**default**   float                   
+11     dense_tmr1_dense_weights   2304/9216   weights/weights           const float             
+12     dense_tmr1_output          32/128      activations/**default**   float                   
+13     dense_tmr2_dense_bias      32/128      weights/weights           const float             
+14     dense_tmr2_dense_output    32/128      activations/**default**   float                   
+15     dense_tmr2_dense_weights   2304/9216   weights/weights           const float             
+16     dense_tmr2_output          32/128      activations/**default**   float                   
+17     dense_tmr3_dense_bias      32/128      weights/weights           const float             
+18     dense_tmr3_dense_output    32/128      activations/**default**   float                   
+19     dense_tmr3_dense_weights   2304/9216   weights/weights           const float             
+20     dense_tmr3_output          32/128      activations/**default**   float                   
+21     dense_voter_output         32/128      activations/**default**   float                   
+22     input_1_output             128/512     user/                     float         /input    
+------ -------------------------- ----------- ------------------------- ------------- --------- 
 
 C-Layers (10)
------- ---------------- ---- --------------- ------ ------ -------------------------- ------------------- 
-c_id   name (*_layer)   id   layer_type      macc   rom    tensors                    shape (array id)    
------- ---------------- ---- --------------- ------ ------ -------------------------- ------------------- 
-0      conv2d_tmr3      3    Conv2D          5192   608    I: input_1_output          f32(1x8x8x2) (22)   
-                                                           S: conv2d_tmr3_scratch0                        
-                                                           W: conv2d_tmr3_weights     f32(8x3x3x2) (12)   
-                                                           W: conv2d_tmr3_bias        f32(8) (9)          
-                                                           O: conv2d_tmr3_output      f32(1x6x6x8) (10)   
------- ---------------- ---- --------------- ------ ------ -------------------------- ------------------- 
-1      conv2d_tmr2      2    Conv2D          5192   608    I: input_1_output          f32(1x8x8x2) (22)   
-                                                           S: conv2d_tmr2_scratch0                        
-                                                           W: conv2d_tmr2_weights     f32(8x3x3x2) (8)    
-                                                           W: conv2d_tmr2_bias        f32(8) (5)          
-                                                           O: conv2d_tmr2_output      f32(1x6x6x8) (6)    
------- ---------------- ---- --------------- ------ ------ -------------------------- ------------------- 
-2      conv2d_tmr1      1    Conv2D          5192   608    I: input_1_output          f32(1x8x8x2) (22)   
-                                                           S: conv2d_tmr1_scratch0                        
-                                                           W: conv2d_tmr1_weights     f32(8x3x3x2) (4)    
-                                                           W: conv2d_tmr1_bias        f32(8) (1)          
-                                                           O: conv2d_tmr1_output      f32(1x6x6x8) (2)    
------- ---------------- ---- --------------- ------ ------ -------------------------- ------------------- 
-3      conv2d_voter     4    Custom          0      0      I: conv2d_tmr1_output      f32(1x6x6x8) (2)    
-                                                           I: conv2d_tmr2_output      f32(1x6x6x8) (2)    
-                                                           I: conv2d_tmr3_output      f32(1x6x6x8) (2)    
-                                                           O: conv2d_voter_output     f32(1x6x6x8) (13)   
------- ---------------- ---- --------------- ------ ------ -------------------------- ------------------- 
-4      activation       5    Nonlinearity    288    0      I: conv2d_voter_output     f32(1x6x6x8) (13)   
-                                                           O: activation_output       f32(1x6x6x8) (0)    
------- ---------------- ---- --------------- ------ ------ -------------------------- ------------------- 
-5      max_pooling2d    6    Pool            288    0      I: activation_output       f32(1x6x6x8) (0)    
-                                                           O: max_pooling2d_output    f32(1x3x3x8) (23)   
------- ---------------- ---- --------------- ------ ------ -------------------------- ------------------- 
-6      dense_dense      9    Dense           2336   9344   I: max_pooling2d_output    f32(1x3x3x8) (23)   
-                                                           W: dense_dense_weights     f32(32x72) (20)     
-                                                           W: dense_dense_bias        f32(32) (18)        
-                                                           O: dense_dense_output      f32(1x32) (19)      
------- ---------------- ---- --------------- ------ ------ -------------------------- ------------------- 
-7      dense            9    Nonlinearity    32     0      I: dense_dense_output      f32(1x32) (19)      
-                                                           O: dense_output            f32(1x32) (21)      
------- ---------------- ---- --------------- ------ ------ -------------------------- ------------------- 
-8      dense_1_dense    10   Dense           264    1056   I: dense_output            f32(1x32) (21)      
-                                                           W: dense_1_dense_weights   f32(8x32) (16)      
-                                                           W: dense_1_dense_bias      f32(8) (14)         
-                                                           O: dense_1_dense_output    f32(1x8) (15)       
------- ---------------- ---- --------------- ------ ------ -------------------------- ------------------- 
-9      dense_1          10   Nonlinearity    120    0      I: dense_1_dense_output    f32(1x8) (15)       
-                                                           O: dense_1_output          f32(1x8) (17)       
------- ---------------- ---- --------------- ------ ------ -------------------------- ------------------- 
+------ ------------------ ---- --------------- ------ ------ ----------------------------- ------------------- 
+c_id   name (*_layer)     id   layer_type      macc   rom    tensors                       shape (array id)    
+------ ------------------ ---- --------------- ------ ------ ----------------------------- ------------------- 
+0      conv2d             3    Conv2D          5768   608    I: input_1_output             f32(1x8x8x2) (22)   
+                                                             S: conv2d_scratch0                                
+                                                             S: conv2d_scratch1                                
+                                                             W: conv2d_weights             f32(8x3x3x2) (4)    
+                                                             W: conv2d_bias                f32(8) (0)          
+                                                             O: conv2d_output              f32(1x3x3x8) (1)    
+------ ------------------ ---- --------------- ------ ------ ----------------------------- ------------------- 
+1      dense_tmr3_dense   8    Dense           2336   9344   I: conv2d_output              f32(1x3x3x8) (1)    
+                                                             W: dense_tmr3_dense_weights   f32(32x72) (19)     
+                                                             W: dense_tmr3_dense_bias      f32(32) (17)        
+                                                             O: dense_tmr3_dense_output    f32(1x32) (18)      
+------ ------------------ ---- --------------- ------ ------ ----------------------------- ------------------- 
+2      dense_tmr3         8    Nonlinearity    32     0      I: dense_tmr3_dense_output    f32(1x32) (18)      
+                                                             O: dense_tmr3_output          f32(1x32) (20)      
+------ ------------------ ---- --------------- ------ ------ ----------------------------- ------------------- 
+3      dense_tmr2_dense   7    Dense           2336   9344   I: conv2d_output              f32(1x3x3x8) (1)    
+                                                             W: dense_tmr2_dense_weights   f32(32x72) (15)     
+                                                             W: dense_tmr2_dense_bias      f32(32) (13)        
+                                                             O: dense_tmr2_dense_output    f32(1x32) (14)      
+------ ------------------ ---- --------------- ------ ------ ----------------------------- ------------------- 
+4      dense_tmr2         7    Nonlinearity    32     0      I: dense_tmr2_dense_output    f32(1x32) (14)      
+                                                             O: dense_tmr2_output          f32(1x32) (16)      
+------ ------------------ ---- --------------- ------ ------ ----------------------------- ------------------- 
+5      dense_tmr1_dense   6    Dense           2336   9344   I: conv2d_output              f32(1x3x3x8) (1)    
+                                                             W: dense_tmr1_dense_weights   f32(32x72) (11)     
+                                                             W: dense_tmr1_dense_bias      f32(32) (9)         
+                                                             O: dense_tmr1_dense_output    f32(1x32) (10)      
+------ ------------------ ---- --------------- ------ ------ ----------------------------- ------------------- 
+6      dense_tmr1         6    Nonlinearity    32     0      I: dense_tmr1_dense_output    f32(1x32) (10)      
+                                                             O: dense_tmr1_output          f32(1x32) (12)      
+------ ------------------ ---- --------------- ------ ------ ----------------------------- ------------------- 
+7      dense_voter        9    Custom          0      0      I: dense_tmr1_output          f32(1x32) (12)      
+                                                             I: dense_tmr2_output          f32(1x32) (12)      
+                                                             I: dense_tmr3_output          f32(1x32) (12)      
+                                                             O: dense_voter_output         f32(1x32) (21)      
+------ ------------------ ---- --------------- ------ ------ ----------------------------- ------------------- 
+8      dense_1_dense      10   Dense           264    1056   I: dense_voter_output         f32(1x32) (21)      
+                                                             W: dense_1_dense_weights      f32(8x32) (7)       
+                                                             W: dense_1_dense_bias         f32(8) (5)          
+                                                             O: dense_1_dense_output       f32(1x8) (6)        
+------ ------------------ ---- --------------- ------ ------ ----------------------------- ------------------- 
+9      dense_1            10   Nonlinearity    120    0      I: dense_1_dense_output       f32(1x8) (6)        
+                                                             O: dense_1_output             f32(1x8) (8)        
+------ ------------------ ---- --------------- ------ ------ ----------------------------- ------------------- 
 
 
 
@@ -155,48 +156,46 @@ Number of operations per c-layer
 ------- ------ --------------------------- -------- -------------- 
 c_id    m_id   name (type)                      #op           type 
 ------- ------ --------------------------- -------- -------------- 
-0       3      conv2d_tmr3 (Conv2D)           5,192   smul_f32_f32 
-1       2      conv2d_tmr2 (Conv2D)           5,192   smul_f32_f32 
-2       1      conv2d_tmr1 (Conv2D)           5,192   smul_f32_f32 
-3       4      conv2d_voter (Custom)              0   smul_f32_f32 
-4       5      activation (Nonlinearity)        288     op_f32_f32 
-5       6      max_pooling2d (Pool)             288   smul_f32_f32 
-6       9      dense_dense (Dense)            2,336   smul_f32_f32 
-7       9      dense (Nonlinearity)              32     op_f32_f32 
+0       3      conv2d (Conv2D)                5,768   smul_f32_f32 
+1       8      dense_tmr3_dense (Dense)       2,336   smul_f32_f32 
+2       8      dense_tmr3 (Nonlinearity)         32     op_f32_f32 
+3       7      dense_tmr2_dense (Dense)       2,336   smul_f32_f32 
+4       7      dense_tmr2 (Nonlinearity)         32     op_f32_f32 
+5       6      dense_tmr1_dense (Dense)       2,336   smul_f32_f32 
+6       6      dense_tmr1 (Nonlinearity)         32     op_f32_f32 
+7       9      dense_voter (Custom)               0   smul_f32_f32 
 8       10     dense_1_dense (Dense)            264   smul_f32_f32 
 9       10     dense_1 (Nonlinearity)           120     op_f32_f32 
 ------- ------ --------------------------- -------- -------------- 
-total                                        18,904 
+total                                        13,256 
 
 Number of operation types
 ---------------- -------- ----------- 
 operation type          #           % 
 ---------------- -------- ----------- 
-smul_f32_f32       18,464       97.7% 
-op_f32_f32            440        2.3% 
+smul_f32_f32       13,040       98.4% 
+op_f32_f32            216        1.6% 
 
 Complexity report (model)
------- --------------- ------------------------- ------------------------- -------- 
-m_id   name            c_macc                    c_rom                     c_id     
------- --------------- ------------------------- ------------------------- -------- 
-1      conv2d_tmr1     ||||||||||||||||  27.5%   |                  5.0%   [2]      
-2      conv2d_tmr2     ||||||||||||||||  27.5%   |                  5.0%   [1]      
-3      conv2d_tmr3     ||||||||||||||||  27.5%   |                  5.0%   [0]      
-4      conv2d_voter    |                  0.0%   |                  0.0%   [3]      
-5      activation      |                  1.5%   |                  0.0%   [4]      
-6      max_pooling2d   |                  1.5%   |                  0.0%   [5]      
-9      dense_dense     |||||||           12.5%   ||||||||||||||||  76.4%   [6, 7]   
-10     dense_1_dense   ||                 2.0%   ||                 8.6%   [8, 9]   
------- --------------- ------------------------- ------------------------- -------- 
-macc=18,904 weights=12,224 act=4,608 ram_io=544
+------ ------------------ ------------------------- ------------------------- -------- 
+m_id   name               c_macc                    c_rom                     c_id     
+------ ------------------ ------------------------- ------------------------- -------- 
+3      max_pooling2d      ||||||||||||||||  43.5%   |                  2.0%   [0]      
+6      dense_tmr1_dense   |||||||           17.9%   ||||||||||||||||  31.5%   [5, 6]   
+7      dense_tmr2_dense   |||||||           17.9%   ||||||||||||||||  31.5%   [3, 4]   
+8      dense_tmr3_dense   |||||||           17.9%   ||||||||||||||||  31.5%   [1, 2]   
+9      dense_voter        |                  0.0%   |                  0.0%   [7]      
+10     dense_1_dense      |                  2.9%   ||                 3.6%   [8, 9]   
+------ ------------------ ------------------------- ------------------------- -------- 
+macc=13,256 weights=29,696 act=744 ram_io=544
 
 Generated files (8)
-------------------------------------------------------------------------- 
-/home/apo/stm-edgeai-reliability/st_ai_output/src/my_custom_voter.c       
-/home/apo/stm-edgeai-reliability/st_ai_output/inc/network_data_params.h   
-/home/apo/stm-edgeai-reliability/st_ai_output/src/network_data_params.c   
-/home/apo/stm-edgeai-reliability/st_ai_output/inc/network_data.h          
-/home/apo/stm-edgeai-reliability/st_ai_output/src/network_data.c          
-/home/apo/stm-edgeai-reliability/st_ai_output/inc/network_config.h        
-/home/apo/stm-edgeai-reliability/st_ai_output/inc/network.h               
-/home/apo/stm-edgeai-reliability/st_ai_output/src/network.c               
+----------------------------------------------------------------------------------------------------------------------------------------------- 
+/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/voter_tmr/st_ai_output/src/my_custom_voter.c       
+/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/voter_tmr/st_ai_output/inc/network_data_params.h   
+/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/voter_tmr/st_ai_output/src/network_data_params.c   
+/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/voter_tmr/st_ai_output/inc/network_data.h          
+/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/voter_tmr/st_ai_output/src/network_data.c          
+/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/voter_tmr/st_ai_output/inc/network_config.h        
+/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/voter_tmr/st_ai_output/inc/network.h               
+/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/voter_tmr/st_ai_output/src/network.c               

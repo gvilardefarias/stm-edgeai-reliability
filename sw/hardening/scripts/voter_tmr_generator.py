@@ -105,12 +105,14 @@ if __name__ == "__main__":
         output_h5_golden = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/gmp/HAR_voter_tmr_golden.h5")
     elif args.model == 'hand_posture':
         base_model = os.path.join(PRJ_ROOT, "sw/hardening/base_models/hand_posture/CNN2D_ST_HandPosture_8classes.h5")
-        target = "conv2d" 
-        output_h5 = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/hand_posture/bias_tmr.h5")
+        target = "dense" 
+        output_h5 = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/hand_posture/voter_tmr.h5")
+        output_h5_golden = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/hand_posture/voter_tmr_golden.h5")
     elif args.model == 'miniresnet':
         base_model = os.path.join(PRJ_ROOT, "sw/hardening/base_models/miniresnet/miniresnet_1stacks_64x50_tl.h5")
-        target = "conv2_block1_1_conv" 
-        output_h5 = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/miniresnet/bias_tmr.h5")
+        target = "conv2_block2_2_conv" 
+        output_h5 = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/miniresnet/voter_tmr.h5")
+        output_h5_golden = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/miniresnet/voter_tmr_golden.h5")
     elif args.model == 'gmp':
         base_model = os.path.join(PRJ_ROOT, "sw/hardening/base_models/gmp/gmp_wl_24.h5")
         target = "conv2d" 
@@ -119,5 +121,6 @@ if __name__ == "__main__":
     os.makedirs(os.path.dirname(output_h5), exist_ok=True)
     if os.path.exists(base_model):
         build_tmr_model(base_model, target, output_h5, add_error=True)
+        build_tmr_model(base_model, target, output_h5_golden, add_error=False)
     else:
         print(f"Error: Could not find {base_model}")

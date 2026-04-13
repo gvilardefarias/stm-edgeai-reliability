@@ -1,0 +1,6 @@
+# file created : 2026-04-02 10:28:49
+# dtype=float32
+# original model features - 128/404
+# (404, 64, 50, 1)/float32, min/max=[-80.000, 0.000], mean/std=[-39.277, 19.208], input_1
+# Note: only the first 128 samples are saved
+# Note: w/o data, number of item by sample is exceeded: 3200 > 512
