@@ -5,7 +5,6 @@ import numpy as np
 import argparse
 from omegaconf import OmegaConf
 
-# Suppress warnings
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 def profile_activations(model, representative_data):
@@ -24,14 +23,9 @@ def profile_activations(model, representative_data):
     return layer_max_dict
 
 def build_adaptive_clipper_model(original_model_path, representative_data, save_path, margin=1.1, target_layers=None):
-    """
-    target_layers: list of layer names to apply the clipper to.
-                   If None or empty, applies to ALL ReLU layers (original behavior).
-    """
     print(f"\nLoading original model: {original_model_path}")
     model = tf.keras.models.load_model(original_model_path)
 
-    # Validate target_layers against model
     if target_layers:
         model_layer_names = {layer.name for layer in model.layers}
         invalid = [n for n in target_layers if n not in model_layer_names]
@@ -66,7 +60,6 @@ def build_adaptive_clipper_model(original_model_path, representative_data, save_
 
         config = layer.get_config()
 
-        # --- Detect ReLU variants ---
         has_fused_relu = False
         if 'activation' in config:
             act = config['activation']
@@ -85,11 +78,9 @@ def build_adaptive_clipper_model(original_model_path, representative_data, save_
 
         is_standalone_relu_layer = isinstance(layer, tf.keras.layers.ReLU)
 
-        # --- Decide whether to clip this layer ---
         is_relu_layer = has_fused_relu or is_standalone_relu_layer or is_activation_layer_relu
         should_clip = is_relu_layer and (target_layers is None or layer.name in target_layers)
 
-        # Strip fused ReLU only if we're going to re-add it as a clipper
         if has_fused_relu and should_clip:
             if isinstance(config['activation'], dict):
                 config['activation']['config'] = 'linear'
@@ -97,15 +88,13 @@ def build_adaptive_clipper_model(original_model_path, representative_data, save_
             else:
                 config['activation'] = 'linear'
 
-        # --- Reconstruction ---
         if is_activation_layer_relu and should_clip:
-            x_out = layer_inputs  # Skip original activation; clipper replaces it
+            x_out = layer_inputs
         else:
             l_obj = layer.__class__.from_config(config)
             x_out = l_obj(layer_inputs)
             l_obj.set_weights(layer.get_weights())
 
-        # --- Insert Adaptive Clipper ---
         if should_clip:
             max_val = layer_max_dict[layer.name]
             safe_max_val = max(max_val * margin, 0.1)
@@ -114,7 +103,6 @@ def build_adaptive_clipper_model(original_model_path, representative_data, save_
         elif is_relu_layer:
             print(f"  [SKIPPED] {layer.name:<25} (ReLU present but not in target list)")
 
-        # Map output tensors
         if isinstance(layer.output, list):
             for i, out in enumerate(layer.output):
                 network_dict[out.name] = x_out[i]
@@ -134,6 +122,16 @@ def build_adaptive_clipper_model(original_model_path, representative_data, save_
     return clipper_model
 
 
+def collect_dataset(ds):
+    """Iterate over an entire tf.data.Dataset and concatenate all batches."""
+    all_batches = []
+    for x_batch, _ in ds:
+        all_batches.append(x_batch.numpy())
+    data = np.concatenate(all_batches, axis=0)
+    print(f"Collected {data.shape[0]} samples for profiling.")
+    return data
+
+
 if __name__ == "__main__":
     script_dir = os.path.dirname(os.path.abspath(__file__))
     PRJ_ROOT = os.path.abspath(os.path.join(script_dir, '..', '..', '..'))
@@ -147,13 +145,21 @@ if __name__ == "__main__":
     parser.add_argument('--target-layers', type=str, nargs='+', default=None,
                         metavar='LAYER_NAME',
                         help='Names of specific layers to apply the clipper to. '
-                             'If omitted, clips ALL ReLU layers. '
-                             'Example: --target-layers conv1_relu dense_relu')
+                             'If omitted, clips ALL ReLU layers.')
+    parser.add_argument('--data-split', type=str, default='val', choices=['train', 'val'],
+                        help='Which data split to use for profiling activations. '
+                             'Default: val (recommended). Use train to match original behaviour.')
+    parser.add_argument('--val-split', type=float, default=0.2,
+                        metavar='FLOAT',
+                        help='Fraction of data to use as validation set for MiniResNet '
+                             '(last N%% of samples). Only used when --data-split=val. Default: 0.2')
     args = parser.parse_args()
 
     modelzoo_path = args.modelzoo_path
     margin = 1.1
-    target_layers = args.target_layers  # None means "all"
+    target_layers = args.target_layers
+
+    print(f"Profiling activations using: {args.data_split.upper()} split")
 
     if args.model == 'ign':
         print(f"--- CONFIGURING FOR IGN MODEL (ModelZoo: {modelzoo_path}) ---")
@@ -167,13 +173,12 @@ if __name__ == "__main__":
         class_names = ['Walking', 'Jogging', 'Stairs', 'Stationary']
         target_shape = (24, 3, 1)
         
-        train_ds, _, _ = load_wisdm(
+        train_ds, val_ds, _ = load_wisdm(
             dataset_path=dataset_path, class_names=class_names, input_shape=target_shape,
             gravity_rot_sup=True, normalization=True, val_split=0.2, test_split=0.2,
             seed=42, batch_size=200, to_cache=False
         )
-        for x_batch, _ in train_ds.take(1):
-            representative_data = x_batch.numpy()
+        representative_data = collect_dataset(train_ds if args.data_split == 'train' else val_ds)
 
     elif args.model == 'hand_posture':
         print(f"--- CONFIGURING FOR HAND POSTURE MODEL (ModelZoo: {modelzoo_path}) ---")
@@ -188,9 +193,8 @@ if __name__ == "__main__":
         cfg.dataset.training_path = os.path.join(modelzoo_path, "hand_posture/datasets/ST_VL53L8CX_handposture_dataset")
         
         data_loaders = get_ST_handposture_dataset(cfg)
-        train_ds = data_loaders['train']
-        for images, labels in train_ds.take(1):
-            representative_data = images.numpy()
+        split_key = 'train' if args.data_split == 'train' else 'val'
+        representative_data = collect_dataset(data_loaders[split_key])
 
     elif args.model == 'miniresnet':
         print("--- CONFIGURING FOR MINIRESNET MODEL ---")
@@ -198,8 +202,18 @@ if __name__ == "__main__":
         output_h5 = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/miniresnet/adaptive_clipper.h5")
         
         dataset_path = os.path.join(PRJ_ROOT, "sw/datasets/miniresnet/miniresnet_dataset.npy")
-        representative_data = np.load(dataset_path)
-        print(f"Loaded {representative_data.shape[0]} samples for profiling.")
+        full_data = np.load(dataset_path)
+        
+        if args.data_split == 'train':
+            split_idx = int(len(full_data) * (1.0 - args.val_split))
+            representative_data = full_data[:split_idx]
+            print(f"Using first {1 - args.val_split:.0%} as train split "
+                  f"({representative_data.shape[0]}/{len(full_data)} samples) for profiling.")
+        else:
+            split_idx = int(len(full_data) * (1.0 - args.val_split))
+            representative_data = full_data[split_idx:]
+            print(f"Using last {args.val_split:.0%} as validation split "
+                  f"({representative_data.shape[0]}/{len(full_data)} samples) for profiling.")
 
     os.makedirs(os.path.dirname(output_h5), exist_ok=True)
     if os.path.exists(base_model):
