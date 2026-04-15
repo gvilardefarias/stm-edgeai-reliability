@@ -1,6 +1,6 @@
 ST Edge AI Core v1.0.0-19895
-Created date          : 2026-04-02 17:09:59
-Parameters            : validate --model ../../../hardened_models/hand_posture/voter_tmr.h5 --target stellar-e --custom ../../../config/voter_tmr.json -vi ../../../../datasets/handposture/hand_val_images.npy --no-check --mode target -d lib:st_ai_ws/inspector_network/workspace/
+Created date          : 2026-04-15 14:58:14
+Parameters            : validate --model ../../../hardened_models/hand_posture/voter_tmr.h5 --target stellar-e -vi ../../../../datasets/handposture/hand_val_images.npy -vo ../../../../datasets/handposture/hand_val_labels.npy --custom ../../../config/voter_tmr.json --mode target -d lib:st_ai_ws/inspector_network/workspace/
 
 Exec/report summary (validate)
 ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -13,9 +13,11 @@ target/series      :   stellar-e
 workspace dir      :   /home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/tmr_voter/st_ai_ws       
 output dir         :   /home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/tmr_voter/st_ai_output   
 vinput files       :   /home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/datasets/handposture/hand_val_images.npy                        
+vinput files       :   /home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/datasets/handposture/hand_val_labels.npy                        
+voutput files      :   /home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/datasets/handposture/hand_val_labels.npy                        
 model_fmt          :   float                                                                                                                 
 model_name         :   voter_tmr                                                                                                             
-model_hash         :   0xbdec3114de423393f4d6b64147e0bdec                                                                                    
+model_hash         :   0xe78ffa4cbedd16898ec30f11bd66a664                                                                                    
 params #           :   7,424 items (29.00 KiB)                                                                                               
 ---------------------------------------------------------------------------------------------------------------------------------------------
 input 1/1          :   'input_1', f32(1x8x8x2), 512 Bytes, user                                                                              
@@ -152,8 +154,10 @@ c_id   name (*_layer)     id   layer_type      macc   rom    tensors            
  
 Setting validation data...
  loading file: /home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/datasets/handposture/hand_val_images.npy
+ loading file: /home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/datasets/handposture/hand_val_labels.npy
+ - samples are reshaped: (2289, 8) -> (2289, 1, 1, 8)
  I[1]: (2289, 8, 8, 2)/float32, min/max=[-0.939, 18.903], mean/std=[5.946, 8.846], input_1
- No output/reference samples are provided
+ O[1]: (2289, 1, 1, 8)/float32, min/max=[0.000, 1.000], mean/std=[0.125, 0.331], dense_1
  
 Running the STM AI c-model (AI RUNNER)...(name=network, mode=TARGET)
 
@@ -165,7 +169,7 @@ Running the STM AI c-model (AI RUNNER)...(name=network, mode=TARGET)
   input_1            :   f32[1,8,8,2], 512 Bytes, user             
   output_1           :   f32[1,1,1,8], 32 Bytes, user              
   n_nodes            :   10                                        
-  compile_datetime   :   Apr  2 2026 17:07:02                      
+  compile_datetime   :   Apr 15 2026 14:56:18                      
   activations        :   744                                       
   weights            :   29696                                     
   macc               :   13256                                     
@@ -174,8 +178,6 @@ Running the STM AI c-model (AI RUNNER)...(name=network, mode=TARGET)
   capabilities       :   IO_ONLY, PER_LAYER, PER_LAYER_WITH_DATA   
   device             :   x86_64, x86_64, Linux                     
   -----------------------------------------------------------------
- Warning: C-network signature checking has been skipped
- 
  
  NOTE: duration and exec time per layer is just an indication. They are dependent of the HOST-machine work-load.
 
@@ -183,7 +185,7 @@ Running the STM AI c-model (AI RUNNER)...(name=network, mode=TARGET)
   ST.AI Profiling results v1.2 - "network"
   -------------------------------------------------------------
   nb sample(s)   :   2289                                      
-  duration       :   0.065 ms by sample (0.029/19.544/0.526)   
+  duration       :   0.098 ms by sample (0.031/24.101/0.874)   
   macc           :   13256                                     
   -------------------------------------------------------------
    
@@ -191,18 +193,18 @@ Running the STM AI c-model (AI RUNNER)...(name=network, mode=TARGET)
    -------------------------------------------------------------------------------
    c_id    m_id   type                   dur (ms)       %   cumul     name        
    -------------------------------------------------------------------------------
-   0       3      Conv2dPool (0x109)        0.029   45.0%   45.0%     ai_node_0   
-   1       8      Dense (0x104)             0.010   14.9%   59.8%     ai_node_1   
-   2       8      NL (0x107)                0.000    0.7%   60.6%     ai_node_2   
-   3       7      Dense (0x104)             0.005    7.3%   67.8%     ai_node_3   
-   4       7      NL (0x107)                0.000    0.7%   68.5%     ai_node_4   
-   5       6      Dense (0x104)             0.005    7.3%   75.8%     ai_node_5   
-   6       6      NL (0x107)                0.000    0.7%   76.5%     ai_node_6   
-   7       9      Custom (0x182)            0.002    2.9%   79.4%     ai_node_7   
-   8       10     Dense (0x104)             0.001    2.0%   81.4%     ai_node_8   
-   9       10     NL (0x107)                0.001    2.1%   83.5%     ai_node_9   
+   0       3      Conv2dPool (0x109)        0.047   48.3%   48.3%     ai_node_0   
+   1       8      Dense (0x104)             0.017   17.3%   65.6%     ai_node_1   
+   2       8      NL (0x107)                0.001    0.5%   66.1%     ai_node_2   
+   3       7      Dense (0x104)             0.013   13.1%   79.2%     ai_node_3   
+   4       7      NL (0x107)                0.000    0.4%   79.6%     ai_node_4   
+   5       6      Dense (0x104)             0.006    6.0%   85.6%     ai_node_5   
+   6       6      NL (0x107)                0.000    0.4%   86.1%     ai_node_6   
+   7       9      Custom (0x182)            0.002    2.3%   88.4%     ai_node_7   
+   8       10     Dense (0x104)             0.002    1.9%   90.3%     ai_node_8   
+   9       10     NL (0x107)                0.007    7.0%   97.4%     ai_node_9   
    -------------------------------------------------------------------------------
-   total                                    0.055                                 
+   total                                    0.095                                 
    -------------------------------------------------------------------------------
    
    Statistic per tensor
@@ -210,35 +212,71 @@ Running the STM AI c-model (AI RUNNER)...(name=network, mode=TARGET)
    tensor   #      type[shape]:size        min      max     mean      std  name       
    -----------------------------------------------------------------------------------
    I.0      2289   f32[1,8,8,2]:512     -0.939   18.903    5.946    8.846  input_1    
-   O.0      2289   f32[1,1,1,8]:32       0.000    1.000    0.125    0.310  output_1   
+   O.0      2289   f32[1,1,1,8]:32       0.000    1.000    0.125    0.323  output_1   
    -----------------------------------------------------------------------------------
  
 Saving validation data...
  output directory: /home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/tmr_voter/st_ai_output
  creating /home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/tmr_voter/st_ai_output/network_val_io.npz
- m_outputs_1: (2289, 1, 1, 8)/float32, min/max=[0.000, 1.000], mean/std=[0.125, 0.310], dense_1
- c_outputs_1: (2289, 1, 1, 8)/float32, min/max=[0.000, 1.000], mean/std=[0.125, 0.310], dense_1
+ m_outputs_1: (2289, 1, 1, 8)/float32, min/max=[0.000, 1.000], mean/std=[0.125, 0.323], dense_1
+ c_outputs_1: (2289, 1, 1, 8)/float32, min/max=[0.000, 1.000], mean/std=[0.125, 0.323], dense_1
 
  
 Computing the metrics...
+
+ Accuracy report #1 for the generated TARGET C-model
+ ----------------------------------------------------------------------------------------------------
+ notes: - computed against the provided ground truth values
+        - 2289 samples (8 items per sample)
+
+  acc=99.13%, rmse=0.045249876, mae=0.007199354, l2r=0.130707845, nse=0.981, cos=0.992
+
+  8 classes (2289 samples)
+  ------------------------------------------------
+  C0       60    1    .    .    .    .    1    .  
+  C1        .   352   .    .    .    .    .    .  
+  C2        1    2   315   .    2    .    .    4  
+  C3        .    .    .   246   .    .    .    .  
+  C4        .    .    3    .   311   1    .    2  
+  C5        .    .    .    .    .   265   .    .  
+  C6        .    .    .    .    .    .   245   .  
+  C7        .    1    1    .    1    .    .   475 
+
+ Accuracy report #1 for the reference model
+ ----------------------------------------------------------------------------------------------------
+ notes: - computed against the provided ground truth values
+        - 2289 samples (8 items per sample)
+
+  acc=99.13%, rmse=0.045249876, mae=0.007199354, l2r=0.130707845, nse=0.981, cos=0.992
+
+  8 classes (2289 samples)
+  ------------------------------------------------
+  C0       60    1    .    .    .    .    1    .  
+  C1        .   352   .    .    .    .    .    .  
+  C2        1    2   315   .    2    .    .    4  
+  C3        .    .    .   246   .    .    .    .  
+  C4        .    .    3    .   311   1    .    2  
+  C5        .    .    .    .    .   265   .    .  
+  C6        .    .    .    .    .    .   245   .  
+  C7        .    1    1    .    1    .    .   475 
 
  Cross accuracy report #1 (reference vs C-model)
  ----------------------------------------------------------------------------------------------------
  notes: - the output of the reference model is used as ground truth/reference value
         - 2289 samples (8 items per sample)
 
-  acc=100.00%, rmse=0.000000122, mae=0.000000023, l2r=0.000000364, nse=1.000, cos=1.000
+  acc=100.00%, rmse=0.000000029, mae=0.000000006, l2r=0.000000084, nse=1.000, cos=1.000
 
   8 classes (2289 samples)
   ------------------------------------------------
-  C0       71    .    .    .    .    .    .    .  
-  C1        .   242   .    .    .    .    .    .  
-  C2        .    .   233   .    .    .    .    .  
-  C3        .    .    .   298   .    .    .    .  
-  C4        .    .    .    .   225   .    .    .  
-  C5        .    .    .    .    .   277   .    .  
-  C6        .    .    .    .    .    .   467   .  
-  C7        .    .    .    .    .    .    .   476 
+  C0       61    .    .    .    .    .    .    .  
+  C1        .   356   .    .    .    .    .    .  
+  C2        .    .   319   .    .    .    .    .  
+  C3        .    .    .   246   .    .    .    .  
+  C4        .    .    .    .   314   .    .    .  
+  C5        .    .    .    .    .   266   .    .  
+  C6        .    .    .    .    .    .   246   .  
+  C7        .    .    .    .    .    .    .   481 
 
 
 Number of operations per c-layer
@@ -269,21 +307,23 @@ Complexity report (model)
 ------ ------------------ ------------------------- ------------------------- -------- -------- ------------------ 
 m_id   name               c_macc                    c_rom                     c_id     c_dur    l2r (X-CROSS)      
 ------ ------------------ ------------------------- ------------------------- -------- -------- ------------------ 
-3      max_pooling2d      ||||||||||||||||  43.5%   |                  2.0%   [0]       54.7%                      
-6      dense_tmr1_dense   |||||||           17.9%   ||||||||||||||||  31.5%   [5, 6]    11.7%                      
-7      dense_tmr2_dense   |||||||           17.9%   ||||||||||||||||  31.5%   [3, 4]    11.5%                      
-8      dense_tmr3_dense   |||||||           17.9%   ||||||||||||||||  31.5%   [1, 2]    12.0%                      
-9      dense_voter        |                  0.0%   |                  0.0%   [7]        4.2%                      
-10     dense_1_dense      |                  2.9%   ||                 3.6%   [8, 9]     6.0%   3.64237650e-07 *   
+3      max_pooling2d      ||||||||||||||||  43.5%   |                  2.0%   [0]       58.6%                      
+6      dense_tmr1_dense   |||||||           17.9%   ||||||||||||||||  31.5%   [5, 6]     9.6%                      
+7      dense_tmr2_dense   |||||||           17.9%   ||||||||||||||||  31.5%   [3, 4]    12.2%                      
+8      dense_tmr3_dense   |||||||           17.9%   ||||||||||||||||  31.5%   [1, 2]    10.6%                      
+9      dense_voter        |                  0.0%   |                  0.0%   [7]        3.5%                      
+10     dense_1_dense      |                  2.9%   ||                 3.6%   [8, 9]     5.6%   8.42875849e-08 *   
 ------ ------------------ ------------------------- ------------------------- -------- -------- ------------------ 
 macc=13,256 weights=29,696 act=744 ram_io=544
 
 Evaluation report (summary)
----------------------------------------------------------------------------------------------------------------------------------------
-Output       acc       rmse        mae         l2r         mean         std         nse         cos         tensor                     
----------------------------------------------------------------------------------------------------------------------------------------
-X-cross #1   100.00%   0.0000001   0.0000000   0.0000004   -0.0000000   0.0000001   1.0000000   1.0000000   dense_1, (8,), m_id=[10]   
----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------
+Output              acc       rmse        mae         l2r         mean         std         nse         cos         tensor                     
+----------------------------------------------------------------------------------------------------------------------------------------------
+TARGET c-model #1   99.13%    0.0452499   0.0071994   0.1307078   -0.0000000   0.0452511   0.9812806   0.9918571   dense_1, (8,), m_id=[10]   
+original model #1   99.13%    0.0452499   0.0071994   0.1307078   -0.0000000   0.0452511   0.9812806   0.9918571   dense_1, (8,), m_id=[10]   
+X-cross #1          100.00%   0.0000000   0.0000000   0.0000001   -0.0000000   0.0000000   1.0000000   1.0000000   dense_1, (8,), m_id=[10]   
+----------------------------------------------------------------------------------------------------------------------------------------------
 
  acc  : Classification accuracy (all classes)
  rmse : Root Mean Squared Error

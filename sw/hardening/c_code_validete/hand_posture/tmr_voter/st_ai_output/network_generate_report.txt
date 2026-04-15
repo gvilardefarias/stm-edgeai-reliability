@@ -1,6 +1,6 @@
 ST Edge AI Core v1.0.0-19895
-Created date          : 2026-04-02 17:00:16
-Parameters            : generate --model ../../../hardened_models/hand_posture/voter_tmr.h5 --target stellar-e --custom ../../../config/voter_tmr.json -vi ../../../../datasets/handposture/hand_val_images.npy
+Created date          : 2026-04-15 14:17:25
+Parameters            : generate --model ../../../hardened_models/hand_posture/voter_tmr.h5 --target stellar-e -vi ../../../../datasets/handposture/hand_val_images.npy -vo ../../../../datasets/handposture/hand_val_labels.npy --custom ../../../config/voter_tmr.json
 
 Exec/report summary (generate)
 ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -10,12 +10,13 @@ c_name             :   network
 compression        :   lossless                                                                                                              
 optimization       :   balanced                                                                                                              
 target/series      :   stellar-e                                                                                                             
-workspace dir      :   /home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/voter_tmr/st_ai_ws       
-output dir         :   /home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/voter_tmr/st_ai_output   
+workspace dir      :   /home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/tmr_voter/st_ai_ws       
+output dir         :   /home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/tmr_voter/st_ai_output   
 vinput files       :   /home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/datasets/handposture/hand_val_images.npy                        
+voutput files      :   /home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/datasets/handposture/hand_val_labels.npy                        
 model_fmt          :   float                                                                                                                 
 model_name         :   voter_tmr                                                                                                             
-model_hash         :   0xbdec3114de423393f4d6b64147e0bdec                                                                                    
+model_hash         :   0xe78ffa4cbedd16898ec30f11bd66a664                                                                                    
 params #           :   7,424 items (29.00 KiB)                                                                                               
 ---------------------------------------------------------------------------------------------------------------------------------------------
 input 1/1          :   'input_1', f32(1x8x8x2), 512 Bytes, user                                                                              
@@ -191,11 +192,11 @@ macc=13,256 weights=29,696 act=744 ram_io=544
 
 Generated files (8)
 ----------------------------------------------------------------------------------------------------------------------------------------------- 
-/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/voter_tmr/st_ai_output/src/my_custom_voter.c       
-/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/voter_tmr/st_ai_output/inc/network_data_params.h   
-/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/voter_tmr/st_ai_output/src/network_data_params.c   
-/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/voter_tmr/st_ai_output/inc/network_data.h          
-/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/voter_tmr/st_ai_output/src/network_data.c          
-/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/voter_tmr/st_ai_output/inc/network_config.h        
-/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/voter_tmr/st_ai_output/inc/network.h               
-/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/voter_tmr/st_ai_output/src/network.c               
+/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/tmr_voter/st_ai_output/src/my_custom_voter.c       
+/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/tmr_voter/st_ai_output/inc/network_data_params.h   
+/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/tmr_voter/st_ai_output/src/network_data_params.c   
+/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/tmr_voter/st_ai_output/inc/network_data.h          
+/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/tmr_voter/st_ai_output/src/network_data.c          
+/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/tmr_voter/st_ai_output/inc/network_config.h        
+/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/tmr_voter/st_ai_output/inc/network.h               
+/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/c_code_validete/hand_posture/tmr_voter/st_ai_output/src/network.c               

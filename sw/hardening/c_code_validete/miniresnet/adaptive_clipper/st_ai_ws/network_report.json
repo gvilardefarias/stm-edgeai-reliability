@@ -1,7 +1,7 @@
 {
     "_allocate_inputs": 0,
     "_allocate_outputs": 0,
-    "cli_parameters": "validate -m ../../../hardened_models/miniresnet/adaptive_clipper.h5 --target stellar-e -vi ../../../../datasets/miniresnet/miniresnet_dataset.npy --mode host -d library",
+    "cli_parameters": "validate -m ../../../hardened_models/miniresnet/adaptive_clipper.h5 --target stellar-e -vi ../../../../datasets/miniresnet/miniresnet_dataset_with_labels.npz",
     "cli_version": {
         "extra": "19895",
         "major": 1,
@@ -11,12 +11,12 @@
     "cli_version_str": "1.0.0-19895",
     "code_size": 0,
     "compression": [],
-    "date_time": "2026-04-13T13:58:13+0200",
+    "date_time": "2026-04-14T16:53:01+0200",
     "error": 0,
     "error_str": [],
     "exec_cmd": "validate",
     "exec_duration": 0.0,
-    "hash": "0x7c437bda1b3573d35991ebda18939dff",
+    "hash": "0x458f22ee748f9886b0621ff1f5f721d5",
     "inputs": [
         "input_1"
     ],
@@ -132,8 +132,8 @@
             "inputs": [
                 "conv1_bn"
             ],
-            "name": "conv1_relu_clipper",
-            "original": "ReLU",
+            "name": "conv1_relu",
+            "original": "Activation",
             "type": "Nonlinearity"
         },
         {
@@ -159,7 +159,7 @@
             },
             "id": 5,
             "inputs": [
-                "conv1_relu_clipper"
+                "conv1_relu"
             ],
             "name": "pool1_pad",
             "original": "ZeroPadding2D",
@@ -264,8 +264,8 @@
             "inputs": [
                 "conv2_block1_1_bn"
             ],
-            "name": "conv2_block1_1_relu_clipper",
-            "original": "ReLU",
+            "name": "conv2_block1_1_relu",
+            "original": "Activation",
             "type": "Nonlinearity"
         },
         {
@@ -289,7 +289,7 @@
             },
             "id": 10,
             "inputs": [
-                "conv2_block1_1_relu_clipper"
+                "conv2_block1_1_relu"
             ],
             "name": "conv2_block1_2_conv",
             "original": "Conv2D",
@@ -383,8 +383,8 @@
             "inputs": [
                 "conv2_block1_2_bn"
             ],
-            "name": "conv2_block1_2_relu_clipper",
-            "original": "ReLU",
+            "name": "conv2_block1_2_relu",
+            "original": "Activation",
             "type": "Nonlinearity"
         },
         {
@@ -411,7 +411,7 @@
             "id": 15,
             "inputs": [
                 "conv2_block1_0_bn",
-                "conv2_block1_2_relu_clipper"
+                "conv2_block1_2_relu"
             ],
             "name": "conv2_block1_add",
             "original": "Add",
@@ -442,8 +442,8 @@
             "inputs": [
                 "conv2_block1_add"
             ],
-            "name": "conv2_block1_out_clipper",
-            "original": "ReLU",
+            "name": "conv2_block1_out",
+            "original": "Activation",
             "type": "Nonlinearity"
         },
         {
@@ -467,7 +467,7 @@
             },
             "id": 17,
             "inputs": [
-                "conv2_block1_out_clipper"
+                "conv2_block1_out"
             ],
             "name": "conv2_block2_1_conv",
             "original": "Conv2D",
@@ -516,8 +516,8 @@
             "inputs": [
                 "conv2_block2_1_bn"
             ],
-            "name": "conv2_block2_1_relu_clipper",
-            "original": "ReLU",
+            "name": "conv2_block2_1_relu",
+            "original": "Activation",
             "type": "Nonlinearity"
         },
         {
@@ -541,7 +541,7 @@
             },
             "id": 20,
             "inputs": [
-                "conv2_block2_1_relu_clipper"
+                "conv2_block2_1_relu"
             ],
             "name": "conv2_block2_2_conv",
             "original": "Conv2D",
@@ -617,7 +617,7 @@
             },
             "id": 23,
             "inputs": [
-                "conv2_block1_out_clipper",
+                "conv2_block1_out",
                 "conv2_block2_2_relu_clipper"
             ],
             "name": "conv2_block2_add",
@@ -649,8 +649,8 @@
             "inputs": [
                 "conv2_block2_add"
             ],
-            "name": "conv2_block2_out_clipper",
-            "original": "ReLU",
+            "name": "conv2_block2_out",
+            "original": "Activation",
             "type": "Nonlinearity"
         },
         {
@@ -663,7 +663,7 @@
             },
             "id": 25,
             "inputs": [
-                "conv2_block2_out_clipper"
+                "conv2_block2_out"
             ],
             "name": "flatten",
             "original": "Flatten",
@@ -749,7 +749,7 @@
             "name": "input_1"
         }
     ],
-    "rom_n_macc": 7634464,
+    "rom_n_macc": 7565344,
     "rom_outputs": [
         {
             "c_size": 40,
@@ -764,6 +764,30 @@
     "val_error": 1.2558595017253538e-06,
     "val_error_desc": "x-cross (l2r) #1",
     "val_metrics": [
+        {
+            "acc": "84.90%",
+            "cos": 0.8731674551963806,
+            "desc": "HOST c-model #1",
+            "l2r": 0.5311985611915588,
+            "mae": 0.03894929215312004,
+            "mean": -6.380942996209171e-10,
+            "nse": 0.7334164151135016,
+            "rmse": 0.1549144685268402,
+            "std": 0.1549336463212967,
+            "ts_name": "new_head, (10,), m_id=[26]"
+        },
+        {
+            "acc": "84.90%",
+            "cos": 0.8731674551963806,
+            "desc": "original model #1",
+            "l2r": 0.5311985611915588,
+            "mae": 0.03894929215312004,
+            "mean": -8.114493799116218e-11,
+            "nse": 0.7334164151135016,
+            "rmse": 0.1549144685268402,
+            "std": 0.1549336463212967,
+            "ts_name": "new_head, (10,), m_id=[26]"
+        },
         {
             "acc": "100.00%",
             "cos": 1.0,

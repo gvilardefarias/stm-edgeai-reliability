@@ -159,7 +159,7 @@
       },
       "is_param": false,
       "mpool_id": 0,
-      "name": "conv1_relu_clipper_output_array",
+      "name": "conv1_relu_output_array",
       "nbits": 32,
       "offset_start": 33792,
       "qmn": {},
@@ -474,7 +474,7 @@
       },
       "is_param": false,
       "mpool_id": 0,
-      "name": "conv2_block1_1_relu_clipper_output_array",
+      "name": "conv2_block1_1_relu_output_array",
       "nbits": 32,
       "offset_start": 0,
       "qmn": {},
@@ -649,7 +649,7 @@
       },
       "is_param": false,
       "mpool_id": 0,
-      "name": "conv2_block1_2_relu_clipper_output_array",
+      "name": "conv2_block1_2_relu_output_array",
       "nbits": 32,
       "offset_start": 0,
       "qmn": {},
@@ -719,7 +719,7 @@
       },
       "is_param": false,
       "mpool_id": 0,
-      "name": "conv2_block1_out_clipper_output_array",
+      "name": "conv2_block1_out_output_array",
       "nbits": 32,
       "offset_start": 0,
       "qmn": {},
@@ -894,7 +894,7 @@
       },
       "is_param": false,
       "mpool_id": 0,
-      "name": "conv2_block2_1_relu_clipper_output_array",
+      "name": "conv2_block2_1_relu_output_array",
       "nbits": 32,
       "offset_start": 28928,
       "qmn": {},
@@ -1139,7 +1139,7 @@
       },
       "is_param": false,
       "mpool_id": 0,
-      "name": "conv2_block2_out_clipper_output_array",
+      "name": "conv2_block2_out_output_array",
       "nbits": 32,
       "offset_start": 0,
       "qmn": {},
@@ -1390,35 +1390,35 @@
   "environment": {
     "device": "x86_64, x86_64, Linux",
     "generated_model": {
-      "generated_time": "2026-04-13T13:58:13+0200",
+      "generated_time": "2026-04-14T16:53:01+0200",
       "model_files": [
         {
           "name": "network_data_params.h",
-          "signature": "0x49e200fd620f2283b710a48042961784"
+          "signature": "0x61b3792fbaed8184295bc06375e383a9"
         },
         {
           "name": "network_data_params.c",
-          "signature": "0x17cc8212a6bf8be9bbb6da19d7ad00fc"
+          "signature": "0x64f79e93ca240a098048e6b32947d3bd"
         },
         {
           "name": "network_data.h",
-          "signature": "0x7664ad5cbde1a96cab361089ec4841f3"
+          "signature": "0x776437b417e0dedb4db7cc9f00c10a6d"
         },
         {
           "name": "network_data.c",
-          "signature": "0xe0b68325725225503415dca5230fc3f3"
+          "signature": "0x7065cdc1d17a95e80787a6bd751e03b5"
         },
         {
           "name": "network_config.h",
-          "signature": "0xba9ed2a559cdc72686aa222cc74e4ffd"
+          "signature": "0x6b5a33be943a571093a599626a2606a8"
         },
         {
           "name": "network.h",
-          "signature": "0x0a2458a75268a3c0bbf57baa59e32dfc"
+          "signature": "0x58b88d0a3706d94447837e0fb5144c59"
         },
         {
           "name": "network.c",
-          "signature": "0x38337352e8e7c776a6fc754943e34e56"
+          "signature": "0xd42c0058999fd4fb280ca916f5ac7bae"
         }
       ],
       "n_params": null,
@@ -1426,18 +1426,18 @@
       "size": null,
       "type": null
     },
-    "network_signature": "0xc5f4318beee30488",
+    "network_signature": "0x8e2815be4c61fc4c",
     "test_name": "",
     "tools": [
       {
-        "arguments": "validate -m ../../../hardened_models/miniresnet/adaptive_clipper.h5 --target stellar-e -vi ../../../../datasets/miniresnet/miniresnet_dataset.npy --mode host -d library",
+        "arguments": "validate -m ../../../hardened_models/miniresnet/adaptive_clipper.h5 --target stellar-e -vi ../../../../datasets/miniresnet/miniresnet_dataset_with_labels.npz",
         "environment": [],
         "input_model": {
           "generated_time": null,
           "model_files": [
             {
               "name": "adaptive_clipper.h5",
-              "signature": "0x7c437bda1b3573d35991ebda18939dff"
+              "signature": "0x458f22ee748f9886b0621ff1f5f721d5"
             }
           ],
           "n_params": 126154,
@@ -1758,7 +1758,7 @@
         "counters": [],
         "cycles": 0,
         "cycles_by_macc": 0.0,
-        "duration_ms": 15.893664940699948,
+        "duration_ms": 6.709179420611157,
         "percentage": 100.0
       },
       "id": 0,
@@ -1786,8 +1786,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 6.8088262057422995,
-            "percentage": 42.83987507693391
+            "duration_ms": 2.236549853092402,
+            "percentage": 33.33566913148179
           },
           "id": 21,
           "inputs": [
@@ -1814,24 +1814,23 @@
         },
         {
           "attributes": {
-            "nonlinearity": "clip",
-            "params": "[0, 19.838451385498047]"
+            "nonlinearity": "relu"
           },
           "description": "Nonlinearity",
           "exec_time": {
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.09558209385815544,
-            "percentage": 0.601384855002147
+            "duration_ms": 0.13451493171910148,
+            "percentage": 2.00493865622166
           },
           "id": 22,
           "inputs": [
             177
           ],
-          "macc": 102400,
+          "macc": 51200,
           "mapping": "NODE_SW",
-          "name": "conv1_relu_clipper",
+          "name": "conv1_relu",
           "original_nodes": [
             "4"
           ],
@@ -1841,7 +1840,7 @@
           "scratchs": [],
           "subgraph_nodes": [],
           "sw_functions": [
-            "forward_clip"
+            "forward_relu"
           ]
         },
         {
@@ -1854,8 +1853,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.08988806388493795,
-            "percentage": 0.5655590716195086
+            "duration_ms": 0.03534825950564437,
+            "percentage": 0.5268641258430439
           },
           "id": 23,
           "inputs": [
@@ -1889,8 +1888,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.08754477995582184,
-            "percentage": 0.5508155625682041
+            "duration_ms": 0.02391293694482959,
+            "percentage": 0.3564211872373998
           },
           "id": 24,
           "inputs": [
@@ -1930,8 +1929,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.5119975361213163,
-            "percentage": 3.221393794518788
+            "duration_ms": 0.18776866645362247,
+            "percentage": 2.79868303829797
           },
           "id": 25,
           "inputs": [
@@ -1975,8 +1974,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.43764180997710916,
-            "percentage": 2.753561318990758
+            "duration_ms": 0.18736070594680843,
+            "percentage": 2.792602406357188
           },
           "id": 26,
           "inputs": [
@@ -2003,24 +2002,23 @@
         },
         {
           "attributes": {
-            "nonlinearity": "clip",
-            "params": "[0, 11.490789413452148]"
+            "nonlinearity": "relu"
           },
           "description": "Nonlinearity",
           "exec_time": {
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.003027363265899302,
-            "percentage": 0.019047609706097018
+            "duration_ms": 0.0009502488004845285,
+            "percentage": 0.014163413152512886
           },
           "id": 27,
           "inputs": [
             187
           ],
-          "macc": 7168,
+          "macc": 3584,
           "mapping": "NODE_SW",
-          "name": "conv2_block1_1_relu_clipper",
+          "name": "conv2_block1_1_relu",
           "original_nodes": [
             "9"
           ],
@@ -2030,7 +2028,7 @@
           "scratchs": [],
           "subgraph_nodes": [],
           "sw_functions": [
-            "forward_clip"
+            "forward_relu"
           ]
         },
         {
@@ -2052,8 +2050,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 3.649522558373598,
-            "percentage": 22.962120895275874
+            "duration_ms": 1.8343856628261395,
+            "percentage": 27.341431013020074
           },
           "id": 28,
           "inputs": [
@@ -2080,24 +2078,23 @@
         },
         {
           "attributes": {
-            "nonlinearity": "clip",
-            "params": "[0, 9.05661392211914]"
+            "nonlinearity": "relu"
           },
           "description": "Nonlinearity",
           "exec_time": {
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.0033631841721597,
-            "percentage": 0.02116053273243086
+            "duration_ms": 0.0009601990491341781,
+            "percentage": 0.014311721135141604
           },
           "id": 29,
           "inputs": [
             191
           ],
-          "macc": 7168,
+          "macc": 3584,
           "mapping": "NODE_SW",
-          "name": "conv2_block1_2_relu_clipper",
+          "name": "conv2_block1_2_relu",
           "original_nodes": [
             "14"
           ],
@@ -2107,7 +2104,7 @@
           "scratchs": [],
           "subgraph_nodes": [],
           "sw_functions": [
-            "forward_clip"
+            "forward_relu"
           ]
         },
         {
@@ -2119,8 +2116,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.005273632104601248,
-            "percentage": 0.033180717753126365
+            "duration_ms": 0.0012686567746487386,
+            "percentage": 0.01890926885561175
           },
           "id": 30,
           "inputs": [
@@ -2144,24 +2141,23 @@
         },
         {
           "attributes": {
-            "nonlinearity": "clip",
-            "params": "[0, 6.843706130981445]"
+            "nonlinearity": "relu"
           },
           "description": "Nonlinearity",
           "exec_time": {
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.002338308537499377,
-            "percentage": 0.01471220480753635
+            "duration_ms": 0.0008756219318474815,
+            "percentage": 0.01305110322668519
           },
           "id": 31,
           "inputs": [
             195
           ],
-          "macc": 7168,
+          "macc": 3584,
           "mapping": "NODE_SW",
-          "name": "conv2_block1_out_clipper",
+          "name": "conv2_block1_out",
           "original_nodes": [
             "16"
           ],
@@ -2171,7 +2167,7 @@
           "scratchs": [],
           "subgraph_nodes": [],
           "sw_functions": [
-            "forward_clip"
+            "forward_relu"
           ]
         },
         {
@@ -2193,8 +2189,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.4728831044625287,
-            "percentage": 2.975293025409048
+            "duration_ms": 0.18689553194971226,
+            "percentage": 2.7856690100663224
           },
           "id": 32,
           "inputs": [
@@ -2221,24 +2217,23 @@
         },
         {
           "attributes": {
-            "nonlinearity": "clip",
-            "params": "[0, 8.33241081237793]"
+            "nonlinearity": "relu"
           },
           "description": "Nonlinearity",
           "exec_time": {
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.0032810946099404523,
-            "percentage": 0.020644040390824767
+            "duration_ms": 0.0009129353667451857,
+            "percentage": 0.013607258198231699
           },
           "id": 33,
           "inputs": [
             199
           ],
-          "macc": 7168,
+          "macc": 3584,
           "mapping": "NODE_SW",
-          "name": "conv2_block2_1_relu_clipper",
+          "name": "conv2_block2_1_relu",
           "original_nodes": [
             "19"
           ],
@@ -2248,7 +2243,7 @@
           "scratchs": [],
           "subgraph_nodes": [],
           "sw_functions": [
-            "forward_clip"
+            "forward_relu"
           ]
         },
         {
@@ -2270,8 +2265,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 3.641997689631448,
-            "percentage": 22.91477581300425
+            "duration_ms": 1.8322612779650522,
+            "percentage": 27.309767157756923
           },
           "id": 34,
           "inputs": [
@@ -2306,8 +2301,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.004191542464187971,
-            "percentage": 0.026372409886749368
+            "duration_ms": 0.0010970149774785474,
+            "percentage": 0.016350956036567246
           },
           "id": 35,
           "inputs": [
@@ -2337,8 +2332,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.005271144529262474,
-            "percentage": 0.033165066389214674
+            "duration_ms": 0.0011890547816868669,
+            "percentage": 0.0177228049384697
           },
           "id": 36,
           "inputs": [
@@ -2362,24 +2357,23 @@
         },
         {
           "attributes": {
-            "nonlinearity": "clip",
-            "params": "[0, 36.835121154785156]"
+            "nonlinearity": "relu"
           },
           "description": "Nonlinearity",
           "exec_time": {
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.0027885572922263127,
-            "percentage": 0.0175450866910216
+            "duration_ms": 0.0009079602409724091,
+            "percentage": 0.013533104185335687
           },
           "id": 37,
           "inputs": [
             207
           ],
-          "macc": 7168,
+          "macc": 3584,
           "mapping": "NODE_SW",
-          "name": "conv2_block2_out_clipper",
+          "name": "conv2_block2_out",
           "original_nodes": [
             "24"
           ],
@@ -2389,7 +2383,7 @@
           "scratchs": [],
           "subgraph_nodes": [],
           "sw_functions": [
-            "forward_clip"
+            "forward_relu"
           ]
         },
         {
@@ -2402,8 +2396,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.06606219202947261,
-            "percentage": 0.4156510929099986
+            "duration_ms": 0.04127363359268328,
+            "percentage": 0.61518154464445
           },
           "id": 38,
           "inputs": [
@@ -2437,8 +2431,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.002184079687484072,
-            "percentage": 0.013741825410520367
+            "duration_ms": 0.0007462686921622771,
+            "percentage": 0.011123099344603567
           },
           "id": 39,
           "inputs": [
@@ -2636,6 +2630,28 @@
     "val_error": 1.2558595017253538e-06,
     "val_error_desc": "x-cross (l2r) #1",
     "val_metrics": [
+      {
+        "acc": "84.90%",
+        "cos": 0.8731674551963806,
+        "desc": "HOST c-model #1",
+        "l2r": 0.5311985611915588,
+        "mae": 0.03894929215312004,
+        "mean": -6.380942996209171e-10,
+        "nse": 0.7334164151135016,
+        "rmse": 0.1549144685268402,
+        "std": 0.1549336463212967
+      },
+      {
+        "acc": "84.90%",
+        "cos": 0.8731674551963806,
+        "desc": "original model #1",
+        "l2r": 0.5311985611915588,
+        "mae": 0.03894929215312004,
+        "mean": -8.114493799116218e-11,
+        "nse": 0.7334164151135016,
+        "rmse": 0.1549144685268402,
+        "std": 0.1549336463212967
+      },
       {
         "acc": "100.00%",
         "cos": 1.0,

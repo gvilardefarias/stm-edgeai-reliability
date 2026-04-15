@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    network.c
   * @author  AST Embedded Analytics Research Platform
-  * @date    2026-03-31T11:02:16+0200
+  * @date    2026-04-15T14:03:25+0200
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * @attention
@@ -35,14 +35,14 @@
 #define AI_NET_OBJ_INSTANCE g_network
  
 #undef AI_NETWORK_MODEL_SIGNATURE
-#define AI_NETWORK_MODEL_SIGNATURE     "0xfaebef74bcbefab8d55a04026abcbcd2"
+#define AI_NETWORK_MODEL_SIGNATURE     "0x02f7eab6a94a6f337310250eb65a0bad"
 
 #ifndef AI_TOOLS_REVISION_ID
 #define AI_TOOLS_REVISION_ID     ""
 #endif
 
 #undef AI_TOOLS_DATE_TIME
-#define AI_TOOLS_DATE_TIME   "2026-03-31T11:02:16+0200"
+#define AI_TOOLS_DATE_TIME   "2026-04-15T14:03:25+0200"
 
 #undef AI_TOOLS_COMPILE_TIME
 #define AI_TOOLS_COMPILE_TIME    __DATE__ " " __TIME__
@@ -271,7 +271,7 @@ AI_LAYER_OBJ_DECLARE(
 )
 
 
-AI_STATIC_CONST ai_float dense_clipper_nl_params_data[] = { 0, 74.23810577392578 };
+AI_STATIC_CONST ai_float dense_clipper_nl_params_data[] = { 0, 156.54074096679688 };
 AI_ARRAY_OBJ_DECLARE(
     dense_clipper_nl_params, AI_ARRAY_FORMAT_FLOAT,
     dense_clipper_nl_params_data, dense_clipper_nl_params_data, 2, AI_STATIC_CONST)
@@ -308,11 +308,6 @@ AI_LAYER_OBJ_DECLARE(
   NULL, &dense_clipper_layer, AI_STATIC, 
 )
 
-
-AI_STATIC_CONST ai_float conv2d_nl_params_data[] = { 0, 34.64525604248047 };
-AI_ARRAY_OBJ_DECLARE(
-    conv2d_nl_params, AI_ARRAY_FORMAT_FLOAT,
-    conv2d_nl_params_data, conv2d_nl_params_data, 2, AI_STATIC_CONST)
 AI_TENSOR_CHAIN_OBJ_DECLARE(
   conv2d_chain, AI_STATIC_CONST, 4,
   AI_TENSOR_LIST_OBJ_INIT(AI_FLAG_NONE, 1, &input_1_output),
@@ -328,8 +323,8 @@ AI_LAYER_OBJ_DECLARE(
   &conv2d_chain,
   NULL, &dense_layer, AI_STATIC, 
   .groups = 1, 
-  .nl_params = &conv2d_nl_params, 
-  .nl_func = AI_HANDLE_PTR(forward_lite_nl_clip_if32of32), 
+  .nl_params = NULL, 
+  .nl_func = AI_HANDLE_PTR(forward_lite_nl_relu_if32of32), 
   .filter_stride = AI_SHAPE_2D_INIT(1, 1), 
   .dilation = AI_SHAPE_2D_INIT(1, 1), 
   .filter_pad = AI_SHAPE_INIT(4, 0, 0, 0, 0), 
@@ -354,7 +349,7 @@ AI_NETWORK_OBJ_DECLARE(
     744, NULL, NULL),
   AI_TENSOR_LIST_IO_OBJ_INIT(AI_FLAG_NONE, AI_NETWORK_IN_NUM, &input_1_output),
   AI_TENSOR_LIST_IO_OBJ_INIT(AI_FLAG_NONE, AI_NETWORK_OUT_NUM, &dense_1_output),
-  &conv2d_layer, 0x8dad7efa, NULL)
+  &conv2d_layer, 0x03f8656b, NULL)
 
 #else
 
@@ -374,7 +369,7 @@ AI_NETWORK_OBJ_DECLARE(
   ),
   AI_TENSOR_LIST_IO_OBJ_INIT(AI_FLAG_NONE, AI_NETWORK_IN_NUM, &input_1_output),
   AI_TENSOR_LIST_IO_OBJ_INIT(AI_FLAG_NONE, AI_NETWORK_OUT_NUM, &dense_1_output),
-  &conv2d_layer, 0x8dad7efa, NULL)
+  &conv2d_layer, 0x03f8656b, NULL)
 
 #endif	/*(AI_TOOLS_API_VERSION < AI_TOOLS_API_VERSION_1_5)*/
 
@@ -477,7 +472,7 @@ ai_bool ai_network_get_info(
       .api_version            = ai_platform_api_get_version(),
       .interface_api_version  = ai_platform_interface_api_get_version(),
       
-      .n_macc            = 8840,
+      .n_macc            = 8552,
       .n_inputs          = 0,
       .inputs            = NULL,
       .n_outputs         = 0,
@@ -485,7 +480,7 @@ ai_bool ai_network_get_info(
       .params            = AI_STRUCT_INIT,
       .activations       = AI_STRUCT_INIT,
       .n_nodes           = 0,
-      .signature         = 0x8dad7efa,
+      .signature         = 0x03f8656b,
     };
 
     if (!ai_platform_api_get_network_report(network, &r)) return false;
@@ -524,7 +519,7 @@ ai_bool ai_network_get_report(
       .api_version            = ai_platform_api_get_version(),
       .interface_api_version  = ai_platform_interface_api_get_version(),
       
-      .n_macc            = 8840,
+      .n_macc            = 8552,
       .n_inputs          = 0,
       .inputs            = NULL,
       .n_outputs         = 0,
@@ -533,7 +528,7 @@ ai_bool ai_network_get_report(
       .map_weights       = AI_STRUCT_INIT,
       .map_activations   = AI_STRUCT_INIT,
       .n_nodes           = 0,
-      .signature         = 0x8dad7efa,
+      .signature         = 0x03f8656b,
     };
 
     if (!ai_platform_api_get_network_report(network, &r)) return false;

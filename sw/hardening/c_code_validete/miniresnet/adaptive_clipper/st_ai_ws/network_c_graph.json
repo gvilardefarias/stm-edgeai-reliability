@@ -10,7 +10,7 @@
                     "size": 204800
                 },
                 {
-                    "buffer_name": "conv1_relu_clipper_output_array",
+                    "buffer_name": "conv1_relu_output_array",
                     "offset": 33792,
                     "size": 204800
                 },
@@ -35,7 +35,7 @@
                     "size": 14336
                 },
                 {
-                    "buffer_name": "conv2_block1_1_relu_clipper_output_array",
+                    "buffer_name": "conv2_block1_1_relu_output_array",
                     "offset": 0,
                     "size": 14336
                 },
@@ -45,7 +45,7 @@
                     "size": 14336
                 },
                 {
-                    "buffer_name": "conv2_block1_2_relu_clipper_output_array",
+                    "buffer_name": "conv2_block1_2_relu_output_array",
                     "offset": 0,
                     "size": 14336
                 },
@@ -55,7 +55,7 @@
                     "size": 14336
                 },
                 {
-                    "buffer_name": "conv2_block1_out_clipper_output_array",
+                    "buffer_name": "conv2_block1_out_output_array",
                     "offset": 0,
                     "size": 14336
                 },
@@ -65,7 +65,7 @@
                     "size": 14336
                 },
                 {
-                    "buffer_name": "conv2_block2_1_relu_clipper_output_array",
+                    "buffer_name": "conv2_block2_1_relu_output_array",
                     "offset": 28928,
                     "size": 14336
                 },
@@ -85,7 +85,7 @@
                     "size": 14336
                 },
                 {
-                    "buffer_name": "conv2_block2_out_clipper_output_array",
+                    "buffer_name": "conv2_block2_out_output_array",
                     "offset": 0,
                     "size": 14336
                 },
@@ -132,7 +132,7 @@
         }
     },
     "activations_alignment": 4,
-    "arguments": "validate -m ../../../hardened_models/miniresnet/adaptive_clipper.h5 --target stellar-e -vi ../../../../datasets/miniresnet/miniresnet_dataset.npy --mode host -d library",
+    "arguments": "validate -m ../../../hardened_models/miniresnet/adaptive_clipper.h5 --target stellar-e -vi ../../../../datasets/miniresnet/miniresnet_dataset_with_labels.npz",
     "c_activations_count": 1,
     "c_arrays": [
         {
@@ -251,13 +251,13 @@
             "is_const": false,
             "mem_pool": "activations",
             "n_items": 51200,
-            "name": "conv1_relu_clipper_output_array",
+            "name": "conv1_relu_output_array",
             "offset": 33792,
             "scale": [],
             "size": 51200,
             "tensors": [
                 {
-                    "name": "conv1_relu_clipper_output",
+                    "name": "conv1_relu_output",
                     "shape": [
                         32,
                         25,
@@ -489,13 +489,13 @@
             "is_const": false,
             "mem_pool": "activations",
             "n_items": 3584,
-            "name": "conv2_block1_1_relu_clipper_output_array",
+            "name": "conv2_block1_1_relu_output_array",
             "offset": 0,
             "scale": [],
             "size": 3584,
             "tensors": [
                 {
-                    "name": "conv2_block1_1_relu_clipper_output",
+                    "name": "conv2_block1_1_relu_output",
                     "shape": [
                         8,
                         7,
@@ -621,13 +621,13 @@
             "is_const": false,
             "mem_pool": "activations",
             "n_items": 3584,
-            "name": "conv2_block1_2_relu_clipper_output_array",
+            "name": "conv2_block1_2_relu_output_array",
             "offset": 0,
             "scale": [],
             "size": 3584,
             "tensors": [
                 {
-                    "name": "conv2_block1_2_relu_clipper_output",
+                    "name": "conv2_block1_2_relu_output",
                     "shape": [
                         8,
                         7,
@@ -673,13 +673,13 @@
             "is_const": false,
             "mem_pool": "activations",
             "n_items": 3584,
-            "name": "conv2_block1_out_clipper_output_array",
+            "name": "conv2_block1_out_output_array",
             "offset": 0,
             "scale": [],
             "size": 3584,
             "tensors": [
                 {
-                    "name": "conv2_block1_out_clipper_output",
+                    "name": "conv2_block1_out_output",
                     "shape": [
                         8,
                         7,
@@ -805,13 +805,13 @@
             "is_const": false,
             "mem_pool": "activations",
             "n_items": 3584,
-            "name": "conv2_block2_1_relu_clipper_output_array",
+            "name": "conv2_block2_1_relu_output_array",
             "offset": 28928,
             "scale": [],
             "size": 3584,
             "tensors": [
                 {
-                    "name": "conv2_block2_1_relu_clipper_output",
+                    "name": "conv2_block2_1_relu_output",
                     "shape": [
                         8,
                         7,
@@ -989,13 +989,13 @@
             "is_const": false,
             "mem_pool": "activations",
             "n_items": 3584,
-            "name": "conv2_block2_out_clipper_output_array",
+            "name": "conv2_block2_out_output_array",
             "offset": 0,
             "scale": [],
             "size": 3584,
             "tensors": [
                 {
-                    "name": "conv2_block2_out_clipper_output",
+                    "name": "conv2_block2_out_output",
                     "shape": [
                         8,
                         7,
@@ -1196,8 +1196,8 @@
                 "counters": [],
                 "cycles": 0,
                 "cycles_by_macc": 0.0,
-                "duration_ms": 6.8088262057422995,
-                "percentage": 42.83987507693391
+                "duration_ms": 2.236549853092402,
+                "percentage": 33.33566913148179
             },
             "is_wrapped": "",
             "layer_type": "Conv2D",
@@ -1231,23 +1231,23 @@
         },
         {
             "c_forward": [
-                "forward_clip"
+                "forward_relu"
             ],
             "c_id": 1,
             "exec_time": {
                 "counters": [],
                 "cycles": 0,
                 "cycles_by_macc": 0.0,
-                "duration_ms": 0.09558209385815544,
-                "percentage": 0.601384855002147
+                "duration_ms": 0.13451493171910148,
+                "percentage": 2.00493865622166
             },
             "is_wrapped": "",
             "layer_type": "Nonlinearity",
             "m_id": 4,
-            "macc": 102400,
-            "name": "conv1_relu_clipper",
+            "macc": 51200,
+            "name": "conv1_relu",
             "op_by_type": {
-                "op_f32_f32": 102400
+                "op_f32_f32": 51200
             },
             "rom": 0,
             "tensors": {
@@ -1255,7 +1255,7 @@
                     "conv1_conv_output"
                 ],
                 "outputs": [
-                    "conv1_relu_clipper_output"
+                    "conv1_relu_output"
                 ],
                 "scratchs": [],
                 "weights": []
@@ -1275,8 +1275,8 @@
                 "counters": [],
                 "cycles": 0,
                 "cycles_by_macc": 0.0,
-                "duration_ms": 0.08988806388493795,
-                "percentage": 0.5655590716195086
+                "duration_ms": 0.03534825950564437,
+                "percentage": 0.5268641258430439
             },
             "is_wrapped": "",
             "layer_type": "Pad",
@@ -1289,7 +1289,7 @@
             "rom": 0,
             "tensors": {
                 "inputs": [
-                    "conv1_relu_clipper_output"
+                    "conv1_relu_output"
                 ],
                 "outputs": [
                     "pool1_pad_output"
@@ -1312,8 +1312,8 @@
                 "counters": [],
                 "cycles": 0,
                 "cycles_by_macc": 0.0,
-                "duration_ms": 0.08754477995582184,
-                "percentage": 0.5508155625682041
+                "duration_ms": 0.02391293694482959,
+                "percentage": 0.3564211872373998
             },
             "is_wrapped": "",
             "layer_type": "Pool",
@@ -1349,8 +1349,8 @@
                 "counters": [],
                 "cycles": 0,
                 "cycles_by_macc": 0.0,
-                "duration_ms": 0.5119975361213163,
-                "percentage": 3.221393794518788
+                "duration_ms": 0.18776866645362247,
+                "percentage": 2.79868303829797
             },
             "is_wrapped": "",
             "layer_type": "Conv2D",
@@ -1391,8 +1391,8 @@
                 "counters": [],
                 "cycles": 0,
                 "cycles_by_macc": 0.0,
-                "duration_ms": 0.43764180997710916,
-                "percentage": 2.753561318990758
+                "duration_ms": 0.18736070594680843,
+                "percentage": 2.792602406357188
             },
             "is_wrapped": "",
             "layer_type": "Conv2D",
@@ -1426,23 +1426,23 @@
         },
         {
             "c_forward": [
-                "forward_clip"
+                "forward_relu"
             ],
             "c_id": 6,
             "exec_time": {
                 "counters": [],
                 "cycles": 0,
                 "cycles_by_macc": 0.0,
-                "duration_ms": 0.003027363265899302,
-                "percentage": 0.019047609706097018
+                "duration_ms": 0.0009502488004845285,
+                "percentage": 0.014163413152512886
             },
             "is_wrapped": "",
             "layer_type": "Nonlinearity",
             "m_id": 9,
-            "macc": 7168,
-            "name": "conv2_block1_1_relu_clipper",
+            "macc": 3584,
+            "name": "conv2_block1_1_relu",
             "op_by_type": {
-                "op_f32_f32": 7168
+                "op_f32_f32": 3584
             },
             "rom": 0,
             "tensors": {
@@ -1450,7 +1450,7 @@
                     "conv2_block1_1_conv_output"
                 ],
                 "outputs": [
-                    "conv2_block1_1_relu_clipper_output"
+                    "conv2_block1_1_relu_output"
                 ],
                 "scratchs": [],
                 "weights": []
@@ -1470,8 +1470,8 @@
                 "counters": [],
                 "cycles": 0,
                 "cycles_by_macc": 0.0,
-                "duration_ms": 3.649522558373598,
-                "percentage": 22.962120895275874
+                "duration_ms": 1.8343856628261395,
+                "percentage": 27.341431013020074
             },
             "is_wrapped": "",
             "layer_type": "Conv2D",
@@ -1484,7 +1484,7 @@
             "rom": 147712,
             "tensors": {
                 "inputs": [
-                    "conv2_block1_1_relu_clipper_output"
+                    "conv2_block1_1_relu_output"
                 ],
                 "outputs": [
                     "conv2_block1_2_conv_output"
@@ -1505,23 +1505,23 @@
         },
         {
             "c_forward": [
-                "forward_clip"
+                "forward_relu"
             ],
             "c_id": 8,
             "exec_time": {
                 "counters": [],
                 "cycles": 0,
                 "cycles_by_macc": 0.0,
-                "duration_ms": 0.0033631841721597,
-                "percentage": 0.02116053273243086
+                "duration_ms": 0.0009601990491341781,
+                "percentage": 0.014311721135141604
             },
             "is_wrapped": "",
             "layer_type": "Nonlinearity",
             "m_id": 14,
-            "macc": 7168,
-            "name": "conv2_block1_2_relu_clipper",
+            "macc": 3584,
+            "name": "conv2_block1_2_relu",
             "op_by_type": {
-                "op_f32_f32": 7168
+                "op_f32_f32": 3584
             },
             "rom": 0,
             "tensors": {
@@ -1529,7 +1529,7 @@
                     "conv2_block1_2_conv_output"
                 ],
                 "outputs": [
-                    "conv2_block1_2_relu_clipper_output"
+                    "conv2_block1_2_relu_output"
                 ],
                 "scratchs": [],
                 "weights": []
@@ -1549,8 +1549,8 @@
                 "counters": [],
                 "cycles": 0,
                 "cycles_by_macc": 0.0,
-                "duration_ms": 0.005273632104601248,
-                "percentage": 0.033180717753126365
+                "duration_ms": 0.0012686567746487386,
+                "percentage": 0.01890926885561175
             },
             "is_wrapped": "",
             "layer_type": "Eltwise/add",
@@ -1564,7 +1564,7 @@
             "tensors": {
                 "inputs": [
                     "conv2_block1_0_conv_output",
-                    "conv2_block1_2_relu_clipper_output"
+                    "conv2_block1_2_relu_output"
                 ],
                 "outputs": [
                     "conv2_block1_add_output"
@@ -1580,23 +1580,23 @@
         },
         {
             "c_forward": [
-                "forward_clip"
+                "forward_relu"
             ],
             "c_id": 10,
             "exec_time": {
                 "counters": [],
                 "cycles": 0,
                 "cycles_by_macc": 0.0,
-                "duration_ms": 0.002338308537499377,
-                "percentage": 0.01471220480753635
+                "duration_ms": 0.0008756219318474815,
+                "percentage": 0.01305110322668519
             },
             "is_wrapped": "",
             "layer_type": "Nonlinearity",
             "m_id": 16,
-            "macc": 7168,
-            "name": "conv2_block1_out_clipper",
+            "macc": 3584,
+            "name": "conv2_block1_out",
             "op_by_type": {
-                "op_f32_f32": 7168
+                "op_f32_f32": 3584
             },
             "rom": 0,
             "tensors": {
@@ -1604,7 +1604,7 @@
                     "conv2_block1_add_output"
                 ],
                 "outputs": [
-                    "conv2_block1_out_clipper_output"
+                    "conv2_block1_out_output"
                 ],
                 "scratchs": [],
                 "weights": []
@@ -1624,8 +1624,8 @@
                 "counters": [],
                 "cycles": 0,
                 "cycles_by_macc": 0.0,
-                "duration_ms": 0.4728831044625287,
-                "percentage": 2.975293025409048
+                "duration_ms": 0.18689553194971226,
+                "percentage": 2.7856690100663224
             },
             "is_wrapped": "",
             "layer_type": "Conv2D",
@@ -1638,7 +1638,7 @@
             "rom": 16640,
             "tensors": {
                 "inputs": [
-                    "conv2_block1_out_clipper_output"
+                    "conv2_block1_out_output"
                 ],
                 "outputs": [
                     "conv2_block2_1_conv_output"
@@ -1659,23 +1659,23 @@
         },
         {
             "c_forward": [
-                "forward_clip"
+                "forward_relu"
             ],
             "c_id": 12,
             "exec_time": {
                 "counters": [],
                 "cycles": 0,
                 "cycles_by_macc": 0.0,
-                "duration_ms": 0.0032810946099404523,
-                "percentage": 0.020644040390824767
+                "duration_ms": 0.0009129353667451857,
+                "percentage": 0.013607258198231699
             },
             "is_wrapped": "",
             "layer_type": "Nonlinearity",
             "m_id": 19,
-            "macc": 7168,
-            "name": "conv2_block2_1_relu_clipper",
+            "macc": 3584,
+            "name": "conv2_block2_1_relu",
             "op_by_type": {
-                "op_f32_f32": 7168
+                "op_f32_f32": 3584
             },
             "rom": 0,
             "tensors": {
@@ -1683,7 +1683,7 @@
                     "conv2_block2_1_conv_output"
                 ],
                 "outputs": [
-                    "conv2_block2_1_relu_clipper_output"
+                    "conv2_block2_1_relu_output"
                 ],
                 "scratchs": [],
                 "weights": []
@@ -1703,8 +1703,8 @@
                 "counters": [],
                 "cycles": 0,
                 "cycles_by_macc": 0.0,
-                "duration_ms": 3.641997689631448,
-                "percentage": 22.91477581300425
+                "duration_ms": 1.8322612779650522,
+                "percentage": 27.309767157756923
             },
             "is_wrapped": "",
             "layer_type": "Conv2D",
@@ -1717,7 +1717,7 @@
             "rom": 147712,
             "tensors": {
                 "inputs": [
-                    "conv2_block2_1_relu_clipper_output"
+                    "conv2_block2_1_relu_output"
                 ],
                 "outputs": [
                     "conv2_block2_2_conv_output"
@@ -1745,8 +1745,8 @@
                 "counters": [],
                 "cycles": 0,
                 "cycles_by_macc": 0.0,
-                "duration_ms": 0.004191542464187971,
-                "percentage": 0.026372409886749368
+                "duration_ms": 0.0010970149774785474,
+                "percentage": 0.016350956036567246
             },
             "is_wrapped": "",
             "layer_type": "Nonlinearity",
@@ -1782,8 +1782,8 @@
                 "counters": [],
                 "cycles": 0,
                 "cycles_by_macc": 0.0,
-                "duration_ms": 0.005271144529262474,
-                "percentage": 0.033165066389214674
+                "duration_ms": 0.0011890547816868669,
+                "percentage": 0.0177228049384697
             },
             "is_wrapped": "",
             "layer_type": "Eltwise/add",
@@ -1796,7 +1796,7 @@
             "rom": 0,
             "tensors": {
                 "inputs": [
-                    "conv2_block1_out_clipper_output",
+                    "conv2_block1_out_output",
                     "conv2_block2_2_relu_clipper_output"
                 ],
                 "outputs": [
@@ -1813,23 +1813,23 @@
         },
         {
             "c_forward": [
-                "forward_clip"
+                "forward_relu"
             ],
             "c_id": 16,
             "exec_time": {
                 "counters": [],
                 "cycles": 0,
                 "cycles_by_macc": 0.0,
-                "duration_ms": 0.0027885572922263127,
-                "percentage": 0.0175450866910216
+                "duration_ms": 0.0009079602409724091,
+                "percentage": 0.013533104185335687
             },
             "is_wrapped": "",
             "layer_type": "Nonlinearity",
             "m_id": 24,
-            "macc": 7168,
-            "name": "conv2_block2_out_clipper",
+            "macc": 3584,
+            "name": "conv2_block2_out",
             "op_by_type": {
-                "op_f32_f32": 7168
+                "op_f32_f32": 3584
             },
             "rom": 0,
             "tensors": {
@@ -1837,7 +1837,7 @@
                     "conv2_block2_add_output"
                 ],
                 "outputs": [
-                    "conv2_block2_out_clipper_output"
+                    "conv2_block2_out_output"
                 ],
                 "scratchs": [],
                 "weights": []
@@ -1857,8 +1857,8 @@
                 "counters": [],
                 "cycles": 0,
                 "cycles_by_macc": 0.0,
-                "duration_ms": 0.06606219202947261,
-                "percentage": 0.4156510929099986
+                "duration_ms": 0.04127363359268328,
+                "percentage": 0.61518154464445
             },
             "is_wrapped": "",
             "layer_type": "Dense",
@@ -1871,7 +1871,7 @@
             "rom": 143400,
             "tensors": {
                 "inputs": [
-                    "conv2_block2_out_clipper_output"
+                    "conv2_block2_out_output"
                 ],
                 "outputs": [
                     "new_head_dense_output"
@@ -1897,8 +1897,8 @@
                 "counters": [],
                 "cycles": 0,
                 "cycles_by_macc": 0.0,
-                "duration_ms": 0.002184079687484072,
-                "percentage": 0.013741825410520367
+                "duration_ms": 0.0007462686921622771,
+                "percentage": 0.011123099344603567
             },
             "is_wrapped": "",
             "layer_type": "Nonlinearity",
@@ -1936,17 +1936,17 @@
         "options": []
     },
     "data_alignment": 4,
-    "date_time": "2026-04-13T13:58:13+0200",
+    "date_time": "2026-04-14T16:53:01+0200",
     "exec_time": {
         "cycles": 0,
         "cycles_by_macc": 0.0,
         "device": "x86_64, x86_64, Linux",
-        "duration_ms": 15.893664940699948
+        "duration_ms": 6.709179420611157
     },
     "inputs": [
         "input_1_output"
     ],
-    "macc": 7634464,
+    "macc": 7565344,
     "memory_footprint": {
         "activations": 238592,
         "io": [
@@ -1959,7 +1959,7 @@
     "memory_pools": [],
     "model_fmt": "float",
     "model_name": "adaptive_clipper",
-    "model_signature": "0x7c437bda1b3573d35991ebda18939dff",
+    "model_signature": "0x458f22ee748f9886b0621ff1f5f721d5",
     "outputs": [
         "new_head_output"
     ],

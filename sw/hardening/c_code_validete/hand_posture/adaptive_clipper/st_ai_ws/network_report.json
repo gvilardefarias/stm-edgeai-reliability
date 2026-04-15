@@ -1,7 +1,7 @@
 {
     "_allocate_inputs": 0,
     "_allocate_outputs": 0,
-    "cli_parameters": "validate --model sw/hardening/hardened_models/hand_posture/adaptive_clipper.h5 --target stellar-e --custom sw/hardening/config/adaptive_clipper_config.json -vi sw/datasets/handposture/hand_val_images.npy -vo sw/datasets/handposture/hand_val_labels.npy --mode host",
+    "cli_parameters": "validate --model ../../../hardened_models/hand_posture/adaptive_clipper.h5 --target stellar-e -vi ../../../../datasets/handposture/hand_val_images.npy -vo ../../../../datasets/handposture/hand_val_labels.npy --custom ../../../config/adaptive_clipper_config.json",
     "cli_version": {
         "extra": "19895",
         "major": 1,
@@ -11,12 +11,12 @@
     "cli_version_str": "1.0.0-19895",
     "code_size": 0,
     "compression": [],
-    "date_time": "2026-03-31T11:05:18+0200",
+    "date_time": "2026-04-15T14:03:40+0200",
     "error": 0,
     "error_str": [],
     "exec_cmd": "validate",
     "exec_duration": 0.0,
-    "hash": "0xfaebef74bcbefab8d55a04026abcbcd2",
+    "hash": "0x02f7eab6a94a6f337310250eb65a0bad",
     "inputs": [
         "input_1"
     ],
@@ -85,8 +85,8 @@
             "inputs": [
                 "conv2d"
             ],
-            "name": "activation_clipper",
-            "original": "ReLU",
+            "name": "activation",
+            "original": "Activation",
             "type": "Nonlinearity"
         },
         {
@@ -101,7 +101,7 @@
             },
             "id": 3,
             "inputs": [
-                "activation_clipper"
+                "activation"
             ],
             "name": "max_pooling2d",
             "original": "MaxPooling2D",
@@ -232,7 +232,7 @@
         }
     ],
     "model_files": [
-        "/home/apo/stm-edgeai-reliability/sw/hardening/hardened_models/hand_posture/adaptive_clipper.h5"
+        "/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/hardened_models/hand_posture/adaptive_clipper.h5"
     ],
     "model_n_params": 2752,
     "model_name": "adaptive_clipper",
@@ -257,7 +257,7 @@
             "name": "input_1"
         }
     ],
-    "rom_n_macc": 8840,
+    "rom_n_macc": 8552,
     "rom_outputs": [
         {
             "c_size": 32,
@@ -269,43 +269,43 @@
     "strategy": "",
     "tools_api_version": "1.0.0-19895",
     "tools_version": "1.0.0-19895",
-    "val_error": 4.4053325609638705e-07,
+    "val_error": 8.428758491163535e-08,
     "val_error_desc": "x-cross (l2r) #1",
     "val_metrics": [
         {
-            "acc": "70.47%",
-            "cos": 0.7336544394493103,
+            "acc": "99.13%",
+            "cos": 0.99185711145401,
             "desc": "HOST c-model #1",
-            "l2r": 0.7522409558296204,
-            "mae": 0.07636603713035583,
-            "mean": -2.43078640549399e-10,
-            "nse": 0.42045391687498324,
-            "rmse": 0.25177645683288574,
-            "std": 0.2517833411693573,
+            "l2r": 0.13070784509181976,
+            "mae": 0.0071993544697761536,
+            "mean": -1.9788125305009174e-10,
+            "nse": 0.9812805744528473,
+            "rmse": 0.045249875634908676,
+            "std": 0.04525110870599747,
             "ts_name": "dense_1, (8,), m_id=[8]"
         },
         {
-            "acc": "70.47%",
-            "cos": 0.7336544990539551,
+            "acc": "99.13%",
+            "cos": 0.99185711145401,
             "desc": "original model #1",
-            "l2r": 0.7522409558296204,
-            "mae": 0.07636603713035583,
-            "mean": 3.7221370430273737e-09,
-            "nse": 0.420453984990787,
-            "rmse": 0.25177642703056335,
-            "std": 0.2517833113670349,
+            "l2r": 0.13070784509181976,
+            "mae": 0.0071993544697761536,
+            "mean": -1.0250708615267001e-10,
+            "nse": 0.9812805723242285,
+            "rmse": 0.045249875634908676,
+            "std": 0.045251112431287766,
             "ts_name": "dense_1, (8,), m_id=[8]"
         },
         {
             "acc": "100.00%",
             "cos": 1.0,
             "desc": "X-cross #1",
-            "l2r": 4.4053325609638705e-07,
-            "mae": 2.9590255579137192e-08,
-            "mean": -3.99023702968293e-09,
-            "nse": 0.9999999999997745,
-            "rmse": 1.4744730947313656e-07,
-            "std": 1.473973298971032e-07,
+            "l2r": 8.428758491163535e-08,
+            "mae": 5.750666609571908e-09,
+            "mean": -9.803710621092421e-11,
+            "nse": 0.9999999999999918,
+            "rmse": 2.9179599181361482e-08,
+            "std": 2.918023156439631e-08,
             "ts_name": "dense_1, (8,), m_id=[8]"
         }
     ]

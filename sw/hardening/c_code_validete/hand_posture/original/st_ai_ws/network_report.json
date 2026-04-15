@@ -1,7 +1,7 @@
 {
     "_allocate_inputs": 0,
     "_allocate_outputs": 0,
-    "cli_parameters": "validate --model sw/hardening/base_models/hand_posture/CNN2D_ST_HandPosture_8classes.h5 --target stellar-e -vi sw/datasets/handposture/hand_val_images.npy -vo sw/datasets/handposture/hand_val_labels.npy --mode host",
+    "cli_parameters": "validate --model ../../../base_models/hand_posture/CNN2D_ST_HandPosture_8classes.h5 --target stellar-e -vi ../../../../datasets/handposture/hand_val_images.npy -vo ../../../../datasets/handposture/hand_val_labels.npy",
     "cli_version": {
         "extra": "19895",
         "major": 1,
@@ -11,12 +11,12 @@
     "cli_version_str": "1.0.0-19895",
     "code_size": 0,
     "compression": [],
-    "date_time": "2026-03-31T09:18:40+0200",
+    "date_time": "2026-04-15T13:39:28+0200",
     "error": 0,
     "error_str": [],
     "exec_cmd": "validate",
     "exec_duration": 0.0,
-    "hash": "0x1e108c42827f4c62598744246d259703",
+    "hash": "0x207d3ca54e61755a72f3aed4ddf9d415",
     "inputs": [
         "input_1"
     ],
@@ -231,7 +231,7 @@
         }
     ],
     "model_files": [
-        "/home/apo/stm-edgeai-reliability/sw/hardening/base_models/hand_posture/CNN2D_ST_HandPosture_8classes.h5"
+        "/home/g.vilarde/stm_edge_ai/stm-edgeai-reliability/sw/hardening/base_models/hand_posture/CNN2D_ST_HandPosture_8classes.h5"
     ],
     "model_n_params": 2752,
     "model_name": "CNN2D_ST_HandPosture_8classes",
@@ -268,43 +268,43 @@
     "strategy": "",
     "tools_api_version": "1.0.0-19895",
     "tools_version": "1.0.0-19895",
-    "val_error": 4.425193083079648e-07,
+    "val_error": 8.428758491163535e-08,
     "val_error_desc": "x-cross (l2r) #1",
     "val_metrics": [
         {
-            "acc": "70.60%",
-            "cos": 0.7349381446838379,
+            "acc": "99.13%",
+            "cos": 0.99185711145401,
             "desc": "HOST c-model #1",
-            "l2r": 0.7506066560745239,
-            "mae": 0.07612773776054382,
-            "mean": -3.541538173834624e-10,
-            "nse": 0.42340387610489016,
-            "rmse": 0.25113484263420105,
-            "std": 0.2511416971683502,
+            "l2r": 0.13070784509181976,
+            "mae": 0.0071993544697761536,
+            "mean": -1.9788125305009174e-10,
+            "nse": 0.9812805744528473,
+            "rmse": 0.045249875634908676,
+            "std": 0.04525110870599747,
             "ts_name": "dense_1, (8,), m_id=[7]"
         },
         {
-            "acc": "70.60%",
-            "cos": 0.7349381446838379,
+            "acc": "99.13%",
+            "cos": 0.99185711145401,
             "desc": "original model #1",
-            "l2r": 0.7506067156791687,
-            "mae": 0.07612773776054382,
-            "mean": 3.7058622837093935e-09,
-            "nse": 0.42340394422069394,
-            "rmse": 0.25113484263420105,
-            "std": 0.2511416971683502,
+            "l2r": 0.13070784509181976,
+            "mae": 0.0071993544697761536,
+            "mean": -1.0250708615267001e-10,
+            "nse": 0.9812805723242285,
+            "rmse": 0.045249875634908676,
+            "std": 0.045251112431287766,
             "ts_name": "dense_1, (8,), m_id=[7]"
         },
         {
             "acc": "100.00%",
             "cos": 1.0,
             "desc": "X-cross #1",
-            "l2r": 4.425193083079648e-07,
-            "mae": 2.9900530051918395e-08,
-            "mean": -3.970153983345881e-09,
-            "nse": 0.9999999999997724,
-            "rmse": 1.4805625880853768e-07,
-            "std": 1.4800706082951365e-07,
+            "l2r": 8.428758491163535e-08,
+            "mae": 5.750666609571908e-09,
+            "mean": -9.803710621092421e-11,
+            "nse": 0.9999999999999918,
+            "rmse": 2.9179599181361482e-08,
+            "std": 2.918023156439631e-08,
             "ts_name": "dense_1, (8,), m_id=[7]"
         }
     ]

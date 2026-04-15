@@ -751,25 +751,25 @@
   "environment": {
     "device": "x86_64, x86_64, Linux",
     "generated_model": {
-      "generated_time": "2026-04-02T17:09:47+0200",
+      "generated_time": "2026-04-15T14:58:02+0200",
       "model_files": [],
       "n_params": null,
       "name": "network",
       "size": null,
       "type": null
     },
-    "network_signature": "0xad8f8b887c277345",
+    "network_signature": "0x1cec288b285749eb",
     "test_name": "",
     "tools": [
       {
-        "arguments": "validate --model ../../../hardened_models/hand_posture/voter_tmr.h5 --target stellar-e --custom ../../../config/voter_tmr.json -vi ../../../../datasets/handposture/hand_val_images.npy --no-check --mode target -d lib:st_ai_ws/inspector_network/workspace/",
+        "arguments": "validate --model ../../../hardened_models/hand_posture/voter_tmr.h5 --target stellar-e -vi ../../../../datasets/handposture/hand_val_images.npy -vo ../../../../datasets/handposture/hand_val_labels.npy --custom ../../../config/voter_tmr.json --mode target -d lib:st_ai_ws/inspector_network/workspace/",
         "environment": [],
         "input_model": {
           "generated_time": null,
           "model_files": [
             {
               "name": "voter_tmr.h5",
-              "signature": "0xbdec3114de423393f4d6b64147e0bdec"
+              "signature": "0xe78ffa4cbedd16898ec30f11bd66a664"
             }
           ],
           "n_params": 7424,
@@ -955,7 +955,7 @@
         "counters": [],
         "cycles": 0,
         "cycles_by_macc": 0.0,
-        "duration_ms": 0.04473065358221533,
+        "duration_ms": 0.06537516645470837,
         "percentage": 100.0
       },
       "id": 0,
@@ -988,8 +988,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.024466113853999293,
-            "percentage": 54.69652664258608
+            "duration_ms": 0.038287277284978674,
+            "percentage": 58.56547579347876
           },
           "id": 13,
           "inputs": [
@@ -1025,8 +1025,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.004896371046494111,
-            "percentage": 10.946343624276668
+            "duration_ms": 0.006403585737689215,
+            "percentage": 9.795134888299811
           },
           "id": 14,
           "inputs": [
@@ -1058,8 +1058,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.0004840402502609742,
-            "percentage": 1.0821220158818026
+            "duration_ms": 0.0005295146731101872,
+            "percentage": 0.8099630208621078
           },
           "id": 15,
           "inputs": [
@@ -1090,8 +1090,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.004703542009113291,
-            "percentage": 10.515254378003084
+            "duration_ms": 0.0075496286630246075,
+            "percentage": 11.548159756128435
           },
           "id": 16,
           "inputs": [
@@ -1123,8 +1123,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.0004311325084532081,
-            "percentage": 0.9638412898679937
+            "duration_ms": 0.00042413644340731426,
+            "percentage": 0.6487730225530732
           },
           "id": 17,
           "inputs": [
@@ -1155,8 +1155,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.00476563208873714,
-            "percentage": 10.654063169405443
+            "duration_ms": 0.0058491475854490875,
+            "percentage": 8.94704809585663
           },
           "id": 18,
           "inputs": [
@@ -1188,8 +1188,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.00045386971980146006,
-            "percentage": 1.014672676238105
+            "duration_ms": 0.0004293834919372193,
+            "percentage": 0.656799080174724
           },
           "id": 19,
           "inputs": [
@@ -1217,8 +1217,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.0018605160387762292,
-            "percentage": 4.159375930773256
+            "duration_ms": 0.00226235250616833,
+            "percentage": 3.4605686361589276
           },
           "id": 20,
           "inputs": [
@@ -1251,8 +1251,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.0013253170712152597,
-            "percentage": 2.962883313965703
+            "duration_ms": 0.0018780061945699524,
+            "percentage": 2.8726599049977595
           },
           "id": 21,
           "inputs": [
@@ -1286,8 +1286,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.0013441189953643596,
-            "percentage": 3.004916959001856
+            "duration_ms": 0.0017621338743737654,
+            "percentage": 2.695417801489751
           },
           "id": 22,
           "inputs": [
@@ -1465,19 +1465,41 @@
   ],
   "power_estimates": [],
   "validation": {
-    "val_error": 3.6423764981918794e-07,
+    "val_error": 8.428758491163535e-08,
     "val_error_desc": "x-cross (l2r) #1",
     "val_metrics": [
+      {
+        "acc": "99.13%",
+        "cos": 0.99185711145401,
+        "desc": "TARGET c-model #1",
+        "l2r": 0.13070784509181976,
+        "mae": 0.0071993544697761536,
+        "mean": -1.9788125305009174e-10,
+        "nse": 0.9812805744528473,
+        "rmse": 0.045249875634908676,
+        "std": 0.04525110870599747
+      },
+      {
+        "acc": "99.13%",
+        "cos": 0.99185711145401,
+        "desc": "original model #1",
+        "l2r": 0.13070784509181976,
+        "mae": 0.0071993544697761536,
+        "mean": -1.0250708615267001e-10,
+        "nse": 0.9812805723242285,
+        "rmse": 0.045249875634908676,
+        "std": 0.045251112431287766
+      },
       {
         "acc": "100.00%",
         "cos": 1.0,
         "desc": "X-cross #1",
-        "l2r": 3.6423764981918794e-07,
-        "mae": 2.31571348763282e-08,
-        "mean": -3.7500627603215264e-10,
-        "nse": 0.9999999999998458,
-        "rmse": 1.218651135559412e-07,
-        "std": 1.2186787046175596e-07
+        "l2r": 8.428758491163535e-08,
+        "mae": 5.750666609571908e-09,
+        "mean": -9.803710621092421e-11,
+        "nse": 0.9999999999999918,
+        "rmse": 2.9179599181361482e-08,
+        "std": 2.918023156439631e-08
       }
     ]
   }

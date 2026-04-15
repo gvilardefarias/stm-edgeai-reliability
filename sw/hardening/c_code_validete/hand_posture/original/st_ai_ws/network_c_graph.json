@@ -42,7 +42,7 @@
         }
     },
     "activations_alignment": 4,
-    "arguments": "validate --model sw/hardening/base_models/hand_posture/CNN2D_ST_HandPosture_8classes.h5 --target stellar-e -vi sw/datasets/handposture/hand_val_images.npy -vo sw/datasets/handposture/hand_val_labels.npy --mode host",
+    "arguments": "validate --model ../../../base_models/hand_posture/CNN2D_ST_HandPosture_8classes.h5 --target stellar-e -vi ../../../../datasets/handposture/hand_val_images.npy -vo ../../../../datasets/handposture/hand_val_labels.npy",
     "c_activations_count": 1,
     "c_arrays": [
         {
@@ -416,8 +416,8 @@
                 "counters": [],
                 "cycles": 0,
                 "cycles_by_macc": 0.0,
-                "duration_ms": 0.010229996299663511,
-                "percentage": 70.07517945225517
+                "duration_ms": 0.008274158695814491,
+                "percentage": 73.57023448370848
             },
             "is_wrapped": "",
             "layer_type": "Conv2D",
@@ -459,8 +459,8 @@
                 "counters": [],
                 "cycles": 0,
                 "cycles_by_macc": 0.0,
-                "duration_ms": 0.0022824661990291277,
-                "percentage": 15.6348275996868
+                "duration_ms": 0.0019020551835379398,
+                "percentage": 16.912250658743805
             },
             "is_wrapped": "",
             "layer_type": "Dense",
@@ -499,8 +499,8 @@
                 "counters": [],
                 "cycles": 0,
                 "cycles_by_macc": 0.0,
-                "duration_ms": 0.000520769591853723,
-                "percentage": 3.567256676684004
+                "duration_ms": 0.0002452995306716529,
+                "percentage": 2.1810971548546862
             },
             "is_wrapped": "",
             "layer_type": "Nonlinearity",
@@ -536,8 +536,8 @@
                 "counters": [],
                 "cycles": 0,
                 "cycles_by_macc": 0.0,
-                "duration_ms": 0.0006318321244063847,
-                "percentage": 4.328031819809491
+                "duration_ms": 0.00037166595556311044,
+                "percentage": 3.304692658870736
             },
             "is_wrapped": "",
             "layer_type": "Dense",
@@ -576,8 +576,8 @@
                 "counters": [],
                 "cycles": 0,
                 "cycles_by_macc": 0.0,
-                "duration_ms": 0.0009335374292051382,
-                "percentage": 6.3947044515645395
+                "duration_ms": 0.0004534324657869948,
+                "percentage": 4.0317250438222985
             },
             "is_wrapped": "",
             "layer_type": "Nonlinearity",
@@ -615,12 +615,12 @@
         "options": []
     },
     "data_alignment": 4,
-    "date_time": "2026-03-31T09:18:40+0200",
+    "date_time": "2026-04-15T13:39:28+0200",
     "exec_time": {
         "cycles": 0,
         "cycles_by_macc": 0.0,
-        "device": "x86_64, , Linux",
-        "duration_ms": 0.014598601644157884
+        "device": "x86_64, x86_64, Linux",
+        "duration_ms": 0.011246611831374188
     },
     "inputs": [
         "input_1_output"
@@ -638,7 +638,7 @@
     "memory_pools": [],
     "model_fmt": "float",
     "model_name": "CNN2D_ST_HandPosture_8classes",
-    "model_signature": "0x1e108c42827f4c62598744246d259703",
+    "model_signature": "0x207d3ca54e61755a72f3aed4ddf9d415",
     "outputs": [
         "dense_1_output"
     ],

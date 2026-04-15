@@ -24,7 +24,7 @@ def profile_activations(model, representative_data):
 
 def build_adaptive_clipper_model(original_model_path, representative_data, save_path, margin=1.1, target_layers=None):
     print(f"\nLoading original model: {original_model_path}")
-    model = tf.keras.models.load_model(original_model_path)
+    model = tf.keras.models.load_model(original_model_path, compile=False)
 
     if target_layers:
         model_layer_names = {layer.name for layer in model.layers}
@@ -191,9 +191,11 @@ if __name__ == "__main__":
         config_path = os.path.join(modelzoo_path, "hand_posture", "user_config.yaml")
         cfg = OmegaConf.load(config_path)
         cfg.dataset.training_path = os.path.join(modelzoo_path, "hand_posture/datasets/ST_VL53L8CX_handposture_dataset")
+        if cfg.dataset.validation_split is None:
+            cfg.dataset.validation_split = 0.2
         
         data_loaders = get_ST_handposture_dataset(cfg)
-        split_key = 'train' if args.data_split == 'train' else 'val'
+        split_key = 'train' if args.data_split == 'train' else 'valid'
         representative_data = collect_dataset(data_loaders[split_key])
 
     elif args.model == 'miniresnet':

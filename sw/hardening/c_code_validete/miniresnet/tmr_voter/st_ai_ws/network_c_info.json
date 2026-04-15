@@ -1802,14 +1802,14 @@
   "environment": {
     "device": "x86_64, x86_64, Linux",
     "generated_model": {
-      "generated_time": "2026-04-03T12:39:33+0200",
+      "generated_time": "2026-04-15T14:29:34+0200",
       "model_files": [],
       "n_params": null,
       "name": "network",
       "size": null,
       "type": null
     },
-    "network_signature": "0xfa119b9d54e7a5a9",
+    "network_signature": "0xc761809bd6522bae",
     "test_name": "",
     "tools": [
       {
@@ -2231,7 +2231,7 @@
         "counters": [],
         "cycles": 0,
         "cycles_by_macc": 0.0,
-        "duration_ms": 9.666741756778803,
+        "duration_ms": 26.435031120340454,
         "percentage": 100.0
       },
       "id": 0,
@@ -2259,8 +2259,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 2.0500946205053756,
-            "percentage": 21.20771064425867
+            "duration_ms": 8.1223113465665,
+            "percentage": 30.7255599949598
           },
           "id": 29,
           "inputs": [
@@ -2294,8 +2294,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.12547761811619967,
-            "percentage": 1.2980342422844646
+            "duration_ms": 0.36298509197893425,
+            "percentage": 1.3731214853748936
           },
           "id": 30,
           "inputs": [
@@ -2326,8 +2326,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.033723881264305235,
-            "percentage": 0.3488650272534317
+            "duration_ms": 0.11189552746824365,
+            "percentage": 0.42328502266125784
           },
           "id": 31,
           "inputs": [
@@ -2361,8 +2361,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.021236320012318555,
-            "percentage": 0.21968436259742416
+            "duration_ms": 0.06758955540830519,
+            "percentage": 0.2556817697721504
           },
           "id": 32,
           "inputs": [
@@ -2402,8 +2402,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.17298259852982278,
-            "percentage": 1.7894612567726733
+            "duration_ms": 0.45649006896054567,
+            "percentage": 1.7268376454049226
           },
           "id": 33,
           "inputs": [
@@ -2447,8 +2447,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.17235573225501757,
-            "percentage": 1.7829764836135515
+            "duration_ms": 0.44192788153145446,
+            "percentage": 1.671750941088973
           },
           "id": 34,
           "inputs": [
@@ -2482,8 +2482,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.000813432874456882,
-            "percentage": 0.008414757473855781
+            "duration_ms": 0.0036840797320879365,
+            "percentage": 0.013936354813871274
           },
           "id": 35,
           "inputs": [
@@ -2523,8 +2523,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 1.7137413742530405,
-            "percentage": 17.728221332190643
+            "duration_ms": 3.97298277017489,
+            "percentage": 15.029234322020054
           },
           "id": 36,
           "inputs": [
@@ -2558,8 +2558,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.0008582089968553897,
-            "percentage": 0.008877955141954327
+            "duration_ms": 0.0043656718054211775,
+            "percentage": 0.01651472164170069
           },
           "id": 37,
           "inputs": [
@@ -2589,8 +2589,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.00105223885536963,
-            "percentage": 0.010885144983124716
+            "duration_ms": 0.0077736321744041065,
+            "percentage": 0.02940655578961161
           },
           "id": 38,
           "inputs": [
@@ -2621,8 +2621,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.0007587065036983151,
-            "percentage": 0.007848627001608604
+            "duration_ms": 0.0026393035592960743,
+            "percentage": 0.009984113683396651
           },
           "id": 39,
           "inputs": [
@@ -2662,8 +2662,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.17239802023071554,
-            "percentage": 1.7834139420329649
+            "duration_ms": 0.45603982310983077,
+            "percentage": 1.7251344287577954
           },
           "id": 40,
           "inputs": [
@@ -2697,8 +2697,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.0007736318775415606,
-            "percentage": 0.00800302622131238
+            "duration_ms": 0.004582089730492093,
+            "percentage": 0.017333400175066942
           },
           "id": 41,
           "inputs": [
@@ -2738,8 +2738,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 1.7155821679243402,
-            "percentage": 17.74726387742062
+            "duration_ms": 4.010706661945552,
+            "percentage": 15.171938492100015
           },
           "id": 42,
           "inputs": [
@@ -2783,8 +2783,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 1.7201592886625832,
-            "percentage": 17.794613034493462
+            "duration_ms": 4.065059894946084,
+            "percentage": 15.377549118216171
           },
           "id": 43,
           "inputs": [
@@ -2828,8 +2828,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 1.709758789385136,
-            "percentage": 17.687022498414915
+            "duration_ms": 4.195378311830966,
+            "percentage": 15.870525337126724
           },
           "id": 44,
           "inputs": [
@@ -2861,8 +2861,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.013691542656230392,
-            "percentage": 0.1416355479510891
+            "duration_ms": 0.0391592055244084,
+            "percentage": 0.14813375988151314
           },
           "id": 45,
           "inputs": [
@@ -2895,8 +2895,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.0010472637313343955,
-            "percentage": 0.01083367858254827
+            "duration_ms": 0.006776119697032802,
+            "percentage": 0.025633106562976245
           },
           "id": 46,
           "inputs": [
@@ -2928,8 +2928,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.0007985075006136365,
-            "percentage": 0.008260358254152006
+            "duration_ms": 0.0032661692488391825,
+            "percentage": 0.012355458308222024
           },
           "id": 47,
           "inputs": [
@@ -2959,8 +2959,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.0009651741746173644,
-            "percentage": 0.009984482868186024
+            "duration_ms": 0.00788557248778493,
+            "percentage": 0.02983001023107315
           },
           "id": 48,
           "inputs": [
@@ -2991,8 +2991,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.0007935323759992213,
-            "percentage": 0.00820889184758408
+            "duration_ms": 0.0031492538490698707,
+            "percentage": 0.01191318381557219
           },
           "id": 49,
           "inputs": [
@@ -3023,8 +3023,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.03715174288410156,
-            "percentage": 0.38432538924554277
+            "duration_ms": 0.08532089945762905,
+            "percentage": 0.322756947284162
           },
           "id": 50,
           "inputs": [
@@ -3058,8 +3058,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.0005273632091280092,
-            "percentage": 0.005455439096200079
+            "duration_ms": 0.003062189152679726,
+            "percentage": 0.011583830330063511
           },
           "id": 51,
           "inputs": [

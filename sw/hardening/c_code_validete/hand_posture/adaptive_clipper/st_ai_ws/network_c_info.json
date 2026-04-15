@@ -466,37 +466,37 @@
     }
   ],
   "environment": {
-    "device": "x86_64, , Linux",
+    "device": "x86_64, x86_64, Linux",
     "generated_model": {
-      "generated_time": "2026-03-31T11:05:18+0200",
+      "generated_time": "2026-04-15T14:03:40+0200",
       "model_files": [
         {
           "name": "network_data_params.h",
-          "signature": "0x019d104f3056a3ffebf3cd4aab4ddaff"
+          "signature": "0x862fe70564281d411fd74ee7ab46ef53"
         },
         {
           "name": "network_data_params.c",
-          "signature": "0x46a81b41a126f45ee0720dc706d2a7b9"
+          "signature": "0xd9d807f7ebb747d2e3abf8accecb2e09"
         },
         {
           "name": "network_data.h",
-          "signature": "0x060f44db9627414c0daaa26bc965c268"
+          "signature": "0x5042da9b9cccb63922f753cebf29a345"
         },
         {
           "name": "network_data.c",
-          "signature": "0xe28f59d025ad60dca36cd7aa3bfd5738"
+          "signature": "0xdd44e0a74ac63923ed519519c57e8364"
         },
         {
           "name": "network_config.h",
-          "signature": "0x5b452eb4de7eabb07406ecbb23344ae6"
+          "signature": "0x342ceb35f92202545453b0fe802b9b40"
         },
         {
           "name": "network.h",
-          "signature": "0x6913f04e32813634131768280edbf3a1"
+          "signature": "0xa92533853afd722eb87182a18e4ea5b3"
         },
         {
           "name": "network.c",
-          "signature": "0xedecbb4c0bd70def4811ce01782aaef4"
+          "signature": "0x7499cb0466bf172e458674349ae02bed"
         }
       ],
       "n_params": null,
@@ -504,18 +504,18 @@
       "size": null,
       "type": null
     },
-    "network_signature": "0xc8b77d188e694b42",
+    "network_signature": "0x3b78520e7163c6d4",
     "test_name": "",
     "tools": [
       {
-        "arguments": "validate --model sw/hardening/hardened_models/hand_posture/adaptive_clipper.h5 --target stellar-e --custom sw/hardening/config/adaptive_clipper_config.json -vi sw/datasets/handposture/hand_val_images.npy -vo sw/datasets/handposture/hand_val_labels.npy --mode host",
+        "arguments": "validate --model ../../../hardened_models/hand_posture/adaptive_clipper.h5 --target stellar-e -vi ../../../../datasets/handposture/hand_val_images.npy -vo ../../../../datasets/handposture/hand_val_labels.npy --custom ../../../config/adaptive_clipper_config.json",
         "environment": [],
         "input_model": {
           "generated_time": null,
           "model_files": [
             {
               "name": "adaptive_clipper.h5",
-              "signature": "0xfaebef74bcbefab8d55a04026abcbcd2"
+              "signature": "0x02f7eab6a94a6f337310250eb65a0bad"
             }
           ],
           "n_params": 2752,
@@ -596,7 +596,7 @@
         "counters": [],
         "cycles": 0,
         "cycles_by_macc": 0.0,
-        "duration_ms": 0.019456494364459485,
+        "duration_ms": 0.010991692692888423,
         "percentage": 100.0
       },
       "id": 0,
@@ -612,11 +612,10 @@
             "groups": "1",
             "is_depthwise": "False",
             "is_grouped_conv": "False",
-            "nonlinearity": "clip",
+            "nonlinearity": "relu",
             "num_filters": "8",
             "pad": "{H: (0, 0), W: (0, 0)}",
             "pad_value": "0",
-            "params": "[0, 34.64525604248047]",
             "pool_function": "max",
             "pool_pad": "{H: (0, 0), W: (0, 0)}",
             "pool_size": "(2, 2)",
@@ -630,8 +629,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.012674683818180696,
-            "percentage": 65.14371798309725
+            "duration_ms": 0.008054219881845553,
+            "percentage": 73.27551912961138
           },
           "id": 9,
           "inputs": [
@@ -639,7 +638,7 @@
             77,
             80
           ],
-          "macc": 6056,
+          "macc": 5768,
           "mapping": "NODE_SW",
           "name": "conv2d",
           "original_nodes": [
@@ -667,8 +666,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.004039790305204341,
-            "percentage": 20.763197262214348
+            "duration_ms": 0.0018683866212172186,
+            "percentage": 16.99817010373713
           },
           "id": 10,
           "inputs": [
@@ -694,15 +693,15 @@
         {
           "attributes": {
             "nonlinearity": "clip",
-            "params": "[0, 74.23810577392578]"
+            "params": "[0, 156.54074096679688]"
           },
           "description": "Nonlinearity",
           "exec_time": {
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.0005518146303421678,
-            "percentage": 2.8361462245231017
+            "duration_ms": 0.00019457805908892252,
+            "percentage": 1.7702283399427066
           },
           "id": 11,
           "inputs": [
@@ -733,8 +732,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.0008850022277456374,
-            "percentage": 4.548621201578023
+            "duration_ms": 0.000397463945419844,
+            "percentage": 3.6160394629391472
           },
           "id": 12,
           "inputs": [
@@ -768,8 +767,8 @@
             "counters": [],
             "cycles": 0,
             "cycles_by_macc": 0.0,
-            "duration_ms": 0.0013052033829866413,
-            "percentage": 6.70831732858727
+            "duration_ms": 0.0004770441853168865,
+            "percentage": 4.340042963769648
           },
           "id": 13,
           "inputs": [
@@ -938,41 +937,41 @@
   ],
   "power_estimates": [],
   "validation": {
-    "val_error": 4.4053325609638705e-07,
+    "val_error": 8.428758491163535e-08,
     "val_error_desc": "x-cross (l2r) #1",
     "val_metrics": [
       {
-        "acc": "70.47%",
-        "cos": 0.7336544394493103,
+        "acc": "99.13%",
+        "cos": 0.99185711145401,
         "desc": "HOST c-model #1",
-        "l2r": 0.7522409558296204,
-        "mae": 0.07636603713035583,
-        "mean": -2.43078640549399e-10,
-        "nse": 0.42045391687498324,
-        "rmse": 0.25177645683288574,
-        "std": 0.2517833411693573
+        "l2r": 0.13070784509181976,
+        "mae": 0.0071993544697761536,
+        "mean": -1.9788125305009174e-10,
+        "nse": 0.9812805744528473,
+        "rmse": 0.045249875634908676,
+        "std": 0.04525110870599747
       },
       {
-        "acc": "70.47%",
-        "cos": 0.7336544990539551,
+        "acc": "99.13%",
+        "cos": 0.99185711145401,
         "desc": "original model #1",
-        "l2r": 0.7522409558296204,
-        "mae": 0.07636603713035583,
-        "mean": 3.7221370430273737e-09,
-        "nse": 0.420453984990787,
-        "rmse": 0.25177642703056335,
-        "std": 0.2517833113670349
+        "l2r": 0.13070784509181976,
+        "mae": 0.0071993544697761536,
+        "mean": -1.0250708615267001e-10,
+        "nse": 0.9812805723242285,
+        "rmse": 0.045249875634908676,
+        "std": 0.045251112431287766
       },
       {
         "acc": "100.00%",
         "cos": 1.0,
         "desc": "X-cross #1",
-        "l2r": 4.4053325609638705e-07,
-        "mae": 2.9590255579137192e-08,
-        "mean": -3.99023702968293e-09,
-        "nse": 0.9999999999997745,
-        "rmse": 1.4744730947313656e-07,
-        "std": 1.473973298971032e-07
+        "l2r": 8.428758491163535e-08,
+        "mae": 5.750666609571908e-09,
+        "mean": -9.803710621092421e-11,
+        "nse": 0.9999999999999918,
+        "rmse": 2.9179599181361482e-08,
+        "std": 2.918023156439631e-08
       }
     ]
   }
