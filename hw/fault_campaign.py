@@ -689,6 +689,8 @@ def run(args, logger):
 
         with open("out_dict.txt", 'w') as f:
             f.write(str(f_campaign_results))
+        ai_outputs = np.array(ai_outputs, dtype=object)
+        np.save('results.npy', ai_outputs, allow_pickle=True)
 
     return 0
 
