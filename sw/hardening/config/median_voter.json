@@ -1,6 +1,6 @@
 {
-    "MedianVoterLayer": {
-        "python": "/home/apo/stm-edgeai-reliability/sw/hardening/custom_layers/median_voter_layer.py",
-        "c": "/home/apo/stm-edgeai-reliability/sw/hardening/custom_layers/median_voter_impl.c"
+    "AverageVoterLayer": {
+        "python": "/home/apo/stm-edgeai-reliability/sw/hardening/custom_layers/average_voter_layer.py",
+        "c": "/home/apo/stm-edgeai-reliability/sw/hardening/custom_layers/average_voter_impl.c"
     }
 }

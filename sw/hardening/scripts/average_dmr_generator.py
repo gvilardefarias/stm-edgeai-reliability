@@ -9,7 +9,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 # Import local custom layers
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'custom_layers')))
-from median_voter_layer import MedianVoterLayer
+from average_voter_layer import AverageVoterLayer
 
 def build_tmr_model(original_model_path, target_layer_name, save_path):
     print(f"Loading original model: {original_model_path}")
@@ -43,7 +43,7 @@ def build_tmr_model(original_model_path, target_layer_name, save_path):
             weights = layer.get_weights()
             
             outs = []
-            for i in range(3):
+            for i in range(2):
                 config['name'] = f"{layer.name}_tmr{i+1}"
                 l_obj = layer.__class__.from_config(config)
                 out = l_obj(layer_inputs)
@@ -60,7 +60,7 @@ def build_tmr_model(original_model_path, target_layer_name, save_path):
                 outs.append(out)
             
             # 2. Add Median Voter
-            x_out = MedianVoterLayer(name=f"{layer.name}_voter")(outs)
+            x_out = AverageVoterLayer(name=f"{layer.name}_voter")(outs)
             print("--- MEDIAN VOTER LAYER ADDED ---")
             
         else:
