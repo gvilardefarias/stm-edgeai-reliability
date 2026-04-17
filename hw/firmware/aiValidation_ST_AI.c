@@ -26,22 +26,14 @@
  */
 
 #define FI_CAMPAIGN 1
-#define FC_IN_SIZE 317
-//#define FC_IN_SIZE 6
 
 #define W_SIZE 730
 #define FC_W_SIZE 730
 //#define FC_W_SIZE 2
+//#define FC_BIT_RANGE 4
 #define FC_BIT_RANGE 16
 #define FC_BIT_START 63
 #define FC_BIT_STEP 32
-
-#if defined(FI_CAMPAIGN)
-#include "stai.h"
-STAI_ALIGNED(8)
-extern uint64_t g_network_weights_array[W_SIZE];
-#endif
-
 
 #if !defined(USE_OBSERVER)
 #define USE_OBSERVER         1 /* 0: remove the registration of the user CB to evaluate the inference time by layer */
@@ -72,6 +64,11 @@ extern uint64_t g_network_weights_array[W_SIZE];
 
 /* AI header files */
 #include <stai.h>
+
+#if FI_CAMPAIGN == 1
+STAI_ALIGNED(8)
+extern uint64_t g_network_weights_array[W_SIZE];
+#endif
 
 
 #if defined(SR5E1) || defined(SR6X)
@@ -106,7 +103,6 @@ extern uint64_t g_network_weights_array[W_SIZE];
 #define _APP_VERSION_           ((_APP_VERSION_MAJOR_ << 8) | _APP_VERSION_MINOR_)
 
 #define _APP_NAME_   "AI Validation (ST.AI c-api)"
-
 
 
 struct ai_network_exec_ctx {
@@ -880,18 +876,11 @@ static void _reset_states(const reqMsg *req, struct ai_network_exec_ctx *ctx)
   }
 }
 
-#if defined(FI_CAMPAIGN)
+#if FI_CAMPAIGN == 1
 void w_bit_flip(int w_idx, int b_idx)
 {
-  // TODO fix this
-  g_network_weights_array[w_idx] ^= (1U << b_idx);
-  //g_network_weights_array[w_idx + b_idx] = ~g_network_weights_array[w_idx + b_idx];
+  g_network_weights_array[w_idx] ^= (1ULL << b_idx);
 }
-
-//int b_idx = FC_BIT_START;
-//int w_idx = 0;
-//int b_start = FC_BIT_START;
-//int nnRunCounter = 0;
 #endif
 
 void aiPbCmdNNRun(const reqMsg *req, respMsg *resp, void *param)
@@ -908,7 +897,6 @@ void aiPbCmdNNRun(const reqMsg *req, respMsg *resp, void *param)
   UNUSED(param);
 
   MON_STACK_INIT();
-
 
   /* 0 - Check if requested c-name model is available -------------- */
   ctx = aiExecCtx(req->name, -1);
@@ -970,14 +958,15 @@ void aiPbCmdNNRun(const reqMsg *req, respMsg *resp, void *param)
   tick = port_hal_get_tick() - tick;
   PB_LC_PRINT(ctx->debug, "RUN: %ld ticks to download %d input(s)\r\n", tick, ctx->report.n_inputs);
 
-#if defined(FI_CAMPAIGN)
+#if FI_CAMPAIGN == 1
   for(int w_idx = 0; w_idx < FC_W_SIZE; w_idx++) {
     for(int b_start = FC_BIT_START; b_start >= 0 ; b_start -= FC_BIT_STEP) {
        for(int b_idx = b_start; b_idx > b_start - FC_BIT_RANGE; b_idx--) {
          w_bit_flip(w_idx, b_idx);
-  
+
          PB_LC_PRINT(ctx->debug, "Fault injected in weight %d, bit %d\r\n", w_idx, b_idx);
 #endif
+
   _reset_states(req, ctx);
 
   MON_ALLOC_RESET();
@@ -1029,7 +1018,6 @@ void aiPbCmdNNRun(const reqMsg *req, respMsg *resp, void *param)
   aiOpPerf perf = {dwtCyclesToFloatMs(tend), 0,  2, (uint32_t *)&tend, -1, -1};
 #endif
   
-  // TODO remove this step in the FI campaign
   aiPbMgrSendOperator(req, resp, EnumState_S_PROCESSING, ctx->report.c_model_name, 0, 0, &perf);
 
   PB_LC_PRINT(ctx->debug, "RUN: send output tensors\r\n");
@@ -1048,7 +1036,7 @@ void aiPbCmdNNRun(const reqMsg *req, respMsg *resp, void *param)
         ctx->outputs.address[i], flags, 0.0, 0, false);
   }
 
-#if defined(FI_CAMPAIGN)
+#if FI_CAMPAIGN == 1
          w_bit_flip(w_idx, b_idx);
        }
     }
