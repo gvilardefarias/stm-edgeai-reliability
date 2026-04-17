@@ -641,6 +641,7 @@ def run(args, logger):
             inputs[0] = inputs[0][batch_exec:]
             warm_started = True
         else:
+            inputs_s = inputs
             warm_started = False
 
         logger.info('Starting fault injection campaign')
@@ -684,7 +685,8 @@ def run(args, logger):
                 f_campaign_results[w_idx][f_bit] = acc
                 logger.info(f'Fault in bit {f_bit} of the weight {w_idx} - Accuracy: {acc}')
             
-            os.remove('checkpoint.npy')
+            if os.path.exists('checkpoint.npy'):
+                os.remove('checkpoint.npy')
         stai_end_time = perf_counter()
 
         with open("out_dict.txt", 'w') as f:
