@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ai:AIComponent xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ai="http://com.st.stellar.ai/component" name="SR5E1_AI_Demo_7000P">
+  <mcu/>
+  <api/>
+  <networks enabled="true" name="network" filePath="source/model_lstm" macc="95105 MACC">
+    <advancedSettings/>
+    <customLayerSettings/>
+  </networks>
+  <actions>
+    <version/>
+    <analyze/>
+    <generate/>
+  </actions>
+  <validate enabled="true" serial="SR5E1_UART3" networkToValidate="network" validationType="Custom Input Data" inputPath="source/validation_lstm/Validate_set.npz" outputPath="source/validation_lstm/Validate_set.npz"/>
+</ai:AIComponent>

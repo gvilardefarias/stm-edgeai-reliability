@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<com.st.stellar.component:Application xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:com.st.stellar.component="http://www.st.com/stellar/component/2.1.0" name="application">
+  <components uri="SR5E1_AI_Demo_7000P.ai"/>
+</com.st.stellar.component:Application>

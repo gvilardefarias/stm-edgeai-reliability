@@ -1,0 +1,118 @@
+   1              		.cpu cortex-m7
+   2              		.arch armv7e-m
+   3              		.fpu fpv5-d16
+   4              		.eabi_attribute 28, 1
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 6
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.file	"stellar_ai.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.file 1 "SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c"
+  19              		.section	.text.aiValidateStart,"ax",%progbits
+  20              		.align	1
+  21              		.p2align 4,,15
+  22              		.global	aiValidateStart
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	aiValidateStart:
+  28              	.LFB0:
+   1:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** /****************************************************************************
+   2:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** *
+   3:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** * Copyright (c) 2023 STMicroelectronics - All Rights Reserved
+   4:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** *
+   5:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** * License terms: STMicroelectronics Proprietary in accordance with licensing
+   6:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** * terms SLA0098 at www.st.com.
+   7:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** *
+   8:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** * THIS SOFTWARE IS DISTRIBUTED "AS IS," AND ALL WARRANTIES ARE DISCLAIMED,
+   9:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** * INCLUDING MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+  10:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** *
+  11:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** *****************************************************************************/
+  12:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** /**
+  13:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c ****  * @file    stellar_ai.c
+  14:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c ****  * @brief   Stellar AI module code.
+  15:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c ****  *
+  16:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c ****  * @addtogroup STELLAR_AI
+  17:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c ****  * @{
+  18:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c ****  */
+  19:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** 
+  20:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** #include "stellar_ai.h"
+  21:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** #if (STELLAR_AI_VALIDATE == TRUE) || defined(__DOXYGEN__)
+  22:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** #include "aiValidation.h"
+  23:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** #endif
+  24:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** 
+  25:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** /*===========================================================================*/
+  26:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** /* Module local variables.                                                   */
+  27:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** /*===========================================================================*/
+  28:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** 
+  29:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** /*===========================================================================*/
+  30:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** /* Module local functions.                                                   */
+  31:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** /*===========================================================================*/
+  32:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** 
+  33:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** /*===========================================================================*/
+  34:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** /* Module interrupt handlers.                                                */
+  35:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** /*===========================================================================*/
+  36:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** 
+  37:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** /*===========================================================================*/
+  38:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** /* Module exported functions.                                                */
+  39:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** /*===========================================================================*/
+  40:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** 
+  41:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** #if (STELLAR_AI_VALIDATE == TRUE) || defined(__DOXYGEN__)
+  42:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** /**
+  43:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c ****  * @brief   Stellar AI Validate start.
+  44:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c ****  * @details This function starts the validate on target procedure.
+  45:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c ****  *
+  46:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c ****  * @api
+  47:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c ****  */
+  48:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** void aiValidateStart(void) {
+  29              		.loc 1 48 28
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 08B5     		push	{r3, lr}
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 3, -8
+  36              		.cfi_offset 14, -4
+  49:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** 
+  50:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c ****   /* Init Validate.*/
+  51:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c ****   aiValidationInit();
+  37              		.loc 1 51 3
+  38 0002 FFF7FEFF 		bl	aiValidationInit
+  39              	.L2:
+  52:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c **** 
+  53:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c ****   /* Run Validate.*/
+  54:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c ****   for ( ; ; ) {
+  55:SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.c ****     aiValidationProcess();
+  40              		.loc 1 55 5 discriminator 1
+  41 0006 FFF7FEFF 		bl	aiValidationProcess
+  42 000a FCE7     		b	.L2
+  43              		.cfi_endproc
+  44              	.LFE0:
+  46              		.text
+  47              	.Letext0:
+  48              		.file 2 "SR5E1_AI_Demo_7000P/lib/validation/inc/aiValidation.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 stellar_ai.c
+C:\Users\danie\AppData\Local\Temp\ccjDHRJz.s:20     .text.aiValidateStart:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccjDHRJz.s:27     .text.aiValidateStart:00000000 aiValidateStart
+                           .group:00000000 wm4.0.5030deb6392b4db6a7ac5ffd5733b4a1
+                           .group:00000000 wm4.stellar_ai_cfg.h.22.b8366a3a45f39e9e09a10028cf2dd2bf
+                           .group:00000000 wm4.stellar_ai.h.34.d0e113cfaae3064f1ad664f91effd784
+                           .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
+                           .group:00000000 wm4.features.h.33.5ea28ceb8be6621901b9d58b4c3ee651
+                           .group:00000000 wm4._default_types.h.15.247e5cd201eca3442cbf5404108c4935
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+
+UNDEFINED SYMBOLS
+aiValidationInit
+aiValidationProcess

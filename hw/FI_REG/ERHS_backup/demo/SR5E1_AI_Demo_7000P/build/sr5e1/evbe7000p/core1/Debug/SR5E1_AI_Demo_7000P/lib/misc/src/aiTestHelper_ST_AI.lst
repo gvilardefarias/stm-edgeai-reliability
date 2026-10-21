@@ -1,0 +1,1794 @@
+   1              		.cpu cortex-m7
+   2              		.arch armv7e-m
+   3              		.fpu fpv5-d16
+   4              		.eabi_attribute 28, 1
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 6
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.file	"aiTestHelper_ST_AI.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.file 1 "SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c"
+  19              		.section	.rodata
+  20              		.align	2
+  21              	.LC0:
+  22 0000 0D00     		.ascii	"\015\000"
+  23 0002 0000     		.align	2
+  24              	.LC1:
+  25 0004 53542E41 		.ascii	"ST.AI RT\015\000"
+  25      49205254 
+  25      0D00
+  26 000e 0000     		.align	2
+  27              	.LC2:
+  28 0010 2D2D2D2D 		.ascii	"--------------------------------------------------\015"
+  28      2D2D2D2D 
+  28      2D2D2D2D 
+  28      2D2D2D2D 
+  28      2D2D2D2D 
+  29 0043 00       		.ascii	"\000"
+  30              		.align	2
+  31              	.LC3:
+  32 0044 20746F6F 		.ascii	" tools version   : v%d.%d.%d\015\012\000"
+  32      6C732076 
+  32      65727369 
+  32      6F6E2020 
+  32      203A2076 
+  33 0063 00       		.align	2
+  34              	.LC4:
+  35 0064 206E6574 		.ascii	" network rt lib  : v%d.%d.%d-%x\015\012\000"
+  35      776F726B 
+  35      20727420 
+  35      6C696220 
+  35      203A2076 
+  36 0086 0000     		.align	2
+  37              	.LC5:
+  38 0088 20202063 		.ascii	"   compiled with : %s\015\012\000"
+  38      6F6D7069 
+  38      6C656420 
+  38      77697468 
+  38      203A2025 
+  39              		.section	.text.stai_platform_version,"ax",%progbits
+  40              		.align	1
+  41              		.p2align 4,,15
+  42              		.global	stai_platform_version
+  43              		.syntax unified
+  44              		.thumb
+  45              		.thumb_func
+  47              	stai_platform_version:
+  48              	.LFB450:
+   1:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** /**
+   2:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****  ******************************************************************************
+   3:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****  * @file    aiTestUtility_ST_AI.c
+   4:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****  * @author  MCD/AIS Team
+   5:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****  * @brief   Helper functions for AI test application (ST AI API)
+   6:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****  ******************************************************************************
+   7:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****  * @attention
+   8:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****  *
+   9:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****  * <h2><center>&copy; Copyright (c) 2023 STMicroelectronics.
+  10:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****  * All rights reserved.</center></h2>
+  11:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****  *
+  12:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****  * This software is licensed under terms that can be found in the LICENSE file in
+  13:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****  * the root directory of this software component.
+  14:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****  * If no LICENSE file comes with this software, it is provided AS-IS.
+  15:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****  *
+  16:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****  ******************************************************************************
+  17:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****  */
+  18:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+  19:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** /*
+  20:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****  * Description:
+  21:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****  *  Basic helper functions for AI test applications (embedded API - ST AI)
+  22:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****  *
+  23:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****  * History:
+  24:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****  *  - v1.0 - Initial version
+  25:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****  */
+  26:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+  27:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** #include <stdio.h>
+  28:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** #include <string.h>
+  29:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+  30:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** #if !defined(TFLM_RUNTIME) && !defined(NO_STM_AI_RUNTIME)
+  31:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+  32:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** #include <aiTestHelper_ST_AI.h>
+  33:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** #include <aiTestUtility.h>
+  34:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** #include <stai.h>
+  35:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+  36:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+  37:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** void stai_platform_version(void)
+  38:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** {
+  49              		.loc 1 38 1
+  50              		.cfi_startproc
+  51              		@ args = 0, pretend = 0, frame = 24
+  52              		@ frame_needed = 0, uses_anonymous_args = 0
+  53 0000 00B5     		push	{lr}
+  54              		.cfi_def_cfa_offset 4
+  55              		.cfi_offset 14, -4
+  56 0002 89B0     		sub	sp, sp, #36
+  57              		.cfi_def_cfa_offset 40
+  39:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   stai_runtime_info netrt_info;
+  40:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   stai_runtime_get_info(&netrt_info);
+  58              		.loc 1 40 3
+  59 0004 02AB     		add	r3, sp, #8
+  60 0006 1846     		mov	r0, r3
+  61 0008 FFF7FEFF 		bl	stai_runtime_get_info
+  41:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+  42:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   LC_PRINT("\r\n");
+  62              		.loc 1 42 3
+  63 000c 1748     		ldr	r0, .L2
+  64 000e FFF7FEFF 		bl	puts
+  43:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   LC_PRINT("ST.AI RT\r\n");
+  65              		.loc 1 43 3
+  66 0012 1748     		ldr	r0, .L2+4
+  67 0014 FFF7FEFF 		bl	puts
+  44:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   LC_PRINT("--------------------------------------------------\r\n");
+  68              		.loc 1 44 3
+  69 0018 1648     		ldr	r0, .L2+8
+  70 001a FFF7FEFF 		bl	puts
+  45:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   LC_PRINT(" tools version   : v%d.%d.%d\r\n", (int)netrt_info.tools_version.major,
+  71              		.loc 1 45 3
+  72 001e 9DF81030 		ldrb	r3, [sp, #16]	@ zero_extendqisi2
+  73 0022 1946     		mov	r1, r3
+  74 0024 9DF81130 		ldrb	r3, [sp, #17]	@ zero_extendqisi2
+  75 0028 1A46     		mov	r2, r3
+  76 002a 9DF81230 		ldrb	r3, [sp, #18]	@ zero_extendqisi2
+  77 002e 1248     		ldr	r0, .L2+12
+  78 0030 FFF7FEFF 		bl	printf
+  46:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****       (int)netrt_info.tools_version.minor,
+  47:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****       (int)netrt_info.tools_version.micro);
+  48:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   LC_PRINT(" network rt lib  : v%d.%d.%d-%x\r\n", (int)netrt_info.runtime_version.major,
+  79              		.loc 1 48 3
+  80 0034 9DF80C30 		ldrb	r3, [sp, #12]	@ zero_extendqisi2
+  81 0038 1946     		mov	r1, r3
+  82 003a 9DF80D30 		ldrb	r3, [sp, #13]	@ zero_extendqisi2
+  83 003e 1A46     		mov	r2, r3
+  84 0040 9DF80E30 		ldrb	r3, [sp, #14]	@ zero_extendqisi2
+  85 0044 1846     		mov	r0, r3
+  86 0046 059B     		ldr	r3, [sp, #20]
+  87 0048 0093     		str	r3, [sp]
+  88 004a 0346     		mov	r3, r0
+  89 004c 0B48     		ldr	r0, .L2+16
+  90 004e FFF7FEFF 		bl	printf
+  49:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****       (int)netrt_info.runtime_version.minor,
+  50:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****       (int)netrt_info.runtime_version.micro,
+  51:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****       (int)netrt_info.runtime_build);
+  52:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   LC_PRINT("   compiled with : %s\r\n", netrt_info.compiler_desc);
+  91              		.loc 1 52 3
+  92 0052 079B     		ldr	r3, [sp, #28]
+  93 0054 1946     		mov	r1, r3
+  94 0056 0A48     		ldr	r0, .L2+20
+  95 0058 FFF7FEFF 		bl	printf
+  53:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   LC_PRINT("\r\n");
+  96              		.loc 1 53 3
+  97 005c 0348     		ldr	r0, .L2
+  98 005e FFF7FEFF 		bl	puts
+  54:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** }
+  99              		.loc 1 54 1
+ 100 0062 00BF     		nop
+ 101 0064 09B0     		add	sp, sp, #36
+ 102              		.cfi_def_cfa_offset 4
+ 103              		@ sp needed
+ 104 0066 5DF804FB 		ldr	pc, [sp], #4
+ 105              	.L3:
+ 106 006a 00BF     		.align	2
+ 107              	.L2:
+ 108 006c 00000000 		.word	.LC0
+ 109 0070 04000000 		.word	.LC1
+ 110 0074 10000000 		.word	.LC2
+ 111 0078 44000000 		.word	.LC3
+ 112 007c 64000000 		.word	.LC4
+ 113 0080 88000000 		.word	.LC5
+ 114              		.cfi_endproc
+ 115              	.LFE450:
+ 117              		.section	.rodata
+ 118              		.align	2
+ 119              	.LC6:
+ 120 00a0 453A2041 		.ascii	"E: AI error (%s) - code=0x%08x\015\012\000"
+ 120      49206572 
+ 120      726F7220 
+ 120      28257329 
+ 120      202D2063 
+ 121 00c1 000000   		.align	2
+ 122              	.LC7:
+ 123 00c4 453A2041 		.ascii	"E: AI error - code=0x%08x\015\012\000"
+ 123      49206572 
+ 123      726F7220 
+ 123      2D20636F 
+ 123      64653D30 
+ 124              		.section	.text.stai_log_err,"ax",%progbits
+ 125              		.align	1
+ 126              		.p2align 4,,15
+ 127              		.global	stai_log_err
+ 128              		.syntax unified
+ 129              		.thumb
+ 130              		.thumb_func
+ 132              	stai_log_err:
+ 133              	.LFB451:
+  55:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+  56:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+  57:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** void stai_log_err(const stai_return_code err, const char *fct)
+  58:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** {
+ 134              		.loc 1 58 1
+ 135              		.cfi_startproc
+ 136              		@ args = 0, pretend = 0, frame = 8
+ 137              		@ frame_needed = 0, uses_anonymous_args = 0
+ 138 0000 00B5     		push	{lr}
+ 139              		.cfi_def_cfa_offset 4
+ 140              		.cfi_offset 14, -4
+ 141 0002 83B0     		sub	sp, sp, #12
+ 142              		.cfi_def_cfa_offset 16
+ 143 0004 0190     		str	r0, [sp, #4]
+ 144 0006 0091     		str	r1, [sp]
+  59:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   if (fct)
+ 145              		.loc 1 59 6
+ 146 0008 009B     		ldr	r3, [sp]
+ 147 000a 002B     		cmp	r3, #0
+ 148 000c 05D0     		beq	.L5
+  60:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("E: AI error (%s) - code=0x%08x\r\n", fct, err);
+ 149              		.loc 1 60 5
+ 150 000e 019A     		ldr	r2, [sp, #4]
+ 151 0010 0099     		ldr	r1, [sp]
+ 152 0012 0648     		ldr	r0, .L8
+ 153 0014 FFF7FEFF 		bl	printf
+  61:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   else
+  62:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("E: AI error - code=0x%08x\r\n", err);
+  63:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** }
+ 154              		.loc 1 63 1
+ 155 0018 03E0     		b	.L7
+ 156              	.L5:
+  62:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** }
+ 157              		.loc 1 62 5
+ 158 001a 0199     		ldr	r1, [sp, #4]
+ 159 001c 0448     		ldr	r0, .L8+4
+ 160 001e FFF7FEFF 		bl	printf
+ 161              	.L7:
+ 162              		.loc 1 63 1
+ 163 0022 00BF     		nop
+ 164 0024 03B0     		add	sp, sp, #12
+ 165              		.cfi_def_cfa_offset 4
+ 166              		@ sp needed
+ 167 0026 5DF804FB 		ldr	pc, [sp], #4
+ 168              	.L9:
+ 169 002a 00BF     		.align	2
+ 170              	.L8:
+ 171 002c A0000000 		.word	.LC6
+ 172 0030 C4000000 		.word	.LC7
+ 173              		.cfi_endproc
+ 174              	.LFE451:
+ 176              		.section	.rodata
+ 177              		.align	2
+ 178              	.LC8:
+ 179 00e0 666C6F61 		.ascii	"float%d\000"
+ 179      74256400 
+ 180              		.align	2
+ 181              	.LC9:
+ 182 00e8 626F6F6C 		.ascii	"bool%d\000"
+ 182      256400
+ 183 00ef 00       		.align	2
+ 184              	.LC10:
+ 185 00f0 6900     		.ascii	"i\000"
+ 186 00f2 0000     		.align	2
+ 187              	.LC11:
+ 188 00f4 7500     		.ascii	"u\000"
+ 189 00f6 0000     		.align	2
+ 190              	.LC12:
+ 191 00f8 25732564 		.ascii	"%s%d\000"
+ 191      00
+ 192 00fd 000000   		.align	2
+ 193              	.LC13:
+ 194 0100 20696E74 		.ascii	" int32-%db encoding\000"
+ 194      33322D25 
+ 194      64622065 
+ 194      6E636F64 
+ 194      696E6700 
+ 195              		.align	2
+ 196              	.LC14:
+ 197 0114 2825642E 		.ascii	"(%d.%d)\000"
+ 197      25642900 
+ 198              		.section	.text.stai_log_data_type,"ax",%progbits
+ 199              		.align	1
+ 200              		.p2align 4,,15
+ 201              		.syntax unified
+ 202              		.thumb
+ 203              		.thumb_func
+ 205              	stai_log_data_type:
+ 206              	.LFB452:
+  64:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+  65:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+  66:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** static void stai_log_data_type(const stai_format fmt)
+  67:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** {
+ 207              		.loc 1 67 1
+ 208              		.cfi_startproc
+ 209              		@ args = 0, pretend = 0, frame = 16
+ 210              		@ frame_needed = 0, uses_anonymous_args = 0
+ 211 0000 00B5     		push	{lr}
+ 212              		.cfi_def_cfa_offset 4
+ 213              		.cfi_offset 14, -4
+ 214 0002 85B0     		sub	sp, sp, #20
+ 215              		.cfi_def_cfa_offset 24
+ 216 0004 0190     		str	r0, [sp, #4]
+  68:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   stai_format_type type_ = STAI_FORMAT_GET_TYPE(fmt);
+ 217              		.loc 1 68 28
+ 218 0006 019B     		ldr	r3, [sp, #4]
+ 219 0008 5B0C     		lsrs	r3, r3, #17
+ 220 000a DBB2     		uxtb	r3, r3
+ 221              		.loc 1 68 20
+ 222 000c 03F00F03 		and	r3, r3, #15
+ 223 0010 8DF80F30 		strb	r3, [sp, #15]
+  69:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   int nb_bits =  (int)STAI_FORMAT_GET_BITS(fmt);
+ 224              		.loc 1 69 23
+ 225 0014 019B     		ldr	r3, [sp, #4]
+ 226 0016 DB09     		lsrs	r3, r3, #7
+ 227              		.loc 1 69 7
+ 228 0018 03F07F03 		and	r3, r3, #127
+ 229 001c 0293     		str	r3, [sp, #8]
+  70:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+  71:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   if (type_ == STAI_FORMAT_TYPE_FLOAT)
+ 230              		.loc 1 71 6
+ 231 001e 9DF80F30 		ldrb	r3, [sp, #15]	@ zero_extendqisi2
+ 232 0022 012B     		cmp	r3, #1
+ 233 0024 04D1     		bne	.L11
+  72:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("float%d", nb_bits);
+ 234              		.loc 1 72 5
+ 235 0026 0299     		ldr	r1, [sp, #8]
+ 236 0028 1E48     		ldr	r0, .L18
+ 237 002a FFF7FEFF 		bl	printf
+  73:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   else if (type_ == STAI_FORMAT_TYPE_BOOL) {
+  74:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("bool%d", nb_bits);
+  75:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   } else { /* integer type */
+  76:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("%s%d", STAI_FORMAT_GET_SIGN(fmt)?"i":"u", nb_bits);
+  77:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     if (nb_bits < 8)
+  78:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****       LC_PRINT(" int32-%db encoding", nb_bits);
+  79:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     else
+  80:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****       LC_PRINT("(%d.%d)", STAI_FORMAT_GET_IBITS(fmt),
+  81:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****           STAI_FORMAT_GET_FBITS(fmt));
+  82:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   }
+  83:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** }
+ 238              		.loc 1 83 1
+ 239 002e 34E0     		b	.L17
+ 240              	.L11:
+  73:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   else if (type_ == STAI_FORMAT_TYPE_BOOL) {
+ 241              		.loc 1 73 11
+ 242 0030 9DF80F30 		ldrb	r3, [sp, #15]	@ zero_extendqisi2
+ 243 0034 032B     		cmp	r3, #3
+ 244 0036 04D1     		bne	.L13
+  74:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   } else { /* integer type */
+ 245              		.loc 1 74 5
+ 246 0038 0299     		ldr	r1, [sp, #8]
+ 247 003a 1B48     		ldr	r0, .L18+4
+ 248 003c FFF7FEFF 		bl	printf
+ 249              		.loc 1 83 1
+ 250 0040 2BE0     		b	.L17
+ 251              	.L13:
+  76:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     if (nb_bits < 8)
+ 252              		.loc 1 76 5
+ 253 0042 019B     		ldr	r3, [sp, #4]
+ 254 0044 03F40003 		and	r3, r3, #8388608
+ 255 0048 002B     		cmp	r3, #0
+ 256 004a 01D0     		beq	.L14
+  76:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     if (nb_bits < 8)
+ 257              		.loc 1 76 5 is_stmt 0 discriminator 1
+ 258 004c 174B     		ldr	r3, .L18+8
+ 259 004e 00E0     		b	.L15
+ 260              	.L14:
+  76:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     if (nb_bits < 8)
+ 261              		.loc 1 76 5 discriminator 2
+ 262 0050 174B     		ldr	r3, .L18+12
+ 263              	.L15:
+  76:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     if (nb_bits < 8)
+ 264              		.loc 1 76 5 discriminator 4
+ 265 0052 029A     		ldr	r2, [sp, #8]
+ 266 0054 1946     		mov	r1, r3
+ 267 0056 1748     		ldr	r0, .L18+16
+ 268 0058 FFF7FEFF 		bl	printf
+  77:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****       LC_PRINT(" int32-%db encoding", nb_bits);
+ 269              		.loc 1 77 8 is_stmt 1
+ 270 005c 029B     		ldr	r3, [sp, #8]
+ 271 005e 072B     		cmp	r3, #7
+ 272 0060 04DC     		bgt	.L16
+  78:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     else
+ 273              		.loc 1 78 7
+ 274 0062 0299     		ldr	r1, [sp, #8]
+ 275 0064 1448     		ldr	r0, .L18+20
+ 276 0066 FFF7FEFF 		bl	printf
+ 277              		.loc 1 83 1
+ 278 006a 16E0     		b	.L17
+ 279              	.L16:
+  80:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****           STAI_FORMAT_GET_FBITS(fmt));
+ 280              		.loc 1 80 7
+ 281 006c 019B     		ldr	r3, [sp, #4]
+ 282 006e DB09     		lsrs	r3, r3, #7
+ 283 0070 03F07F02 		and	r2, r3, #127
+ 284 0074 019B     		ldr	r3, [sp, #4]
+ 285 0076 03F07F03 		and	r3, r3, #127
+ 286 007a D21A     		subs	r2, r2, r3
+ 287 007c 019B     		ldr	r3, [sp, #4]
+ 288 007e DB0D     		lsrs	r3, r3, #23
+ 289 0080 03F00103 		and	r3, r3, #1
+ 290 0084 D31A     		subs	r3, r2, r3
+ 291 0086 03F14001 		add	r1, r3, #64
+ 292 008a 019B     		ldr	r3, [sp, #4]
+ 293 008c 03F07F03 		and	r3, r3, #127
+ 294 0090 403B     		subs	r3, r3, #64
+ 295 0092 1A46     		mov	r2, r3
+ 296 0094 0948     		ldr	r0, .L18+24
+ 297 0096 FFF7FEFF 		bl	printf
+ 298              	.L17:
+ 299              		.loc 1 83 1
+ 300 009a 00BF     		nop
+ 301 009c 05B0     		add	sp, sp, #20
+ 302              		.cfi_def_cfa_offset 4
+ 303              		@ sp needed
+ 304 009e 5DF804FB 		ldr	pc, [sp], #4
+ 305              	.L19:
+ 306 00a2 00BF     		.align	2
+ 307              	.L18:
+ 308 00a4 E0000000 		.word	.LC8
+ 309 00a8 E8000000 		.word	.LC9
+ 310 00ac F0000000 		.word	.LC10
+ 311 00b0 F4000000 		.word	.LC11
+ 312 00b4 F8000000 		.word	.LC12
+ 313 00b8 00010000 		.word	.LC13
+ 314 00bc 14010000 		.word	.LC14
+ 315              		.cfi_endproc
+ 316              	.LFE452:
+ 318              		.section	.rodata
+ 319              		.align	2
+ 320              	.LC15:
+ 321 011c 206E616D 		.ascii	" name=%s\000"
+ 321      653D2573 
+ 321      00
+ 322 0125 000000   		.align	2
+ 323              	.LC16:
+ 324 0128 202800   		.ascii	" (\000"
+ 325 012b 00       		.align	2
+ 326              	.LC17:
+ 327 012c 256C6400 		.ascii	"%ld\000"
+ 328              		.align	2
+ 329              	.LC18:
+ 330 0130 2028666D 		.ascii	" (fmt=0x%08X)\000"
+ 330      743D3078 
+ 330      25303858 
+ 330      2900
+ 331 013e 0000     		.align	2
+ 332              	.LC19:
+ 333 0140 20403078 		.ascii	" @0xNULL/%ld\000"
+ 333      4E554C4C 
+ 333      2F256C64 
+ 333      00
+ 334 014d 000000   		.align	2
+ 335              	.LC20:
+ 336 0150 0A0D2020 		.ascii	"\012\015       \000"
+ 336      20202020 
+ 336      2000
+ 337 015a 0000     		.align	2
+ 338              	.LC21:
+ 339 015c 20736361 		.ascii	" scale=%f\000"
+ 339      6C653D25 
+ 339      6600
+ 340 0166 0000     		.align	2
+ 341              	.LC22:
+ 342 0168 207A6572 		.ascii	" zeropoint=%d\000"
+ 342      6F706F69 
+ 342      6E743D25 
+ 342      6400
+ 343              		.section	.text.stai_log_tensor,"ax",%progbits
+ 344              		.align	1
+ 345              		.p2align 4,,15
+ 346              		.global	stai_log_tensor
+ 347              		.syntax unified
+ 348              		.thumb
+ 349              		.thumb_func
+ 351              	stai_log_tensor:
+ 352              	.LFB453:
+  84:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+  85:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+  86:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** void stai_log_tensor(const stai_tensor *tensor)
+  87:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** {
+ 353              		.loc 1 87 1
+ 354              		.cfi_startproc
+ 355              		@ args = 0, pretend = 0, frame = 16
+ 356              		@ frame_needed = 0, uses_anonymous_args = 0
+ 357 0000 00B5     		push	{lr}
+ 358              		.cfi_def_cfa_offset 4
+ 359              		.cfi_offset 14, -4
+ 360 0002 85B0     		sub	sp, sp, #20
+ 361              		.cfi_def_cfa_offset 24
+ 362 0004 0190     		str	r0, [sp, #4]
+  88:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+  89:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   if (tensor->name)
+ 363              		.loc 1 89 13
+ 364 0006 019B     		ldr	r3, [sp, #4]
+ 365 0008 5B6A     		ldr	r3, [r3, #36]
+ 366              		.loc 1 89 6
+ 367 000a 002B     		cmp	r3, #0
+ 368 000c 05D0     		beq	.L21
+  90:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT(" name=%s", tensor->name);
+ 369              		.loc 1 90 5
+ 370 000e 019B     		ldr	r3, [sp, #4]
+ 371 0010 5B6A     		ldr	r3, [r3, #36]
+ 372 0012 1946     		mov	r1, r3
+ 373 0014 2C48     		ldr	r0, .L28
+ 374 0016 FFF7FEFF 		bl	printf
+ 375              	.L21:
+  91:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+  92:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   LC_PRINT(" (");
+ 376              		.loc 1 92 3
+ 377 001a 2C48     		ldr	r0, .L28+4
+ 378 001c FFF7FEFF 		bl	printf
+ 379              	.LBB2:
+  93:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   for (uint32_t i=0; i<tensor->shape.size; i++) {
+ 380              		.loc 1 93 17
+ 381 0020 0023     		movs	r3, #0
+ 382 0022 0393     		str	r3, [sp, #12]
+ 383              		.loc 1 93 3
+ 384 0024 19E0     		b	.L22
+ 385              	.L25:
+  94:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("%ld", tensor->shape.data[i]);
+ 386              		.loc 1 94 5
+ 387 0026 019B     		ldr	r3, [sp, #4]
+ 388 0028 1A69     		ldr	r2, [r3, #16]
+ 389 002a 039B     		ldr	r3, [sp, #12]
+ 390 002c 9B00     		lsls	r3, r3, #2
+ 391 002e 1344     		add	r3, r3, r2
+ 392 0030 1B68     		ldr	r3, [r3]
+ 393 0032 1946     		mov	r1, r3
+ 394 0034 2648     		ldr	r0, .L28+8
+ 395 0036 FFF7FEFF 		bl	printf
+  95:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     if (i != tensor->shape.size - 1)
+ 396              		.loc 1 95 27
+ 397 003a 019B     		ldr	r3, [sp, #4]
+ 398 003c DB68     		ldr	r3, [r3, #12]
+ 399              		.loc 1 95 33
+ 400 003e 013B     		subs	r3, r3, #1
+ 401              		.loc 1 95 8
+ 402 0040 039A     		ldr	r2, [sp, #12]
+ 403 0042 9A42     		cmp	r2, r3
+ 404 0044 03D0     		beq	.L23
+  96:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****       LC_PRINT(",");
+ 405              		.loc 1 96 7
+ 406 0046 2C20     		movs	r0, #44
+ 407 0048 FFF7FEFF 		bl	putchar
+ 408 004c 02E0     		b	.L24
+ 409              	.L23:
+  97:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     else
+  98:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****       LC_PRINT(")");
+ 410              		.loc 1 98 7
+ 411 004e 2920     		movs	r0, #41
+ 412 0050 FFF7FEFF 		bl	putchar
+ 413              	.L24:
+  93:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("%ld", tensor->shape.data[i]);
+ 414              		.loc 1 93 45 discriminator 2
+ 415 0054 039B     		ldr	r3, [sp, #12]
+ 416 0056 0133     		adds	r3, r3, #1
+ 417 0058 0393     		str	r3, [sp, #12]
+ 418              	.L22:
+  93:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("%ld", tensor->shape.data[i]);
+ 419              		.loc 1 93 37 discriminator 1
+ 420 005a 019B     		ldr	r3, [sp, #4]
+ 421 005c DB68     		ldr	r3, [r3, #12]
+  93:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("%ld", tensor->shape.data[i]);
+ 422              		.loc 1 93 23 discriminator 1
+ 423 005e 039A     		ldr	r2, [sp, #12]
+ 424 0060 9A42     		cmp	r2, r3
+ 425 0062 E0D3     		bcc	.L25
+ 426              	.LBE2:
+  99:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   }
+ 100:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+ 101:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   LC_PRINT(" ");
+ 427              		.loc 1 101 3
+ 428 0064 2020     		movs	r0, #32
+ 429 0066 FFF7FEFF 		bl	putchar
+ 102:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   stai_log_data_type(tensor->format);
+ 430              		.loc 1 102 28
+ 431 006a 019B     		ldr	r3, [sp, #4]
+ 432 006c 9B68     		ldr	r3, [r3, #8]
+ 433              		.loc 1 102 3
+ 434 006e 1846     		mov	r0, r3
+ 435 0070 FFF7FEFF 		bl	stai_log_data_type
+ 103:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   LC_PRINT(" (fmt=0x%08X)", tensor->format);
+ 436              		.loc 1 103 3
+ 437 0074 019B     		ldr	r3, [sp, #4]
+ 438 0076 9B68     		ldr	r3, [r3, #8]
+ 439 0078 1946     		mov	r1, r3
+ 440 007a 1648     		ldr	r0, .L28+12
+ 441 007c FFF7FEFF 		bl	printf
+ 104:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   // JMD
+ 105:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   // LC_PRINT(" @0x%08X/%d", tensor->address, tensor->size_bytes);
+ 106:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   LC_PRINT(" @0xNULL/%ld", tensor->size_bytes);
+ 442              		.loc 1 106 3
+ 443 0080 019B     		ldr	r3, [sp, #4]
+ 444 0082 1B68     		ldr	r3, [r3]
+ 445 0084 1946     		mov	r1, r3
+ 446 0086 1448     		ldr	r0, .L28+16
+ 447 0088 FFF7FEFF 		bl	printf
+ 107:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+ 108:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   if (tensor->scale.size) {
+ 448              		.loc 1 108 20
+ 449 008c 019B     		ldr	r3, [sp, #4]
+ 450 008e 5B69     		ldr	r3, [r3, #20]
+ 451              		.loc 1 108 6
+ 452 0090 002B     		cmp	r3, #0
+ 453 0092 15D0     		beq	.L27
+ 109:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("\n\r       ");
+ 454              		.loc 1 109 5
+ 455 0094 1148     		ldr	r0, .L28+20
+ 456 0096 FFF7FEFF 		bl	printf
+ 110:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT(" scale=%f", (double)tensor->scale.data[0]);
+ 457              		.loc 1 110 5
+ 458 009a 019B     		ldr	r3, [sp, #4]
+ 459 009c 9B69     		ldr	r3, [r3, #24]
+ 460 009e D3ED007A 		vldr.32	s15, [r3]
+ 461 00a2 B7EEE77A 		vcvt.f64.f32	d7, s15
+ 462 00a6 53EC172B 		vmov	r2, r3, d7
+ 463 00aa 0D48     		ldr	r0, .L28+24
+ 464 00ac FFF7FEFF 		bl	printf
+ 111:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT(" zeropoint=%d", tensor->zeropoint.data[0]);
+ 465              		.loc 1 111 5
+ 466 00b0 019B     		ldr	r3, [sp, #4]
+ 467 00b2 1B6A     		ldr	r3, [r3, #32]
+ 468 00b4 B3F90030 		ldrsh	r3, [r3]
+ 469 00b8 1946     		mov	r1, r3
+ 470 00ba 0A48     		ldr	r0, .L28+28
+ 471 00bc FFF7FEFF 		bl	printf
+ 472              	.L27:
+ 112:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   }
+ 113:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+ 114:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** }
+ 473              		.loc 1 114 1
+ 474 00c0 00BF     		nop
+ 475 00c2 05B0     		add	sp, sp, #20
+ 476              		.cfi_def_cfa_offset 4
+ 477              		@ sp needed
+ 478 00c4 5DF804FB 		ldr	pc, [sp], #4
+ 479              	.L29:
+ 480              		.align	2
+ 481              	.L28:
+ 482 00c8 1C010000 		.word	.LC15
+ 483 00cc 28010000 		.word	.LC16
+ 484 00d0 2C010000 		.word	.LC17
+ 485 00d4 30010000 		.word	.LC18
+ 486 00d8 40010000 		.word	.LC19
+ 487 00dc 50010000 		.word	.LC20
+ 488 00e0 5C010000 		.word	.LC21
+ 489 00e4 68010000 		.word	.LC22
+ 490              		.cfi_endproc
+ 491              	.LFE453:
+ 493              		.section	.rodata
+ 494 0176 0000     		.align	2
+ 495              	.LC23:
+ 496 0178 20403078 		.ascii	" @0x%08X/%ld\000"
+ 496      25303858 
+ 496      2F256C64 
+ 496      00
+ 497              		.section	.text.stai_log_io_tensor,"ax",%progbits
+ 498              		.align	1
+ 499              		.p2align 4,,15
+ 500              		.global	stai_log_io_tensor
+ 501              		.syntax unified
+ 502              		.thumb
+ 503              		.thumb_func
+ 505              	stai_log_io_tensor:
+ 506              	.LFB454:
+ 115:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+ 116:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+ 117:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** void stai_log_io_tensor(const stai_tensor *tensor, uintptr_t address)
+ 118:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** {
+ 507              		.loc 1 118 1
+ 508              		.cfi_startproc
+ 509              		@ args = 0, pretend = 0, frame = 16
+ 510              		@ frame_needed = 0, uses_anonymous_args = 0
+ 511 0000 00B5     		push	{lr}
+ 512              		.cfi_def_cfa_offset 4
+ 513              		.cfi_offset 14, -4
+ 514 0002 85B0     		sub	sp, sp, #20
+ 515              		.cfi_def_cfa_offset 24
+ 516 0004 0190     		str	r0, [sp, #4]
+ 517 0006 0091     		str	r1, [sp]
+ 119:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   if (tensor->name)
+ 518              		.loc 1 119 13
+ 519 0008 019B     		ldr	r3, [sp, #4]
+ 520 000a 5B6A     		ldr	r3, [r3, #36]
+ 521              		.loc 1 119 6
+ 522 000c 002B     		cmp	r3, #0
+ 523 000e 05D0     		beq	.L31
+ 120:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT(" name=%s", tensor->name);
+ 524              		.loc 1 120 5
+ 525 0010 019B     		ldr	r3, [sp, #4]
+ 526 0012 5B6A     		ldr	r3, [r3, #36]
+ 527 0014 1946     		mov	r1, r3
+ 528 0016 2D48     		ldr	r0, .L38
+ 529 0018 FFF7FEFF 		bl	printf
+ 530              	.L31:
+ 121:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+ 122:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   LC_PRINT(" (");
+ 531              		.loc 1 122 3
+ 532 001c 2C48     		ldr	r0, .L38+4
+ 533 001e FFF7FEFF 		bl	printf
+ 534              	.LBB3:
+ 123:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   for (uint32_t i=0; i<tensor->shape.size; i++) {
+ 535              		.loc 1 123 17
+ 536 0022 0023     		movs	r3, #0
+ 537 0024 0393     		str	r3, [sp, #12]
+ 538              		.loc 1 123 3
+ 539 0026 19E0     		b	.L32
+ 540              	.L35:
+ 124:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("%ld", tensor->shape.data[i]);
+ 541              		.loc 1 124 5
+ 542 0028 019B     		ldr	r3, [sp, #4]
+ 543 002a 1A69     		ldr	r2, [r3, #16]
+ 544 002c 039B     		ldr	r3, [sp, #12]
+ 545 002e 9B00     		lsls	r3, r3, #2
+ 546 0030 1344     		add	r3, r3, r2
+ 547 0032 1B68     		ldr	r3, [r3]
+ 548 0034 1946     		mov	r1, r3
+ 549 0036 2748     		ldr	r0, .L38+8
+ 550 0038 FFF7FEFF 		bl	printf
+ 125:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     if (i != tensor->shape.size - 1)
+ 551              		.loc 1 125 27
+ 552 003c 019B     		ldr	r3, [sp, #4]
+ 553 003e DB68     		ldr	r3, [r3, #12]
+ 554              		.loc 1 125 33
+ 555 0040 013B     		subs	r3, r3, #1
+ 556              		.loc 1 125 8
+ 557 0042 039A     		ldr	r2, [sp, #12]
+ 558 0044 9A42     		cmp	r2, r3
+ 559 0046 03D0     		beq	.L33
+ 126:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****       LC_PRINT(",");
+ 560              		.loc 1 126 7
+ 561 0048 2C20     		movs	r0, #44
+ 562 004a FFF7FEFF 		bl	putchar
+ 563 004e 02E0     		b	.L34
+ 564              	.L33:
+ 127:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     else
+ 128:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****       LC_PRINT(")");
+ 565              		.loc 1 128 7
+ 566 0050 2920     		movs	r0, #41
+ 567 0052 FFF7FEFF 		bl	putchar
+ 568              	.L34:
+ 123:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("%ld", tensor->shape.data[i]);
+ 569              		.loc 1 123 45 discriminator 2
+ 570 0056 039B     		ldr	r3, [sp, #12]
+ 571 0058 0133     		adds	r3, r3, #1
+ 572 005a 0393     		str	r3, [sp, #12]
+ 573              	.L32:
+ 123:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("%ld", tensor->shape.data[i]);
+ 574              		.loc 1 123 37 discriminator 1
+ 575 005c 019B     		ldr	r3, [sp, #4]
+ 576 005e DB68     		ldr	r3, [r3, #12]
+ 123:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("%ld", tensor->shape.data[i]);
+ 577              		.loc 1 123 23 discriminator 1
+ 578 0060 039A     		ldr	r2, [sp, #12]
+ 579 0062 9A42     		cmp	r2, r3
+ 580 0064 E0D3     		bcc	.L35
+ 581              	.LBE3:
+ 129:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   }
+ 130:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+ 131:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   LC_PRINT(" ");
+ 582              		.loc 1 131 3
+ 583 0066 2020     		movs	r0, #32
+ 584 0068 FFF7FEFF 		bl	putchar
+ 132:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   stai_log_data_type(tensor->format);
+ 585              		.loc 1 132 28
+ 586 006c 019B     		ldr	r3, [sp, #4]
+ 587 006e 9B68     		ldr	r3, [r3, #8]
+ 588              		.loc 1 132 3
+ 589 0070 1846     		mov	r0, r3
+ 590 0072 FFF7FEFF 		bl	stai_log_data_type
+ 133:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   LC_PRINT(" (fmt=0x%08X)", tensor->format);
+ 591              		.loc 1 133 3
+ 592 0076 019B     		ldr	r3, [sp, #4]
+ 593 0078 9B68     		ldr	r3, [r3, #8]
+ 594 007a 1946     		mov	r1, r3
+ 595 007c 1648     		ldr	r0, .L38+12
+ 596 007e FFF7FEFF 		bl	printf
+ 134:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   LC_PRINT(" @0x%08X/%ld", address, tensor->size_bytes);
+ 597              		.loc 1 134 3
+ 598 0082 019B     		ldr	r3, [sp, #4]
+ 599 0084 1B68     		ldr	r3, [r3]
+ 600 0086 1A46     		mov	r2, r3
+ 601 0088 0099     		ldr	r1, [sp]
+ 602 008a 1448     		ldr	r0, .L38+16
+ 603 008c FFF7FEFF 		bl	printf
+ 135:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+ 136:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   if (tensor->scale.size) {
+ 604              		.loc 1 136 20
+ 605 0090 019B     		ldr	r3, [sp, #4]
+ 606 0092 5B69     		ldr	r3, [r3, #20]
+ 607              		.loc 1 136 6
+ 608 0094 002B     		cmp	r3, #0
+ 609 0096 15D0     		beq	.L37
+ 137:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("\n\r       ");
+ 610              		.loc 1 137 5
+ 611 0098 1148     		ldr	r0, .L38+20
+ 612 009a FFF7FEFF 		bl	printf
+ 138:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT(" scale=%f", (double)tensor->scale.data[0]);
+ 613              		.loc 1 138 5
+ 614 009e 019B     		ldr	r3, [sp, #4]
+ 615 00a0 9B69     		ldr	r3, [r3, #24]
+ 616 00a2 D3ED007A 		vldr.32	s15, [r3]
+ 617 00a6 B7EEE77A 		vcvt.f64.f32	d7, s15
+ 618 00aa 53EC172B 		vmov	r2, r3, d7
+ 619 00ae 0D48     		ldr	r0, .L38+24
+ 620 00b0 FFF7FEFF 		bl	printf
+ 139:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT(" zeropoint=%d", tensor->zeropoint.data[0]);
+ 621              		.loc 1 139 5
+ 622 00b4 019B     		ldr	r3, [sp, #4]
+ 623 00b6 1B6A     		ldr	r3, [r3, #32]
+ 624 00b8 B3F90030 		ldrsh	r3, [r3]
+ 625 00bc 1946     		mov	r1, r3
+ 626 00be 0A48     		ldr	r0, .L38+28
+ 627 00c0 FFF7FEFF 		bl	printf
+ 628              	.L37:
+ 140:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   }
+ 141:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** }
+ 629              		.loc 1 141 1
+ 630 00c4 00BF     		nop
+ 631 00c6 05B0     		add	sp, sp, #20
+ 632              		.cfi_def_cfa_offset 4
+ 633              		@ sp needed
+ 634 00c8 5DF804FB 		ldr	pc, [sp], #4
+ 635              	.L39:
+ 636              		.align	2
+ 637              	.L38:
+ 638 00cc 1C010000 		.word	.LC15
+ 639 00d0 28010000 		.word	.LC16
+ 640 00d4 2C010000 		.word	.LC17
+ 641 00d8 30010000 		.word	.LC18
+ 642 00dc 78010000 		.word	.LC23
+ 643 00e0 50010000 		.word	.LC20
+ 644 00e4 5C010000 		.word	.LC21
+ 645 00e8 68010000 		.word	.LC22
+ 646              		.cfi_endproc
+ 647              	.LFE454:
+ 649              		.section	.text._stai_log_tensor_data,"ax",%progbits
+ 650              		.align	1
+ 651              		.p2align 4,,15
+ 652              		.syntax unified
+ 653              		.thumb
+ 654              		.thumb_func
+ 656              	_stai_log_tensor_data:
+ 657              	.LFB455:
+ 142:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+ 143:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+ 144:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** static void _stai_log_tensor_data(const stai_tensor *tensor, uintptr_t address)
+ 145:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** {
+ 658              		.loc 1 145 1
+ 659              		.cfi_startproc
+ 660              		@ args = 0, pretend = 0, frame = 8
+ 661              		@ frame_needed = 0, uses_anonymous_args = 0
+ 662 0000 00B5     		push	{lr}
+ 663              		.cfi_def_cfa_offset 4
+ 664              		.cfi_offset 14, -4
+ 665 0002 83B0     		sub	sp, sp, #12
+ 666              		.cfi_def_cfa_offset 16
+ 667 0004 0190     		str	r0, [sp, #4]
+ 668 0006 0091     		str	r1, [sp]
+ 146:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   LC_PRINT(" ");
+ 669              		.loc 1 146 3
+ 670 0008 2020     		movs	r0, #32
+ 671 000a FFF7FEFF 		bl	putchar
+ 147:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   stai_log_data_type(tensor->format);
+ 672              		.loc 1 147 28
+ 673 000e 019B     		ldr	r3, [sp, #4]
+ 674 0010 9B68     		ldr	r3, [r3, #8]
+ 675              		.loc 1 147 3
+ 676 0012 1846     		mov	r0, r3
+ 677 0014 FFF7FEFF 		bl	stai_log_data_type
+ 148:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   LC_PRINT(" @0x%08X/%ld", address, tensor->size_bytes);
+ 678              		.loc 1 148 3
+ 679 0018 019B     		ldr	r3, [sp, #4]
+ 680 001a 1B68     		ldr	r3, [r3]
+ 681 001c 1A46     		mov	r2, r3
+ 682 001e 0099     		ldr	r1, [sp]
+ 683 0020 0348     		ldr	r0, .L41
+ 684 0022 FFF7FEFF 		bl	printf
+ 149:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** }
+ 685              		.loc 1 149 1
+ 686 0026 00BF     		nop
+ 687 0028 03B0     		add	sp, sp, #12
+ 688              		.cfi_def_cfa_offset 4
+ 689              		@ sp needed
+ 690 002a 5DF804FB 		ldr	pc, [sp], #4
+ 691              	.L42:
+ 692 002e 00BF     		.align	2
+ 693              	.L41:
+ 694 0030 78010000 		.word	.LC23
+ 695              		.cfi_endproc
+ 696              	.LFE455:
+ 698              		.section	.rodata
+ 699 0185 000000   		.align	2
+ 700              	.LC24:
+ 701 0188 4E657477 		.ascii	"Network informations...\015\000"
+ 701      6F726B20 
+ 701      696E666F 
+ 701      726D6174 
+ 701      696F6E73 
+ 702 01a1 000000   		.align	2
+ 703              	.LC25:
+ 704 01a4 206D6F64 		.ascii	" model signature : %s\015\012\000"
+ 704      656C2073 
+ 704      69676E61 
+ 704      74757265 
+ 704      203A2025 
+ 705              		.align	2
+ 706              	.LC26:
+ 707 01bc 20632D6E 		.ascii	" c-name          : %s\015\012\000"
+ 707      616D6520 
+ 707      20202020 
+ 707      20202020 
+ 707      203A2025 
+ 708              		.align	2
+ 709              	.LC27:
+ 710 01d4 20632D73 		.ascii	" c-signature     : %lu\015\012\000"
+ 710      69676E61 
+ 710      74757265 
+ 710      20202020 
+ 710      203A2025 
+ 711 01ed 000000   		.align	2
+ 712              	.LC28:
+ 713 01f0 20632D64 		.ascii	" c-datetime      : %s\015\012\000"
+ 713      61746574 
+ 713      696D6520 
+ 713      20202020 
+ 713      203A2025 
+ 714              		.align	2
+ 715              	.LC29:
+ 716 0208 20632D63 		.ascii	" c-compile-time  : %s\015\012\000"
+ 716      6F6D7069 
+ 716      6C652D74 
+ 716      696D6520 
+ 716      203A2025 
+ 717              		.align	2
+ 718              	.LC30:
+ 719 0220 206D6163 		.ascii	" macc            : %s\015\012\000"
+ 719      63202020 
+ 719      20202020 
+ 719      20202020 
+ 719      203A2025 
+ 720              		.align	2
+ 721              	.LC31:
+ 722 0238 2072756E 		.ascii	" runtime version : %d.%d.%d\015\012\000"
+ 722      74696D65 
+ 722      20766572 
+ 722      73696F6E 
+ 722      203A2025 
+ 723 0256 0000     		.align	2
+ 724              	.LC32:
+ 725 0258 206E5F69 		.ascii	" n_inputs : %u (allocate-inputs)\015\012\000"
+ 725      6E707574 
+ 725      73203A20 
+ 725      25752028 
+ 725      616C6C6F 
+ 726 027b 00       		.align	2
+ 727              	.LC33:
+ 728 027c 206E5F69 		.ascii	" n_inputs : %u\015\012\000"
+ 728      6E707574 
+ 728      73203A20 
+ 728      25750D0A 
+ 728      00
+ 729 028d 000000   		.align	2
+ 730              	.LC34:
+ 731 0290 2020695B 		.ascii	"  i[%d] \000"
+ 731      25645D20 
+ 731      00
+ 732 0299 000000   		.align	2
+ 733              	.LC35:
+ 734 029c 206E5F6F 		.ascii	" n_outputs : %u (allocate-outputs)\015\012\000"
+ 734      75747075 
+ 734      7473203A 
+ 734      20257520 
+ 734      28616C6C 
+ 735 02c1 000000   		.align	2
+ 736              	.LC36:
+ 737 02c4 206E5F6F 		.ascii	" n_outputs : %u\015\012\000"
+ 737      75747075 
+ 737      7473203A 
+ 737      2025750D 
+ 737      0A00
+ 738 02d6 0000     		.align	2
+ 739              	.LC37:
+ 740 02d8 20206F5B 		.ascii	"  o[%d] \000"
+ 740      25645D20 
+ 740      00
+ 741 02e1 000000   		.align	2
+ 742              	.LC38:
+ 743 02e4 206E5F61 		.ascii	" n_activations : %u (allocate-activations)\015\012\000"
+ 743      63746976 
+ 743      6174696F 
+ 743      6E73203A 
+ 743      20257520 
+ 744 0311 000000   		.align	2
+ 745              	.LC39:
+ 746 0314 206E5F61 		.ascii	" n_activations : %u\015\012\000"
+ 746      63746976 
+ 746      6174696F 
+ 746      6E73203A 
+ 746      2025750D 
+ 747 032a 0000     		.align	2
+ 748              	.LC40:
+ 749 032c 2020615B 		.ascii	"  a[%d] \000"
+ 749      25645D20 
+ 749      00
+ 750 0335 000000   		.align	2
+ 751              	.LC41:
+ 752 0338 206E5F73 		.ascii	" n_states : %u (allocate-states)\015\012\000"
+ 752      74617465 
+ 752      73203A20 
+ 752      25752028 
+ 752      616C6C6F 
+ 753 035b 00       		.align	2
+ 754              	.LC42:
+ 755 035c 206E5F73 		.ascii	" n_states : %u\015\012\000"
+ 755      74617465 
+ 755      73203A20 
+ 755      25750D0A 
+ 755      00
+ 756 036d 000000   		.align	2
+ 757              	.LC43:
+ 758 0370 2020735B 		.ascii	"  s[%d] \000"
+ 758      25645D20 
+ 758      00
+ 759 0379 000000   		.align	2
+ 760              	.LC44:
+ 761 037c 206E5F77 		.ascii	" n_weights : %u (allocate-weights)\015\012\000"
+ 761      65696768 
+ 761      7473203A 
+ 761      20257520 
+ 761      28616C6C 
+ 762 03a1 000000   		.align	2
+ 763              	.LC45:
+ 764 03a4 206E5F77 		.ascii	" n_weights : %u\015\012\000"
+ 764      65696768 
+ 764      7473203A 
+ 764      2025750D 
+ 764      0A00
+ 765 03b6 0000     		.align	2
+ 766              	.LC46:
+ 767 03b8 2020775B 		.ascii	"  w[%d] \000"
+ 767      25645D20 
+ 767      00
+ 768              		.section	.text.stai_log_network_info,"ax",%progbits
+ 769              		.align	1
+ 770              		.p2align 4,,15
+ 771              		.global	stai_log_network_info
+ 772              		.syntax unified
+ 773              		.thumb
+ 774              		.thumb_func
+ 776              	stai_log_network_info:
+ 777              	.LFB456:
+ 150:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+ 151:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+ 152:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** void stai_log_network_info(const stai_network_info* report,
+ 153:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     const tensor_descs *ins,
+ 154:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     const tensor_descs *outs,
+ 155:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     const tensor_descs *acts,
+ 156:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     const tensor_descs *states,
+ 157:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     const tensor_descs *params)
+ 158:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** {
+ 778              		.loc 1 158 1
+ 779              		.cfi_startproc
+ 780              		@ args = 8, pretend = 0, frame = 40
+ 781              		@ frame_needed = 0, uses_anonymous_args = 0
+ 782 0000 00B5     		push	{lr}
+ 783              		.cfi_def_cfa_offset 4
+ 784              		.cfi_offset 14, -4
+ 785 0002 8BB0     		sub	sp, sp, #44
+ 786              		.cfi_def_cfa_offset 48
+ 787 0004 0390     		str	r0, [sp, #12]
+ 788 0006 0291     		str	r1, [sp, #8]
+ 789 0008 0192     		str	r2, [sp, #4]
+ 790 000a 0093     		str	r3, [sp]
+ 159:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   LC_PRINT("Network informations...\r\n");
+ 791              		.loc 1 159 3
+ 792 000c 9D48     		ldr	r0, .L68
+ 793 000e FFF7FEFF 		bl	puts
+ 160:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   LC_PRINT(" model signature : %s\r\n", report->model_signature);
+ 794              		.loc 1 160 3
+ 795 0012 039B     		ldr	r3, [sp, #12]
+ 796 0014 1B68     		ldr	r3, [r3]
+ 797 0016 1946     		mov	r1, r3
+ 798 0018 9B48     		ldr	r0, .L68+4
+ 799 001a FFF7FEFF 		bl	printf
+ 161:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   LC_PRINT(" c-name          : %s\r\n", report->c_model_name);
+ 800              		.loc 1 161 3
+ 801 001e 039B     		ldr	r3, [sp, #12]
+ 802 0020 9B68     		ldr	r3, [r3, #8]
+ 803 0022 1946     		mov	r1, r3
+ 804 0024 9948     		ldr	r0, .L68+8
+ 805 0026 FFF7FEFF 		bl	printf
+ 162:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   LC_PRINT(" c-signature     : %lu\r\n", report->c_model_signature);
+ 806              		.loc 1 162 3
+ 807 002a 039B     		ldr	r3, [sp, #12]
+ 808 002c 1B69     		ldr	r3, [r3, #16]
+ 809 002e 1946     		mov	r1, r3
+ 810 0030 9748     		ldr	r0, .L68+12
+ 811 0032 FFF7FEFF 		bl	printf
+ 163:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   LC_PRINT(" c-datetime      : %s\r\n", report->c_model_datetime);
+ 812              		.loc 1 163 3
+ 813 0036 039B     		ldr	r3, [sp, #12]
+ 814 0038 DB68     		ldr	r3, [r3, #12]
+ 815 003a 1946     		mov	r1, r3
+ 816 003c 9548     		ldr	r0, .L68+16
+ 817 003e FFF7FEFF 		bl	printf
+ 164:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   LC_PRINT(" c-compile-time  : %s\r\n", report->c_compile_datetime);
+ 818              		.loc 1 164 3
+ 819 0042 039B     		ldr	r3, [sp, #12]
+ 820 0044 5B68     		ldr	r3, [r3, #4]
+ 821 0046 1946     		mov	r1, r3
+ 822 0048 9348     		ldr	r0, .L68+20
+ 823 004a FFF7FEFF 		bl	printf
+ 165:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   LC_PRINT(" macc            : %s\r\n", uint64ToDecimal(report->n_macc));
+ 824              		.loc 1 165 3
+ 825 004e 039B     		ldr	r3, [sp, #12]
+ 826 0050 D3E90823 		ldrd	r2, [r3, #32]
+ 827 0054 1046     		mov	r0, r2
+ 828 0056 1946     		mov	r1, r3
+ 829 0058 FFF7FEFF 		bl	uint64ToDecimal
+ 830 005c 0346     		mov	r3, r0
+ 831              		.loc 1 165 3 is_stmt 0 discriminator 1
+ 832 005e 1946     		mov	r1, r3
+ 833 0060 8E48     		ldr	r0, .L68+24
+ 834 0062 FFF7FEFF 		bl	printf
+ 166:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+ 167:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   LC_PRINT(" runtime version : %d.%d.%d\r\n",
+ 835              		.loc 1 167 3 is_stmt 1
+ 836 0066 039B     		ldr	r3, [sp, #12]
+ 837 0068 1B7D     		ldrb	r3, [r3, #20]	@ zero_extendqisi2
+ 838 006a 1946     		mov	r1, r3
+ 839 006c 039B     		ldr	r3, [sp, #12]
+ 840 006e 5B7D     		ldrb	r3, [r3, #21]	@ zero_extendqisi2
+ 841 0070 1A46     		mov	r2, r3
+ 842 0072 039B     		ldr	r3, [sp, #12]
+ 843 0074 9B7D     		ldrb	r3, [r3, #22]	@ zero_extendqisi2
+ 844 0076 8A48     		ldr	r0, .L68+28
+ 845 0078 FFF7FEFF 		bl	printf
+ 168:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****       report->runtime_version.major,
+ 169:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****       report->runtime_version.minor,
+ 170:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****       report->runtime_version.micro);
+ 171:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+ 172:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   if (report->flags & STAI_FLAG_INPUTS)
+ 846              		.loc 1 172 13
+ 847 007c 039B     		ldr	r3, [sp, #12]
+ 848 007e DB6A     		ldr	r3, [r3, #44]
+ 849              		.loc 1 172 21
+ 850 0080 03F00063 		and	r3, r3, #134217728
+ 851              		.loc 1 172 6
+ 852 0084 002B     		cmp	r3, #0
+ 853 0086 06D0     		beq	.L44
+ 173:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT(" n_inputs : %u (allocate-inputs)\r\n", report->n_inputs);
+ 854              		.loc 1 173 5
+ 855 0088 039B     		ldr	r3, [sp, #12]
+ 856 008a 1B8E     		ldrh	r3, [r3, #48]
+ 857 008c 1946     		mov	r1, r3
+ 858 008e 8548     		ldr	r0, .L68+32
+ 859 0090 FFF7FEFF 		bl	printf
+ 860 0094 05E0     		b	.L45
+ 861              	.L44:
+ 174:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   else
+ 175:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT(" n_inputs : %u\r\n", report->n_inputs);
+ 862              		.loc 1 175 5
+ 863 0096 039B     		ldr	r3, [sp, #12]
+ 864 0098 1B8E     		ldrh	r3, [r3, #48]
+ 865 009a 1946     		mov	r1, r3
+ 866 009c 8248     		ldr	r0, .L68+36
+ 867 009e FFF7FEFF 		bl	printf
+ 868              	.L45:
+ 869              	.LBB4:
+ 176:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   for (int i=0; i<report->n_inputs && i<ins->n_tensor ; i++) {
+ 870              		.loc 1 176 12
+ 871 00a2 0023     		movs	r3, #0
+ 872 00a4 0993     		str	r3, [sp, #36]
+ 873              		.loc 1 176 3
+ 874 00a6 1AE0     		b	.L46
+ 875              	.L48:
+ 177:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  i[%d] ", i);
+ 876              		.loc 1 177 5
+ 877 00a8 0999     		ldr	r1, [sp, #36]
+ 878 00aa 8048     		ldr	r0, .L68+40
+ 879 00ac FFF7FEFF 		bl	printf
+ 178:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     stai_log_io_tensor(&ins->tensors[i], ins->address[i]);
+ 880              		.loc 1 178 28
+ 881 00b0 029B     		ldr	r3, [sp, #8]
+ 882 00b2 5968     		ldr	r1, [r3, #4]
+ 883              		.loc 1 178 37
+ 884 00b4 099A     		ldr	r2, [sp, #36]
+ 885 00b6 1346     		mov	r3, r2
+ 886 00b8 9B00     		lsls	r3, r3, #2
+ 887 00ba 1344     		add	r3, r3, r2
+ 888 00bc DB00     		lsls	r3, r3, #3
+ 889              		.loc 1 178 24
+ 890 00be C818     		adds	r0, r1, r3
+ 891              		.loc 1 178 45
+ 892 00c0 029B     		ldr	r3, [sp, #8]
+ 893 00c2 9A68     		ldr	r2, [r3, #8]
+ 894              		.loc 1 178 54
+ 895 00c4 099B     		ldr	r3, [sp, #36]
+ 896 00c6 9B00     		lsls	r3, r3, #2
+ 897 00c8 1344     		add	r3, r3, r2
+ 898              		.loc 1 178 5
+ 899 00ca 1B68     		ldr	r3, [r3]
+ 900 00cc 1946     		mov	r1, r3
+ 901 00ce FFF7FEFF 		bl	stai_log_io_tensor
+ 179:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("\r\n");
+ 902              		.loc 1 179 5
+ 903 00d2 7748     		ldr	r0, .L68+44
+ 904 00d4 FFF7FEFF 		bl	puts
+ 176:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  i[%d] ", i);
+ 905              		.loc 1 176 58 discriminator 4
+ 906 00d8 099B     		ldr	r3, [sp, #36]
+ 907 00da 0133     		adds	r3, r3, #1
+ 908 00dc 0993     		str	r3, [sp, #36]
+ 909              	.L46:
+ 176:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  i[%d] ", i);
+ 910              		.loc 1 176 25 discriminator 1
+ 911 00de 039B     		ldr	r3, [sp, #12]
+ 912 00e0 1B8E     		ldrh	r3, [r3, #48]
+ 913 00e2 1A46     		mov	r2, r3
+ 176:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  i[%d] ", i);
+ 914              		.loc 1 176 36 discriminator 1
+ 915 00e4 099B     		ldr	r3, [sp, #36]
+ 916 00e6 9342     		cmp	r3, r2
+ 917 00e8 05DA     		bge	.L47
+ 176:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  i[%d] ", i);
+ 918              		.loc 1 176 44 discriminator 3
+ 919 00ea 029B     		ldr	r3, [sp, #8]
+ 920 00ec 1B88     		ldrh	r3, [r3]
+ 921 00ee 1A46     		mov	r2, r3
+ 176:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  i[%d] ", i);
+ 922              		.loc 1 176 36 discriminator 3
+ 923 00f0 099B     		ldr	r3, [sp, #36]
+ 924 00f2 9342     		cmp	r3, r2
+ 925 00f4 D8DB     		blt	.L48
+ 926              	.L47:
+ 927              	.LBE4:
+ 180:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   }
+ 181:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+ 182:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   if (report->flags & STAI_FLAG_OUTPUTS)
+ 928              		.loc 1 182 13
+ 929 00f6 039B     		ldr	r3, [sp, #12]
+ 930 00f8 DB6A     		ldr	r3, [r3, #44]
+ 931              		.loc 1 182 21
+ 932 00fa 03F08053 		and	r3, r3, #268435456
+ 933              		.loc 1 182 6
+ 934 00fe 002B     		cmp	r3, #0
+ 935 0100 06D0     		beq	.L49
+ 183:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT(" n_outputs : %u (allocate-outputs)\r\n", report->n_outputs);
+ 936              		.loc 1 183 5
+ 937 0102 039B     		ldr	r3, [sp, #12]
+ 938 0104 5B8E     		ldrh	r3, [r3, #50]
+ 939 0106 1946     		mov	r1, r3
+ 940 0108 6A48     		ldr	r0, .L68+48
+ 941 010a FFF7FEFF 		bl	printf
+ 942 010e 05E0     		b	.L50
+ 943              	.L49:
+ 184:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   else
+ 185:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT(" n_outputs : %u\r\n", report->n_outputs);
+ 944              		.loc 1 185 5
+ 945 0110 039B     		ldr	r3, [sp, #12]
+ 946 0112 5B8E     		ldrh	r3, [r3, #50]
+ 947 0114 1946     		mov	r1, r3
+ 948 0116 6848     		ldr	r0, .L68+52
+ 949 0118 FFF7FEFF 		bl	printf
+ 950              	.L50:
+ 951              	.LBB5:
+ 186:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   for (int i=0; i<report->n_outputs && outs->n_tensor; i++) {
+ 952              		.loc 1 186 12
+ 953 011c 0023     		movs	r3, #0
+ 954 011e 0893     		str	r3, [sp, #32]
+ 955              		.loc 1 186 3
+ 956 0120 1AE0     		b	.L51
+ 957              	.L53:
+ 187:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  o[%d] ", i);
+ 958              		.loc 1 187 5
+ 959 0122 0899     		ldr	r1, [sp, #32]
+ 960 0124 6548     		ldr	r0, .L68+56
+ 961 0126 FFF7FEFF 		bl	printf
+ 188:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     stai_log_io_tensor(&outs->tensors[i], outs->address[i]);
+ 962              		.loc 1 188 29
+ 963 012a 019B     		ldr	r3, [sp, #4]
+ 964 012c 5968     		ldr	r1, [r3, #4]
+ 965              		.loc 1 188 38
+ 966 012e 089A     		ldr	r2, [sp, #32]
+ 967 0130 1346     		mov	r3, r2
+ 968 0132 9B00     		lsls	r3, r3, #2
+ 969 0134 1344     		add	r3, r3, r2
+ 970 0136 DB00     		lsls	r3, r3, #3
+ 971              		.loc 1 188 24
+ 972 0138 C818     		adds	r0, r1, r3
+ 973              		.loc 1 188 47
+ 974 013a 019B     		ldr	r3, [sp, #4]
+ 975 013c 9A68     		ldr	r2, [r3, #8]
+ 976              		.loc 1 188 56
+ 977 013e 089B     		ldr	r3, [sp, #32]
+ 978 0140 9B00     		lsls	r3, r3, #2
+ 979 0142 1344     		add	r3, r3, r2
+ 980              		.loc 1 188 5
+ 981 0144 1B68     		ldr	r3, [r3]
+ 982 0146 1946     		mov	r1, r3
+ 983 0148 FFF7FEFF 		bl	stai_log_io_tensor
+ 189:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("\r\n");
+ 984              		.loc 1 189 5
+ 985 014c 5848     		ldr	r0, .L68+44
+ 986 014e FFF7FEFF 		bl	puts
+ 186:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  o[%d] ", i);
+ 987              		.loc 1 186 57 discriminator 4
+ 988 0152 089B     		ldr	r3, [sp, #32]
+ 989 0154 0133     		adds	r3, r3, #1
+ 990 0156 0893     		str	r3, [sp, #32]
+ 991              	.L51:
+ 186:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  o[%d] ", i);
+ 992              		.loc 1 186 25 discriminator 1
+ 993 0158 039B     		ldr	r3, [sp, #12]
+ 994 015a 5B8E     		ldrh	r3, [r3, #50]
+ 995 015c 1A46     		mov	r2, r3
+ 186:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  o[%d] ", i);
+ 996              		.loc 1 186 37 discriminator 1
+ 997 015e 089B     		ldr	r3, [sp, #32]
+ 998 0160 9342     		cmp	r3, r2
+ 999 0162 03DA     		bge	.L52
+ 186:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  o[%d] ", i);
+ 1000              		.loc 1 186 44 discriminator 3
+ 1001 0164 019B     		ldr	r3, [sp, #4]
+ 1002 0166 1B88     		ldrh	r3, [r3]
+ 186:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  o[%d] ", i);
+ 1003              		.loc 1 186 37 discriminator 3
+ 1004 0168 002B     		cmp	r3, #0
+ 1005 016a DAD1     		bne	.L53
+ 1006              	.L52:
+ 1007              	.LBE5:
+ 190:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   }
+ 191:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+ 192:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   if (report->flags & STAI_FLAG_ACTIVATIONS)
+ 1008              		.loc 1 192 13
+ 1009 016c 039B     		ldr	r3, [sp, #12]
+ 1010 016e DB6A     		ldr	r3, [r3, #44]
+ 1011              		.loc 1 192 21
+ 1012 0170 03F08063 		and	r3, r3, #67108864
+ 1013              		.loc 1 192 6
+ 1014 0174 002B     		cmp	r3, #0
+ 1015 0176 06D0     		beq	.L54
+ 193:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT(" n_activations : %u (allocate-activations)\r\n", report->n_activations);
+ 1016              		.loc 1 193 5
+ 1017 0178 039B     		ldr	r3, [sp, #12]
+ 1018 017a 9B8E     		ldrh	r3, [r3, #52]
+ 1019 017c 1946     		mov	r1, r3
+ 1020 017e 5048     		ldr	r0, .L68+60
+ 1021 0180 FFF7FEFF 		bl	printf
+ 1022 0184 05E0     		b	.L55
+ 1023              	.L54:
+ 194:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   else
+ 195:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT(" n_activations : %u\r\n", report->n_activations);
+ 1024              		.loc 1 195 5
+ 1025 0186 039B     		ldr	r3, [sp, #12]
+ 1026 0188 9B8E     		ldrh	r3, [r3, #52]
+ 1027 018a 1946     		mov	r1, r3
+ 1028 018c 4D48     		ldr	r0, .L68+64
+ 1029 018e FFF7FEFF 		bl	printf
+ 1030              	.L55:
+ 1031              	.LBB6:
+ 196:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   for (int i=0; i<report->n_activations && acts->n_tensor; i++) {
+ 1032              		.loc 1 196 12
+ 1033 0192 0023     		movs	r3, #0
+ 1034 0194 0793     		str	r3, [sp, #28]
+ 1035              		.loc 1 196 3
+ 1036 0196 1AE0     		b	.L56
+ 1037              	.L58:
+ 197:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  a[%d] ", i);
+ 1038              		.loc 1 197 5
+ 1039 0198 0799     		ldr	r1, [sp, #28]
+ 1040 019a 4B48     		ldr	r0, .L68+68
+ 1041 019c FFF7FEFF 		bl	printf
+ 198:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     _stai_log_tensor_data(&report->activations[i], acts->address[i]);
+ 1042              		.loc 1 198 34
+ 1043 01a0 039B     		ldr	r3, [sp, #12]
+ 1044 01a2 596C     		ldr	r1, [r3, #68]
+ 1045              		.loc 1 198 47
+ 1046 01a4 079A     		ldr	r2, [sp, #28]
+ 1047 01a6 1346     		mov	r3, r2
+ 1048 01a8 9B00     		lsls	r3, r3, #2
+ 1049 01aa 1344     		add	r3, r3, r2
+ 1050 01ac DB00     		lsls	r3, r3, #3
+ 1051              		.loc 1 198 27
+ 1052 01ae C818     		adds	r0, r1, r3
+ 1053              		.loc 1 198 56
+ 1054 01b0 009B     		ldr	r3, [sp]
+ 1055 01b2 9A68     		ldr	r2, [r3, #8]
+ 1056              		.loc 1 198 65
+ 1057 01b4 079B     		ldr	r3, [sp, #28]
+ 1058 01b6 9B00     		lsls	r3, r3, #2
+ 1059 01b8 1344     		add	r3, r3, r2
+ 1060              		.loc 1 198 5
+ 1061 01ba 1B68     		ldr	r3, [r3]
+ 1062 01bc 1946     		mov	r1, r3
+ 1063 01be FFF7FEFF 		bl	_stai_log_tensor_data
+ 199:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("\r\n");
+ 1064              		.loc 1 199 5
+ 1065 01c2 3B48     		ldr	r0, .L68+44
+ 1066 01c4 FFF7FEFF 		bl	puts
+ 196:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  a[%d] ", i);
+ 1067              		.loc 1 196 61 discriminator 4
+ 1068 01c8 079B     		ldr	r3, [sp, #28]
+ 1069 01ca 0133     		adds	r3, r3, #1
+ 1070 01cc 0793     		str	r3, [sp, #28]
+ 1071              	.L56:
+ 196:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  a[%d] ", i);
+ 1072              		.loc 1 196 25 discriminator 1
+ 1073 01ce 039B     		ldr	r3, [sp, #12]
+ 1074 01d0 9B8E     		ldrh	r3, [r3, #52]
+ 1075 01d2 1A46     		mov	r2, r3
+ 196:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  a[%d] ", i);
+ 1076              		.loc 1 196 41 discriminator 1
+ 1077 01d4 079B     		ldr	r3, [sp, #28]
+ 1078 01d6 9342     		cmp	r3, r2
+ 1079 01d8 03DA     		bge	.L57
+ 196:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  a[%d] ", i);
+ 1080              		.loc 1 196 48 discriminator 3
+ 1081 01da 009B     		ldr	r3, [sp]
+ 1082 01dc 1B88     		ldrh	r3, [r3]
+ 196:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  a[%d] ", i);
+ 1083              		.loc 1 196 41 discriminator 3
+ 1084 01de 002B     		cmp	r3, #0
+ 1085 01e0 DAD1     		bne	.L58
+ 1086              	.L57:
+ 1087              	.LBE6:
+ 200:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   }
+ 201:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+ 202:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   if (report->flags & STAI_FLAG_STATES)
+ 1088              		.loc 1 202 13
+ 1089 01e2 039B     		ldr	r3, [sp, #12]
+ 1090 01e4 DB6A     		ldr	r3, [r3, #44]
+ 1091              		.loc 1 202 21
+ 1092 01e6 03F00053 		and	r3, r3, #536870912
+ 1093              		.loc 1 202 6
+ 1094 01ea 002B     		cmp	r3, #0
+ 1095 01ec 06D0     		beq	.L59
+ 203:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT(" n_states : %u (allocate-states)\r\n", report->n_states);
+ 1096              		.loc 1 203 5
+ 1097 01ee 039B     		ldr	r3, [sp, #12]
+ 1098 01f0 1B8F     		ldrh	r3, [r3, #56]
+ 1099 01f2 1946     		mov	r1, r3
+ 1100 01f4 3548     		ldr	r0, .L68+72
+ 1101 01f6 FFF7FEFF 		bl	printf
+ 1102 01fa 05E0     		b	.L60
+ 1103              	.L59:
+ 204:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   else
+ 205:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT(" n_states : %u\r\n", report->n_states);
+ 1104              		.loc 1 205 5
+ 1105 01fc 039B     		ldr	r3, [sp, #12]
+ 1106 01fe 1B8F     		ldrh	r3, [r3, #56]
+ 1107 0200 1946     		mov	r1, r3
+ 1108 0202 3348     		ldr	r0, .L68+76
+ 1109 0204 FFF7FEFF 		bl	printf
+ 1110              	.L60:
+ 1111              	.LBB7:
+ 206:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   for (int i=0; i<report->n_states && acts->n_tensor; i++) {
+ 1112              		.loc 1 206 12
+ 1113 0208 0023     		movs	r3, #0
+ 1114 020a 0693     		str	r3, [sp, #24]
+ 1115              		.loc 1 206 3
+ 1116 020c 1AE0     		b	.L61
+ 1117              	.L63:
+ 207:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  s[%d] ", i);
+ 1118              		.loc 1 207 5
+ 1119 020e 0699     		ldr	r1, [sp, #24]
+ 1120 0210 3048     		ldr	r0, .L68+80
+ 1121 0212 FFF7FEFF 		bl	printf
+ 208:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     _stai_log_tensor_data(&report->states[i], states->address[i]);
+ 1122              		.loc 1 208 34
+ 1123 0216 039B     		ldr	r3, [sp, #12]
+ 1124 0218 D96C     		ldr	r1, [r3, #76]
+ 1125              		.loc 1 208 42
+ 1126 021a 069A     		ldr	r2, [sp, #24]
+ 1127 021c 1346     		mov	r3, r2
+ 1128 021e 9B00     		lsls	r3, r3, #2
+ 1129 0220 1344     		add	r3, r3, r2
+ 1130 0222 DB00     		lsls	r3, r3, #3
+ 1131              		.loc 1 208 27
+ 1132 0224 C818     		adds	r0, r1, r3
+ 1133              		.loc 1 208 53
+ 1134 0226 0C9B     		ldr	r3, [sp, #48]
+ 1135 0228 9A68     		ldr	r2, [r3, #8]
+ 1136              		.loc 1 208 62
+ 1137 022a 069B     		ldr	r3, [sp, #24]
+ 1138 022c 9B00     		lsls	r3, r3, #2
+ 1139 022e 1344     		add	r3, r3, r2
+ 1140              		.loc 1 208 5
+ 1141 0230 1B68     		ldr	r3, [r3]
+ 1142 0232 1946     		mov	r1, r3
+ 1143 0234 FFF7FEFF 		bl	_stai_log_tensor_data
+ 209:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("\r\n");
+ 1144              		.loc 1 209 5
+ 1145 0238 1D48     		ldr	r0, .L68+44
+ 1146 023a FFF7FEFF 		bl	puts
+ 206:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  s[%d] ", i);
+ 1147              		.loc 1 206 56 discriminator 4
+ 1148 023e 069B     		ldr	r3, [sp, #24]
+ 1149 0240 0133     		adds	r3, r3, #1
+ 1150 0242 0693     		str	r3, [sp, #24]
+ 1151              	.L61:
+ 206:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  s[%d] ", i);
+ 1152              		.loc 1 206 25 discriminator 1
+ 1153 0244 039B     		ldr	r3, [sp, #12]
+ 1154 0246 1B8F     		ldrh	r3, [r3, #56]
+ 1155 0248 1A46     		mov	r2, r3
+ 206:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  s[%d] ", i);
+ 1156              		.loc 1 206 36 discriminator 1
+ 1157 024a 069B     		ldr	r3, [sp, #24]
+ 1158 024c 9342     		cmp	r3, r2
+ 1159 024e 03DA     		bge	.L62
+ 206:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  s[%d] ", i);
+ 1160              		.loc 1 206 43 discriminator 3
+ 1161 0250 009B     		ldr	r3, [sp]
+ 1162 0252 1B88     		ldrh	r3, [r3]
+ 206:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  s[%d] ", i);
+ 1163              		.loc 1 206 36 discriminator 3
+ 1164 0254 002B     		cmp	r3, #0
+ 1165 0256 DAD1     		bne	.L63
+ 1166              	.L62:
+ 1167              	.LBE7:
+ 210:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   }
+ 211:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** 
+ 212:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   if (report->flags & STAI_FLAG_WEIGHTS)
+ 1168              		.loc 1 212 13
+ 1169 0258 039B     		ldr	r3, [sp, #12]
+ 1170 025a DB6A     		ldr	r3, [r3, #44]
+ 1171              		.loc 1 212 21
+ 1172 025c 03F08043 		and	r3, r3, #1073741824
+ 1173              		.loc 1 212 6
+ 1174 0260 002B     		cmp	r3, #0
+ 1175 0262 06D0     		beq	.L64
+ 213:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT(" n_weights : %u (allocate-weights)\r\n", report->n_weights);
+ 1176              		.loc 1 213 5
+ 1177 0264 039B     		ldr	r3, [sp, #12]
+ 1178 0266 DB8E     		ldrh	r3, [r3, #54]
+ 1179 0268 1946     		mov	r1, r3
+ 1180 026a 1B48     		ldr	r0, .L68+84
+ 1181 026c FFF7FEFF 		bl	printf
+ 1182 0270 05E0     		b	.L65
+ 1183              	.L64:
+ 214:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   else
+ 215:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT(" n_weights : %u\r\n", report->n_weights);
+ 1184              		.loc 1 215 5
+ 1185 0272 039B     		ldr	r3, [sp, #12]
+ 1186 0274 DB8E     		ldrh	r3, [r3, #54]
+ 1187 0276 1946     		mov	r1, r3
+ 1188 0278 1848     		ldr	r0, .L68+88
+ 1189 027a FFF7FEFF 		bl	printf
+ 1190              	.L65:
+ 1191              	.LBB8:
+ 216:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   for (int i=0; i<report->n_weights; i++) {
+ 1192              		.loc 1 216 12
+ 1193 027e 0023     		movs	r3, #0
+ 1194 0280 0593     		str	r3, [sp, #20]
+ 1195              		.loc 1 216 3
+ 1196 0282 48E0     		b	.L66
+ 1197              	.L69:
+ 1198              		.align	2
+ 1199              	.L68:
+ 1200 0284 88010000 		.word	.LC24
+ 1201 0288 A4010000 		.word	.LC25
+ 1202 028c BC010000 		.word	.LC26
+ 1203 0290 D4010000 		.word	.LC27
+ 1204 0294 F0010000 		.word	.LC28
+ 1205 0298 08020000 		.word	.LC29
+ 1206 029c 20020000 		.word	.LC30
+ 1207 02a0 38020000 		.word	.LC31
+ 1208 02a4 58020000 		.word	.LC32
+ 1209 02a8 7C020000 		.word	.LC33
+ 1210 02ac 90020000 		.word	.LC34
+ 1211 02b0 00000000 		.word	.LC0
+ 1212 02b4 9C020000 		.word	.LC35
+ 1213 02b8 C4020000 		.word	.LC36
+ 1214 02bc D8020000 		.word	.LC37
+ 1215 02c0 E4020000 		.word	.LC38
+ 1216 02c4 14030000 		.word	.LC39
+ 1217 02c8 2C030000 		.word	.LC40
+ 1218 02cc 38030000 		.word	.LC41
+ 1219 02d0 5C030000 		.word	.LC42
+ 1220 02d4 70030000 		.word	.LC43
+ 1221 02d8 7C030000 		.word	.LC44
+ 1222 02dc A4030000 		.word	.LC45
+ 1223              	.L67:
+ 217:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  w[%d] ", i);
+ 1224              		.loc 1 217 5
+ 1225 02e0 0599     		ldr	r1, [sp, #20]
+ 1226 02e2 1248     		ldr	r0, .L70
+ 1227 02e4 FFF7FEFF 		bl	printf
+ 218:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     _stai_log_tensor_data(&report->weights[i], params->address[i]);
+ 1228              		.loc 1 218 34
+ 1229 02e8 039B     		ldr	r3, [sp, #12]
+ 1230 02ea 996C     		ldr	r1, [r3, #72]
+ 1231              		.loc 1 218 43
+ 1232 02ec 059A     		ldr	r2, [sp, #20]
+ 1233 02ee 1346     		mov	r3, r2
+ 1234 02f0 9B00     		lsls	r3, r3, #2
+ 1235 02f2 1344     		add	r3, r3, r2
+ 1236 02f4 DB00     		lsls	r3, r3, #3
+ 1237              		.loc 1 218 27
+ 1238 02f6 C818     		adds	r0, r1, r3
+ 1239              		.loc 1 218 54
+ 1240 02f8 0D9B     		ldr	r3, [sp, #52]
+ 1241 02fa 9A68     		ldr	r2, [r3, #8]
+ 1242              		.loc 1 218 63
+ 1243 02fc 059B     		ldr	r3, [sp, #20]
+ 1244 02fe 9B00     		lsls	r3, r3, #2
+ 1245 0300 1344     		add	r3, r3, r2
+ 1246              		.loc 1 218 5
+ 1247 0302 1B68     		ldr	r3, [r3]
+ 1248 0304 1946     		mov	r1, r3
+ 1249 0306 FFF7FEFF 		bl	_stai_log_tensor_data
+ 219:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("\r\n");
+ 1250              		.loc 1 219 5
+ 1251 030a 0948     		ldr	r0, .L70+4
+ 1252 030c FFF7FEFF 		bl	puts
+ 216:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  w[%d] ", i);
+ 1253              		.loc 1 216 39 discriminator 3
+ 1254 0310 059B     		ldr	r3, [sp, #20]
+ 1255 0312 0133     		adds	r3, r3, #1
+ 1256 0314 0593     		str	r3, [sp, #20]
+ 1257              	.L66:
+ 216:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  w[%d] ", i);
+ 1258              		.loc 1 216 25 discriminator 1
+ 1259 0316 039B     		ldr	r3, [sp, #12]
+ 1260 0318 DB8E     		ldrh	r3, [r3, #54]
+ 1261 031a 1A46     		mov	r2, r3
+ 216:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****     LC_PRINT("  w[%d] ", i);
+ 1262              		.loc 1 216 18 discriminator 1
+ 1263 031c 059B     		ldr	r3, [sp, #20]
+ 1264 031e 9342     		cmp	r3, r2
+ 1265 0320 DEDB     		blt	.L67
+ 1266              	.LBE8:
+ 220:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c ****   }
+ 221:SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.c **** }
+ 1267              		.loc 1 221 1
+ 1268 0322 00BF     		nop
+ 1269 0324 00BF     		nop
+ 1270 0326 0BB0     		add	sp, sp, #44
+ 1271              		.cfi_def_cfa_offset 4
+ 1272              		@ sp needed
+ 1273 0328 5DF804FB 		ldr	pc, [sp], #4
+ 1274              	.L71:
+ 1275              		.align	2
+ 1276              	.L70:
+ 1277 032c B8030000 		.word	.LC46
+ 1278 0330 00000000 		.word	.LC0
+ 1279              		.cfi_endproc
+ 1280              	.LFE456:
+ 1282              		.text
+ 1283              	.Letext0:
+ 1284              		.file 2 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
+ 1285              		.file 3 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
+ 1286              		.file 4 "SR5E1_AI_Demo_7000P/lib/ai/inc/stai.h"
+ 1287              		.file 5 "SR5E1_AI_Demo_7000P/lib/misc/inc/aiTestHelper_ST_AI.h"
+ 1288              		.file 6 "SR5E1_AI_Demo_7000P/lib/misc/inc/aiTestUtility.h"
+ 1289              		.file 7 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
+DEFINED SYMBOLS
+                            *ABS*:00000000 aiTestHelper_ST_AI.c
+C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:20     .rodata:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:40     .text.stai_platform_version:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:47     .text.stai_platform_version:00000000 stai_platform_version
+C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:108    .text.stai_platform_version:0000006c $d
+C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:125    .text.stai_log_err:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:132    .text.stai_log_err:00000000 stai_log_err
+C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:171    .text.stai_log_err:0000002c $d
+C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:199    .text.stai_log_data_type:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:205    .text.stai_log_data_type:00000000 stai_log_data_type
+C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:308    .text.stai_log_data_type:000000a4 $d
+C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:344    .text.stai_log_tensor:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:351    .text.stai_log_tensor:00000000 stai_log_tensor
+C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:482    .text.stai_log_tensor:000000c8 $d
+C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:498    .text.stai_log_io_tensor:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:505    .text.stai_log_io_tensor:00000000 stai_log_io_tensor
+C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:638    .text.stai_log_io_tensor:000000cc $d
+C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:650    .text._stai_log_tensor_data:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:656    .text._stai_log_tensor_data:00000000 _stai_log_tensor_data
+C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:694    .text._stai_log_tensor_data:00000030 $d
+C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:769    .text.stai_log_network_info:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:776    .text.stai_log_network_info:00000000 stai_log_network_info
+C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:1200   .text.stai_log_network_info:00000284 $d
+C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:1225   .text.stai_log_network_info:000002e0 $t
+C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:1277   .text.stai_log_network_info:0000032c $d
+                           .group:00000000 wm4.0.5030deb6392b4db6a7ac5ffd5733b4a1
+                           .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
+                           .group:00000000 wm4.newlib.h.27.4b972ceed5d01f491020c20f1e546cab
+                           .group:00000000 wm4.ieeefp.h.77.bd5feb87d9990dd328793ced294f6a87
+                           .group:00000000 wm4.features.h.22.a1226fadde5a2c599ac12b49c0ddb447
+                           .group:00000000 wm4.config.h.224.10ee1ad185d877c6e334e6581faab44d
+                           .group:00000000 wm4._ansi.h.31.de524f58584151836e90d8620a16f8e8
+                           .group:00000000 wm4.stdio.h.31.7c0e28c411445f3f9c5b11accf882760
+                           .group:00000000 wm4._default_types.h.6.959254cf5f09734ea7516c89e8bb21bd
+                           .group:00000000 wm4.stddef.h.185.cbb642e1ccd385e8aa504b15cb7fb086
+                           .group:00000000 wm4.cdefs.h.49.a0dc0a4a6c7d01e2e5d0aade9399215f
+                           .group:00000000 wm4.stddef.h.39.880090fed2fc49559ce5228f8b65a2cf
+                           .group:00000000 wm4.stdarg.h.34.3a23a216c0c293b3d2ea2e89281481e6
+                           .group:00000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:00000000 wm4.stddef.h.158.6f8e08a347b1cff664332fa350bfceb3
+                           .group:00000000 wm4._types.h.127.3bdfe3ff8ea2d0985b03d9cbe93480e3
+                           .group:00000000 wm4.reent.h.18.25503cdc8b7e55dd0d6ea7b3e5af7a03
+                           .group:00000000 wm4.lock.h.2.1461d1fff82dffe8bfddc23307f6484f
+                           .group:00000000 wm4.reent.h.78.6b87466b04591b1f1cb88c14fdf2ba9e
+                           .group:00000000 wm4.stdio.h.67.0cf8a9c281ab0b348aef5c02e7e48825
+                           .group:00000000 wm4.stdio.h.2.4aa87247282eca6c8f36f9de33d8df1a
+                           .group:00000000 wm4.stdio.h.87.a1e20d2651f9bfb66e51bfbe849db00a
+                           .group:00000000 wm4.string.h.8.c4b8571ce60dff2817f43fec8b86aecd
+                           .group:00000000 wm4.stddef.h.158.eec8bf00b5213f43d095cb984c5f22e3
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:00000000 wm4.stai.h.24.608d6af21070ca68aec6fa67c427ed38
+                           .group:00000000 wm4.stdbool.h.29.c08aa3eec75cf5b9b5003883f43253f0
+                           .group:00000000 wm4.stai.h.38.8b7b3b20574e05eb8d4bb79c3a135768
+                           .group:00000000 wm4.cmsis_gcc.h.26.498d0ad17a45fc9ef20fdc01caf02259
+                           .group:00000000 wm4.ai_device_adaptor.h.109.a7e609accf0e2d1179889371c58a4000
+                           .group:00000000 wm4.stellar_ai_cfg.h.22.b8366a3a45f39e9e09a10028cf2dd2bf
+                           .group:00000000 wm4.stai_debug.h.37.4be079c70c66033549ba26b63a31db94
+                           .group:00000000 wm4.network.h.26.b7847d442a108daf4406804071fbba60
+                           .group:00000000 wm4.app_stellarstudioai.h.34.09d4d4538ab8661d6d0406dbdedd94c9
+                           .group:00000000 wm4.sr5e1xx.h.22.e5c808533cc52ed19fb0830cd7d98924
+                           .group:00000000 wm4.cmsis_version.h.32.0f826810625204eca22a19868bdc7586
+                           .group:00000000 wm4.core_cm7.h.66.8ab2de36917d6fcae18019067fda13e0
+                           .group:00000000 wm4.core_cm7.h.174.43edb295ecdaadad738f48ba6011ffad
+                           .group:00000000 wm4.mpu_armv7.h.32.83326921a797fa9d6f70449916b4b839
+                           .group:00000000 wm4.cachel1_armv7.h.32.abd77761a989e008b0c60891114a33c7
+                           .group:00000000 wm4.SR5E1_ADC.h.14.ae169e40e9f684c773c07c5a3820e545
+                           .group:00000000 wm4.SR5E1_CEM.h.14.01fe5742c8f1ae35b1f3af05932f702e
+                           .group:00000000 wm4.SR5E1_CMU.h.14.2617b38b159abe38028862394531e06d
+                           .group:00000000 wm4.SR5E1_COMP.h.14.4b6fdfe4f5f7fd9bedf3a99b98bdf4cd
+                           .group:00000000 wm4.SR5E1_CORDIC.h.14.354fbf7c9eaf6963d38eaa25cf28ffe8
+                           .group:00000000 wm4.SR5E1_CRC.h.14.c64d0f7767671ddb92e9ead0a1162100
+                           .group:00000000 wm4.SR5E1_DAC.h.14.8c26a0ff04b0cfeb55306cc3f22187b8
+                           .group:00000000 wm4.SR5E1_DBGMCU.h.14.427df893d53a8044654f017ba01c25ed
+                           .group:00000000 wm4.SR5E1_DMA.h.14.a7f9a92f844b40a86965798c2e64240b
+                           .group:00000000 wm4.SR5E1_DMAMUX.h.14.471b3b4dfd4d41515f1df49493698866
+                           .group:00000000 wm4.SR5E1_EXTI.h.14.a325ea3fe89cd84894660551c33241ea
+                           .group:00000000 wm4.SR5E1_FCCU.h.14.0ebf0f0f36e079d28613ad2c80e17e23
+                           .group:00000000 wm4.SR5E1_FDCAN.h.14.92cca1acd00b06d527134cd2ce2de963
+                           .group:00000000 wm4.SR5E1_FLASH_REG_ITF.h.14.d23d1d44923f9b20b8c8fdb51d66aefd
+                           .group:00000000 wm4.SR5E1_GPIO.h.14.1c84071e130d7c64b62470ab0e18a1f1
+                           .group:00000000 wm4.SR5E1_HRTIM.h.24.03932387d2522e6bd5c772a4edaf2f5d
+                           .group:00000000 wm4.SR5E1_HSEM.h.14.cbe70eee519f01b16452c3f8c99d8df1
+                           .group:00000000 wm4.SR5E1_I2C.h.14.350ba3e0f4fd57828457efa80135c36c
+                           .group:00000000 wm4.SR5E1_IMA.h.14.62b7088985ab2b7ce9b030a02daa1f7d
+                           .group:00000000 wm4.SR5E1_IWDG.h.14.20b7c5f05cf7ae94464c360d7af3660d
+                           .group:00000000 wm4.SR5E1_MEMU.h.14.04bad7ae4c52ce334a4fc900aad2ae5b
+                           .group:00000000 wm4.SR5E1_NVM_CTRL.h.14.5f442617f0628d4f16258f211c614ef9
+                           .group:00000000 wm4.SR5E1_PLLDIG.h.14.bd87a8e6917eee17dae2f312c8e5fa53
+                           .group:00000000 wm4.SR5E1_PMC_DIG.h.14.54173b566c6656344766ec4ef46c9281
+                           .group:00000000 wm4.typedefs.h.36.07fe3956b4e751037cfee70edcd0b397
+                           .group:00000000 wm4.SR5E1_PRAMC.h.30.1c0b9354fe6c8cac480bcfc44eff2d7e
+                           .group:00000000 wm4.SR5E1_RCC.h.14.6d8396933f006e04e798678fd043e24c
+                           .group:00000000 wm4.SR5E1_RTC.h.14.c054aa0839c8cf8ac24f324aa927c4ec
+                           .group:00000000 wm4.SR5E1_SD_ADC.h.14.552b97d0b8f3c1fd4df6d8964b2f1a80
+                           .group:00000000 wm4.SR5E1_SMPU.h.14.8ce5bb6d5d7c579cd725f492f46e9085
+                           .group:00000000 wm4.SR5E1_SPI.h.14.42d52112e540f85ade4d9135f8b87d72
+                           .group:00000000 wm4.SR5E1_SSCM.h.14.8e6a2ad0ce5fca422fc3d69939b6125b
+                           .group:00000000 wm4.SR5E1_SYSCFG.h.14.02b969490118ce4069914b5e94f7ca65
+                           .group:00000000 wm4.SR5E1_TDM.h.14.a40ed7928cad243a57fd233fccf01ad2
+                           .group:00000000 wm4.SR5E1_TIM.h.14.05b8efc5395873619642d61a4b0b5a54
+                           .group:00000000 wm4.SR5E1_UART.h.14.eec3ab82b02b3bdb3de500483675b83f
+                           .group:00000000 wm4.SR5E1_WWDG.h.14.59b45efc70e442cc6ef03702aad4ad88
+                           .group:00000000 wm4.irq_numbers.h.38.6294b95aed1bf7b3a2cda0eed8ce8f57
+                           .group:00000000 wm4.regs.h.23.2ac145b4f57126d16daed5fbd86d99c6
+                           .group:00000000 wm4.version.h.23.e4b8916ae3b2be9dc2d78f3d1936fa22
+                           .group:00000000 wm4.clock_cfg.h.23.3c8ba5c0347398a4587362787f86fe62
+                           .group:00000000 wm4.clock.h.37.58835f83108bcb182d0fd3c9e58df3b9
+                           .group:00000000 wm4.dwt.h.60.bb144dd848d9adaa1c08f830ce597105
+                           .group:00000000 wm4.stellar_ai_validate.h.45.75e4a2a01e30f67dcffdab062bc0d3ca
+                           .group:00000000 wm4.ai_device_adaptor.h.441.a280118118f69ae730e45b45d404192b
+                           .group:00000000 wm4.aiTestUtility.h.45.f6a90115c9418808f9b3799456c285ff
+                           .group:00000000 wm4.stdlib.h.13.4ed386f5c1a80d71e72172885d946ef2
+                           .group:00000000 wm4.alloca.h.8.dfc0c703c47ec3e69746825b17d9e66d
+                           .group:00000000 wm4.stdlib.h.56.f4862cfbf4363a1db01842d5bdf72c18
+                           .group:00000000 wm4.aiTestUtility.h.158.768c6f983dc99fc892896b77759c5e43
+
+UNDEFINED SYMBOLS
+stai_runtime_get_info
+puts
+printf
+putchar
+uint64ToDecimal

@@ -1,0 +1,836 @@
+   1              		.cpu cortex-m7
+   2              		.arch armv7e-m
+   3              		.fpu fpv5-d16
+   4              		.eabi_attribute 28, 1
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 6
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.file	"stm32msg.pb.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.file 1 "SR5E1_AI_Demo_7000P/lib/validation/src/stm32msg.pb.c"
+  19              		.global	reqMsg_cmd_default
+  20              		.section	.rodata.reqMsg_cmd_default,"a"
+  23              	reqMsg_cmd_default:
+  24 0000 01       		.byte	1
+  25              		.global	aiTensorDescMsg_format_default
+  26              		.section	.rodata.aiTensorDescMsg_format_default,"a"
+  27              		.align	2
+  30              	aiTensorDescMsg_format_default:
+  31 0000 00000000 		.space	4
+  32              		.global	aiTensorDescMsg_size_default
+  33              		.section	.rodata.aiTensorDescMsg_size_default,"a"
+  34              		.align	2
+  37              	aiTensorDescMsg_size_default:
+  38 0000 00000000 		.space	4
+  39              		.global	aiTensorDescMsg_n_dims_default
+  40              		.section	.rodata.aiTensorDescMsg_n_dims_default,"a"
+  41              		.align	2
+  44              	aiTensorDescMsg_n_dims_default:
+  45 0000 01000000 		.word	1
+  46              		.global	aiTensorDescMsg_scale_default
+  47              		.section	.rodata.aiTensorDescMsg_scale_default,"a"
+  48              		.align	2
+  51              	aiTensorDescMsg_scale_default:
+  52 0000 00000000 		.space	4
+  53              		.global	aiTensorDescMsg_zeropoint_default
+  54              		.section	.rodata.aiTensorDescMsg_zeropoint_default,"a"
+  55              		.align	2
+  58              	aiTensorDescMsg_zeropoint_default:
+  59 0000 00000000 		.space	4
+  60              		.global	aiTensorDescMsg_addr_default
+  61              		.section	.rodata.aiTensorDescMsg_addr_default,"a"
+  62              		.align	2
+  65              	aiTensorDescMsg_addr_default:
+  66 0000 00000000 		.space	4
+  67              		.global	aiTensorDescMsg_flags_default
+  68              		.section	.rodata.aiTensorDescMsg_flags_default,"a"
+  69              		.align	2
+  72              	aiTensorDescMsg_flags_default:
+  73 0000 00000000 		.space	4
+  74              		.global	aiDataMsg_type_default
+  75              		.section	.rodata.aiDataMsg_type_default,"a"
+  76              		.align	2
+  79              	aiDataMsg_type_default:
+  80 0000 00000000 		.space	4
+  81              		.global	aiDataMsg_addr_default
+  82              		.section	.rodata.aiDataMsg_addr_default,"a"
+  83              		.align	2
+  86              	aiDataMsg_addr_default:
+  87 0000 00000000 		.space	4
+  88              		.global	reqMsg_fields
+  89              		.section	.rodata.reqMsg_fields,"a"
+  90              		.align	2
+  93              	reqMsg_fields:
+  94 0000 0100     		.short	1
+  95 0002 01       		.byte	1
+  96 0003 00       		.space	1
+  97 0004 0000     		.short	0
+  98 0006 0000     		.short	0
+  99 0008 0400     		.short	4
+ 100 000a 0000     		.short	0
+ 101 000c 00000000 		.word	0
+ 102 0010 0200     		.short	2
+ 103 0012 01       		.byte	1
+ 104 0013 00       		.space	1
+ 105 0014 0000     		.short	0
+ 106 0016 0000     		.short	0
+ 107 0018 0100     		.short	1
+ 108 001a 0000     		.short	0
+ 109 001c 00000000 		.word	reqMsg_cmd_default
+ 110 0020 0300     		.short	3
+ 111 0022 01       		.byte	1
+ 112 0023 00       		.space	1
+ 113 0024 0300     		.short	3
+ 114 0026 0000     		.short	0
+ 115 0028 0400     		.short	4
+ 116 002a 0000     		.short	0
+ 117 002c 00000000 		.word	0
+ 118 0030 0400     		.short	4
+ 119 0032 06       		.byte	6
+ 120 0033 00       		.space	1
+ 121 0034 0000     		.short	0
+ 122 0036 0000     		.short	0
+ 123 0038 4000     		.short	64
+ 124 003a 0000     		.short	0
+ 125 003c 00000000 		.word	0
+ 126 0040 0500     		.short	5
+ 127 0042 01       		.byte	1
+ 128 0043 00       		.space	1
+ 129 0044 0000     		.short	0
+ 130 0046 0000     		.short	0
+ 131 0048 0400     		.short	4
+ 132 004a 0000     		.short	0
+ 133 004c 00000000 		.word	0
+ 134 0050 0000     		.short	0
+ 135 0052 00       		.byte	0
+ 136 0053 00       		.space	1
+ 137 0054 0000     		.short	0
+ 138 0056 0000     		.short	0
+ 139 0058 0000     		.short	0
+ 140 005a 0000     		.short	0
+ 141 005c 00000000 		.word	0
+ 142              		.global	aiTensorDescMsg_fields
+ 143              		.section	.rodata.aiTensorDescMsg_fields,"a"
+ 144              		.align	2
+ 147              	aiTensorDescMsg_fields:
+ 148 0000 0100     		.short	1
+ 149 0002 06       		.byte	6
+ 150 0003 00       		.space	1
+ 151 0004 0000     		.short	0
+ 152 0006 0000     		.short	0
+ 153 0008 4000     		.short	64
+ 154 000a 0000     		.short	0
+ 155 000c 00000000 		.word	0
+ 156 0010 0200     		.short	2
+ 157 0012 01       		.byte	1
+ 158 0013 00       		.space	1
+ 159 0014 0000     		.short	0
+ 160 0016 0000     		.short	0
+ 161 0018 0400     		.short	4
+ 162 001a 0000     		.short	0
+ 163 001c 00000000 		.word	aiTensorDescMsg_format_default
+ 164 0020 0300     		.short	3
+ 165 0022 01       		.byte	1
+ 166 0023 00       		.space	1
+ 167 0024 0000     		.short	0
+ 168 0026 0000     		.short	0
+ 169 0028 0400     		.short	4
+ 170 002a 0000     		.short	0
+ 171 002c 00000000 		.word	aiTensorDescMsg_size_default
+ 172 0030 0400     		.short	4
+ 173 0032 01       		.byte	1
+ 174 0033 00       		.space	1
+ 175 0034 0000     		.short	0
+ 176 0036 0000     		.short	0
+ 177 0038 0400     		.short	4
+ 178 003a 0000     		.short	0
+ 179 003c 00000000 		.word	aiTensorDescMsg_n_dims_default
+ 180 0040 0500     		.short	5
+ 181 0042 61       		.byte	97
+ 182 0043 00       		.space	1
+ 183 0044 0000     		.short	0
+ 184 0046 0000     		.short	0
+ 185 0048 0800     		.short	8
+ 186 004a 0000     		.short	0
+ 187 004c 00000000 		.word	0
+ 188 0050 0600     		.short	6
+ 189 0052 03       		.byte	3
+ 190 0053 00       		.space	1
+ 191 0054 0000     		.short	0
+ 192 0056 0000     		.short	0
+ 193 0058 0400     		.short	4
+ 194 005a 0000     		.short	0
+ 195 005c 00000000 		.word	aiTensorDescMsg_scale_default
+ 196 0060 0700     		.short	7
+ 197 0062 00       		.byte	0
+ 198 0063 00       		.space	1
+ 199 0064 0000     		.short	0
+ 200 0066 0000     		.short	0
+ 201 0068 0400     		.short	4
+ 202 006a 0000     		.short	0
+ 203 006c 00000000 		.word	aiTensorDescMsg_zeropoint_default
+ 204 0070 0800     		.short	8
+ 205 0072 01       		.byte	1
+ 206 0073 00       		.space	1
+ 207 0074 0000     		.short	0
+ 208 0076 0000     		.short	0
+ 209 0078 0400     		.short	4
+ 210 007a 0000     		.short	0
+ 211 007c 00000000 		.word	aiTensorDescMsg_addr_default
+ 212 0080 0900     		.short	9
+ 213 0082 01       		.byte	1
+ 214 0083 00       		.space	1
+ 215 0084 0000     		.short	0
+ 216 0086 0000     		.short	0
+ 217 0088 0400     		.short	4
+ 218 008a 0000     		.short	0
+ 219 008c 00000000 		.word	aiTensorDescMsg_flags_default
+ 220 0090 0000     		.short	0
+ 221 0092 00       		.byte	0
+ 222 0093 00       		.space	1
+ 223 0094 0000     		.short	0
+ 224 0096 0000     		.short	0
+ 225 0098 0000     		.short	0
+ 226 009a 0000     		.short	0
+ 227 009c 00000000 		.word	0
+ 228              		.global	aiDataMsg_fields
+ 229              		.section	.rodata.aiDataMsg_fields,"a"
+ 230              		.align	2
+ 233              	aiDataMsg_fields:
+ 234 0000 0100     		.short	1
+ 235 0002 01       		.byte	1
+ 236 0003 00       		.space	1
+ 237 0004 0000     		.short	0
+ 238 0006 0000     		.short	0
+ 239 0008 0400     		.short	4
+ 240 000a 0000     		.short	0
+ 241 000c 00000000 		.word	aiDataMsg_type_default
+ 242 0010 0200     		.short	2
+ 243 0012 01       		.byte	1
+ 244 0013 00       		.space	1
+ 245 0014 0000     		.short	0
+ 246 0016 0000     		.short	0
+ 247 0018 0400     		.short	4
+ 248 001a 0000     		.short	0
+ 249 001c 00000000 		.word	0
+ 250 0020 0300     		.short	3
+ 251 0022 01       		.byte	1
+ 252 0023 00       		.space	1
+ 253 0024 0000     		.short	0
+ 254 0026 0000     		.short	0
+ 255 0028 0400     		.short	4
+ 256 002a 0000     		.short	0
+ 257 002c 00000000 		.word	aiDataMsg_addr_default
+ 258 0030 0400     		.short	4
+ 259 0032 45       		.byte	69
+ 260 0033 00       		.space	1
+ 261 0034 0000     		.short	0
+ 262 0036 0000     		.short	0
+ 263 0038 0800     		.short	8
+ 264 003a 0000     		.short	0
+ 265 003c 00000000 		.word	0
+ 266 0040 0000     		.short	0
+ 267 0042 00       		.byte	0
+ 268 0043 00       		.space	1
+ 269 0044 0000     		.short	0
+ 270 0046 0000     		.short	0
+ 271 0048 0000     		.short	0
+ 272 004a 0000     		.short	0
+ 273 004c 00000000 		.word	0
+ 274              		.global	aiOperatorMsg_fields
+ 275              		.section	.rodata.aiOperatorMsg_fields,"a"
+ 276              		.align	2
+ 279              	aiOperatorMsg_fields:
+ 280 0000 0100     		.short	1
+ 281 0002 06       		.byte	6
+ 282 0003 00       		.space	1
+ 283 0004 0000     		.short	0
+ 284 0006 0000     		.short	0
+ 285 0008 4000     		.short	64
+ 286 000a 0000     		.short	0
+ 287 000c 00000000 		.word	0
+ 288 0010 0200     		.short	2
+ 289 0012 01       		.byte	1
+ 290 0013 00       		.space	1
+ 291 0014 0000     		.short	0
+ 292 0016 0000     		.short	0
+ 293 0018 0400     		.short	4
+ 294 001a 0000     		.short	0
+ 295 001c 00000000 		.word	0
+ 296 0020 0300     		.short	3
+ 297 0022 01       		.byte	1
+ 298 0023 00       		.space	1
+ 299 0024 0000     		.short	0
+ 300 0026 0000     		.short	0
+ 301 0028 0400     		.short	4
+ 302 002a 0000     		.short	0
+ 303 002c 00000000 		.word	0
+ 304 0030 0400     		.short	4
+ 305 0032 03       		.byte	3
+ 306 0033 00       		.space	1
+ 307 0034 0000     		.short	0
+ 308 0036 0000     		.short	0
+ 309 0038 0400     		.short	4
+ 310 003a 0000     		.short	0
+ 311 003c 00000000 		.word	0
+ 312 0040 0500     		.short	5
+ 313 0042 01       		.byte	1
+ 314 0043 00       		.space	1
+ 315 0044 0000     		.short	0
+ 316 0046 0000     		.short	0
+ 317 0048 0400     		.short	4
+ 318 004a 0000     		.short	0
+ 319 004c 00000000 		.word	0
+ 320 0050 0600     		.short	6
+ 321 0052 61       		.byte	97
+ 322 0053 00       		.space	1
+ 323 0054 0000     		.short	0
+ 324 0056 0000     		.short	0
+ 325 0058 0800     		.short	8
+ 326 005a 0000     		.short	0
+ 327 005c 00000000 		.word	0
+ 328 0060 0700     		.short	7
+ 329 0062 00       		.byte	0
+ 330 0063 00       		.space	1
+ 331 0064 0000     		.short	0
+ 332 0066 0000     		.short	0
+ 333 0068 0400     		.short	4
+ 334 006a 0000     		.short	0
+ 335 006c 00000000 		.word	0
+ 336 0070 0800     		.short	8
+ 337 0072 00       		.byte	0
+ 338 0073 00       		.space	1
+ 339 0074 0000     		.short	0
+ 340 0076 0000     		.short	0
+ 341 0078 0400     		.short	4
+ 342 007a 0000     		.short	0
+ 343 007c 00000000 		.word	0
+ 344 0080 0000     		.short	0
+ 345 0082 00       		.byte	0
+ 346 0083 00       		.space	1
+ 347 0084 0000     		.short	0
+ 348 0086 0000     		.short	0
+ 349 0088 0000     		.short	0
+ 350 008a 0000     		.short	0
+ 351 008c 00000000 		.word	0
+ 352              		.global	aiTensorMsg_fields
+ 353              		.section	.rodata.aiTensorMsg_fields,"a"
+ 354              		.align	2
+ 357              	aiTensorMsg_fields:
+ 358 0000 0100     		.short	1
+ 359 0002 07       		.byte	7
+ 360 0003 00       		.space	1
+ 361 0004 0000     		.short	0
+ 362 0006 0000     		.short	0
+ 363 0008 6400     		.short	100
+ 364 000a 0000     		.short	0
+ 365 000c 00000000 		.word	aiTensorDescMsg_fields
+ 366 0010 0200     		.short	2
+ 367 0012 07       		.byte	7
+ 368 0013 00       		.space	1
+ 369 0014 0000     		.short	0
+ 370 0016 0000     		.short	0
+ 371 0018 1400     		.short	20
+ 372 001a 0000     		.short	0
+ 373 001c 00000000 		.word	aiDataMsg_fields
+ 374 0020 0000     		.short	0
+ 375 0022 00       		.byte	0
+ 376 0023 00       		.space	1
+ 377 0024 0000     		.short	0
+ 378 0026 0000     		.short	0
+ 379 0028 0000     		.short	0
+ 380 002a 0000     		.short	0
+ 381 002c 00000000 		.word	0
+ 382              		.global	aiModelInfoMsg_fields
+ 383              		.section	.rodata.aiModelInfoMsg_fields,"a"
+ 384              		.align	2
+ 387              	aiModelInfoMsg_fields:
+ 388 0000 0100     		.short	1
+ 389 0002 06       		.byte	6
+ 390 0003 00       		.space	1
+ 391 0004 0000     		.short	0
+ 392 0006 0000     		.short	0
+ 393 0008 4000     		.short	64
+ 394 000a 0000     		.short	0
+ 395 000c 00000000 		.word	0
+ 396 0010 0200     		.short	2
+ 397 0012 01       		.byte	1
+ 398 0013 00       		.space	1
+ 399 0014 0000     		.short	0
+ 400 0016 0000     		.short	0
+ 401 0018 0400     		.short	4
+ 402 001a 0000     		.short	0
+ 403 001c 00000000 		.word	0
+ 404 0020 0300     		.short	3
+ 405 0022 06       		.byte	6
+ 406 0023 00       		.space	1
+ 407 0024 0000     		.short	0
+ 408 0026 0000     		.short	0
+ 409 0028 4000     		.short	64
+ 410 002a 0000     		.short	0
+ 411 002c 00000000 		.word	0
+ 412 0030 0400     		.short	4
+ 413 0032 06       		.byte	6
+ 414 0033 00       		.space	1
+ 415 0034 0000     		.short	0
+ 416 0036 0000     		.short	0
+ 417 0038 4000     		.short	64
+ 418 003a 0000     		.short	0
+ 419 003c 00000000 		.word	0
+ 420 0040 0500     		.short	5
+ 421 0042 01       		.byte	1
+ 422 0043 00       		.space	1
+ 423 0044 0000     		.short	0
+ 424 0046 0000     		.short	0
+ 425 0048 0400     		.short	4
+ 426 004a 0000     		.short	0
+ 427 004c 00000000 		.word	0
+ 428 0050 0600     		.short	6
+ 429 0052 01       		.byte	1
+ 430 0053 00       		.space	1
+ 431 0054 0000     		.short	0
+ 432 0056 0000     		.short	0
+ 433 0058 0400     		.short	4
+ 434 005a 0000     		.short	0
+ 435 005c 00000000 		.word	0
+ 436 0060 0700     		.short	7
+ 437 0062 01       		.byte	1
+ 438 0063 00       		.space	1
+ 439 0064 0400     		.short	4
+ 440 0066 0000     		.short	0
+ 441 0068 0800     		.short	8
+ 442 006a 0000     		.short	0
+ 443 006c 00000000 		.word	0
+ 444 0070 0800     		.short	8
+ 445 0072 01       		.byte	1
+ 446 0073 00       		.space	1
+ 447 0074 0000     		.short	0
+ 448 0076 0000     		.short	0
+ 449 0078 0400     		.short	4
+ 450 007a 0000     		.short	0
+ 451 007c 00000000 		.word	0
+ 452 0080 0A00     		.short	10
+ 453 0082 01       		.byte	1
+ 454 0083 00       		.space	1
+ 455 0084 0000     		.short	0
+ 456 0086 0000     		.short	0
+ 457 0088 0400     		.short	4
+ 458 008a 0000     		.short	0
+ 459 008c 00000000 		.word	0
+ 460 0090 0B00     		.short	11
+ 461 0092 67       		.byte	103
+ 462 0093 00       		.space	1
+ 463 0094 0000     		.short	0
+ 464 0096 0000     		.short	0
+ 465 0098 0800     		.short	8
+ 466 009a 0000     		.short	0
+ 467 009c 00000000 		.word	aiTensorDescMsg_fields
+ 468 00a0 0C00     		.short	12
+ 469 00a2 01       		.byte	1
+ 470 00a3 00       		.space	1
+ 471 00a4 0000     		.short	0
+ 472 00a6 0000     		.short	0
+ 473 00a8 0400     		.short	4
+ 474 00aa 0000     		.short	0
+ 475 00ac 00000000 		.word	0
+ 476 00b0 0D00     		.short	13
+ 477 00b2 67       		.byte	103
+ 478 00b3 00       		.space	1
+ 479 00b4 0000     		.short	0
+ 480 00b6 0000     		.short	0
+ 481 00b8 0800     		.short	8
+ 482 00ba 0000     		.short	0
+ 483 00bc 00000000 		.word	aiTensorDescMsg_fields
+ 484 00c0 0E00     		.short	14
+ 485 00c2 01       		.byte	1
+ 486 00c3 00       		.space	1
+ 487 00c4 0000     		.short	0
+ 488 00c6 0000     		.short	0
+ 489 00c8 0400     		.short	4
+ 490 00ca 0000     		.short	0
+ 491 00cc 00000000 		.word	0
+ 492 00d0 0F00     		.short	15
+ 493 00d2 67       		.byte	103
+ 494 00d3 00       		.space	1
+ 495 00d4 0000     		.short	0
+ 496 00d6 0000     		.short	0
+ 497 00d8 0800     		.short	8
+ 498 00da 0000     		.short	0
+ 499 00dc 00000000 		.word	aiTensorDescMsg_fields
+ 500 00e0 1000     		.short	16
+ 501 00e2 01       		.byte	1
+ 502 00e3 00       		.space	1
+ 503 00e4 0000     		.short	0
+ 504 00e6 0000     		.short	0
+ 505 00e8 0400     		.short	4
+ 506 00ea 0000     		.short	0
+ 507 00ec 00000000 		.word	0
+ 508 00f0 1100     		.short	17
+ 509 00f2 67       		.byte	103
+ 510 00f3 00       		.space	1
+ 511 00f4 0000     		.short	0
+ 512 00f6 0000     		.short	0
+ 513 00f8 0800     		.short	8
+ 514 00fa 0000     		.short	0
+ 515 00fc 00000000 		.word	aiTensorDescMsg_fields
+ 516 0100 1400     		.short	20
+ 517 0102 06       		.byte	6
+ 518 0103 00       		.space	1
+ 519 0104 0000     		.short	0
+ 520 0106 0000     		.short	0
+ 521 0108 4000     		.short	64
+ 522 010a 0000     		.short	0
+ 523 010c 00000000 		.word	0
+ 524 0110 1500     		.short	21
+ 525 0112 03       		.byte	3
+ 526 0113 00       		.space	1
+ 527 0114 0000     		.short	0
+ 528 0116 0000     		.short	0
+ 529 0118 0400     		.short	4
+ 530 011a 0000     		.short	0
+ 531 011c 00000000 		.word	0
+ 532 0120 1600     		.short	22
+ 533 0122 03       		.byte	3
+ 534 0123 00       		.space	1
+ 535 0124 0000     		.short	0
+ 536 0126 0000     		.short	0
+ 537 0128 0400     		.short	4
+ 538 012a 0000     		.short	0
+ 539 012c 00000000 		.word	0
+ 540 0130 0000     		.short	0
+ 541 0132 00       		.byte	0
+ 542 0133 00       		.space	1
+ 543 0134 0000     		.short	0
+ 544 0136 0000     		.short	0
+ 545 0138 0000     		.short	0
+ 546 013a 0000     		.short	0
+ 547 013c 00000000 		.word	0
+ 548              		.global	syncMsg_fields
+ 549              		.section	.rodata.syncMsg_fields,"a"
+ 550              		.align	2
+ 553              	syncMsg_fields:
+ 554 0000 0100     		.short	1
+ 555 0002 01       		.byte	1
+ 556 0003 00       		.space	1
+ 557 0004 0000     		.short	0
+ 558 0006 0000     		.short	0
+ 559 0008 0400     		.short	4
+ 560 000a 0000     		.short	0
+ 561 000c 00000000 		.word	0
+ 562 0010 0400     		.short	4
+ 563 0012 01       		.byte	1
+ 564 0013 00       		.space	1
+ 565 0014 0000     		.short	0
+ 566 0016 0000     		.short	0
+ 567 0018 0400     		.short	4
+ 568 001a 0000     		.short	0
+ 569 001c 00000000 		.word	0
+ 570 0020 0500     		.short	5
+ 571 0022 01       		.byte	1
+ 572 0023 00       		.space	1
+ 573 0024 0000     		.short	0
+ 574 0026 0000     		.short	0
+ 575 0028 0400     		.short	4
+ 576 002a 0000     		.short	0
+ 577 002c 00000000 		.word	0
+ 578 0030 0000     		.short	0
+ 579 0032 00       		.byte	0
+ 580 0033 00       		.space	1
+ 581 0034 0000     		.short	0
+ 582 0036 0000     		.short	0
+ 583 0038 0000     		.short	0
+ 584 003a 0000     		.short	0
+ 585 003c 00000000 		.word	0
+ 586              		.global	sysinfoMsg_fields
+ 587              		.section	.rodata.sysinfoMsg_fields,"a"
+ 588              		.align	2
+ 591              	sysinfoMsg_fields:
+ 592 0000 0100     		.short	1
+ 593 0002 01       		.byte	1
+ 594 0003 00       		.space	1
+ 595 0004 0000     		.short	0
+ 596 0006 0000     		.short	0
+ 597 0008 0400     		.short	4
+ 598 000a 0000     		.short	0
+ 599 000c 00000000 		.word	0
+ 600 0010 0200     		.short	2
+ 601 0012 01       		.byte	1
+ 602 0013 00       		.space	1
+ 603 0014 0000     		.short	0
+ 604 0016 0000     		.short	0
+ 605 0018 0400     		.short	4
+ 606 001a 0000     		.short	0
+ 607 001c 00000000 		.word	0
+ 608 0020 0300     		.short	3
+ 609 0022 01       		.byte	1
+ 610 0023 00       		.space	1
+ 611 0024 0000     		.short	0
+ 612 0026 0000     		.short	0
+ 613 0028 0400     		.short	4
+ 614 002a 0000     		.short	0
+ 615 002c 00000000 		.word	0
+ 616 0030 0400     		.short	4
+ 617 0032 01       		.byte	1
+ 618 0033 00       		.space	1
+ 619 0034 0000     		.short	0
+ 620 0036 0000     		.short	0
+ 621 0038 0400     		.short	4
+ 622 003a 0000     		.short	0
+ 623 003c 00000000 		.word	0
+ 624 0040 0500     		.short	5
+ 625 0042 01       		.byte	1
+ 626 0043 00       		.space	1
+ 627 0044 0000     		.short	0
+ 628 0046 0000     		.short	0
+ 629 0048 0400     		.short	4
+ 630 004a 0000     		.short	0
+ 631 004c 00000000 		.word	0
+ 632 0050 0600     		.short	6
+ 633 0052 61       		.byte	97
+ 634 0053 00       		.space	1
+ 635 0054 0000     		.short	0
+ 636 0056 0000     		.short	0
+ 637 0058 0800     		.short	8
+ 638 005a 0000     		.short	0
+ 639 005c 00000000 		.word	0
+ 640 0060 0000     		.short	0
+ 641 0062 00       		.byte	0
+ 642 0063 00       		.space	1
+ 643 0064 0000     		.short	0
+ 644 0066 0000     		.short	0
+ 645 0068 0000     		.short	0
+ 646 006a 0000     		.short	0
+ 647 006c 00000000 		.word	0
+ 648              		.global	ackMsg_fields
+ 649              		.section	.rodata.ackMsg_fields,"a"
+ 650              		.align	2
+ 653              	ackMsg_fields:
+ 654 0000 0100     		.short	1
+ 655 0002 01       		.byte	1
+ 656 0003 00       		.space	1
+ 657 0004 0000     		.short	0
+ 658 0006 0000     		.short	0
+ 659 0008 0400     		.short	4
+ 660 000a 0000     		.short	0
+ 661 000c 00000000 		.word	0
+ 662 0010 0200     		.short	2
+ 663 0012 01       		.byte	1
+ 664 0013 00       		.space	1
+ 665 0014 0000     		.short	0
+ 666 0016 0000     		.short	0
+ 667 0018 0100     		.short	1
+ 668 001a 0000     		.short	0
+ 669 001c 00000000 		.word	0
+ 670 0020 0000     		.short	0
+ 671 0022 00       		.byte	0
+ 672 0023 00       		.space	1
+ 673 0024 0000     		.short	0
+ 674 0026 0000     		.short	0
+ 675 0028 0000     		.short	0
+ 676 002a 0000     		.short	0
+ 677 002c 00000000 		.word	0
+ 678              		.global	logMsg_fields
+ 679              		.section	.rodata.logMsg_fields,"a"
+ 680              		.align	2
+ 683              	logMsg_fields:
+ 684 0000 0100     		.short	1
+ 685 0002 01       		.byte	1
+ 686 0003 00       		.space	1
+ 687 0004 0000     		.short	0
+ 688 0006 0000     		.short	0
+ 689 0008 0400     		.short	4
+ 690 000a 0000     		.short	0
+ 691 000c 00000000 		.word	0
+ 692 0010 0200     		.short	2
+ 693 0012 06       		.byte	6
+ 694 0013 00       		.space	1
+ 695 0014 0000     		.short	0
+ 696 0016 0000     		.short	0
+ 697 0018 8000     		.short	128
+ 698 001a 0000     		.short	0
+ 699 001c 00000000 		.word	0
+ 700 0020 0000     		.short	0
+ 701 0022 00       		.byte	0
+ 702 0023 00       		.space	1
+ 703 0024 0000     		.short	0
+ 704 0026 0000     		.short	0
+ 705 0028 0000     		.short	0
+ 706 002a 0000     		.short	0
+ 707 002c 00000000 		.word	0
+ 708              		.global	respMsg_fields
+ 709              		.section	.rodata.respMsg_fields,"a"
+ 710              		.align	2
+ 713              	respMsg_fields:
+ 714 0000 0100     		.short	1
+ 715 0002 01       		.byte	1
+ 716 0003 00       		.space	1
+ 717 0004 0000     		.short	0
+ 718 0006 0000     		.short	0
+ 719 0008 0400     		.short	4
+ 720 000a 0000     		.short	0
+ 721 000c 00000000 		.word	0
+ 722 0010 0200     		.short	2
+ 723 0012 01       		.byte	1
+ 724 0013 00       		.space	1
+ 725 0014 0000     		.short	0
+ 726 0016 0000     		.short	0
+ 727 0018 0100     		.short	1
+ 728 001a 0000     		.short	0
+ 729 001c 00000000 		.word	0
+ 730 0020 0A00     		.short	10
+ 731 0022 37       		.byte	55
+ 732 0023 00       		.space	1
+ 733 0024 0300     		.short	3
+ 734 0026 FEFF     		.short	-2
+ 735 0028 0C00     		.short	12
+ 736 002a 0000     		.short	0
+ 737 002c 00000000 		.word	syncMsg_fields
+ 738 0030 0B00     		.short	11
+ 739 0032 37       		.byte	55
+ 740 0033 00       		.space	1
+ 741 0034 FFFF     		.short	-1
+ 742 0036 FEFF     		.short	-2
+ 743 0038 1C00     		.short	28
+ 744 003a 0000     		.short	0
+ 745 003c 00000000 		.word	sysinfoMsg_fields
+ 746 0040 0C00     		.short	12
+ 747 0042 37       		.byte	55
+ 748 0043 00       		.space	1
+ 749 0044 FFFF     		.short	-1
+ 750 0046 FEFF     		.short	-2
+ 751 0048 0800     		.short	8
+ 752 004a 0000     		.short	0
+ 753 004c 00000000 		.word	ackMsg_fields
+ 754 0050 0D00     		.short	13
+ 755 0052 37       		.byte	55
+ 756 0053 00       		.space	1
+ 757 0054 FFFF     		.short	-1
+ 758 0056 FEFF     		.short	-2
+ 759 0058 8400     		.short	132
+ 760 005a 0000     		.short	0
+ 761 005c 00000000 		.word	logMsg_fields
+ 762 0060 0F00     		.short	15
+ 763 0062 37       		.byte	55
+ 764 0063 00       		.space	1
+ 765 0064 FFFF     		.short	-1
+ 766 0066 FEFF     		.short	-2
+ 767 0068 1400     		.short	20
+ 768 006a 0000     		.short	0
+ 769 006c 00000000 		.word	aiDataMsg_fields
+ 770 0070 1000     		.short	16
+ 771 0072 37       		.byte	55
+ 772 0073 00       		.space	1
+ 773 0074 FFFF     		.short	-1
+ 774 0076 FEFF     		.short	-2
+ 775 0078 6000     		.short	96
+ 776 007a 0000     		.short	0
+ 777 007c 00000000 		.word	aiOperatorMsg_fields
+ 778 0080 1100     		.short	17
+ 779 0082 37       		.byte	55
+ 780 0083 00       		.space	1
+ 781 0084 FFFF     		.short	-1
+ 782 0086 FEFF     		.short	-2
+ 783 0088 7800     		.short	120
+ 784 008a 0000     		.short	0
+ 785 008c 00000000 		.word	aiTensorMsg_fields
+ 786 0090 1600     		.short	22
+ 787 0092 37       		.byte	55
+ 788 0093 00       		.space	1
+ 789 0094 FFFF     		.short	-1
+ 790 0096 FEFF     		.short	-2
+ 791 0098 5801     		.short	344
+ 792 009a 0000     		.short	0
+ 793 009c 00000000 		.word	aiModelInfoMsg_fields
+ 794 00a0 0000     		.short	0
+ 795 00a2 00       		.byte	0
+ 796 00a3 00       		.space	1
+ 797 00a4 0000     		.short	0
+ 798 00a6 0000     		.short	0
+ 799 00a8 0000     		.short	0
+ 800 00aa 0000     		.short	0
+ 801 00ac 00000000 		.word	0
+ 802              		.text
+ 803              	.Letext0:
+ 804              		.file 2 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
+ 805              		.file 3 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
+ 806              		.file 4 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
+ 807              		.file 5 "SR5E1_AI_Demo_7000P/lib/validation/inc/pb.h"
+ 808              		.file 6 "SR5E1_AI_Demo_7000P/lib/validation/inc/stm32msg.pb.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 stm32msg.pb.c
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:23     .rodata.reqMsg_cmd_default:00000000 reqMsg_cmd_default
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:30     .rodata.aiTensorDescMsg_format_default:00000000 aiTensorDescMsg_format_default
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:27     .rodata.aiTensorDescMsg_format_default:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:37     .rodata.aiTensorDescMsg_size_default:00000000 aiTensorDescMsg_size_default
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:34     .rodata.aiTensorDescMsg_size_default:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:44     .rodata.aiTensorDescMsg_n_dims_default:00000000 aiTensorDescMsg_n_dims_default
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:41     .rodata.aiTensorDescMsg_n_dims_default:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:51     .rodata.aiTensorDescMsg_scale_default:00000000 aiTensorDescMsg_scale_default
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:48     .rodata.aiTensorDescMsg_scale_default:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:58     .rodata.aiTensorDescMsg_zeropoint_default:00000000 aiTensorDescMsg_zeropoint_default
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:55     .rodata.aiTensorDescMsg_zeropoint_default:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:65     .rodata.aiTensorDescMsg_addr_default:00000000 aiTensorDescMsg_addr_default
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:62     .rodata.aiTensorDescMsg_addr_default:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:72     .rodata.aiTensorDescMsg_flags_default:00000000 aiTensorDescMsg_flags_default
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:69     .rodata.aiTensorDescMsg_flags_default:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:79     .rodata.aiDataMsg_type_default:00000000 aiDataMsg_type_default
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:76     .rodata.aiDataMsg_type_default:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:86     .rodata.aiDataMsg_addr_default:00000000 aiDataMsg_addr_default
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:83     .rodata.aiDataMsg_addr_default:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:93     .rodata.reqMsg_fields:00000000 reqMsg_fields
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:90     .rodata.reqMsg_fields:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:147    .rodata.aiTensorDescMsg_fields:00000000 aiTensorDescMsg_fields
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:144    .rodata.aiTensorDescMsg_fields:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:233    .rodata.aiDataMsg_fields:00000000 aiDataMsg_fields
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:230    .rodata.aiDataMsg_fields:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:279    .rodata.aiOperatorMsg_fields:00000000 aiOperatorMsg_fields
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:276    .rodata.aiOperatorMsg_fields:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:357    .rodata.aiTensorMsg_fields:00000000 aiTensorMsg_fields
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:354    .rodata.aiTensorMsg_fields:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:387    .rodata.aiModelInfoMsg_fields:00000000 aiModelInfoMsg_fields
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:384    .rodata.aiModelInfoMsg_fields:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:553    .rodata.syncMsg_fields:00000000 syncMsg_fields
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:550    .rodata.syncMsg_fields:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:591    .rodata.sysinfoMsg_fields:00000000 sysinfoMsg_fields
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:588    .rodata.sysinfoMsg_fields:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:653    .rodata.ackMsg_fields:00000000 ackMsg_fields
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:650    .rodata.ackMsg_fields:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:683    .rodata.logMsg_fields:00000000 logMsg_fields
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:680    .rodata.logMsg_fields:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:713    .rodata.respMsg_fields:00000000 respMsg_fields
+C:\Users\danie\AppData\Local\Temp\ccrSzija.s:710    .rodata.respMsg_fields:00000000 $d
+                           .group:00000000 wm4.0.5030deb6392b4db6a7ac5ffd5733b4a1
+                           .group:00000000 wm4.pb.h.6.0211b766e64415182c5274e6ec52e2a2
+                           .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
+                           .group:00000000 wm4.features.h.33.5ea28ceb8be6621901b9d58b4c3ee651
+                           .group:00000000 wm4._default_types.h.15.247e5cd201eca3442cbf5404108c4935
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:00000000 wm4.stddef.h.39.38eb7ec030421799c657b13be5aa21c7
+                           .group:00000000 wm4.stdbool.h.29.c08aa3eec75cf5b9b5003883f43253f0
+                           .group:00000000 wm4.newlib.h.7.591ac1bd65c1f5b34864757667a05252
+                           .group:00000000 wm4.ieeefp.h.77.bd5feb87d9990dd328793ced294f6a87
+                           .group:00000000 wm4.config.h.224.10ee1ad185d877c6e334e6581faab44d
+                           .group:00000000 wm4._ansi.h.31.de524f58584151836e90d8620a16f8e8
+                           .group:00000000 wm4.cdefs.h.49.a0dc0a4a6c7d01e2e5d0aade9399215f
+                           .group:00000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:00000000 wm4.stddef.h.158.6f8e08a347b1cff664332fa350bfceb3
+                           .group:00000000 wm4._types.h.127.3bdfe3ff8ea2d0985b03d9cbe93480e3
+                           .group:00000000 wm4.reent.h.18.25503cdc8b7e55dd0d6ea7b3e5af7a03
+                           .group:00000000 wm4.lock.h.2.1461d1fff82dffe8bfddc23307f6484f
+                           .group:00000000 wm4.reent.h.78.6b87466b04591b1f1cb88c14fdf2ba9e
+                           .group:00000000 wm4.string.h.15.dab3980bf35408a4c507182805e2de3a
+                           .group:00000000 wm4.stddef.h.158.eec8bf00b5213f43d095cb984c5f22e3
+                           .group:00000000 wm4.pb.h.80.0c113d593b086601ad12440334e7ab1d
+                           .group:00000000 wm4.stm32msg.pb.h.22.d3db115741efa704f3254e5031b33609
+
+NO UNDEFINED SYMBOLS
