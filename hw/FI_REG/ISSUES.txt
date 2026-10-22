@@ -1,5 +1,5 @@
 File txt dove mettere possibili questioni aperte:
 
-Il main project corrente effettua una fault Injection dopo Validation a un tempo fisso su R0-R12 per ogni inferenza. Ho provato a gestire gli HardFault mettendo un Handler custom che potesse recuperare i registri nello stack in maniera tale da bypassare il fault durante la interrupt service routine e poter continuare il processo di Validation. 
+Demo2 effettua una fault Injection dopo Validation a un tempo fisso su R0-R12 per ogni inferenza. Ho provato a gestire gli HardFault mettendo un Handler custom che potesse recuperare i registri nello stack in maniera tale da bypassare il fault durante la interrupt service routine e poter continuare il processo di Validation. 
 
-Putroppo ho notato che questa tecnica non copre possibili Hardfault legati alla memoria. Ovvero ho notato che riesco ad uscire dall'interrupt ma il valore corrotto viene salvato in memoria, casuando un Hardfault all'inferenza immediatamente successiva. Quindi il processo di Validation rischia di non completarsi mai (Da parlarne meglio in presenza)
+Purtroppo ho notato che questa tecnica non copre possibili Hardfault legati alla memoria. Ovvero ho notato che riesco ad uscire dall'interrupt ma il valore corrotto viene salvato in memoria, casuando un Hardfault all'inferenza immediatamente successiva. Quindi il processo di Validation rischia di non completarsi mai (Da parlarne meglio in presenza)

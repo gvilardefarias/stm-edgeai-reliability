@@ -2281,31 +2281,31 @@
  1068              		.file 16 "C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Comms/UART/include/sr5e1/ua
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\danie\AppData\Local\Temp\ccPY5mfG.s:20     .text.gpio_set_pin_moder:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccPY5mfG.s:26     .text.gpio_set_pin_moder:00000000 gpio_set_pin_moder
-C:\Users\danie\AppData\Local\Temp\ccPY5mfG.s:93     .text.gpio_set_pin_otyper:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccPY5mfG.s:99     .text.gpio_set_pin_otyper:00000000 gpio_set_pin_otyper
-C:\Users\danie\AppData\Local\Temp\ccPY5mfG.s:162    .text.gpio_set_pin_ospeedr:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccPY5mfG.s:168    .text.gpio_set_pin_ospeedr:00000000 gpio_set_pin_ospeedr
-C:\Users\danie\AppData\Local\Temp\ccPY5mfG.s:234    .text.gpio_set_pin_pupdr:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccPY5mfG.s:240    .text.gpio_set_pin_pupdr:00000000 gpio_set_pin_pupdr
-C:\Users\danie\AppData\Local\Temp\ccPY5mfG.s:306    .text.gpio_set_pin_afr:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccPY5mfG.s:312    .text.gpio_set_pin_afr:00000000 gpio_set_pin_afr
-C:\Users\danie\AppData\Local\Temp\ccPY5mfG.s:405    .text.gpio_set_pin_ihystr:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccPY5mfG.s:411    .text.gpio_set_pin_ihystr:00000000 gpio_set_pin_ihystr
-C:\Users\danie\AppData\Local\Temp\ccPY5mfG.s:477    .text.gpio_set_pin_trigenr:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccPY5mfG.s:483    .text.gpio_set_pin_trigenr:00000000 gpio_set_pin_trigenr
-C:\Users\danie\AppData\Local\Temp\ccPY5mfG.s:546    .text.gpio_set_pin_safeselr:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccPY5mfG.s:552    .text.gpio_set_pin_safeselr:00000000 gpio_set_pin_safeselr
-C:\Users\danie\AppData\Local\Temp\ccPY5mfG.s:615    .text.gpio_set_pin_safevalr:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccPY5mfG.s:621    .text.gpio_set_pin_safevalr:00000000 gpio_set_pin_safevalr
-C:\Users\danie\AppData\Local\Temp\ccPY5mfG.s:684    .text.gpio_set_pin_mode:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccPY5mfG.s:690    .text.gpio_set_pin_mode:00000000 gpio_set_pin_mode
-C:\Users\danie\AppData\Local\Temp\ccPY5mfG.s:807    .text.SystemInit:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccPY5mfG.s:814    .text.SystemInit:00000000 SystemInit
-C:\Users\danie\AppData\Local\Temp\ccPY5mfG.s:1017   .text.SystemInit:000000fc $d
-C:\Users\danie\AppData\Local\Temp\ccPY5mfG.s:1023   .text.main:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccPY5mfG.s:1030   .text.main:00000000 main
+C:\Users\danie\AppData\Local\Temp\ccHq5LEq.s:20     .text.gpio_set_pin_moder:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccHq5LEq.s:26     .text.gpio_set_pin_moder:00000000 gpio_set_pin_moder
+C:\Users\danie\AppData\Local\Temp\ccHq5LEq.s:93     .text.gpio_set_pin_otyper:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccHq5LEq.s:99     .text.gpio_set_pin_otyper:00000000 gpio_set_pin_otyper
+C:\Users\danie\AppData\Local\Temp\ccHq5LEq.s:162    .text.gpio_set_pin_ospeedr:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccHq5LEq.s:168    .text.gpio_set_pin_ospeedr:00000000 gpio_set_pin_ospeedr
+C:\Users\danie\AppData\Local\Temp\ccHq5LEq.s:234    .text.gpio_set_pin_pupdr:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccHq5LEq.s:240    .text.gpio_set_pin_pupdr:00000000 gpio_set_pin_pupdr
+C:\Users\danie\AppData\Local\Temp\ccHq5LEq.s:306    .text.gpio_set_pin_afr:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccHq5LEq.s:312    .text.gpio_set_pin_afr:00000000 gpio_set_pin_afr
+C:\Users\danie\AppData\Local\Temp\ccHq5LEq.s:405    .text.gpio_set_pin_ihystr:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccHq5LEq.s:411    .text.gpio_set_pin_ihystr:00000000 gpio_set_pin_ihystr
+C:\Users\danie\AppData\Local\Temp\ccHq5LEq.s:477    .text.gpio_set_pin_trigenr:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccHq5LEq.s:483    .text.gpio_set_pin_trigenr:00000000 gpio_set_pin_trigenr
+C:\Users\danie\AppData\Local\Temp\ccHq5LEq.s:546    .text.gpio_set_pin_safeselr:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccHq5LEq.s:552    .text.gpio_set_pin_safeselr:00000000 gpio_set_pin_safeselr
+C:\Users\danie\AppData\Local\Temp\ccHq5LEq.s:615    .text.gpio_set_pin_safevalr:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccHq5LEq.s:621    .text.gpio_set_pin_safevalr:00000000 gpio_set_pin_safevalr
+C:\Users\danie\AppData\Local\Temp\ccHq5LEq.s:684    .text.gpio_set_pin_mode:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccHq5LEq.s:690    .text.gpio_set_pin_mode:00000000 gpio_set_pin_mode
+C:\Users\danie\AppData\Local\Temp\ccHq5LEq.s:807    .text.SystemInit:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccHq5LEq.s:814    .text.SystemInit:00000000 SystemInit
+C:\Users\danie\AppData\Local\Temp\ccHq5LEq.s:1017   .text.SystemInit:000000fc $d
+C:\Users\danie\AppData\Local\Temp\ccHq5LEq.s:1023   .text.main:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccHq5LEq.s:1030   .text.main:00000000 main
                            .group:00000000 wm4.0.5030deb6392b4db6a7ac5ffd5733b4a1
                            .group:00000000 wm4.stdbool.h.29.c08aa3eec75cf5b9b5003883f43253f0
                            .group:00000000 wm4.stddef.h.39.38eb7ec030421799c657b13be5aa21c7
@@ -2387,7 +2387,7 @@ C:\Users\danie\AppData\Local\Temp\ccPY5mfG.s:1030   .text.main:00000000 main
                            .group:00000000 wm4.stdio.h.67.0cf8a9c281ab0b348aef5c02e7e48825
                            .group:00000000 wm4.stdio.h.2.4aa87247282eca6c8f36f9de33d8df1a
                            .group:00000000 wm4.stdio.h.87.a1e20d2651f9bfb66e51bfbe849db00a
-                           .group:00000000 wm4.fault_injection.h.2.17d185c0609e9a56c72f56eb448287a5
+                           .group:00000000 wm4.fault_injection.h.2.6077c41add54c2b8c73e2a93b2abd2d8
                            .group:00000000 wm4.stellar_ai_cfg.h.22.b8366a3a45f39e9e09a10028cf2dd2bf
 
 UNDEFINED SYMBOLS

@@ -500,10 +500,11 @@
   ],
   "environment": {
     "generated_model": {
-      "generated_time": "2026-10-19T12:38:15+0200",
+      "generated_time": "2026-10-22T17:36:50+0200",
       "name": "network"
     },
-    "network_signature": "0x3f774895fc81f570",
+    "network_signature": "0x2e9c2b54dca23f80",
+    "target": "stellar family - 0x2511 - SR5E1 @300/300MHz",
     "test_name": "",
     "tools": [
       {
@@ -588,6 +589,16 @@
           }
         }
       ],
+      "exec_time": {
+        "c_layer_name": null,
+        "counters": null,
+        "cycles": 888716,
+        "cycles_by_macc": 9.344577046422375,
+        "duration_ms": 2.9623870307785753,
+        "init_time_ms": 0.004783333279192448,
+        "install_time_ms": 0.0,
+        "percentage": 100.0
+      },
       "id": 0,
       "inputs": [
         79
@@ -609,6 +620,16 @@
             "stride": "(1, 1)",
             "use_bias": "True",
             "weights_prefetch": "True"
+          },
+          "exec_time": {
+            "c_layer_name": "ai_node_0",
+            "counters": [
+              135238
+            ],
+            "cycles": 135238,
+            "cycles_by_macc": 13.165693146417446,
+            "duration_ms": 0.45079478240403975,
+            "percentage": 15.217281797428129
           },
           "id": 12,
           "inputs": [
@@ -638,6 +659,16 @@
           "attributes": {
             "nonlinearity": "relu"
           },
+          "exec_time": {
+            "c_layer_name": "ai_node_1",
+            "counters": [
+              3034
+            ],
+            "cycles": 3034,
+            "cycles_by_macc": 4.740625,
+            "duration_ms": 0.010114393746633022,
+            "percentage": 0.3414271545732076
+          },
           "id": 13,
           "inputs": [
             81
@@ -665,6 +696,16 @@
             "pool_pad": "{H: (0, 0), W: (0, 0)}",
             "pool_size": "(2,)",
             "pool_stride": "(2,)"
+          },
+          "exec_time": {
+            "c_layer_name": "ai_node_2",
+            "counters": [
+              6341
+            ],
+            "cycles": 6341,
+            "cycles_by_macc": 9.9078125,
+            "duration_ms": 0.02113932303351457,
+            "percentage": 0.7135908581114307
           },
           "id": 14,
           "inputs": [
@@ -706,6 +747,16 @@
             "use_bias": "True",
             "use_peepholes": "True"
           },
+          "exec_time": {
+            "c_layer_name": "ai_node_3",
+            "counters": [
+              743279
+            ],
+            "cycles": 743279,
+            "cycles_by_macc": 8.899413314176245,
+            "duration_ms": 2.477598815667825,
+            "percentage": 83.6352168007116
+          },
           "id": 15,
           "inputs": [
             85,
@@ -737,6 +788,16 @@
           "attributes": {
             "num_units": "1",
             "use_bias": "True"
+          },
+          "exec_time": {
+            "c_layer_name": "ai_node_4",
+            "counters": [
+              821
+            ],
+            "cycles": 821,
+            "cycles_by_macc": 24.87878787878788,
+            "duration_ms": 0.002739715926562909,
+            "percentage": 0.09248338917561547
           },
           "id": 16,
           "inputs": [
@@ -811,6 +872,20 @@
     }
   ],
   "json_schema_version": "2.0",
+  "memory_footprint": {
+    "activations": 2944,
+    "io": [
+      0,
+      0
+    ],
+    "kernel_flash": 0,
+    "kernel_ram": 0,
+    "series": "generic",
+    "toolchain": null,
+    "toolchain_flash": 0,
+    "toolchain_ram": 0,
+    "weights": 35980
+  },
   "memory_pools": [
     {
       "address": "NULL",
@@ -871,5 +946,48 @@
       "user_allocated": false,
       "virtual": false
     }
-  ]
+  ],
+  "validation": {
+    "device": "VALIDATION_TARGET",
+    "val_error": 0.001115193823352456,
+    "val_error_desc": "x-cross (l2r) #1",
+    "val_metrics": [
+      {
+        "acc": "n.a.",
+        "cos": 0.9983102679252625,
+        "desc": "TARGET c-model #1",
+        "l2r": 0.12622304260730743,
+        "mae": 0.20170122385025024,
+        "mean": -0.2016380876302719,
+        "nse": -0.023655832315332193,
+        "rmse": 0.22151193022727966,
+        "snr": 16.928433179855347,
+        "std": 0.09185468405485153
+      },
+      {
+        "acc": "n.a.",
+        "cos": 0.9983126521110535,
+        "desc": "original model #1",
+        "l2r": 0.1261831372976303,
+        "mae": 0.20162692666053772,
+        "mean": -0.2015637457370758,
+        "nse": -0.022947591061102113,
+        "rmse": 0.2214352935552597,
+        "snr": 16.931438446044922,
+        "std": 0.09183292090892792
+      },
+      {
+        "acc": "n.a.",
+        "cos": 0.9999993443489075,
+        "desc": "X-cross #1",
+        "l2r": 0.001115193823352456,
+        "mae": 0.00018205094966106117,
+        "mean": -7.432015263475478e-05,
+        "nse": 0.9999186845421199,
+        "rmse": 0.001957081025466323,
+        "snr": 59.052734375,
+        "std": 0.001958883600309491
+      }
+    ]
+  }
 }

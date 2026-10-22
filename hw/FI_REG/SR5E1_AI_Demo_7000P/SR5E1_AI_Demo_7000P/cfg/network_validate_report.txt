@@ -1,5 +1,5 @@
 ST Edge AI Core v4.0.0-20500 359356bb0
-Created date          : 2026-10-15 18:41:33
+Created date          : 2026-10-22 17:40:02
 Parameters            : validate --target sr5e1 --c-api st-ai -m C:/StellarStudio-9.1/workspace/SR5E1_AI_Demo_7000P\source/model_lstm\CNN_LSTM.h5 --name network --type keras --compression none --workspace C:/StellarStudio-9.1/workspace/SR5E1_AI_Demo_7000P\SR5E1_AI_Demo_7000P\ws\ --output C:/StellarStudio-9.1/workspace/SR5E1_AI_Demo_7000P\SR5E1_AI_Demo_7000P\cfg\ --mode target -d serial:115200 -vi C:/StellarStudio-9.1/workspace/SR5E1_AI_Demo_7000P\source/validation_lstm/Validate_set.npz
 
 Exec/report summary (validate)
@@ -152,10 +152,10 @@ Running the ST.AI c-model (AI RUNNER)...(name=network, mode=TARGET)
   ST.AI Profiling results v2.0 - "network"
   ----------------------------------------------------------------------------
   nb sample(s)                   :   305                                      
-  duration                       :   3.019 ms by sample (3.000/3.038/0.006)   
+  duration                       :   2.962 ms by sample (2.945/2.977/0.005)   
   macc                           :   95105                                    
-  cycles/MACC                    :   9.52                                     
-  CPU cycles                     :   [905,739]                                
+  cycles/MACC                    :   9.34                                     
+  CPU cycles                     :   [888,713]                                
   network initialize time (ms)   :   0.005                                    
   ----------------------------------------------------------------------------
    
@@ -163,13 +163,13 @@ Running the ST.AI c-model (AI RUNNER)...(name=network, mode=TARGET)
    -----------------------------------------------------------------------------------------------------------
    c_id    m_id   type                                 dur (ms)        %     cumul  CPU cycles    name        
    -----------------------------------------------------------------------------------------------------------
-   0       1      Conv2D (0x103) - Conv2D                 0.450   14.90%    14.90%  [ 134,934 ]   ai_node_0   
-   1       2      NL (0x107) - Nonlinearity (relu)        0.010    0.32%    15.22%  [   2,875 ]   ai_node_1   
-   2       3      Pool (0x10b) - Pool_Max                 0.021    0.69%    15.90%  [   6,236 ]   ai_node_2   
-   3       4      LSTM (0x181) - LSTM                     2.537   84.02%    99.92%  [ 760,979 ]   ai_node_3   
-   4       5      Dense (0x104) - Dense                   0.002    0.08%   100.00%  [     715 ]   ai_node_4   
+   0       1      Conv2D (0x103) - Conv2D                 0.451   15.22%    15.22%  [ 135,238 ]   ai_node_0   
+   1       2      NL (0x107) - Nonlinearity (relu)        0.010    0.34%    15.56%  [   3,034 ]   ai_node_1   
+   2       3      Pool (0x10b) - Pool_Max                 0.021    0.71%    16.27%  [   6,341 ]   ai_node_2   
+   3       4      LSTM (0x181) - LSTM                     2.478   83.64%    99.91%  [ 743,279 ]   ai_node_3   
+   4       5      Dense (0x104) - Dense                   0.003    0.09%   100.00%  [     821 ]   ai_node_4   
    -----------------------------------------------------------------------------------------------------------
-   total                                                  3.019                     [ 905,739 ]               
+   total                                                  2.962                     [ 888,713 ]               
    -----------------------------------------------------------------------------------------------------------
    
    Statistic per tensor
@@ -177,14 +177,14 @@ Running the ST.AI c-model (AI RUNNER)...(name=network, mode=TARGET)
    tensor   #     type[shape]:size        min     max     mean      std  name       
    ---------------------------------------------------------------------------------
    I.0      305   f32[1,20,4]:320      -0.000   1.004    0.517    0.334  input_1    
-   O.0      305   f32[1,1]:4            1.320   2.116    1.741    0.217  output_1   
+   O.0      305   f32[1,1]:4            1.320   2.116    1.742    0.217  output_1   
    ---------------------------------------------------------------------------------
  
 Saving validation data...
  output directory: C:\StellarStudio-9.1\workspace\SR5E1_AI_Demo_7000P\SR5E1_AI_Demo_7000P\cfg
  creating C:\StellarStudio-9.1\workspace\SR5E1_AI_Demo_7000P\SR5E1_AI_Demo_7000P\cfg\network_val_io.npz
  m_outputs_1: (305, 1)/float32, min/max=[1.319921, 2.116236], mean/std=[1.741444, 0.216675], dense_1
- c_outputs_1: (305, 1, 1, 1)/float32, min/max=[1.319921, 2.116236], mean/std=[1.741444, 0.216675], dense_1
+ c_outputs_1: (305, 1, 1, 1)/float32, min/max=[1.319930, 2.116237], mean/std=[1.741519, 0.216502], dense_1
 
  
 Computing the metrics...
@@ -194,7 +194,7 @@ Computing the metrics...
  notes: - computed against the provided ground truth values
         - 305 samples (1 items per sample)
 
-  acc=n.a. rmse=0.221435294 mae=0.201626942 l2r=0.126183137 mean=-0.201564 std=0.091833 snr=16.931438 nse=-0.022948 cos=0.998313 
+  acc=n.a. rmse=0.221511930 mae=0.201701224 l2r=0.126223043 mean=-0.201638 std=0.091855 snr=16.928433 nse=-0.023656 cos=0.998310 
 
  Accuracy report #1 for the reference model
  ----------------------------------------------------------------------------------------------------
@@ -208,7 +208,7 @@ Computing the metrics...
  notes: - the output of the reference model is used as ground truth/reference value
         - 305 samples (1 items per sample)
 
-  acc=n.a. rmse=0.000000191 mae=0.000000140 l2r=0.000000109 mean=-0.000000 std=0.000000 snr=139.269638 nse=1.000000 cos=1.000000 
+  acc=n.a. rmse=0.001957081 mae=0.000182051 l2r=0.001115194 mean=-0.000074 std=0.001959 snr=59.052734 nse=0.999919 cos=0.999999 
 
 
 Number of operations per c-layer
@@ -234,22 +234,22 @@ Complexity report (model)
 ------ ----------------------- ------------------------- ------------------------- ------ -------- ------------------ 
 m_id   name                    c_macc                    c_rom                     c_id   c_dur    l2r (X-CROSS)      
 ------ ----------------------- ------------------------- ------------------------- ------ -------- ------------------ 
-1      batch_normalization_1   ||                10.8%   |                  6.0%   [0]     14.9%                      
+1      batch_normalization_1   ||                10.8%   |                  6.0%   [0]     15.2%                      
 2      activation_1            |                  0.7%   |                  0.0%   [1]      0.3%                      
 3      max_pooling1d_1         |                  0.7%   |                  0.0%   [2]      0.7%                      
-4      lstm_1                  ||||||||||||||||  87.8%   ||||||||||||||||  93.6%   [3]     84.0%                      
-5      dense_1                 |                  0.0%   |                  0.4%   [4]      0.1%   1.08772227e-07 *   
+4      lstm_1                  ||||||||||||||||  87.8%   ||||||||||||||||  93.6%   [3]     83.6%                      
+5      dense_1                 |                  0.0%   |                  0.4%   [4]      0.1%   1.11519382e-03 *   
 ------ ----------------------- ------------------------- ------------------------- ------ -------- ------------------ 
 macc=95,105 weights=35,980 act=2,944 ram_io=0
 
 Evaluation report (summary)
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Output              acc    rmse          mae           l2r           mean        std        snr          nse         cos        tensor                                
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-TARGET c-model #1   n.a.   0.221435294   0.201626942   0.126183137   -0.201564   0.091833   16.931438    -0.022948   0.998313   'dense_1', 305 x f32(1x1), m_id=[5]   
-original model #1   n.a.   0.221435294   0.201626927   0.126183137   -0.201564   0.091833   16.931438    -0.022948   0.998313   'dense_1', 305 x f32(1x1), m_id=[5]   
-X-cross #1          n.a.   0.000000191   0.000000140   0.000000109   -0.000000   0.000000   139.269638   1.000000    1.000000   'dense_1', 305 x f32(1x1), m_id=[5]   
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Output              acc    rmse          mae           l2r           mean        std        snr         nse         cos        tensor                                
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+TARGET c-model #1   n.a.   0.221511930   0.201701224   0.126223043   -0.201638   0.091855   16.928433   -0.023656   0.998310   'dense_1', 305 x f32(1x1), m_id=[5]   
+original model #1   n.a.   0.221435294   0.201626927   0.126183137   -0.201564   0.091833   16.931438   -0.022948   0.998313   'dense_1', 305 x f32(1x1), m_id=[5]   
+X-cross #1          n.a.   0.001957081   0.000182051   0.001115194   -0.000074   0.001959   59.052734   0.999919    0.999999   'dense_1', 305 x f32(1x1), m_id=[5]   
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
  acc  : Accuracy (class, axis=-1)
  rmse : Root Mean Squared Error
