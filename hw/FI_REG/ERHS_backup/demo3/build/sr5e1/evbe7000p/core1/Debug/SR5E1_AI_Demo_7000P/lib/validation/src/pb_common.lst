@@ -1,0 +1,491 @@
+   1              		.cpu cortex-m7
+   2              		.arch armv7e-m
+   3              		.fpu fpv5-d16
+   4              		.eabi_attribute 28, 1
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 6
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.file	"pb_common.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.file 1 "SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c"
+  19              		.section	.text.pb_field_iter_begin,"ax",%progbits
+  20              		.align	1
+  21              		.p2align 4,,15
+  22              		.global	pb_field_iter_begin
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	pb_field_iter_begin:
+  28              	.LFB0:
+   1:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c **** /* pb_common.c: Common support functions for pb_encode.c and pb_decode.c.
+   2:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****  *
+   3:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****  * 2014 Petteri Aimonen <jpa@kapsi.fi>
+   4:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****  */
+   5:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c **** 
+   6:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c **** #include "pb_common.h"
+   7:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c **** 
+   8:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c **** bool pb_field_iter_begin(pb_field_iter_t *iter, const pb_field_t *fields, void *dest_struct)
+   9:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c **** {
+  29              		.loc 1 9 1
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 16
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  34 0000 84B0     		sub	sp, sp, #16
+  35              		.cfi_def_cfa_offset 16
+  36 0002 0390     		str	r0, [sp, #12]
+  37 0004 0291     		str	r1, [sp, #8]
+  38 0006 0192     		str	r2, [sp, #4]
+  10:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     iter->start = fields;
+  39              		.loc 1 10 17
+  40 0008 039B     		ldr	r3, [sp, #12]
+  41 000a 029A     		ldr	r2, [sp, #8]
+  42 000c 1A60     		str	r2, [r3]
+  11:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     iter->pos = fields;
+  43              		.loc 1 11 15
+  44 000e 039B     		ldr	r3, [sp, #12]
+  45 0010 029A     		ldr	r2, [sp, #8]
+  46 0012 5A60     		str	r2, [r3, #4]
+  12:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     iter->required_field_index = 0;
+  47              		.loc 1 12 32
+  48 0014 039B     		ldr	r3, [sp, #12]
+  49 0016 0022     		movs	r2, #0
+  50 0018 9A60     		str	r2, [r3, #8]
+  13:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     iter->dest_struct = dest_struct;
+  51              		.loc 1 13 23
+  52 001a 039B     		ldr	r3, [sp, #12]
+  53 001c 019A     		ldr	r2, [sp, #4]
+  54 001e DA60     		str	r2, [r3, #12]
+  14:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     iter->pData = (char*)dest_struct + iter->pos->data_offset;
+  55              		.loc 1 14 44
+  56 0020 039B     		ldr	r3, [sp, #12]
+  57 0022 5B68     		ldr	r3, [r3, #4]
+  58              		.loc 1 14 49
+  59 0024 9B88     		ldrh	r3, [r3, #4]
+  60 0026 1A46     		mov	r2, r3
+  61              		.loc 1 14 38
+  62 0028 019B     		ldr	r3, [sp, #4]
+  63 002a 1A44     		add	r2, r2, r3
+  64              		.loc 1 14 17
+  65 002c 039B     		ldr	r3, [sp, #12]
+  66 002e 1A61     		str	r2, [r3, #16]
+  15:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     iter->pSize = (char*)iter->pData + iter->pos->size_offset;
+  67              		.loc 1 15 30
+  68 0030 039B     		ldr	r3, [sp, #12]
+  69 0032 1B69     		ldr	r3, [r3, #16]
+  70              		.loc 1 15 44
+  71 0034 039A     		ldr	r2, [sp, #12]
+  72 0036 5268     		ldr	r2, [r2, #4]
+  73              		.loc 1 15 49
+  74 0038 B2F90620 		ldrsh	r2, [r2, #6]
+  75              		.loc 1 15 38
+  76 003c 1A44     		add	r2, r2, r3
+  77              		.loc 1 15 17
+  78 003e 039B     		ldr	r3, [sp, #12]
+  79 0040 5A61     		str	r2, [r3, #20]
+  16:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     
+  17:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     return (iter->pos->tag != 0);
+  80              		.loc 1 17 17
+  81 0042 039B     		ldr	r3, [sp, #12]
+  82 0044 5B68     		ldr	r3, [r3, #4]
+  83              		.loc 1 17 22
+  84 0046 1B88     		ldrh	r3, [r3]
+  85              		.loc 1 17 28
+  86 0048 002B     		cmp	r3, #0
+  87 004a 14BF     		ite	ne
+  88 004c 0123     		movne	r3, #1
+  89 004e 0023     		moveq	r3, #0
+  90 0050 DBB2     		uxtb	r3, r3
+  18:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c **** }
+  91              		.loc 1 18 1
+  92 0052 1846     		mov	r0, r3
+  93 0054 04B0     		add	sp, sp, #16
+  94              		.cfi_def_cfa_offset 0
+  95              		@ sp needed
+  96 0056 7047     		bx	lr
+  97              		.cfi_endproc
+  98              	.LFE0:
+ 100              		.section	.text.pb_field_iter_next,"ax",%progbits
+ 101              		.align	1
+ 102              		.p2align 4,,15
+ 103              		.global	pb_field_iter_next
+ 104              		.syntax unified
+ 105              		.thumb
+ 106              		.thumb_func
+ 108              	pb_field_iter_next:
+ 109              	.LFB1:
+  19:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c **** 
+  20:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c **** bool pb_field_iter_next(pb_field_iter_t *iter)
+  21:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c **** {
+ 110              		.loc 1 21 1
+ 111              		.cfi_startproc
+ 112              		@ args = 0, pretend = 0, frame = 16
+ 113              		@ frame_needed = 0, uses_anonymous_args = 0
+ 114 0000 00B5     		push	{lr}
+ 115              		.cfi_def_cfa_offset 4
+ 116              		.cfi_offset 14, -4
+ 117 0002 85B0     		sub	sp, sp, #20
+ 118              		.cfi_def_cfa_offset 24
+ 119 0004 0190     		str	r0, [sp, #4]
+  22:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     const pb_field_t *prev_field = iter->pos;
+ 120              		.loc 1 22 23
+ 121 0006 019B     		ldr	r3, [sp, #4]
+ 122 0008 5B68     		ldr	r3, [r3, #4]
+ 123 000a 0293     		str	r3, [sp, #8]
+  23:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c **** 
+  24:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     if (prev_field->tag == 0)
+ 124              		.loc 1 24 19
+ 125 000c 029B     		ldr	r3, [sp, #8]
+ 126 000e 1B88     		ldrh	r3, [r3]
+ 127              		.loc 1 24 8
+ 128 0010 002B     		cmp	r3, #0
+ 129 0012 01D1     		bne	.L4
+  25:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     {
+  26:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****         /* Handle empty message types, where the first field is already the terminator.
+  27:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****          * In other cases, the iter->pos never points to the terminator. */
+  28:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****         return false;
+ 130              		.loc 1 28 16
+ 131 0014 0023     		movs	r3, #0
+ 132 0016 69E0     		b	.L5
+ 133              	.L4:
+  29:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     }
+  30:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     
+  31:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     iter->pos++;
+ 134              		.loc 1 31 9
+ 135 0018 019B     		ldr	r3, [sp, #4]
+ 136 001a 5B68     		ldr	r3, [r3, #4]
+ 137              		.loc 1 31 14
+ 138 001c 03F11002 		add	r2, r3, #16
+ 139 0020 019B     		ldr	r3, [sp, #4]
+ 140 0022 5A60     		str	r2, [r3, #4]
+  32:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     
+  33:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     if (iter->pos->tag == 0)
+ 141              		.loc 1 33 13
+ 142 0024 019B     		ldr	r3, [sp, #4]
+ 143 0026 5B68     		ldr	r3, [r3, #4]
+ 144              		.loc 1 33 18
+ 145 0028 1B88     		ldrh	r3, [r3]
+ 146              		.loc 1 33 8
+ 147 002a 002B     		cmp	r3, #0
+ 148 002c 09D1     		bne	.L6
+  34:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     {
+  35:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****         /* Wrapped back to beginning, reinitialize */
+  36:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****         (void)pb_field_iter_begin(iter, iter->start, iter->dest_struct);
+ 149              		.loc 1 36 15
+ 150 002e 019B     		ldr	r3, [sp, #4]
+ 151 0030 1968     		ldr	r1, [r3]
+ 152 0032 019B     		ldr	r3, [sp, #4]
+ 153 0034 DB68     		ldr	r3, [r3, #12]
+ 154 0036 1A46     		mov	r2, r3
+ 155 0038 0198     		ldr	r0, [sp, #4]
+ 156 003a FFF7FEFF 		bl	pb_field_iter_begin
+  37:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****         return false;
+ 157              		.loc 1 37 16
+ 158 003e 0023     		movs	r3, #0
+ 159 0040 54E0     		b	.L5
+ 160              	.L6:
+ 161              	.LBB2:
+  38:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     }
+  39:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     else
+  40:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     {
+  41:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****         /* Increment the pointers based on previous field size */
+  42:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****         size_t prev_size = prev_field->data_size;
+ 162              		.loc 1 42 38
+ 163 0042 029B     		ldr	r3, [sp, #8]
+ 164 0044 1B89     		ldrh	r3, [r3, #8]
+ 165              		.loc 1 42 16
+ 166 0046 0393     		str	r3, [sp, #12]
+  43:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     
+  44:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****         if (PB_HTYPE(prev_field->type) == PB_HTYPE_ONEOF &&
+ 167              		.loc 1 44 13
+ 168 0048 029B     		ldr	r3, [sp, #8]
+ 169 004a 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 170 004c 03F03003 		and	r3, r3, #48
+ 171              		.loc 1 44 12
+ 172 0050 302B     		cmp	r3, #48
+ 173 0052 0FD1     		bne	.L7
+  45:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****             PB_HTYPE(iter->pos->type) == PB_HTYPE_ONEOF &&
+ 174              		.loc 1 45 13
+ 175 0054 019B     		ldr	r3, [sp, #4]
+ 176 0056 5B68     		ldr	r3, [r3, #4]
+ 177 0058 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 178 005a 03F03003 		and	r3, r3, #48
+  44:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****             PB_HTYPE(iter->pos->type) == PB_HTYPE_ONEOF &&
+ 179              		.loc 1 44 58 discriminator 1
+ 180 005e 302B     		cmp	r3, #48
+ 181 0060 08D1     		bne	.L7
+  46:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****             iter->pos->data_offset == PB_SIZE_MAX)
+ 182              		.loc 1 46 17
+ 183 0062 019B     		ldr	r3, [sp, #4]
+ 184 0064 5B68     		ldr	r3, [r3, #4]
+ 185              		.loc 1 46 22
+ 186 0066 9B88     		ldrh	r3, [r3, #4]
+  45:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****             PB_HTYPE(iter->pos->type) == PB_HTYPE_ONEOF &&
+ 187              		.loc 1 45 57
+ 188 0068 4FF6FF72 		movw	r2, #65535
+ 189 006c 9342     		cmp	r3, r2
+ 190 006e 01D1     		bne	.L7
+  47:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****         {
+  48:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****             /* Don't advance pointers inside unions */
+  49:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****             return true;
+ 191              		.loc 1 49 20
+ 192 0070 0123     		movs	r3, #1
+ 193 0072 3BE0     		b	.L5
+ 194              	.L7:
+  50:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****         }
+  51:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****         else if (PB_ATYPE(prev_field->type) == PB_ATYPE_STATIC &&
+ 195              		.loc 1 51 18
+ 196 0074 029B     		ldr	r3, [sp, #8]
+ 197 0076 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 198 0078 03F0C003 		and	r3, r3, #192
+ 199              		.loc 1 51 17
+ 200 007c 002B     		cmp	r3, #0
+ 201 007e 0DD1     		bne	.L8
+  52:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****                  PB_HTYPE(prev_field->type) == PB_HTYPE_REPEATED)
+ 202              		.loc 1 52 18
+ 203 0080 029B     		ldr	r3, [sp, #8]
+ 204 0082 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 205 0084 03F03003 		and	r3, r3, #48
+  51:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****                  PB_HTYPE(prev_field->type) == PB_HTYPE_REPEATED)
+ 206              		.loc 1 51 64 discriminator 1
+ 207 0088 202B     		cmp	r3, #32
+ 208 008a 07D1     		bne	.L8
+  53:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****         {
+  54:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****             /* In static arrays, the data_size tells the size of a single entry and
+  55:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****              * array_size is the number of entries */
+  56:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****             prev_size *= prev_field->array_size;
+ 209              		.loc 1 56 36
+ 210 008c 029B     		ldr	r3, [sp, #8]
+ 211 008e 5B89     		ldrh	r3, [r3, #10]
+ 212 0090 1A46     		mov	r2, r3
+ 213              		.loc 1 56 23
+ 214 0092 039B     		ldr	r3, [sp, #12]
+ 215 0094 02FB03F3 		mul	r3, r2, r3
+ 216 0098 0393     		str	r3, [sp, #12]
+ 217 009a 07E0     		b	.L9
+ 218              	.L8:
+  57:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****         }
+  58:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****         else if (PB_ATYPE(prev_field->type) == PB_ATYPE_POINTER)
+ 219              		.loc 1 58 18
+ 220 009c 029B     		ldr	r3, [sp, #8]
+ 221 009e 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 222 00a0 03F0C003 		and	r3, r3, #192
+ 223              		.loc 1 58 17
+ 224 00a4 802B     		cmp	r3, #128
+ 225 00a6 01D1     		bne	.L9
+  59:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****         {
+  60:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****             /* Pointer fields always have a constant size in the main structure.
+  61:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****              * The data_size only applies to the dynamically allocated area. */
+  62:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****             prev_size = sizeof(void*);
+ 226              		.loc 1 62 23
+ 227 00a8 0423     		movs	r3, #4
+ 228 00aa 0393     		str	r3, [sp, #12]
+ 229              	.L9:
+  63:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****         }
+  64:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c **** 
+  65:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****         if (PB_HTYPE(prev_field->type) == PB_HTYPE_REQUIRED)
+ 230              		.loc 1 65 13
+ 231 00ac 029B     		ldr	r3, [sp, #8]
+ 232 00ae 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 233 00b0 03F03003 		and	r3, r3, #48
+ 234              		.loc 1 65 12
+ 235 00b4 002B     		cmp	r3, #0
+ 236 00b6 04D1     		bne	.L10
+  66:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****         {
+  67:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****             /* Count the required fields, in order to check their presence in the
+  68:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****              * decoder. */
+  69:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****             iter->required_field_index++;
+ 237              		.loc 1 69 17
+ 238 00b8 019B     		ldr	r3, [sp, #4]
+ 239 00ba 9B68     		ldr	r3, [r3, #8]
+ 240              		.loc 1 69 39
+ 241 00bc 5A1C     		adds	r2, r3, #1
+ 242 00be 019B     		ldr	r3, [sp, #4]
+ 243 00c0 9A60     		str	r2, [r3, #8]
+ 244              	.L10:
+  70:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****         }
+  71:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     
+  72:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****         iter->pData = (char*)iter->pData + prev_size + iter->pos->data_offset;
+ 245              		.loc 1 72 34
+ 246 00c2 019B     		ldr	r3, [sp, #4]
+ 247 00c4 1A69     		ldr	r2, [r3, #16]
+ 248              		.loc 1 72 60
+ 249 00c6 019B     		ldr	r3, [sp, #4]
+ 250 00c8 5B68     		ldr	r3, [r3, #4]
+ 251              		.loc 1 72 65
+ 252 00ca 9B88     		ldrh	r3, [r3, #4]
+ 253 00cc 1946     		mov	r1, r3
+ 254              		.loc 1 72 54
+ 255 00ce 039B     		ldr	r3, [sp, #12]
+ 256 00d0 0B44     		add	r3, r3, r1
+ 257 00d2 1A44     		add	r2, r2, r3
+ 258              		.loc 1 72 21
+ 259 00d4 019B     		ldr	r3, [sp, #4]
+ 260 00d6 1A61     		str	r2, [r3, #16]
+  73:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****         iter->pSize = (char*)iter->pData + iter->pos->size_offset;
+ 261              		.loc 1 73 34
+ 262 00d8 019B     		ldr	r3, [sp, #4]
+ 263 00da 1B69     		ldr	r3, [r3, #16]
+ 264              		.loc 1 73 48
+ 265 00dc 019A     		ldr	r2, [sp, #4]
+ 266 00de 5268     		ldr	r2, [r2, #4]
+ 267              		.loc 1 73 53
+ 268 00e0 B2F90620 		ldrsh	r2, [r2, #6]
+ 269              		.loc 1 73 42
+ 270 00e4 1A44     		add	r2, r2, r3
+ 271              		.loc 1 73 21
+ 272 00e6 019B     		ldr	r3, [sp, #4]
+ 273 00e8 5A61     		str	r2, [r3, #20]
+  74:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****         return true;
+ 274              		.loc 1 74 16
+ 275 00ea 0123     		movs	r3, #1
+ 276              	.L5:
+ 277              	.LBE2:
+  75:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     }
+  76:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c **** }
+ 278              		.loc 1 76 1
+ 279 00ec 1846     		mov	r0, r3
+ 280 00ee 05B0     		add	sp, sp, #20
+ 281              		.cfi_def_cfa_offset 4
+ 282              		@ sp needed
+ 283 00f0 5DF804FB 		ldr	pc, [sp], #4
+ 284              		.cfi_endproc
+ 285              	.LFE1:
+ 287              		.section	.text.pb_field_iter_find,"ax",%progbits
+ 288              		.align	1
+ 289              		.p2align 4,,15
+ 290              		.global	pb_field_iter_find
+ 291              		.syntax unified
+ 292              		.thumb
+ 293              		.thumb_func
+ 295              	pb_field_iter_find:
+ 296              	.LFB2:
+  77:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c **** 
+  78:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c **** bool pb_field_iter_find(pb_field_iter_t *iter, uint32_t tag)
+  79:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c **** {
+ 297              		.loc 1 79 1
+ 298              		.cfi_startproc
+ 299              		@ args = 0, pretend = 0, frame = 16
+ 300              		@ frame_needed = 0, uses_anonymous_args = 0
+ 301 0000 00B5     		push	{lr}
+ 302              		.cfi_def_cfa_offset 4
+ 303              		.cfi_offset 14, -4
+ 304 0002 85B0     		sub	sp, sp, #20
+ 305              		.cfi_def_cfa_offset 24
+ 306 0004 0190     		str	r0, [sp, #4]
+ 307 0006 0091     		str	r1, [sp]
+  80:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     const pb_field_t *start = iter->pos;
+ 308              		.loc 1 80 23
+ 309 0008 019B     		ldr	r3, [sp, #4]
+ 310 000a 5B68     		ldr	r3, [r3, #4]
+ 311 000c 0393     		str	r3, [sp, #12]
+ 312              	.L14:
+  81:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     
+  82:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     do {
+  83:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****         if (iter->pos->tag == tag &&
+ 313              		.loc 1 83 17
+ 314 000e 019B     		ldr	r3, [sp, #4]
+ 315 0010 5B68     		ldr	r3, [r3, #4]
+ 316              		.loc 1 83 22
+ 317 0012 1B88     		ldrh	r3, [r3]
+ 318 0014 1A46     		mov	r2, r3
+ 319              		.loc 1 83 12
+ 320 0016 009B     		ldr	r3, [sp]
+ 321 0018 9342     		cmp	r3, r2
+ 322 001a 08D1     		bne	.L12
+  84:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****             PB_LTYPE(iter->pos->type) != PB_LTYPE_EXTENSION)
+ 323              		.loc 1 84 13
+ 324 001c 019B     		ldr	r3, [sp, #4]
+ 325 001e 5B68     		ldr	r3, [r3, #4]
+ 326 0020 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 327 0022 03F00F03 		and	r3, r3, #15
+  83:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****             PB_LTYPE(iter->pos->type) != PB_LTYPE_EXTENSION)
+ 328              		.loc 1 83 35 discriminator 1
+ 329 0026 082B     		cmp	r3, #8
+ 330 0028 01D0     		beq	.L12
+  85:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****         {
+  86:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****             /* Found the wanted field */
+  87:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****             return true;
+ 331              		.loc 1 87 20
+ 332 002a 0123     		movs	r3, #1
+ 333 002c 08E0     		b	.L13
+ 334              	.L12:
+  88:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****         }
+  89:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****         
+  90:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****         (void)pb_field_iter_next(iter);
+ 335              		.loc 1 90 15
+ 336 002e 0198     		ldr	r0, [sp, #4]
+ 337 0030 FFF7FEFF 		bl	pb_field_iter_next
+  91:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     } while (iter->pos != start);
+ 338              		.loc 1 91 18
+ 339 0034 019B     		ldr	r3, [sp, #4]
+ 340 0036 5B68     		ldr	r3, [r3, #4]
+ 341              		.loc 1 91 24
+ 342 0038 039A     		ldr	r2, [sp, #12]
+ 343 003a 9A42     		cmp	r2, r3
+ 344 003c E7D1     		bne	.L14
+  92:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     
+  93:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     /* Searched all the way back to start, and found nothing. */
+  94:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c ****     return false;
+ 345              		.loc 1 94 12
+ 346 003e 0023     		movs	r3, #0
+ 347              	.L13:
+  95:SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.c **** }
+ 348              		.loc 1 95 1
+ 349 0040 1846     		mov	r0, r3
+ 350 0042 05B0     		add	sp, sp, #20
+ 351              		.cfi_def_cfa_offset 4
+ 352              		@ sp needed
+ 353 0044 5DF804FB 		ldr	pc, [sp], #4
+ 354              		.cfi_endproc
+ 355              	.LFE2:
+ 357              		.text
+ 358              	.Letext0:
+ 359              		.file 2 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
+ 360              		.file 3 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
+ 361              		.file 4 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
+ 362              		.file 5 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/lib/gcc/arm-none-
+ 363              		.file 6 "SR5E1_AI_Demo_7000P/lib/validation/inc/pb.h"
+ 364              		.file 7 "SR5E1_AI_Demo_7000P/lib/validation/inc/pb_common.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 pb_common.c
+C:\Users\danie\AppData\Local\Temp\ccVFwCQX.s:20     .text.pb_field_iter_begin:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccVFwCQX.s:27     .text.pb_field_iter_begin:00000000 pb_field_iter_begin
+C:\Users\danie\AppData\Local\Temp\ccVFwCQX.s:101    .text.pb_field_iter_next:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccVFwCQX.s:108    .text.pb_field_iter_next:00000000 pb_field_iter_next
+C:\Users\danie\AppData\Local\Temp\ccVFwCQX.s:288    .text.pb_field_iter_find:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccVFwCQX.s:295    .text.pb_field_iter_find:00000000 pb_field_iter_find
+                           .group:00000000 wm4.0.5030deb6392b4db6a7ac5ffd5733b4a1
+                           .group:00000000 wm4.pb.h.6.0211b766e64415182c5274e6ec52e2a2
+                           .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
+                           .group:00000000 wm4.features.h.33.5ea28ceb8be6621901b9d58b4c3ee651
+                           .group:00000000 wm4._default_types.h.15.247e5cd201eca3442cbf5404108c4935
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:00000000 wm4.stddef.h.39.38eb7ec030421799c657b13be5aa21c7
+                           .group:00000000 wm4.stdbool.h.29.c08aa3eec75cf5b9b5003883f43253f0
+                           .group:00000000 wm4.newlib.h.7.591ac1bd65c1f5b34864757667a05252
+                           .group:00000000 wm4.ieeefp.h.77.bd5feb87d9990dd328793ced294f6a87
+                           .group:00000000 wm4.config.h.224.10ee1ad185d877c6e334e6581faab44d
+                           .group:00000000 wm4._ansi.h.31.de524f58584151836e90d8620a16f8e8
+                           .group:00000000 wm4.cdefs.h.49.a0dc0a4a6c7d01e2e5d0aade9399215f
+                           .group:00000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:00000000 wm4.stddef.h.158.6f8e08a347b1cff664332fa350bfceb3
+                           .group:00000000 wm4._types.h.127.3bdfe3ff8ea2d0985b03d9cbe93480e3
+                           .group:00000000 wm4.reent.h.18.25503cdc8b7e55dd0d6ea7b3e5af7a03
+                           .group:00000000 wm4.lock.h.2.1461d1fff82dffe8bfddc23307f6484f
+                           .group:00000000 wm4.reent.h.78.6b87466b04591b1f1cb88c14fdf2ba9e
+                           .group:00000000 wm4.string.h.15.dab3980bf35408a4c507182805e2de3a
+                           .group:00000000 wm4.stddef.h.158.eec8bf00b5213f43d095cb984c5f22e3
+                           .group:00000000 wm4.pb.h.80.0c113d593b086601ad12440334e7ab1d
+
+NO UNDEFINED SYMBOLS

@@ -98,12 +98,18 @@ void SystemInit(void)
 /*
  * Application entry point for validation process
  */
+
+extern void fi_mpu_init(void);
+extern void fi_mpu_on(void);
+
 int main(void) {
 
   SystemInit();
 
   FI_Init();
   FI_Start();
+
+
 
   aiValidateStart();
 

@@ -1,0 +1,1158 @@
+   1              		.cpu cortex-m7
+   2              		.arch armv7e-m
+   3              		.fpu fpv5-d16
+   4              		.eabi_attribute 28, 1
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 6
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.file	"aiPbIO.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.file 1 "SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c"
+  19              		.section	.data.packet_size,"aw"
+  20              		.align	1
+  23              	packet_size:
+  24 0000 2000     		.short	32
+  25              		.section	.text.pb_io_get_packet_size,"ax",%progbits
+  26              		.align	1
+  27              		.p2align 4,,15
+  28              		.global	pb_io_get_packet_size
+  29              		.syntax unified
+  30              		.thumb
+  31              		.thumb_func
+  33              	pb_io_get_packet_size:
+  34              	.LFB450:
+   1:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** /**
+   2:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****  ******************************************************************************
+   3:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****  * @file    aiPbIO.c
+   4:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****  * @author  MCD/AIS Team
+   5:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****  * @brief   Low Level ProtoBuffer IO functions for COM stack
+   6:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****  ******************************************************************************
+   7:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****  * @attention
+   8:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****  *
+   9:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****  * <h2><center>&copy; Copyright (c) 2019,2021 STMicroelectronics.
+  10:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****  * All rights reserved.</center></h2>
+  11:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****  *
+  12:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****  * This software is licensed under terms that can be found in the LICENSE file in
+  13:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****  * the root directory of this software component.
+  14:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****  * If no LICENSE file comes with this software, it is provided AS-IS.
+  15:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****  *
+  16:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****  ******************************************************************************
+  17:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****  */
+  18:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+  19:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** /*
+  20:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****  * Description:
+  21:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****  *
+  22:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****  * Low-Level IO functions to port the nano PB stack
+  23:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****  *
+  24:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****  * History:
+  25:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****  *  - v1.0 - initial version. Based on a split of the original aiTestUtility.c
+  26:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****  *           (v1.4) file previous (aiValidation v3.2)
+  27:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****  */
+  28:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+  29:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** /* System headers */
+  30:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #include <stdint.h>
+  31:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #include <stdlib.h>
+  32:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #include <stdio.h>
+  33:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #include <inttypes.h>
+  34:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #include <string.h>
+  35:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+  36:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #include <aiPbIO.h>
+  37:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+  38:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #include <aiTestUtility.h>
+  39:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+  40:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #include <pb.h>
+  41:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #include <pb_encode.h>
+  42:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #include <pb_decode.h>
+  43:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #include <stm32msg.pb.h>
+  44:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+  45:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #ifndef UNUSED
+  46:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #define UNUSED(x) ((void)(x))
+  47:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #endif
+  48:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+  49:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+  50:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #if (defined(STM32N657xx) || defined(STM32H7P5xx))
+  51:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #include "app_config.h"
+  52:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #endif
+  53:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+  54:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+  55:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #define _PACKET_HEADER_SIZE sizeof(uint16_t)
+  56:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+  57:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #define _PACKET_PAYLOAD_IN_SIZE  ((EnumLowLevelIO)EnumLowLevelIO_IO_IN_PACKET_SIZE)
+  58:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #define _PACKET_PAYLOAD_OUT_SIZE ((EnumLowLevelIO)EnumLowLevelIO_IO_OUT_PACKET_SIZE)
+  59:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+  60:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+  61:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #if defined(USE_USB_CDC_CLASS) && USE_USB_CDC_CLASS == 1
+  62:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+  63:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #if defined(USE_USB_PACKET_SIZE)
+  64:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+  65:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #if USE_USB_PACKET_SIZE > 4094
+  66:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** /* see also  _MAX_USB_USER_ELEM for ST USB stack in aiTestUtility.c file */
+  67:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #error USE_USB_PACKET_SIZE should be inferior to 4096.
+  68:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #endif
+  69:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+  70:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #define _PACKET_PAYLOAD_IN_SIZE_LARGE  (USE_USB_PACKET_SIZE)
+  71:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #define _PACKET_PAYLOAD_OUT_SIZE_LARGE (USE_USB_PACKET_SIZE)
+  72:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+  73:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #else /* USE_USB_CDC_CLASS */
+  74:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+  75:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #define _PACKET_PAYLOAD_IN_SIZE_LARGE  ((EnumLowLevelIO)EnumLowLevelIO_IO_IN_PACKET_SIZE_LARGE)
+  76:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #define _PACKET_PAYLOAD_OUT_SIZE_LARGE ((EnumLowLevelIO)EnumLowLevelIO_IO_OUT_PACKET_SIZE_LARGE)
+  77:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+  78:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #endif
+  79:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+  80:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #else /* USE_USB_CDC_CLASS */
+  81:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+  82:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #define _PACKET_PAYLOAD_IN_SIZE_LARGE  _PACKET_PAYLOAD_IN_SIZE
+  83:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #define _PACKET_PAYLOAD_OUT_SIZE_LARGE _PACKET_PAYLOAD_OUT_SIZE
+  84:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+  85:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #endif /* ! USE_USB_CDC_CLASS */
+  86:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+  87:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+  88:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** static uint16_t packet_size = _PACKET_PAYLOAD_IN_SIZE;
+  89:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+  90:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** uint16_t pb_io_get_packet_size(uint16_t *max_size)
+  91:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** {
+  35              		.loc 1 91 1
+  36              		.cfi_startproc
+  37              		@ args = 0, pretend = 0, frame = 8
+  38              		@ frame_needed = 0, uses_anonymous_args = 0
+  39              		@ link register save eliminated.
+  40 0000 82B0     		sub	sp, sp, #8
+  41              		.cfi_def_cfa_offset 8
+  42 0002 0190     		str	r0, [sp, #4]
+  92:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   if (max_size)
+  43              		.loc 1 92 6
+  44 0004 019B     		ldr	r3, [sp, #4]
+  45 0006 002B     		cmp	r3, #0
+  46 0008 02D0     		beq	.L2
+  93:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****     *max_size = _PACKET_PAYLOAD_IN_SIZE_LARGE;
+  47              		.loc 1 93 15
+  48 000a 019B     		ldr	r3, [sp, #4]
+  49 000c 2022     		movs	r2, #32
+  50 000e 1A80     		strh	r2, [r3]	@ movhi
+  51              	.L2:
+  94:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   return packet_size;
+  52              		.loc 1 94 10
+  53 0010 024B     		ldr	r3, .L4
+  54 0012 1B88     		ldrh	r3, [r3]
+  95:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** }
+  55              		.loc 1 95 1
+  56 0014 1846     		mov	r0, r3
+  57 0016 02B0     		add	sp, sp, #8
+  58              		.cfi_def_cfa_offset 0
+  59              		@ sp needed
+  60 0018 7047     		bx	lr
+  61              	.L5:
+  62 001a 00BF     		.align	2
+  63              	.L4:
+  64 001c 00000000 		.word	packet_size
+  65              		.cfi_endproc
+  66              	.LFE450:
+  68              		.section	.text.pb_io_set_packet_size,"ax",%progbits
+  69              		.align	1
+  70              		.p2align 4,,15
+  71              		.global	pb_io_set_packet_size
+  72              		.syntax unified
+  73              		.thumb
+  74              		.thumb_func
+  76              	pb_io_set_packet_size:
+  77              	.LFB451:
+  96:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+  97:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** void pb_io_set_packet_size(uint16_t val)
+  98:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** {
+  78              		.loc 1 98 1
+  79              		.cfi_startproc
+  80              		@ args = 0, pretend = 0, frame = 8
+  81              		@ frame_needed = 0, uses_anonymous_args = 0
+  82              		@ link register save eliminated.
+  83 0000 82B0     		sub	sp, sp, #8
+  84              		.cfi_def_cfa_offset 8
+  85 0002 0346     		mov	r3, r0
+  86 0004 ADF80630 		strh	r3, [sp, #6]	@ movhi
+  99:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   packet_size = val;
+  87              		.loc 1 99 15
+  88 0008 034A     		ldr	r2, .L7
+  89 000a BDF80630 		ldrh	r3, [sp, #6]	@ movhi
+  90 000e 1380     		strh	r3, [r2]	@ movhi
+ 100:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** }
+  91              		.loc 1 100 1
+  92 0010 00BF     		nop
+  93 0012 02B0     		add	sp, sp, #8
+  94              		.cfi_def_cfa_offset 0
+  95              		@ sp needed
+  96 0014 7047     		bx	lr
+  97              	.L8:
+  98 0016 00BF     		.align	2
+  99              	.L7:
+ 100 0018 00000000 		.word	packet_size
+ 101              		.cfi_endproc
+ 102              	.LFE451:
+ 104              		.section	.text.pb_io_reset_packet_size,"ax",%progbits
+ 105              		.align	1
+ 106              		.p2align 4,,15
+ 107              		.global	pb_io_reset_packet_size
+ 108              		.syntax unified
+ 109              		.thumb
+ 110              		.thumb_func
+ 112              	pb_io_reset_packet_size:
+ 113              	.LFB452:
+ 101:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 102:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** void pb_io_reset_packet_size(void)
+ 103:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** {
+ 114              		.loc 1 103 1
+ 115              		.cfi_startproc
+ 116              		@ args = 0, pretend = 0, frame = 0
+ 117              		@ frame_needed = 0, uses_anonymous_args = 0
+ 118              		@ link register save eliminated.
+ 104:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   packet_size = _PACKET_PAYLOAD_IN_SIZE;
+ 119              		.loc 1 104 15
+ 120 0000 024B     		ldr	r3, .L10
+ 121 0002 2022     		movs	r2, #32
+ 122 0004 1A80     		strh	r2, [r3]	@ movhi
+ 105:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** }
+ 123              		.loc 1 105 1
+ 124 0006 00BF     		nop
+ 125 0008 7047     		bx	lr
+ 126              	.L11:
+ 127 000a 00BF     		.align	2
+ 128              	.L10:
+ 129 000c 00000000 		.word	packet_size
+ 130              		.cfi_endproc
+ 131              	.LFE452:
+ 133              		.section	.bss.o_packet,"aw",%nobits
+ 134              		.align	2
+ 137              	o_packet:
+ 138 0000 00000000 		.space	34
+ 138      00000000 
+ 138      00000000 
+ 138      00000000 
+ 138      00000000 
+ 139              		.section	.text.write_packet,"ax",%progbits
+ 140              		.align	1
+ 141              		.p2align 4,,15
+ 142              		.syntax unified
+ 143              		.thumb
+ 144              		.thumb_func
+ 146              	write_packet:
+ 147              	.LFB453:
+ 106:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 107:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 108:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** static struct o_packet {
+ 109:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   uint16_t pw;
+ 110:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   uint8_t payload[_PACKET_PAYLOAD_IN_SIZE_LARGE];
+ 111:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** } o_packet;
+ 112:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 113:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** static bool write_packet(void) {
+ 148              		.loc 1 113 32
+ 149              		.cfi_startproc
+ 150              		@ args = 0, pretend = 0, frame = 0
+ 151              		@ frame_needed = 0, uses_anonymous_args = 0
+ 152 0000 08B5     		push	{r3, lr}
+ 153              		.cfi_def_cfa_offset 8
+ 154              		.cfi_offset 3, -8
+ 155              		.cfi_offset 14, -4
+ 114:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   return ioRawWriteBuffer((uint8_t *)&o_packet, packet_size + _PACKET_HEADER_SIZE);
+ 156              		.loc 1 114 61
+ 157 0002 054B     		ldr	r3, .L14
+ 158 0004 1B88     		ldrh	r3, [r3]
+ 159 0006 0233     		adds	r3, r3, #2
+ 160              		.loc 1 114 10
+ 161 0008 1946     		mov	r1, r3
+ 162 000a 0448     		ldr	r0, .L14+4
+ 163 000c FFF7FEFF 		bl	ioRawWriteBuffer
+ 164 0010 0346     		mov	r3, r0
+ 115:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** }
+ 165              		.loc 1 115 1
+ 166 0012 1846     		mov	r0, r3
+ 167 0014 08BD     		pop	{r3, pc}
+ 168              	.L15:
+ 169 0016 00BF     		.align	2
+ 170              	.L14:
+ 171 0018 00000000 		.word	packet_size
+ 172 001c 00000000 		.word	o_packet
+ 173              		.cfi_endproc
+ 174              	.LFE453:
+ 176              		.section	.text.pb_io_flush_ostream,"ax",%progbits
+ 177              		.align	1
+ 178              		.p2align 4,,15
+ 179              		.global	pb_io_flush_ostream
+ 180              		.syntax unified
+ 181              		.thumb
+ 182              		.thumb_func
+ 184              	pb_io_flush_ostream:
+ 185              	.LFB454:
+ 116:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 117:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** void pb_io_flush_ostream(void)
+ 118:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** {
+ 186              		.loc 1 118 1
+ 187              		.cfi_startproc
+ 188              		@ args = 0, pretend = 0, frame = 8
+ 189              		@ frame_needed = 0, uses_anonymous_args = 0
+ 190 0000 00B5     		push	{lr}
+ 191              		.cfi_def_cfa_offset 4
+ 192              		.cfi_offset 14, -4
+ 193 0002 83B0     		sub	sp, sp, #12
+ 194              		.cfi_def_cfa_offset 16
+ 119:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   uint8_t tmp = (o_packet.pw >> 8) & 0xFF;
+ 195              		.loc 1 119 26
+ 196 0004 114B     		ldr	r3, .L17
+ 197 0006 1B88     		ldrh	r3, [r3]
+ 198              		.loc 1 119 11
+ 199 0008 1B0A     		lsrs	r3, r3, #8
+ 200 000a 9BB2     		uxth	r3, r3
+ 201 000c 8DF80730 		strb	r3, [sp, #7]
+ 120:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   o_packet.pw = (o_packet.pw << 8) | tmp;
+ 202              		.loc 1 120 26
+ 203 0010 0E4B     		ldr	r3, .L17
+ 204 0012 1B88     		ldrh	r3, [r3]
+ 205              		.loc 1 120 36
+ 206 0014 1BB2     		sxth	r3, r3
+ 207 0016 1B02     		lsls	r3, r3, #8
+ 208 0018 1AB2     		sxth	r2, r3
+ 209 001a 9DF80730 		ldrb	r3, [sp, #7]	@ zero_extendqisi2
+ 210 001e 1BB2     		sxth	r3, r3
+ 211 0020 1343     		orrs	r3, r3, r2
+ 212 0022 1BB2     		sxth	r3, r3
+ 213 0024 9AB2     		uxth	r2, r3
+ 214              		.loc 1 120 15
+ 215 0026 094B     		ldr	r3, .L17
+ 216 0028 1A80     		strh	r2, [r3]	@ movhi
+ 121:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   *(uint8_t *)&o_packet.pw |= EnumLowLevelIO_IO_HEADER_EOM_FLAG; /* Indicate last packet */
+ 217              		.loc 1 121 15
+ 218 002a 084B     		ldr	r3, .L17
+ 219              		.loc 1 121 3
+ 220 002c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 221              		.loc 1 121 15
+ 222 002e 074A     		ldr	r2, .L17
+ 223              		.loc 1 121 28
+ 224 0030 63F07F03 		orn	r3, r3, #127
+ 225 0034 DBB2     		uxtb	r3, r3
+ 226 0036 1370     		strb	r3, [r2]
+ 122:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   write_packet();
+ 227              		.loc 1 122 3
+ 228 0038 FFF7FEFF 		bl	write_packet
+ 123:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   o_packet.pw = 0;
+ 229              		.loc 1 123 15
+ 230 003c 034B     		ldr	r3, .L17
+ 231 003e 0022     		movs	r2, #0
+ 232 0040 1A80     		strh	r2, [r3]	@ movhi
+ 124:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** }
+ 233              		.loc 1 124 1
+ 234 0042 00BF     		nop
+ 235 0044 03B0     		add	sp, sp, #12
+ 236              		.cfi_def_cfa_offset 4
+ 237              		@ sp needed
+ 238 0046 5DF804FB 		ldr	pc, [sp], #4
+ 239              	.L18:
+ 240 004a 00BF     		.align	2
+ 241              	.L17:
+ 242 004c 00000000 		.word	o_packet
+ 243              		.cfi_endproc
+ 244              	.LFE454:
+ 246              		.section	.text.write_callback,"ax",%progbits
+ 247              		.align	1
+ 248              		.p2align 4,,15
+ 249              		.syntax unified
+ 250              		.thumb
+ 251              		.thumb_func
+ 253              	write_callback:
+ 254              	.LFB455:
+ 125:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 126:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** static bool write_callback(pb_ostream_t *stream, const uint8_t *buf,
+ 127:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****     size_t count)
+ 128:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** {
+ 255              		.loc 1 128 1
+ 256              		.cfi_startproc
+ 257              		@ args = 0, pretend = 0, frame = 32
+ 258              		@ frame_needed = 0, uses_anonymous_args = 0
+ 259 0000 00B5     		push	{lr}
+ 260              		.cfi_def_cfa_offset 4
+ 261              		.cfi_offset 14, -4
+ 262 0002 89B0     		sub	sp, sp, #36
+ 263              		.cfi_def_cfa_offset 40
+ 264 0004 0390     		str	r0, [sp, #12]
+ 265 0006 0291     		str	r1, [sp, #8]
+ 266 0008 0192     		str	r2, [sp, #4]
+ 129:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   bool res = true;
+ 267              		.loc 1 129 8
+ 268 000a 0123     		movs	r3, #1
+ 269 000c 8DF81F30 		strb	r3, [sp, #31]
+ 130:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   uint8_t *pr = (uint8_t *)buf;
+ 270              		.loc 1 130 12
+ 271 0010 029B     		ldr	r3, [sp, #8]
+ 272 0012 0693     		str	r3, [sp, #24]
+ 131:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 132:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   UNUSED(stream);
+ 133:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 134:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   while (count) {
+ 273              		.loc 1 134 9
+ 274 0014 3DE0     		b	.L20
+ 275              	.L23:
+ 135:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****     for (; o_packet.pw < packet_size && count; o_packet.pw++) {
+ 136:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****       o_packet.payload[o_packet.pw] = *pr;
+ 276              		.loc 1 136 32
+ 277 0016 234B     		ldr	r3, .L27
+ 278 0018 1B88     		ldrh	r3, [r3]
+ 279 001a 1946     		mov	r1, r3
+ 280              		.loc 1 136 39
+ 281 001c 069B     		ldr	r3, [sp, #24]
+ 282 001e 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 283              		.loc 1 136 37
+ 284 0020 204B     		ldr	r3, .L27
+ 285 0022 0B44     		add	r3, r3, r1
+ 286 0024 9A70     		strb	r2, [r3, #2]
+ 137:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****       pr++;
+ 287              		.loc 1 137 9
+ 288 0026 069B     		ldr	r3, [sp, #24]
+ 289 0028 0133     		adds	r3, r3, #1
+ 290 002a 0693     		str	r3, [sp, #24]
+ 138:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****       count--;
+ 291              		.loc 1 138 12
+ 292 002c 019B     		ldr	r3, [sp, #4]
+ 293 002e 013B     		subs	r3, r3, #1
+ 294 0030 0193     		str	r3, [sp, #4]
+ 135:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****     for (; o_packet.pw < packet_size && count; o_packet.pw++) {
+ 295              		.loc 1 135 56 discriminator 3
+ 296 0032 1C4B     		ldr	r3, .L27
+ 297 0034 1B88     		ldrh	r3, [r3]
+ 135:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****     for (; o_packet.pw < packet_size && count; o_packet.pw++) {
+ 298              		.loc 1 135 59 discriminator 3
+ 299 0036 0133     		adds	r3, r3, #1
+ 300 0038 9AB2     		uxth	r2, r3
+ 301 003a 1A4B     		ldr	r3, .L27
+ 302 003c 1A80     		strh	r2, [r3]	@ movhi
+ 303              	.L21:
+ 135:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****     for (; o_packet.pw < packet_size && count; o_packet.pw++) {
+ 304              		.loc 1 135 20 discriminator 1
+ 305 003e 194B     		ldr	r3, .L27
+ 306 0040 1A88     		ldrh	r2, [r3]
+ 135:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****     for (; o_packet.pw < packet_size && count; o_packet.pw++) {
+ 307              		.loc 1 135 24 discriminator 1
+ 308 0042 194B     		ldr	r3, .L27+4
+ 309 0044 1B88     		ldrh	r3, [r3]
+ 135:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****     for (; o_packet.pw < packet_size && count; o_packet.pw++) {
+ 310              		.loc 1 135 38 discriminator 1
+ 311 0046 9A42     		cmp	r2, r3
+ 312 0048 02D2     		bcs	.L22
+ 135:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****     for (; o_packet.pw < packet_size && count; o_packet.pw++) {
+ 313              		.loc 1 135 38 is_stmt 0 discriminator 2
+ 314 004a 019B     		ldr	r3, [sp, #4]
+ 315 004c 002B     		cmp	r3, #0
+ 316 004e E2D1     		bne	.L23
+ 317              	.L22:
+ 139:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****     }
+ 140:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****     if (o_packet.pw == packet_size) {
+ 318              		.loc 1 140 17 is_stmt 1
+ 319 0050 144B     		ldr	r3, .L27
+ 320 0052 1A88     		ldrh	r2, [r3]
+ 321              		.loc 1 140 21
+ 322 0054 144B     		ldr	r3, .L27+4
+ 323 0056 1B88     		ldrh	r3, [r3]
+ 324              		.loc 1 140 8
+ 325 0058 9A42     		cmp	r2, r3
+ 326 005a 1AD1     		bne	.L20
+ 327              	.LBB2:
+ 141:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****       uint8_t tmp = (o_packet.pw >> 8) & 0xFF;
+ 328              		.loc 1 141 30
+ 329 005c 114B     		ldr	r3, .L27
+ 330 005e 1B88     		ldrh	r3, [r3]
+ 331              		.loc 1 141 15
+ 332 0060 1B0A     		lsrs	r3, r3, #8
+ 333 0062 9BB2     		uxth	r3, r3
+ 334 0064 8DF81730 		strb	r3, [sp, #23]
+ 142:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****       o_packet.pw = (o_packet.pw << 8) | tmp;
+ 335              		.loc 1 142 30
+ 336 0068 0E4B     		ldr	r3, .L27
+ 337 006a 1B88     		ldrh	r3, [r3]
+ 338              		.loc 1 142 40
+ 339 006c 1BB2     		sxth	r3, r3
+ 340 006e 1B02     		lsls	r3, r3, #8
+ 341 0070 1AB2     		sxth	r2, r3
+ 342 0072 9DF81730 		ldrb	r3, [sp, #23]	@ zero_extendqisi2
+ 343 0076 1BB2     		sxth	r3, r3
+ 344 0078 1343     		orrs	r3, r3, r2
+ 345 007a 1BB2     		sxth	r3, r3
+ 346 007c 9AB2     		uxth	r2, r3
+ 347              		.loc 1 142 19
+ 348 007e 094B     		ldr	r3, .L27
+ 349 0080 1A80     		strh	r2, [r3]	@ movhi
+ 143:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****       res = write_packet();
+ 350              		.loc 1 143 13
+ 351 0082 FFF7FEFF 		bl	write_packet
+ 352 0086 0346     		mov	r3, r0
+ 353 0088 8DF81F30 		strb	r3, [sp, #31]
+ 144:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****       o_packet.pw = 0;
+ 354              		.loc 1 144 19
+ 355 008c 054B     		ldr	r3, .L27
+ 356 008e 0022     		movs	r2, #0
+ 357 0090 1A80     		strh	r2, [r3]	@ movhi
+ 358              	.L20:
+ 359              	.LBE2:
+ 134:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****     for (; o_packet.pw < packet_size && count; o_packet.pw++) {
+ 360              		.loc 1 134 10
+ 361 0092 019B     		ldr	r3, [sp, #4]
+ 362 0094 002B     		cmp	r3, #0
+ 363 0096 D2D1     		bne	.L21
+ 145:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****     }
+ 146:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   }
+ 147:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 148:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   return res;
+ 364              		.loc 1 148 10
+ 365 0098 9DF81F30 		ldrb	r3, [sp, #31]	@ zero_extendqisi2
+ 149:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** }
+ 366              		.loc 1 149 1
+ 367 009c 1846     		mov	r0, r3
+ 368 009e 09B0     		add	sp, sp, #36
+ 369              		.cfi_def_cfa_offset 4
+ 370              		@ sp needed
+ 371 00a0 5DF804FB 		ldr	pc, [sp], #4
+ 372              	.L28:
+ 373              		.align	2
+ 374              	.L27:
+ 375 00a4 00000000 		.word	o_packet
+ 376 00a8 00000000 		.word	packet_size
+ 377              		.cfi_endproc
+ 378              	.LFE455:
+ 380              		.section	.bss.i_packet,"aw",%nobits
+ 381              		.align	2
+ 384              	i_packet:
+ 385 0000 00000000 		.space	34
+ 385      00000000 
+ 385      00000000 
+ 385      00000000 
+ 385      00000000 
+ 386              		.section	.bss.i_ridx,"aw",%nobits
+ 387              		.align	2
+ 390              	i_ridx:
+ 391 0000 00000000 		.space	4
+ 392              		.section	.text.read_packet,"ax",%progbits
+ 393              		.align	1
+ 394              		.p2align 4,,15
+ 395              		.syntax unified
+ 396              		.thumb
+ 397              		.thumb_func
+ 399              	read_packet:
+ 400              	.LFB456:
+ 150:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 151:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 152:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** static struct i_packet {
+ 153:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   uint16_t pr;
+ 154:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   uint8_t payload[_PACKET_PAYLOAD_OUT_SIZE_LARGE];
+ 155:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** } i_packet;
+ 156:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 157:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** static int i_ridx = 0;
+ 158:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 159:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** static bool read_packet(void) {
+ 401              		.loc 1 159 31
+ 402              		.cfi_startproc
+ 403              		@ args = 0, pretend = 0, frame = 8
+ 404              		@ frame_needed = 0, uses_anonymous_args = 0
+ 405 0000 00B5     		push	{lr}
+ 406              		.cfi_def_cfa_offset 4
+ 407              		.cfi_offset 14, -4
+ 408 0002 83B0     		sub	sp, sp, #12
+ 409              		.cfi_def_cfa_offset 16
+ 160:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 161:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   bool res = ioRawReadBuffer((uint8_t *)&i_packet,
+ 162:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****       packet_size + _PACKET_HEADER_SIZE);
+ 410              		.loc 1 162 19
+ 411 0004 124B     		ldr	r3, .L31
+ 412 0006 1B88     		ldrh	r3, [r3]
+ 413 0008 0233     		adds	r3, r3, #2
+ 161:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****       packet_size + _PACKET_HEADER_SIZE);
+ 414              		.loc 1 161 14
+ 415 000a 1946     		mov	r1, r3
+ 416 000c 1148     		ldr	r0, .L31+4
+ 417 000e FFF7FEFF 		bl	ioRawReadBuffer
+ 418 0012 0346     		mov	r3, r0
+ 419 0014 8DF80730 		strb	r3, [sp, #7]
+ 163:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   i_ridx = 0;
+ 420              		.loc 1 163 10
+ 421 0018 0F4B     		ldr	r3, .L31+8
+ 422 001a 0022     		movs	r2, #0
+ 423 001c 1A60     		str	r2, [r3]
+ 164:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 165:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   uint8_t tmp = (i_packet.pr >> 8) & 0xFF;
+ 424              		.loc 1 165 26
+ 425 001e 0D4B     		ldr	r3, .L31+4
+ 426 0020 1B88     		ldrh	r3, [r3]
+ 427              		.loc 1 165 11
+ 428 0022 1B0A     		lsrs	r3, r3, #8
+ 429 0024 9BB2     		uxth	r3, r3
+ 430 0026 8DF80630 		strb	r3, [sp, #6]
+ 166:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   i_packet.pr = (i_packet.pr << 8) | tmp;
+ 431              		.loc 1 166 26
+ 432 002a 0A4B     		ldr	r3, .L31+4
+ 433 002c 1B88     		ldrh	r3, [r3]
+ 434              		.loc 1 166 36
+ 435 002e 1BB2     		sxth	r3, r3
+ 436 0030 1B02     		lsls	r3, r3, #8
+ 437 0032 1AB2     		sxth	r2, r3
+ 438 0034 9DF80630 		ldrb	r3, [sp, #6]	@ zero_extendqisi2
+ 439 0038 1BB2     		sxth	r3, r3
+ 440 003a 1343     		orrs	r3, r3, r2
+ 441 003c 1BB2     		sxth	r3, r3
+ 442 003e 9AB2     		uxth	r2, r3
+ 443              		.loc 1 166 15
+ 444 0040 044B     		ldr	r3, .L31+4
+ 445 0042 1A80     		strh	r2, [r3]	@ movhi
+ 167:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 168:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   return res;
+ 446              		.loc 1 168 10
+ 447 0044 9DF80730 		ldrb	r3, [sp, #7]	@ zero_extendqisi2
+ 169:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** }
+ 448              		.loc 1 169 1
+ 449 0048 1846     		mov	r0, r3
+ 450 004a 03B0     		add	sp, sp, #12
+ 451              		.cfi_def_cfa_offset 4
+ 452              		@ sp needed
+ 453 004c 5DF804FB 		ldr	pc, [sp], #4
+ 454              	.L32:
+ 455              		.align	2
+ 456              	.L31:
+ 457 0050 00000000 		.word	packet_size
+ 458 0054 00000000 		.word	i_packet
+ 459 0058 00000000 		.word	i_ridx
+ 460              		.cfi_endproc
+ 461              	.LFE456:
+ 463              		.section	.text.pb_io_flush_istream,"ax",%progbits
+ 464              		.align	1
+ 465              		.p2align 4,,15
+ 466              		.global	pb_io_flush_istream
+ 467              		.syntax unified
+ 468              		.thumb
+ 469              		.thumb_func
+ 471              	pb_io_flush_istream:
+ 472              	.LFB457:
+ 170:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 171:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** void pb_io_flush_istream(void)
+ 172:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** {
+ 473              		.loc 1 172 1
+ 474              		.cfi_startproc
+ 475              		@ args = 0, pretend = 0, frame = 0
+ 476              		@ frame_needed = 0, uses_anonymous_args = 0
+ 477              		@ link register save eliminated.
+ 173:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   i_packet.pr = 0xFFFF;
+ 478              		.loc 1 173 15
+ 479 0000 044B     		ldr	r3, .L34
+ 480 0002 4FF6FF72 		movw	r2, #65535
+ 481 0006 1A80     		strh	r2, [r3]	@ movhi
+ 174:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   i_ridx = 0;
+ 482              		.loc 1 174 10
+ 483 0008 034B     		ldr	r3, .L34+4
+ 484 000a 0022     		movs	r2, #0
+ 485 000c 1A60     		str	r2, [r3]
+ 175:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** }
+ 486              		.loc 1 175 1
+ 487 000e 00BF     		nop
+ 488 0010 7047     		bx	lr
+ 489              	.L35:
+ 490 0012 00BF     		.align	2
+ 491              	.L34:
+ 492 0014 00000000 		.word	i_packet
+ 493 0018 00000000 		.word	i_ridx
+ 494              		.cfi_endproc
+ 495              	.LFE457:
+ 497              		.section	.text.read_callback,"ax",%progbits
+ 498              		.align	1
+ 499              		.p2align 4,,15
+ 500              		.syntax unified
+ 501              		.thumb
+ 502              		.thumb_func
+ 504              	read_callback:
+ 505              	.LFB458:
+ 176:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 177:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** static bool read_callback(pb_istream_t *stream, uint8_t *buf, size_t count)
+ 178:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** {
+ 506              		.loc 1 178 1
+ 507              		.cfi_startproc
+ 508              		@ args = 0, pretend = 0, frame = 32
+ 509              		@ frame_needed = 0, uses_anonymous_args = 0
+ 510 0000 00B5     		push	{lr}
+ 511              		.cfi_def_cfa_offset 4
+ 512              		.cfi_offset 14, -4
+ 513 0002 89B0     		sub	sp, sp, #36
+ 514              		.cfi_def_cfa_offset 40
+ 515 0004 0390     		str	r0, [sp, #12]
+ 516 0006 0291     		str	r1, [sp, #8]
+ 517 0008 0192     		str	r2, [sp, #4]
+ 179:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   bool res = true;
+ 518              		.loc 1 179 8
+ 519 000a 0123     		movs	r3, #1
+ 520 000c 8DF81F30 		strb	r3, [sp, #31]
+ 180:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   uint8_t *pw = (uint8_t *)buf;
+ 521              		.loc 1 180 12
+ 522 0010 029B     		ldr	r3, [sp, #8]
+ 523 0012 0693     		str	r3, [sp, #24]
+ 181:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 182:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   UNUSED(stream);
+ 183:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 184:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   if (count == 0)
+ 524              		.loc 1 184 6
+ 525 0014 019B     		ldr	r3, [sp, #4]
+ 526 0016 002B     		cmp	r3, #0
+ 527 0018 01D1     		bne	.L37
+ 185:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****     return true;
+ 528              		.loc 1 185 12
+ 529 001a 0123     		movs	r3, #1
+ 530 001c 4AE0     		b	.L38
+ 531              	.L37:
+ 186:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 187:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   if (i_packet.pr == 0xFFFF)
+ 532              		.loc 1 187 15
+ 533 001e 274B     		ldr	r3, .L47
+ 534 0020 1B88     		ldrh	r3, [r3]
+ 535              		.loc 1 187 6
+ 536 0022 4FF6FF72 		movw	r2, #65535
+ 537 0026 9342     		cmp	r3, r2
+ 538 0028 04D1     		bne	.L39
+ 188:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****     res = read_packet();
+ 539              		.loc 1 188 11
+ 540 002a FFF7FEFF 		bl	read_packet
+ 541 002e 0346     		mov	r3, r0
+ 542 0030 8DF81F30 		strb	r3, [sp, #31]
+ 543              	.L39:
+ 189:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 190:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   if (res == false)
+ 544              		.loc 1 190 11
+ 545 0034 9DF81F30 		ldrb	r3, [sp, #31]
+ 546 0038 83F00103 		eor	r3, r3, #1
+ 547 003c DBB2     		uxtb	r3, r3
+ 548              		.loc 1 190 6
+ 549 003e 002B     		cmp	r3, #0
+ 550 0040 33D0     		beq	.L41
+ 191:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****     return res;
+ 551              		.loc 1 191 12
+ 552 0042 9DF81F30 		ldrb	r3, [sp, #31]	@ zero_extendqisi2
+ 553 0046 35E0     		b	.L38
+ 554              	.L44:
+ 192:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 193:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 194:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   while (count) {
+ 195:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****     for (; i_packet.pr > 0 && count; i_packet.pr--) {
+ 196:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****       *pw = i_packet.payload[i_ridx];
+ 555              		.loc 1 196 29
+ 556 0048 1D4B     		ldr	r3, .L47+4
+ 557 004a 1B68     		ldr	r3, [r3]
+ 558 004c 1B4A     		ldr	r2, .L47
+ 559 004e 1344     		add	r3, r3, r2
+ 560 0050 9A78     		ldrb	r2, [r3, #2]	@ zero_extendqisi2
+ 561              		.loc 1 196 11
+ 562 0052 069B     		ldr	r3, [sp, #24]
+ 563 0054 1A70     		strb	r2, [r3]
+ 197:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****       pw++;
+ 564              		.loc 1 197 9
+ 565 0056 069B     		ldr	r3, [sp, #24]
+ 566 0058 0133     		adds	r3, r3, #1
+ 567 005a 0693     		str	r3, [sp, #24]
+ 198:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****       count--;
+ 568              		.loc 1 198 12
+ 569 005c 019B     		ldr	r3, [sp, #4]
+ 570 005e 013B     		subs	r3, r3, #1
+ 571 0060 0193     		str	r3, [sp, #4]
+ 199:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****       i_ridx++;
+ 572              		.loc 1 199 13
+ 573 0062 174B     		ldr	r3, .L47+4
+ 574 0064 1B68     		ldr	r3, [r3]
+ 575 0066 0133     		adds	r3, r3, #1
+ 576 0068 154A     		ldr	r2, .L47+4
+ 577 006a 1360     		str	r3, [r2]
+ 195:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****       *pw = i_packet.payload[i_ridx];
+ 578              		.loc 1 195 46 discriminator 3
+ 579 006c 134B     		ldr	r3, .L47
+ 580 006e 1B88     		ldrh	r3, [r3]
+ 195:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****       *pw = i_packet.payload[i_ridx];
+ 581              		.loc 1 195 49 discriminator 3
+ 582 0070 013B     		subs	r3, r3, #1
+ 583 0072 9AB2     		uxth	r2, r3
+ 584 0074 114B     		ldr	r3, .L47
+ 585 0076 1A80     		strh	r2, [r3]	@ movhi
+ 586              	.L42:
+ 195:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****       *pw = i_packet.payload[i_ridx];
+ 587              		.loc 1 195 20 discriminator 1
+ 588 0078 104B     		ldr	r3, .L47
+ 589 007a 1B88     		ldrh	r3, [r3]
+ 195:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****       *pw = i_packet.payload[i_ridx];
+ 590              		.loc 1 195 28 discriminator 1
+ 591 007c 002B     		cmp	r3, #0
+ 592 007e 02D0     		beq	.L43
+ 195:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****       *pw = i_packet.payload[i_ridx];
+ 593              		.loc 1 195 28 is_stmt 0 discriminator 2
+ 594 0080 019B     		ldr	r3, [sp, #4]
+ 595 0082 002B     		cmp	r3, #0
+ 596 0084 E0D1     		bne	.L44
+ 597              	.L43:
+ 200:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****     }
+ 201:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****     if (count && i_packet.pr  == 0) {
+ 598              		.loc 1 201 8 is_stmt 1
+ 599 0086 019B     		ldr	r3, [sp, #4]
+ 600 0088 002B     		cmp	r3, #0
+ 601 008a 0ED0     		beq	.L41
+ 602              		.loc 1 201 26 discriminator 1
+ 603 008c 0B4B     		ldr	r3, .L47
+ 604 008e 1B88     		ldrh	r3, [r3]
+ 605              		.loc 1 201 15 discriminator 1
+ 606 0090 002B     		cmp	r3, #0
+ 607 0092 0AD1     		bne	.L41
+ 608              	.LBB3:
+ 202:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****       uint8_t sync = 0xAA;
+ 609              		.loc 1 202 15
+ 610 0094 AA23     		movs	r3, #170
+ 611 0096 8DF81730 		strb	r3, [sp, #23]
+ 203:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****       ioRawWriteBuffer(&sync, 1);
+ 612              		.loc 1 203 7
+ 613 009a 0DF11703 		add	r3, sp, #23
+ 614 009e 0121     		movs	r1, #1
+ 615 00a0 1846     		mov	r0, r3
+ 616 00a2 FFF7FEFF 		bl	ioRawWriteBuffer
+ 204:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****       read_packet();
+ 617              		.loc 1 204 7
+ 618 00a6 FFF7FEFF 		bl	read_packet
+ 619              	.L41:
+ 620              	.LBE3:
+ 194:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****     for (; i_packet.pr > 0 && count; i_packet.pr--) {
+ 621              		.loc 1 194 10
+ 622 00aa 019B     		ldr	r3, [sp, #4]
+ 623 00ac 002B     		cmp	r3, #0
+ 624 00ae E3D1     		bne	.L42
+ 205:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****     }
+ 206:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   }
+ 207:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 208:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   return res;
+ 625              		.loc 1 208 10
+ 626 00b0 9DF81F30 		ldrb	r3, [sp, #31]	@ zero_extendqisi2
+ 627              	.L38:
+ 209:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** }
+ 628              		.loc 1 209 1
+ 629 00b4 1846     		mov	r0, r3
+ 630 00b6 09B0     		add	sp, sp, #36
+ 631              		.cfi_def_cfa_offset 4
+ 632              		@ sp needed
+ 633 00b8 5DF804FB 		ldr	pc, [sp], #4
+ 634              	.L48:
+ 635              		.align	2
+ 636              	.L47:
+ 637 00bc 00000000 		.word	i_packet
+ 638 00c0 00000000 		.word	i_ridx
+ 639              		.cfi_endproc
+ 640              	.LFE458:
+ 642              		.section	.text.pb_io_ostream,"ax",%progbits
+ 643              		.align	1
+ 644              		.p2align 4,,15
+ 645              		.global	pb_io_ostream
+ 646              		.syntax unified
+ 647              		.thumb
+ 648              		.thumb_func
+ 650              	pb_io_ostream:
+ 651              	.LFB459:
+ 210:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 211:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** pb_ostream_t pb_io_ostream(int fd)
+ 212:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** {
+ 652              		.loc 1 212 1
+ 653              		.cfi_startproc
+ 654              		@ args = 0, pretend = 0, frame = 24
+ 655              		@ frame_needed = 0, uses_anonymous_args = 0
+ 656              		@ link register save eliminated.
+ 657 0000 10B4     		push	{r4}
+ 658              		.cfi_def_cfa_offset 4
+ 659              		.cfi_offset 4, -4
+ 660 0002 87B0     		sub	sp, sp, #28
+ 661              		.cfi_def_cfa_offset 32
+ 662 0004 0190     		str	r0, [sp, #4]
+ 663 0006 0091     		str	r1, [sp]
+ 213:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #ifndef PB_NO_ERRMSG
+ 214:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   pb_ostream_t stream = {&write_callback, (void*)(intptr_t)fd, SIZE_MAX, 0, NULL};
+ 215:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #else
+ 216:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   pb_ostream_t stream = {&write_callback, (void*)(intptr_t)fd, SIZE_MAX, 0};
+ 664              		.loc 1 216 16
+ 665 0008 094B     		ldr	r3, .L51
+ 666 000a 0293     		str	r3, [sp, #8]
+ 667              		.loc 1 216 43
+ 668 000c 009B     		ldr	r3, [sp]
+ 669              		.loc 1 216 16
+ 670 000e 0393     		str	r3, [sp, #12]
+ 671 0010 4FF0FF33 		mov	r3, #-1
+ 672 0014 0493     		str	r3, [sp, #16]
+ 673 0016 0023     		movs	r3, #0
+ 674 0018 0593     		str	r3, [sp, #20]
+ 217:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #endif
+ 218:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   return stream;
+ 675              		.loc 1 218 10
+ 676 001a 019B     		ldr	r3, [sp, #4]
+ 677 001c 1C46     		mov	r4, r3
+ 678 001e 02AB     		add	r3, sp, #8
+ 679 0020 0FCB     		ldm	r3, {r0, r1, r2, r3}
+ 680 0022 84E80F00 		stm	r4, {r0, r1, r2, r3}
+ 219:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** }
+ 681              		.loc 1 219 1
+ 682 0026 0198     		ldr	r0, [sp, #4]
+ 683 0028 07B0     		add	sp, sp, #28
+ 684              		.cfi_def_cfa_offset 4
+ 685              		@ sp needed
+ 686 002a 5DF8044B 		ldr	r4, [sp], #4
+ 687              		.cfi_restore 4
+ 688              		.cfi_def_cfa_offset 0
+ 689 002e 7047     		bx	lr
+ 690              	.L52:
+ 691              		.align	2
+ 692              	.L51:
+ 693 0030 00000000 		.word	write_callback
+ 694              		.cfi_endproc
+ 695              	.LFE459:
+ 697              		.section	.text.pb_io_istream,"ax",%progbits
+ 698              		.align	1
+ 699              		.p2align 4,,15
+ 700              		.global	pb_io_istream
+ 701              		.syntax unified
+ 702              		.thumb
+ 703              		.thumb_func
+ 705              	pb_io_istream:
+ 706              	.LFB460:
+ 220:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 221:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** pb_istream_t pb_io_istream(int fd)
+ 222:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** {
+ 707              		.loc 1 222 1
+ 708              		.cfi_startproc
+ 709              		@ args = 0, pretend = 0, frame = 24
+ 710              		@ frame_needed = 0, uses_anonymous_args = 0
+ 711              		@ link register save eliminated.
+ 712 0000 10B4     		push	{r4}
+ 713              		.cfi_def_cfa_offset 4
+ 714              		.cfi_offset 4, -4
+ 715 0002 87B0     		sub	sp, sp, #28
+ 716              		.cfi_def_cfa_offset 32
+ 717 0004 0190     		str	r0, [sp, #4]
+ 718 0006 0091     		str	r1, [sp]
+ 223:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #ifndef PB_NO_ERRMSG
+ 224:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   pb_istream_t stream = {&read_callback, (void*)(intptr_t)fd, SIZE_MAX, NULL};
+ 225:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #else
+ 226:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   pb_istream_t stream = {&read_callback, (void*)(intptr_t)fd, SIZE_MAX};
+ 719              		.loc 1 226 16
+ 720 0008 094B     		ldr	r3, .L55
+ 721 000a 0393     		str	r3, [sp, #12]
+ 722              		.loc 1 226 42
+ 723 000c 009B     		ldr	r3, [sp]
+ 724              		.loc 1 226 16
+ 725 000e 0493     		str	r3, [sp, #16]
+ 726 0010 4FF0FF33 		mov	r3, #-1
+ 727 0014 0593     		str	r3, [sp, #20]
+ 227:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** #endif
+ 228:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   return stream;
+ 728              		.loc 1 228 10
+ 729 0016 019B     		ldr	r3, [sp, #4]
+ 730 0018 1C46     		mov	r4, r3
+ 731 001a 03AB     		add	r3, sp, #12
+ 732 001c 93E80700 		ldm	r3, {r0, r1, r2}
+ 733 0020 84E80700 		stm	r4, {r0, r1, r2}
+ 229:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** }
+ 734              		.loc 1 229 1
+ 735 0024 0198     		ldr	r0, [sp, #4]
+ 736 0026 07B0     		add	sp, sp, #28
+ 737              		.cfi_def_cfa_offset 4
+ 738              		@ sp needed
+ 739 0028 5DF8044B 		ldr	r4, [sp], #4
+ 740              		.cfi_restore 4
+ 741              		.cfi_def_cfa_offset 0
+ 742 002c 7047     		bx	lr
+ 743              	.L56:
+ 744 002e 00BF     		.align	2
+ 745              	.L55:
+ 746 0030 00000000 		.word	read_callback
+ 747              		.cfi_endproc
+ 748              	.LFE460:
+ 750              		.section	.text.pb_io_stream_init,"ax",%progbits
+ 751              		.align	1
+ 752              		.p2align 4,,15
+ 753              		.global	pb_io_stream_init
+ 754              		.syntax unified
+ 755              		.thumb
+ 756              		.thumb_func
+ 758              	pb_io_stream_init:
+ 759              	.LFB461:
+ 230:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** 
+ 231:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** int pb_io_stream_init(void)
+ 232:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** {
+ 760              		.loc 1 232 1
+ 761              		.cfi_startproc
+ 762              		@ args = 0, pretend = 0, frame = 0
+ 763              		@ frame_needed = 0, uses_anonymous_args = 0
+ 764 0000 08B5     		push	{r3, lr}
+ 765              		.cfi_def_cfa_offset 8
+ 766              		.cfi_offset 3, -8
+ 767              		.cfi_offset 14, -4
+ 233:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   ioRawDisableLLWrite();
+ 768              		.loc 1 233 3
+ 769 0002 FFF7FEFF 		bl	ioRawDisableLLWrite
+ 234:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c ****   return 0;
+ 770              		.loc 1 234 10
+ 771 0006 0023     		movs	r3, #0
+ 235:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.c **** }
+ 772              		.loc 1 235 1
+ 773 0008 1846     		mov	r0, r3
+ 774 000a 08BD     		pop	{r3, pc}
+ 775              		.cfi_endproc
+ 776              	.LFE461:
+ 778              		.text
+ 779              	.Letext0:
+ 780              		.file 2 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
+ 781              		.file 3 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
+ 782              		.file 4 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
+ 783              		.file 5 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/lib/gcc/arm-none-
+ 784              		.file 6 "SR5E1_AI_Demo_7000P/lib/validation/inc/pb.h"
+ 785              		.file 7 "SR5E1_AI_Demo_7000P/lib/validation/inc/pb_decode.h"
+ 786              		.file 8 "SR5E1_AI_Demo_7000P/lib/validation/inc/pb_encode.h"
+ 787              		.file 9 "SR5E1_AI_Demo_7000P/lib/validation/inc/stm32msg.pb.h"
+ 788              		.file 10 "SR5E1_AI_Demo_7000P/lib/misc/inc/aiTestUtility.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 aiPbIO.c
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:20     .data.packet_size:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:23     .data.packet_size:00000000 packet_size
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:26     .text.pb_io_get_packet_size:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:33     .text.pb_io_get_packet_size:00000000 pb_io_get_packet_size
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:64     .text.pb_io_get_packet_size:0000001c $d
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:69     .text.pb_io_set_packet_size:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:76     .text.pb_io_set_packet_size:00000000 pb_io_set_packet_size
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:100    .text.pb_io_set_packet_size:00000018 $d
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:105    .text.pb_io_reset_packet_size:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:112    .text.pb_io_reset_packet_size:00000000 pb_io_reset_packet_size
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:129    .text.pb_io_reset_packet_size:0000000c $d
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:134    .bss.o_packet:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:137    .bss.o_packet:00000000 o_packet
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:140    .text.write_packet:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:146    .text.write_packet:00000000 write_packet
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:171    .text.write_packet:00000018 $d
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:177    .text.pb_io_flush_ostream:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:184    .text.pb_io_flush_ostream:00000000 pb_io_flush_ostream
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:242    .text.pb_io_flush_ostream:0000004c $d
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:247    .text.write_callback:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:253    .text.write_callback:00000000 write_callback
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:375    .text.write_callback:000000a4 $d
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:381    .bss.i_packet:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:384    .bss.i_packet:00000000 i_packet
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:387    .bss.i_ridx:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:390    .bss.i_ridx:00000000 i_ridx
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:393    .text.read_packet:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:399    .text.read_packet:00000000 read_packet
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:457    .text.read_packet:00000050 $d
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:464    .text.pb_io_flush_istream:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:471    .text.pb_io_flush_istream:00000000 pb_io_flush_istream
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:492    .text.pb_io_flush_istream:00000014 $d
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:498    .text.read_callback:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:504    .text.read_callback:00000000 read_callback
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:637    .text.read_callback:000000bc $d
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:643    .text.pb_io_ostream:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:650    .text.pb_io_ostream:00000000 pb_io_ostream
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:693    .text.pb_io_ostream:00000030 $d
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:698    .text.pb_io_istream:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:705    .text.pb_io_istream:00000000 pb_io_istream
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:746    .text.pb_io_istream:00000030 $d
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:751    .text.pb_io_stream_init:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccNesJ0x.s:758    .text.pb_io_stream_init:00000000 pb_io_stream_init
+                           .group:00000000 wm4.0.5030deb6392b4db6a7ac5ffd5733b4a1
+                           .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
+                           .group:00000000 wm4.features.h.33.5ea28ceb8be6621901b9d58b4c3ee651
+                           .group:00000000 wm4._default_types.h.15.247e5cd201eca3442cbf5404108c4935
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:00000000 wm4.ieeefp.h.77.bd5feb87d9990dd328793ced294f6a87
+                           .group:00000000 wm4.newlib.h.7.591ac1bd65c1f5b34864757667a05252
+                           .group:00000000 wm4.config.h.224.10ee1ad185d877c6e334e6581faab44d
+                           .group:00000000 wm4._ansi.h.31.de524f58584151836e90d8620a16f8e8
+                           .group:00000000 wm4.stdlib.h.13.4ed386f5c1a80d71e72172885d946ef2
+                           .group:00000000 wm4.stddef.h.185.882514a1a6169ceba9142f401cbe27c6
+                           .group:00000000 wm4.stddef.h.39.ce75d04d8242e588a8427ce8922e2e35
+                           .group:00000000 wm4.cdefs.h.49.a0dc0a4a6c7d01e2e5d0aade9399215f
+                           .group:00000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:00000000 wm4.stddef.h.158.6f8e08a347b1cff664332fa350bfceb3
+                           .group:00000000 wm4._types.h.127.3bdfe3ff8ea2d0985b03d9cbe93480e3
+                           .group:00000000 wm4.reent.h.18.25503cdc8b7e55dd0d6ea7b3e5af7a03
+                           .group:00000000 wm4.lock.h.2.1461d1fff82dffe8bfddc23307f6484f
+                           .group:00000000 wm4.reent.h.78.6b87466b04591b1f1cb88c14fdf2ba9e
+                           .group:00000000 wm4.alloca.h.8.dfc0c703c47ec3e69746825b17d9e66d
+                           .group:00000000 wm4.stdlib.h.56.f4862cfbf4363a1db01842d5bdf72c18
+                           .group:00000000 wm4.stdio.h.27.3fc80220048df77954e38daec3bb9670
+                           .group:00000000 wm4.stddef.h.158.eec8bf00b5213f43d095cb984c5f22e3
+                           .group:00000000 wm4.stdarg.h.34.3a23a216c0c293b3d2ea2e89281481e6
+                           .group:00000000 wm4.stdio.h.47.dc31ec4674d7bcb103c9f08809549f45
+                           .group:00000000 wm4.stdio.h.2.4aa87247282eca6c8f36f9de33d8df1a
+                           .group:00000000 wm4.stdio.h.87.a1e20d2651f9bfb66e51bfbe849db00a
+                           .group:00000000 wm4.inttypes.h.14.b28deb26920e51e0da310220ef0f9003
+                           .group:00000000 wm4.inttypes.h.28.684aa7736e7ecc9a6ffc44acc61c7a90
+                           .group:00000000 wm4.string.h.8.c4b8571ce60dff2817f43fec8b86aecd
+                           .group:00000000 wm4.pb.h.6.0211b766e64415182c5274e6ec52e2a2
+                           .group:00000000 wm4.stdbool.h.29.c08aa3eec75cf5b9b5003883f43253f0
+                           .group:00000000 wm4.pb.h.80.0c113d593b086601ad12440334e7ab1d
+                           .group:00000000 wm4.cmsis_gcc.h.26.498d0ad17a45fc9ef20fdc01caf02259
+                           .group:00000000 wm4.ai_device_adaptor.h.109.a7e609accf0e2d1179889371c58a4000
+                           .group:00000000 wm4.stellar_ai_cfg.h.22.b8366a3a45f39e9e09a10028cf2dd2bf
+                           .group:00000000 wm4.stai.h.24.edb2caeb75093402e355d2c517240f7a
+                           .group:00000000 wm4.stai_debug.h.37.4be079c70c66033549ba26b63a31db94
+                           .group:00000000 wm4.network.h.26.b7847d442a108daf4406804071fbba60
+                           .group:00000000 wm4.app_stellarstudioai.h.34.09d4d4538ab8661d6d0406dbdedd94c9
+                           .group:00000000 wm4.sr5e1xx.h.22.e5c808533cc52ed19fb0830cd7d98924
+                           .group:00000000 wm4.cmsis_version.h.32.0f826810625204eca22a19868bdc7586
+                           .group:00000000 wm4.core_cm7.h.66.8ab2de36917d6fcae18019067fda13e0
+                           .group:00000000 wm4.core_cm7.h.174.43edb295ecdaadad738f48ba6011ffad
+                           .group:00000000 wm4.mpu_armv7.h.32.83326921a797fa9d6f70449916b4b839
+                           .group:00000000 wm4.cachel1_armv7.h.32.abd77761a989e008b0c60891114a33c7
+                           .group:00000000 wm4.SR5E1_ADC.h.14.ae169e40e9f684c773c07c5a3820e545
+                           .group:00000000 wm4.SR5E1_CEM.h.14.01fe5742c8f1ae35b1f3af05932f702e
+                           .group:00000000 wm4.SR5E1_CMU.h.14.2617b38b159abe38028862394531e06d
+                           .group:00000000 wm4.SR5E1_COMP.h.14.4b6fdfe4f5f7fd9bedf3a99b98bdf4cd
+                           .group:00000000 wm4.SR5E1_CORDIC.h.14.354fbf7c9eaf6963d38eaa25cf28ffe8
+                           .group:00000000 wm4.SR5E1_CRC.h.14.c64d0f7767671ddb92e9ead0a1162100
+                           .group:00000000 wm4.SR5E1_DAC.h.14.8c26a0ff04b0cfeb55306cc3f22187b8
+                           .group:00000000 wm4.SR5E1_DBGMCU.h.14.427df893d53a8044654f017ba01c25ed
+                           .group:00000000 wm4.SR5E1_DMA.h.14.a7f9a92f844b40a86965798c2e64240b
+                           .group:00000000 wm4.SR5E1_DMAMUX.h.14.471b3b4dfd4d41515f1df49493698866
+                           .group:00000000 wm4.SR5E1_EXTI.h.14.a325ea3fe89cd84894660551c33241ea
+                           .group:00000000 wm4.SR5E1_FCCU.h.14.0ebf0f0f36e079d28613ad2c80e17e23
+                           .group:00000000 wm4.SR5E1_FDCAN.h.14.92cca1acd00b06d527134cd2ce2de963
+                           .group:00000000 wm4.SR5E1_FLASH_REG_ITF.h.14.d23d1d44923f9b20b8c8fdb51d66aefd
+                           .group:00000000 wm4.SR5E1_GPIO.h.14.1c84071e130d7c64b62470ab0e18a1f1
+                           .group:00000000 wm4.SR5E1_HRTIM.h.24.03932387d2522e6bd5c772a4edaf2f5d
+                           .group:00000000 wm4.SR5E1_HSEM.h.14.cbe70eee519f01b16452c3f8c99d8df1
+                           .group:00000000 wm4.SR5E1_I2C.h.14.350ba3e0f4fd57828457efa80135c36c
+                           .group:00000000 wm4.SR5E1_IMA.h.14.62b7088985ab2b7ce9b030a02daa1f7d
+                           .group:00000000 wm4.SR5E1_IWDG.h.14.20b7c5f05cf7ae94464c360d7af3660d
+                           .group:00000000 wm4.SR5E1_MEMU.h.14.04bad7ae4c52ce334a4fc900aad2ae5b
+                           .group:00000000 wm4.SR5E1_NVM_CTRL.h.14.5f442617f0628d4f16258f211c614ef9
+                           .group:00000000 wm4.SR5E1_PLLDIG.h.14.bd87a8e6917eee17dae2f312c8e5fa53
+                           .group:00000000 wm4.SR5E1_PMC_DIG.h.14.54173b566c6656344766ec4ef46c9281
+                           .group:00000000 wm4.typedefs.h.36.07fe3956b4e751037cfee70edcd0b397
+                           .group:00000000 wm4.SR5E1_PRAMC.h.30.1c0b9354fe6c8cac480bcfc44eff2d7e
+                           .group:00000000 wm4.SR5E1_RCC.h.14.6d8396933f006e04e798678fd043e24c
+                           .group:00000000 wm4.SR5E1_RTC.h.14.c054aa0839c8cf8ac24f324aa927c4ec
+                           .group:00000000 wm4.SR5E1_SD_ADC.h.14.552b97d0b8f3c1fd4df6d8964b2f1a80
+                           .group:00000000 wm4.SR5E1_SMPU.h.14.8ce5bb6d5d7c579cd725f492f46e9085
+                           .group:00000000 wm4.SR5E1_SPI.h.14.42d52112e540f85ade4d9135f8b87d72
+                           .group:00000000 wm4.SR5E1_SSCM.h.14.8e6a2ad0ce5fca422fc3d69939b6125b
+                           .group:00000000 wm4.SR5E1_SYSCFG.h.14.02b969490118ce4069914b5e94f7ca65
+                           .group:00000000 wm4.SR5E1_TDM.h.14.a40ed7928cad243a57fd233fccf01ad2
+                           .group:00000000 wm4.SR5E1_TIM.h.14.05b8efc5395873619642d61a4b0b5a54
+                           .group:00000000 wm4.SR5E1_UART.h.14.eec3ab82b02b3bdb3de500483675b83f
+                           .group:00000000 wm4.SR5E1_WWDG.h.14.59b45efc70e442cc6ef03702aad4ad88
+                           .group:00000000 wm4.irq_numbers.h.38.6294b95aed1bf7b3a2cda0eed8ce8f57
+                           .group:00000000 wm4.regs.h.23.2ac145b4f57126d16daed5fbd86d99c6
+                           .group:00000000 wm4.version.h.23.e4b8916ae3b2be9dc2d78f3d1936fa22
+                           .group:00000000 wm4.clock_cfg.h.23.3c8ba5c0347398a4587362787f86fe62
+                           .group:00000000 wm4.clock.h.37.58835f83108bcb182d0fd3c9e58df3b9
+                           .group:00000000 wm4.dwt.h.60.bb144dd848d9adaa1c08f830ce597105
+                           .group:00000000 wm4.stellar_ai_validate.h.45.75e4a2a01e30f67dcffdab062bc0d3ca
+                           .group:00000000 wm4.ai_device_adaptor.h.441.a280118118f69ae730e45b45d404192b
+                           .group:00000000 wm4.aiTestUtility.h.45.5d4618b11f57e8d22c0a97c2bc99a278
+                           .group:00000000 wm4.stm32msg.pb.h.5.e93f39bb00923c13279f010ed1e108ff
+
+UNDEFINED SYMBOLS
+ioRawWriteBuffer
+ioRawReadBuffer
+ioRawDisableLLWrite

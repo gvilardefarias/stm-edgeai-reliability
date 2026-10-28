@@ -1,0 +1,206 @@
+; --------------------------------------------------------------------------------
+; @Title: Flash declaration for ST SR5E1 internal flash
+; @Description:
+;   Script arguments:
+;     DO sr5e1 [PREPAREONLY] [CPU=<cpu>] [DUALPORT=<0|1>]
+;       PREPAREONLY    only declares flash but does not execute flash programming
+;       CPU=<cpu>      selects CPU derivative <cpu>
+;       DUALPORT=<0|1> use dual port memory access, default 1
+;   Example:
+;     DO ~~/demo/arm/flash/sr5e1 PREPAREONLY
+;   Note:
+;     This file must NOT be modified.
+;     This file is intended to stay within TRACE32 installation.
+;     Usage examples are available in the ~~/demo/arm/hardware/... subdirectories.
+;
+; List of SR5E1 derivatives and configurations:
+;    CPU-Type      Flash Code/Data        Ram
+; --------------------------------------------------------------------------------
+;   SR5E1E3          1920/64 KB         448 KB
+;   SR5E1E7          1920/64 KB         448 KB
+;
+; Flash consists of 2 code flash, data flash, BCS, and Utest regions
+; RAM is split into 2 SRAM plus various TCM regions
+; See ST documentation for more information.
+;
+; @Chip: SR5E1*
+; @Author: BWR
+; @Keywords: Stellar SR5E1 FLASH
+; @Copyright: (C) 1989-2022 Lauterbach GmbH, licensed for use with TRACE32(R) only
+; --------------------------------------------------------------------------------
+; $Rev: 10742 $
+; $Id: sr5e1.cmm 10742 2022-03-23 18:41:47Z skrausse $
+
+PRIVATE &parameters
+ENTRY %LINE &parameters
+
+PRIVATE &param_prepareonly &param_cpu &param_dualport
+&parameters=STRing.UPpeR("&parameters")
+&param_prepareonly=(STRing.SCAN("&parameters","PREPAREONLY",0)!=-1)
+&param_cpu=STRing.SCANAndExtract("&parameters","CPU=","")
+&param_dualport=STRing.SCANAndExtract("&parameters","DUALPORT=","1")
+
+; --------------------------------------------------------------------------------
+; Initialize and start the debugger
+IF !SYStem.Up()
+(
+  SYStem.RESet
+
+  IF "&param_cpu"!=""
+    SYStem.CPU &param_cpu
+  ELSE
+    SYStem.CPU SR5E1-CM7-1
+  SYStem.CONFIG DEBUGPORTTYPE SWD
+  SYStem.Up
+)
+
+IF !CPUIS(SR5E1-CM7-1)
+(
+  PRINT "Wrong CPU"
+  ENDDO
+)
+
+IF STATE.RUN()
+  BREAK
+
+; --------------------------------------------------------------------------------
+; Initialize internal SRAM1 and SRAM2
+Data.set AXI:0x24000000--0x2401FFFF %Quad 0
+Data.set AXI:0x24020000--0x2403FFFF %Quad 0
+
+; Initialize internal LOCAL RAM
+Data.set AXI:0x5A000000--0x5A007FFF %Quad 0 //ITCM1(NO_LS) 32KB
+Data.set AXI:0x5A040000--0x5A047FFF %Quad 0 //ITCM2(NO_LS) 32KB
+Data.set AXI:0x5C000000--0x5C00FFFF %Quad 0 //DTCM1(NO_LS) 64KB
+Data.set AXI:0x5C040000--0x5C04FFFF %Quad 0 //DTCM2(NO_LS) 64KB
+
+; --------------------------------------------------------------------------------
+GOSUB DisableWatchdog
+
+; --------------------------------------------------------------------------------
+; Flash declaration
+FLASH.RESet
+GOSUB FlashDeclaration "&param_dualport"
+
+; Flash script ends here if called with parameter PREPAREONLY
+IF &param_prepareonly
+  ENDDO PREPAREDONE
+
+; --------------------------------------------------------------------------------
+LOCAL &source
+&source=".\build\sr5e1\evbe7000p\core1\Release\SR5E1_AI_Demo_7000P.elf"
+; Flash programming example
+DIALOG.YESNO "Program flash memory?"
+PRIVATE &progflash
+ENTRY &progflash
+IF &progflash
+(
+  FLASH.ReProgram ALL /Erase
+  ;Data.LOAD.auto *
+  Data.LOAD.ELF &source
+  FLASH.ReProgram OFF
+
+  ; Reset device
+  SYStem.Down
+  SYStem.Up
+
+  PER.view , /SpotLight 
+)
+
+ENDDO
+
+; --------------------------------------------------------------------------------
+; SUBROUTINES
+
+; --------------------------------------------------------------------------------
+; Flash declaration depending on selected CPU
+;
+;   Please do NOT modify the TRACE32 flash declaration.
+;
+;   Modifications can result in unpredictable behavior.
+;   Please contact support@lauterbach.com for any changes.
+FlashDeclaration: ;(param_dualport)
+(
+  PARAMETERS &param_dualport
+  PRIVATE &FlashDriver
+  PRIVATE &RamAddress
+
+  &RamAddress=0x24000000  ; AXI SRAM1
+
+  IF CPUIS(SR5E1*)
+  (
+    &FlashDriver="sr5e1.bin"
+  )
+
+  // Flash Memory Partition 1 (Code)
+  FLASH.Create 1. (0x08000000)++0xFFFF   0x10000 TARGET quad
+  FLASH.Create 1. (0x08010000)++0xFFFF   0x10000 TARGET quad
+  FLASH.Create 1. (0x08020000)++0xFFFF   0x10000 TARGET quad
+  FLASH.Create 1. (0x08030000)++0x3FFFF  0x40000 TARGET quad
+  FLASH.Create 1. (0x08070000)++0x3FFFF  0x40000 TARGET quad
+  FLASH.Create 1. (0x080B0000)++0x3FFFF  0x40000 TARGET quad
+
+  // Flash Memory Partition 2 (Code)
+  FLASH.Create 2. (0x080F0000)++0xFFFF   0x10000 TARGET quad
+  FLASH.Create 2. (0x08100000)++0xFFFF   0x10000 TARGET quad
+  FLASH.Create 2. (0x08110000)++0xFFFF   0x10000 TARGET quad
+  FLASH.Create 2. (0x08120000)++0x3FFFF  0x40000 TARGET quad
+  FLASH.Create 2. (0x08160000)++0x3FFFF  0x40000 TARGET quad
+  FLASH.Create 2. (0x081A0000)++0x3FFFF  0x40000 TARGET quad
+
+  // Flash Memory Partition 3 (Data)
+  FLASH.Create 3. (0x08F00000)++((4.*0x4000)-1.)  0x4000 TARGET quad
+
+  // UTEST / DCF
+  FLASH.Create 4. (0x1FF80000)++0x3FFF  0x40 NOP quad /OTP /INFO "UTEST"
+  ;FLASH.Create 4. (0x1FF80000+0x20)++0xF   0x10 NOP quad /OTP /INFO "UTEST: F.E.D.L."
+  ;FLASH.Create 4. (0x1FF80000+0x30)++0xF   0x10 NOP quad /OTP /INFO "UTEST: TM Dis Override P/w"
+  ;FLASH.Create 4. (0x1FF80000+0x40)++0xF   0x10 NOP quad /OTP /INFO "UTEST: TM Dis Seal"
+  ;FLASH.Create 4. (0x1FF80000+0x50)++0xF   0x10 NOP quad /OTP /INFO "UTEST: TM Dis Grp A"
+  ;FLASH.Create 4. (0x1FF80000+0x60)++0xF   0x10 NOP quad /OTP /INFO "UTEST: TM Dis Grp B"
+  ;FLASH.Create 4. (0x1FF80000+0xA0)++0x1F  0x20 NOP quad /OTP /INFO "UTEST: UID (R)"
+  ;FLASH.Create 4. (0x1FF80000+0xC0)++0xF   0x10 NOP quad /OTP /INFO "UTEST: SW-DCF Start (R)"
+  ;FLASH.Create 4. (0x1FF80000+0x100)++0x1F 0x20 NOP quad /OTP /INFO "UTEST: P/w Flash Test in FA (R)"
+  ;FLASH.Create 4. (0x1FF80000+0x120)++0x1F 0x20 NOP quad /OTP /INFO "UTEST: JTAG P/w"
+  ;FLASH.Create 4. (0x1FF80000+0x140)++0x1F 0x20 NOP quad /OTP /INFO "UTEST: PASS P/w Grp 0"
+  ;FLASH.Create 4. (0x1FF80000+0x160)++0x1F 0x20 NOP quad /OTP /INFO "UTEST: PASS P/w Grp 1"
+  ;FLASH.Create 4. (0x1FF80000+0x180)++0x1F 0x20 NOP quad /OTP /INFO "UTEST: PASS P/w Grp 2"
+  ;FLASH.Create 4. (0x1FF80000+0x1A0)++0x1F 0x20 NOP quad /OTP /INFO "UTEST: PASS P/w Grp 3"
+  ;FLASH.Create 4. (0x1FF80000+0x1E0)++0x1F 0x20 NOP quad /OTP /INFO "UTEST: LC 0 - ST Production"
+  ;FLASH.Create 4. (0x1FF80000+0x200)++0x1F 0x20 NOP quad /OTP /INFO "UTEST: LC 1 - Customer Deliv"
+  ;FLASH.Create 4. (0x1FF80000+0x220)++0x1F 0x20 NOP quad /OTP /INFO "UTEST: LC 2 - OEM Production"
+  ;FLASH.Create 4. (0x1FF80000+0x240)++0x1F 0x20 NOP quad /OTP /INFO "UTEST: LC 3 - In Field"
+  ;FLASH.Create 4. (0x1FF80000+0x260)++0x1F 0x20 NOP quad /OTP /INFO "UTEST: LC 4 - FA"
+  ;FLASH.Create 4. (0x1FF80000+0x280)++0x1F 0x20 NOP quad /OTP /INFO "UTEST: Cust 1Bit Fix (R)"
+  ;FLASH.Create 4. (0x1FF80000+0x2C0)++0x1F 0x20 NOP quad /OTP /INFO "UTEST: Cust Unfix Bit Det (R)"
+  ;FLASH.Create 4. (0x1FF80000+0x2E0)++0x1F 0x20 NOP quad /OTP /INFO "UTEST: Cust Prog Det (R)"
+  ;FLASH.Create 4. (0x1FF80000+0x300)++0xCFF 0x40 NOP quad /OTP /INFO "UTEST: DCF Record"
+  ;FLASH.Create 4. (0x1FF80000+0x1000)++0x2FFF 0x40 NOP quad /OTP /INFO "UTEST: Customer OTP"
+
+  // BCS / BAF
+  FLASH.Create 5. (0x1FF00000)++0x3FFF  0x4000 NOP quad /OTP /INFO "BCS"
+  ;FLASH.Create 5. (0x1FF00000+0x0)++0xFF  0x100 NOP quad /OTP /INFO "BCS: BAF header"
+  ;FLASH.Create 5. (0x1FF00000+0x100)++0xFF 0x100 NOP quad /OTP /INFO "BCS: BAF code entry"
+  ;FLASH.Create 5. (0x1FF00000+0x200)++0x3DFF 0x100 NOP quad /OTP /INFO "BCS: BAF code"
+
+  IF ("&param_dualport"!="1")
+  (
+    FLASH.TARGET &RamAddress &RamAddress+0x1000 0x1000 ~~/demo/arm/flash/quad/&FlashDriver
+  )
+  ELSE
+  (
+    SYStem.MemAccess AXI
+    FLASH.TARGET &RamAddress E:&RamAddress+0x1000 0x1000 ~~/demo/arm/flash/quad/&FlashDriver /DualPort
+  )
+  RETURN
+)
+
+DisableWatchdog:
+(
+  PRIVATE &cr
+  ;&cr=Data.Long(EAXI:0x70000000)  ; DBGMCU->APB1_C1_FZ_REG
+  ;Data.Set EAXI:0x70000000 %Long &cr&~0x33  ; Freeze IWDGn & WWDGn (n=1,2)
+
+  RETURN
+)
+

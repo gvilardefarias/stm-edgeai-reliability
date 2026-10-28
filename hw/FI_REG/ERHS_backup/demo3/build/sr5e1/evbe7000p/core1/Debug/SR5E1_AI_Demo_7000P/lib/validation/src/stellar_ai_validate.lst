@@ -1,0 +1,323 @@
+   1              		.cpu cortex-m7
+   2              		.arch armv7e-m
+   3              		.fpu fpv5-d16
+   4              		.eabi_attribute 28, 1
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 6
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.file	"stellar_ai_validate.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.file 1 "SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c"
+  19              		.section	.bss.sr5e1_rxbuf,"aw",%nobits
+  20              		.align	2
+  23              	sr5e1_rxbuf:
+  24 0000 00000000 		.space	64
+  24      00000000 
+  24      00000000 
+  24      00000000 
+  24      00000000 
+  25              		.section	.text.SR5E1_UART_Init,"ax",%progbits
+  26              		.align	1
+  27              		.p2align 4,,15
+  28              		.global	SR5E1_UART_Init
+  29              		.syntax unified
+  30              		.thumb
+  31              		.thumb_func
+  33              	SR5E1_UART_Init:
+  34              	.LFB446:
+   1:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** /****************************************************************************
+   2:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** *
+   3:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** * Copyright (c) 2023 STMicroelectronics - All Rights Reserved
+   4:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** *
+   5:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** * License terms: STMicroelectronics Proprietary in accordance with licensing
+   6:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** * terms SLA0098 at www.st.com.
+   7:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** *
+   8:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** * THIS SOFTWARE IS DISTRIBUTED "AS IS," AND ALL WARRANTIES ARE DISCLAIMED,
+   9:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** * INCLUDING MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+  10:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** *
+  11:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** *****************************************************************************/
+  12:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** /**
+  13:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****  * @file    stellar_ai_validate.c
+  14:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****  * @brief   STELLAR AI Validate Wrapper Layer.
+  15:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****  *
+  16:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****  * @addtogroup STELLAR_AI_VALIDATE
+  17:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****  * @{
+  18:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****  */
+  19:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** 
+  20:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** #include "stellar_ai_validate.h"
+  21:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** #include "clock.h"
+  22:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** #include "io.h"
+  23:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** #include "irq.h"
+  24:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** 
+  25:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** /*===========================================================================*/
+  26:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** /* Module local definitions.                                                 */
+  27:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** /*===========================================================================*/
+  28:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** 
+  29:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** #if defined(SR5E1)
+  30:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** static uint8_t sr5e1_rxbuf[SR5E1_UART_RX_BUF_SIZE];
+  31:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** #endif
+  32:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** 
+  33:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** /*===========================================================================*/
+  34:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** /* Module exported variables.                                                */
+  35:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** /*===========================================================================*/
+  36:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** 
+  37:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** /*===========================================================================*/
+  38:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** /* Module local types.                                                       */
+  39:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** /*===========================================================================*/
+  40:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** 
+  41:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** /*===========================================================================*/
+  42:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** /* Module local variables.                                                   */
+  43:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** /*===========================================================================*/
+  44:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** 
+  45:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** /*===========================================================================*/
+  46:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** /* Module local functions.                                                   */
+  47:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** /*===========================================================================*/
+  48:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** 
+  49:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** /*===========================================================================*/
+  50:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** /* Module exported functions.                                                */
+  51:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** /*===========================================================================*/
+  52:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** 
+  53:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** /**
+  54:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****  * @brief   Initializes UART used during AI Validate
+  55:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****  *
+  56:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****  * @api
+  57:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****  */
+  58:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** #if defined(SR5E1)
+  59:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** void SR5E1_UART_Init(void) {
+  35              		.loc 1 59 28
+  36              		.cfi_startproc
+  37              		@ args = 0, pretend = 0, frame = 8
+  38              		@ frame_needed = 0, uses_anonymous_args = 0
+  39 0000 00B5     		push	{lr}
+  40              		.cfi_def_cfa_offset 4
+  41              		.cfi_offset 14, -4
+  42 0002 83B0     		sub	sp, sp, #12
+  43              		.cfi_def_cfa_offset 16
+  60:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** 
+  61:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****   uart_driver_t *io_up = NULL;
+  44              		.loc 1 61 18
+  45 0004 0023     		movs	r3, #0
+  46 0006 0193     		str	r3, [sp, #4]
+  62:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****   /* If the RuntimeIO component is used with the same serial driver used by the
+  63:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****      AI Component, the serial driver must be stopped before re-starting it with
+  64:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****      a new specific configuration suitable for the host to target communication
+  65:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****      on which the validate procedure is based on. */
+  66:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** 
+  67:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****   /* Get the IO uart driver pointer.*/
+  68:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****   io_up = (uart_driver_t *)io_getptr();
+  47              		.loc 1 68 11
+  48 0008 FFF7FEFF 		bl	io_getptr
+  49 000c 0190     		str	r0, [sp, #4]
+  69:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** 
+  70:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****   if ((io_up == NULL) || (io_up != &SR5E1_AI_VALIDATE_SERIAL_DRIVER)) {
+  50              		.loc 1 70 6
+  51 000e 019B     		ldr	r3, [sp, #4]
+  52 0010 002B     		cmp	r3, #0
+  53 0012 0DD0     		beq	.L2
+  54              		.loc 1 70 23 discriminator 1
+  55 0014 019B     		ldr	r3, [sp, #4]
+  56 0016 1E4A     		ldr	r2, .L3
+  57 0018 9342     		cmp	r3, r2
+  58 001a 09D1     		bne	.L2
+  71:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****     /* RuntimeIO not initialized or initilized with a different UART pointer.*/
+  72:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****   }
+  73:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****   else { /* the RuntimeIO component serial is the same of the AI component.*/
+  74:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****     /* Stop Runtime IO module.*/
+  75:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****     io_stop();
+  59              		.loc 1 75 5
+  60 001c FFF7FEFF 		bl	io_stop
+  76:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****     /* De-initialize Runtime IO module.*/
+  77:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****     io_deinit();
+  61              		.loc 1 77 5
+  62 0020 FFF7FEFF 		bl	io_deinit
+  78:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****     /* Stop the serial driver instance.*/
+  79:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****     uart_stop(&SR5E1_AI_VALIDATE_SERIAL_DRIVER);
+  63              		.loc 1 79 5
+  64 0024 1A48     		ldr	r0, .L3
+  65 0026 FFF7FEFF 		bl	uart_stop
+  80:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****     /* De-initialize the serial driver instance.*/
+  81:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****     uart_deinit(&SR5E1_AI_VALIDATE_SERIAL_DRIVER);
+  66              		.loc 1 81 5
+  67 002a 1948     		ldr	r0, .L3
+  68 002c FFF7FEFF 		bl	uart_deinit
+  69              	.L2:
+  82:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****   }
+  83:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****   /* Initialize UART driver instance used for validation.*/
+  84:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****   uart_init(&SR5E1_AI_VALIDATE_SERIAL_DRIVER);
+  70              		.loc 1 84 3
+  71 0030 1748     		ldr	r0, .L3
+  72 0032 FFF7FEFF 		bl	uart_init
+  85:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****   /* Configure the AI UART driver instance.*/
+  86:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****   (void)uart_set_prio(&SR5E1_AI_VALIDATE_SERIAL_DRIVER, IRQ_PRIORITY_5);
+  73              		.loc 1 86 9
+  74 0036 0521     		movs	r1, #5
+  75 0038 1548     		ldr	r0, .L3
+  76 003a FFF7FEFF 		bl	uart_set_prio
+  87:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****   (void)uart_set_rx_drv_mode(&SR5E1_AI_VALIDATE_SERIAL_DRIVER, UART_RX_DRV_MODE_INT_BUFF_SYNC);
+  77              		.loc 1 87 9
+  78 003e 0521     		movs	r1, #5
+  79 0040 1348     		ldr	r0, .L3
+  80 0042 FFF7FEFF 		bl	uart_set_rx_drv_mode
+  88:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****   (void)uart_set_tx_drv_mode(&SR5E1_AI_VALIDATE_SERIAL_DRIVER, UART_TX_DRV_MODE_INT_SYNC);
+  81              		.loc 1 88 9
+  82 0046 0021     		movs	r1, #0
+  83 0048 1148     		ldr	r0, .L3
+  84 004a FFF7FEFF 		bl	uart_set_tx_drv_mode
+  89:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****   (void)uart_set_baud(&SR5E1_AI_VALIDATE_SERIAL_DRIVER, UART_BAUDRATE_115200);
+  85              		.loc 1 89 9
+  86 004e 4FF4E131 		mov	r1, #115200
+  87 0052 0F48     		ldr	r0, .L3
+  88 0054 FFF7FEFF 		bl	uart_set_baud
+  90:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****   (void)uart_set_presc(&SR5E1_AI_VALIDATE_SERIAL_DRIVER, UART_PRESCALER_DIV1);
+  89              		.loc 1 90 9
+  90 0058 0021     		movs	r1, #0
+  91 005a 0D48     		ldr	r0, .L3
+  92 005c FFF7FEFF 		bl	uart_set_presc
+  91:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****   (void)uart_set_parity(&SR5E1_AI_VALIDATE_SERIAL_DRIVER, UART_PARITY_NONE);
+  93              		.loc 1 91 9
+  94 0060 0021     		movs	r1, #0
+  95 0062 0B48     		ldr	r0, .L3
+  96 0064 FFF7FEFF 		bl	uart_set_parity
+  92:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****   (void)uart_set_over(&SR5E1_AI_VALIDATE_SERIAL_DRIVER, UART_OVERSAMPLING_16);
+  97              		.loc 1 92 9
+  98 0068 0021     		movs	r1, #0
+  99 006a 0948     		ldr	r0, .L3
+ 100 006c FFF7FEFF 		bl	uart_set_over
+  93:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****   (void)uart_set_sbit(&SR5E1_AI_VALIDATE_SERIAL_DRIVER, UART_STOPBIT_1);
+ 101              		.loc 1 93 9
+ 102 0070 0021     		movs	r1, #0
+ 103 0072 0748     		ldr	r0, .L3
+ 104 0074 FFF7FEFF 		bl	uart_set_sbit
+  94:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****   (void)uart_set_sbrx_buf(&SR5E1_AI_VALIDATE_SERIAL_DRIVER, sr5e1_rxbuf, SR5E1_UART_RX_BUF_SIZE);
+ 105              		.loc 1 94 3
+ 106 0078 4022     		movs	r2, #64
+ 107 007a 0649     		ldr	r1, .L3+4
+ 108 007c 0448     		ldr	r0, .L3
+ 109 007e FFF7FEFF 		bl	uart_set_sbrx_buf
+  95:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****   /* Starts the AI UART instance.*/
+  96:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c ****   uart_start(&SR5E1_AI_VALIDATE_SERIAL_DRIVER);
+ 110              		.loc 1 96 3
+ 111 0082 0348     		ldr	r0, .L3
+ 112 0084 FFF7FEFF 		bl	uart_start
+  97:SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.c **** }
+ 113              		.loc 1 97 1
+ 114 0088 00BF     		nop
+ 115 008a 03B0     		add	sp, sp, #12
+ 116              		.cfi_def_cfa_offset 4
+ 117              		@ sp needed
+ 118 008c 5DF804FB 		ldr	pc, [sp], #4
+ 119              	.L4:
+ 120              		.align	2
+ 121              	.L3:
+ 122 0090 00000000 		.word	DRV_UART3
+ 123 0094 00000000 		.word	sr5e1_rxbuf
+ 124              		.cfi_endproc
+ 125              	.LFE446:
+ 127              		.text
+ 128              	.Letext0:
+ 129              		.file 2 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
+ 130              		.file 3 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
+ 131              		.file 4 "C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Comms/UART/include/uart.h"
+ 132              		.file 5 "C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Runtime/IO/include/io.h"
+ 133              		.file 6 "C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Comms/UART/include/sr5e1/uar
+DEFINED SYMBOLS
+                            *ABS*:00000000 stellar_ai_validate.c
+C:\Users\danie\AppData\Local\Temp\ccDsECb8.s:20     .bss.sr5e1_rxbuf:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccDsECb8.s:23     .bss.sr5e1_rxbuf:00000000 sr5e1_rxbuf
+C:\Users\danie\AppData\Local\Temp\ccDsECb8.s:26     .text.SR5E1_UART_Init:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccDsECb8.s:33     .text.SR5E1_UART_Init:00000000 SR5E1_UART_Init
+C:\Users\danie\AppData\Local\Temp\ccDsECb8.s:122    .text.SR5E1_UART_Init:00000090 $d
+                           .group:00000000 wm4.0.5030deb6392b4db6a7ac5ffd5733b4a1
+                           .group:00000000 wm4.stellar_ai_cfg.h.22.b8366a3a45f39e9e09a10028cf2dd2bf
+                           .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
+                           .group:00000000 wm4.features.h.33.5ea28ceb8be6621901b9d58b4c3ee651
+                           .group:00000000 wm4._default_types.h.15.247e5cd201eca3442cbf5404108c4935
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:00000000 wm4.stddef.h.39.38eb7ec030421799c657b13be5aa21c7
+                           .group:00000000 wm4.stai.h.24.608d6af21070ca68aec6fa67c427ed38
+                           .group:00000000 wm4.stdbool.h.29.c08aa3eec75cf5b9b5003883f43253f0
+                           .group:00000000 wm4.stai.h.38.8b7b3b20574e05eb8d4bb79c3a135768
+                           .group:00000000 wm4.stai_debug.h.37.4be079c70c66033549ba26b63a31db94
+                           .group:00000000 wm4.network.h.26.b7847d442a108daf4406804071fbba60
+                           .group:00000000 wm4.app_stellarstudioai.h.34.09d4d4538ab8661d6d0406dbdedd94c9
+                           .group:00000000 wm4.sr5e1xx.h.22.e5c808533cc52ed19fb0830cd7d98924
+                           .group:00000000 wm4.cmsis_version.h.32.0f826810625204eca22a19868bdc7586
+                           .group:00000000 wm4.core_cm7.h.66.8ab2de36917d6fcae18019067fda13e0
+                           .group:00000000 wm4.cmsis_gcc.h.26.498d0ad17a45fc9ef20fdc01caf02259
+                           .group:00000000 wm4.core_cm7.h.174.43edb295ecdaadad738f48ba6011ffad
+                           .group:00000000 wm4.mpu_armv7.h.32.83326921a797fa9d6f70449916b4b839
+                           .group:00000000 wm4.cachel1_armv7.h.32.abd77761a989e008b0c60891114a33c7
+                           .group:00000000 wm4.SR5E1_ADC.h.14.ae169e40e9f684c773c07c5a3820e545
+                           .group:00000000 wm4.SR5E1_CEM.h.14.01fe5742c8f1ae35b1f3af05932f702e
+                           .group:00000000 wm4.SR5E1_CMU.h.14.2617b38b159abe38028862394531e06d
+                           .group:00000000 wm4.SR5E1_COMP.h.14.4b6fdfe4f5f7fd9bedf3a99b98bdf4cd
+                           .group:00000000 wm4.SR5E1_CORDIC.h.14.354fbf7c9eaf6963d38eaa25cf28ffe8
+                           .group:00000000 wm4.SR5E1_CRC.h.14.c64d0f7767671ddb92e9ead0a1162100
+                           .group:00000000 wm4.SR5E1_DAC.h.14.8c26a0ff04b0cfeb55306cc3f22187b8
+                           .group:00000000 wm4.SR5E1_DBGMCU.h.14.427df893d53a8044654f017ba01c25ed
+                           .group:00000000 wm4.SR5E1_DMA.h.14.a7f9a92f844b40a86965798c2e64240b
+                           .group:00000000 wm4.SR5E1_DMAMUX.h.14.471b3b4dfd4d41515f1df49493698866
+                           .group:00000000 wm4.SR5E1_EXTI.h.14.a325ea3fe89cd84894660551c33241ea
+                           .group:00000000 wm4.SR5E1_FCCU.h.14.0ebf0f0f36e079d28613ad2c80e17e23
+                           .group:00000000 wm4.SR5E1_FDCAN.h.14.92cca1acd00b06d527134cd2ce2de963
+                           .group:00000000 wm4.SR5E1_FLASH_REG_ITF.h.14.d23d1d44923f9b20b8c8fdb51d66aefd
+                           .group:00000000 wm4.SR5E1_GPIO.h.14.1c84071e130d7c64b62470ab0e18a1f1
+                           .group:00000000 wm4.SR5E1_HRTIM.h.24.03932387d2522e6bd5c772a4edaf2f5d
+                           .group:00000000 wm4.SR5E1_HSEM.h.14.cbe70eee519f01b16452c3f8c99d8df1
+                           .group:00000000 wm4.SR5E1_I2C.h.14.350ba3e0f4fd57828457efa80135c36c
+                           .group:00000000 wm4.SR5E1_IMA.h.14.62b7088985ab2b7ce9b030a02daa1f7d
+                           .group:00000000 wm4.SR5E1_IWDG.h.14.20b7c5f05cf7ae94464c360d7af3660d
+                           .group:00000000 wm4.SR5E1_MEMU.h.14.04bad7ae4c52ce334a4fc900aad2ae5b
+                           .group:00000000 wm4.SR5E1_NVM_CTRL.h.14.5f442617f0628d4f16258f211c614ef9
+                           .group:00000000 wm4.SR5E1_PLLDIG.h.14.bd87a8e6917eee17dae2f312c8e5fa53
+                           .group:00000000 wm4.SR5E1_PMC_DIG.h.14.54173b566c6656344766ec4ef46c9281
+                           .group:00000000 wm4.typedefs.h.36.07fe3956b4e751037cfee70edcd0b397
+                           .group:00000000 wm4.SR5E1_PRAMC.h.30.1c0b9354fe6c8cac480bcfc44eff2d7e
+                           .group:00000000 wm4.SR5E1_RCC.h.14.6d8396933f006e04e798678fd043e24c
+                           .group:00000000 wm4.SR5E1_RTC.h.14.c054aa0839c8cf8ac24f324aa927c4ec
+                           .group:00000000 wm4.SR5E1_SD_ADC.h.14.552b97d0b8f3c1fd4df6d8964b2f1a80
+                           .group:00000000 wm4.SR5E1_SMPU.h.14.8ce5bb6d5d7c579cd725f492f46e9085
+                           .group:00000000 wm4.SR5E1_SPI.h.14.42d52112e540f85ade4d9135f8b87d72
+                           .group:00000000 wm4.SR5E1_SSCM.h.14.8e6a2ad0ce5fca422fc3d69939b6125b
+                           .group:00000000 wm4.SR5E1_SYSCFG.h.14.02b969490118ce4069914b5e94f7ca65
+                           .group:00000000 wm4.SR5E1_TDM.h.14.a40ed7928cad243a57fd233fccf01ad2
+                           .group:00000000 wm4.SR5E1_TIM.h.14.05b8efc5395873619642d61a4b0b5a54
+                           .group:00000000 wm4.SR5E1_UART.h.14.eec3ab82b02b3bdb3de500483675b83f
+                           .group:00000000 wm4.SR5E1_WWDG.h.14.59b45efc70e442cc6ef03702aad4ad88
+                           .group:00000000 wm4.irq_numbers.h.38.6294b95aed1bf7b3a2cda0eed8ce8f57
+                           .group:00000000 wm4.regs.h.23.2ac145b4f57126d16daed5fbd86d99c6
+                           .group:00000000 wm4.version.h.23.e4b8916ae3b2be9dc2d78f3d1936fa22
+                           .group:00000000 wm4.clock_cfg.h.23.3c8ba5c0347398a4587362787f86fe62
+                           .group:00000000 wm4.clock.h.37.58835f83108bcb182d0fd3c9e58df3b9
+                           .group:00000000 wm4.dwt.h.60.bb144dd848d9adaa1c08f830ce597105
+                           .group:00000000 wm4.stellar_ai_validate.h.45.75e4a2a01e30f67dcffdab062bc0d3ca
+                           .group:00000000 wm4.irq.h.37.78714f25754c8b09d1428599101f6cc7
+
+UNDEFINED SYMBOLS
+io_getptr
+io_stop
+io_deinit
+uart_stop
+uart_deinit
+uart_init
+uart_set_prio
+uart_set_rx_drv_mode
+uart_set_tx_drv_mode
+uart_set_baud
+uart_set_presc
+uart_set_parity
+uart_set_over
+uart_set_sbit
+uart_set_sbrx_buf
+uart_start
+DRV_UART3

@@ -1,0 +1,756 @@
+   1              		.cpu cortex-m7
+   2              		.arch armv7e-m
+   3              		.fpu fpv5-d16
+   4              		.eabi_attribute 28, 1
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 6
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.file	"aiPbMemRWServices.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.file 1 "SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c"
+  19              		.section	.text.bsdChecksum,"ax",%progbits
+  20              		.align	1
+  21              		.p2align 4,,15
+  22              		.global	bsdChecksum
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	bsdChecksum:
+  28              	.LFB0:
+   1:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** /**
+   2:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****  ******************************************************************************
+   3:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****  * @file    aiPbMemRWservices.c
+   4:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****  * @author  MCD/AIS Team
+   5:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****  * @brief   AI Pb services to read/write in memory
+   6:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****  ******************************************************************************
+   7:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****  * @attention
+   8:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****  *
+   9:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****  * <h2><center>&copy; Copyright (c) 2019,2021 STMicroelectronics.
+  10:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****  * All rights reserved.</center></h2>
+  11:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****  *
+  12:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****  * This software is licensed under terms that can be found in the LICENSE file in
+  13:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****  * the root directory of this software component.
+  14:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****  * If no LICENSE file comes with this software, it is provided AS-IS.
+  15:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****  *
+  16:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****  ******************************************************************************
+  17:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****  */
+  18:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** 
+  19:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** #include <aiPbMemRWServices.h>
+  20:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** 
+  21:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** 
+  22:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** /** Computes BSD checksum if a given buffer. Same as 'sum -r' on Unix
+  23:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****  */
+  24:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** int bsdChecksum(uint8_t* buffer, int length)
+  25:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** {
+  29              		.loc 1 25 1
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 24
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  34 0000 86B0     		sub	sp, sp, #24
+  35              		.cfi_def_cfa_offset 24
+  36 0002 0190     		str	r0, [sp, #4]
+  37 0004 0091     		str	r1, [sp]
+  26:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   int i;
+  27:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   int ch;                       /* Each character read. */
+  28:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   int checksum = 0;             /* The checksum mod 2^16. */
+  38              		.loc 1 28 7
+  39 0006 0023     		movs	r3, #0
+  40 0008 0493     		str	r3, [sp, #16]
+  29:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** 
+  30:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   for(i=0; i<length; i++){
+  41              		.loc 1 30 8
+  42 000a 0023     		movs	r3, #0
+  43 000c 0593     		str	r3, [sp, #20]
+  44              		.loc 1 30 3
+  45 000e 15E0     		b	.L2
+  46              	.L3:
+  31:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     ch = buffer[i];
+  47              		.loc 1 31 16
+  48 0010 059B     		ldr	r3, [sp, #20]
+  49 0012 019A     		ldr	r2, [sp, #4]
+  50 0014 1344     		add	r3, r3, r2
+  51 0016 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  52              		.loc 1 31 8
+  53 0018 0393     		str	r3, [sp, #12]
+  32:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     checksum = (checksum >> 1) + ((checksum & 1) << 15);
+  54              		.loc 1 32 26
+  55 001a 049B     		ldr	r3, [sp, #16]
+  56 001c 5A10     		asrs	r2, r3, #1
+  57              		.loc 1 32 50
+  58 001e 049B     		ldr	r3, [sp, #16]
+  59 0020 DB03     		lsls	r3, r3, #15
+  60 0022 9BB2     		uxth	r3, r3
+  61              		.loc 1 32 14
+  62 0024 1344     		add	r3, r3, r2
+  63 0026 0493     		str	r3, [sp, #16]
+  33:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     checksum += ch;
+  64              		.loc 1 33 14
+  65 0028 049A     		ldr	r2, [sp, #16]
+  66 002a 039B     		ldr	r3, [sp, #12]
+  67 002c 1344     		add	r3, r3, r2
+  68 002e 0493     		str	r3, [sp, #16]
+  34:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     checksum &= 0xffff;       /* Keep it within bounds. */
+  69              		.loc 1 34 14
+  70 0030 049B     		ldr	r3, [sp, #16]
+  71 0032 9BB2     		uxth	r3, r3
+  72 0034 0493     		str	r3, [sp, #16]
+  30:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     ch = buffer[i];
+  73              		.loc 1 30 23 discriminator 3
+  74 0036 059B     		ldr	r3, [sp, #20]
+  75 0038 0133     		adds	r3, r3, #1
+  76 003a 0593     		str	r3, [sp, #20]
+  77              	.L2:
+  30:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     ch = buffer[i];
+  78              		.loc 1 30 13 discriminator 1
+  79 003c 059A     		ldr	r2, [sp, #20]
+  80 003e 009B     		ldr	r3, [sp]
+  81 0040 9A42     		cmp	r2, r3
+  82 0042 E5DB     		blt	.L3
+  35:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   }
+  36:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   return checksum;
+  83              		.loc 1 36 10
+  84 0044 049B     		ldr	r3, [sp, #16]
+  37:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** }
+  85              		.loc 1 37 1
+  86 0046 1846     		mov	r0, r3
+  87 0048 06B0     		add	sp, sp, #24
+  88              		.cfi_def_cfa_offset 0
+  89              		@ sp needed
+  90 004a 7047     		bx	lr
+  91              		.cfi_endproc
+  92              	.LFE0:
+  94              		.section	.text.memory_valid_addr_range,"ax",%progbits
+  95              		.align	1
+  96              		.p2align 4,,15
+  97              		.global	memory_valid_addr_range
+  98              		.syntax unified
+  99              		.thumb
+ 100              		.thumb_func
+ 102              	memory_valid_addr_range:
+ 103              	.LFB1:
+  38:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** 
+  39:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** bool memory_valid_addr_range(uint32_t base_addr, uint32_t size, int mode)
+  40:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** {
+ 104              		.loc 1 40 1
+ 105              		.cfi_startproc
+ 106              		@ args = 0, pretend = 0, frame = 16
+ 107              		@ frame_needed = 0, uses_anonymous_args = 0
+ 108              		@ link register save eliminated.
+ 109 0000 84B0     		sub	sp, sp, #16
+ 110              		.cfi_def_cfa_offset 16
+ 111 0002 0390     		str	r0, [sp, #12]
+ 112 0004 0291     		str	r1, [sp, #8]
+ 113 0006 0192     		str	r2, [sp, #4]
+  41:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   (void)base_addr;
+  42:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   (void)size;
+  43:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   (void)mode;
+  44:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   return true;
+ 114              		.loc 1 44 10
+ 115 0008 0123     		movs	r3, #1
+  45:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** }
+ 116              		.loc 1 45 1
+ 117 000a 1846     		mov	r0, r3
+ 118 000c 04B0     		add	sp, sp, #16
+ 119              		.cfi_def_cfa_offset 0
+ 120              		@ sp needed
+ 121 000e 7047     		bx	lr
+ 122              		.cfi_endproc
+ 123              	.LFE1:
+ 125              		.section	.text.memory_checksum,"ax",%progbits
+ 126              		.align	1
+ 127              		.p2align 4,,15
+ 128              		.global	memory_checksum
+ 129              		.syntax unified
+ 130              		.thumb
+ 131              		.thumb_func
+ 133              	memory_checksum:
+ 134              	.LFB2:
+  46:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** 
+  47:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** void memory_checksum(uintptr_t base_addr, uint32_t size, uint32_t *hash)
+  48:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** {
+ 135              		.loc 1 48 1
+ 136              		.cfi_startproc
+ 137              		@ args = 0, pretend = 0, frame = 16
+ 138              		@ frame_needed = 0, uses_anonymous_args = 0
+ 139 0000 00B5     		push	{lr}
+ 140              		.cfi_def_cfa_offset 4
+ 141              		.cfi_offset 14, -4
+ 142 0002 85B0     		sub	sp, sp, #20
+ 143              		.cfi_def_cfa_offset 24
+ 144 0004 0390     		str	r0, [sp, #12]
+ 145 0006 0291     		str	r1, [sp, #8]
+ 146 0008 0192     		str	r2, [sp, #4]
+  49:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   if ((size == 0) && hash)
+ 147              		.loc 1 49 6
+ 148 000a 029B     		ldr	r3, [sp, #8]
+ 149 000c 002B     		cmp	r3, #0
+ 150 000e 06D1     		bne	.L8
+ 151              		.loc 1 49 19 discriminator 1
+ 152 0010 019B     		ldr	r3, [sp, #4]
+ 153 0012 002B     		cmp	r3, #0
+ 154 0014 03D0     		beq	.L8
+  50:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     *hash = ~0UL;
+ 155              		.loc 1 50 11
+ 156 0016 019B     		ldr	r3, [sp, #4]
+ 157 0018 4FF0FF32 		mov	r2, #-1
+ 158 001c 1A60     		str	r2, [r3]
+ 159              	.L8:
+  51:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** 
+  52:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   *hash = bsdChecksum((uint8_t *)base_addr, size);
+ 160              		.loc 1 52 11
+ 161 001e 039B     		ldr	r3, [sp, #12]
+ 162 0020 029A     		ldr	r2, [sp, #8]
+ 163 0022 1146     		mov	r1, r2
+ 164 0024 1846     		mov	r0, r3
+ 165 0026 FFF7FEFF 		bl	bsdChecksum
+ 166 002a 0346     		mov	r3, r0
+ 167              		.loc 1 52 11 is_stmt 0 discriminator 1
+ 168 002c 1A46     		mov	r2, r3
+ 169              		.loc 1 52 9 is_stmt 1 discriminator 1
+ 170 002e 019B     		ldr	r3, [sp, #4]
+ 171 0030 1A60     		str	r2, [r3]
+  53:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** }
+ 172              		.loc 1 53 1
+ 173 0032 00BF     		nop
+ 174 0034 05B0     		add	sp, sp, #20
+ 175              		.cfi_def_cfa_offset 4
+ 176              		@ sp needed
+ 177 0036 5DF804FB 		ldr	pc, [sp], #4
+ 178              		.cfi_endproc
+ 179              	.LFE2:
+ 181 003a 00BF     		.section	.text.memory_write,"ax",%progbits
+ 182              		.align	1
+ 183              		.p2align 4,,15
+ 184              		.global	memory_write
+ 185              		.syntax unified
+ 186              		.thumb
+ 187              		.thumb_func
+ 189              	memory_write:
+ 190              	.LFB3:
+  54:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** 
+  55:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** bool memory_write(uintptr_t src, uintptr_t dest, uint32_t size, uint32_t *hash)
+  56:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** {
+ 191              		.loc 1 56 1
+ 192              		.cfi_startproc
+ 193              		@ args = 0, pretend = 0, frame = 16
+ 194              		@ frame_needed = 0, uses_anonymous_args = 0
+ 195 0000 00B5     		push	{lr}
+ 196              		.cfi_def_cfa_offset 4
+ 197              		.cfi_offset 14, -4
+ 198 0002 85B0     		sub	sp, sp, #20
+ 199              		.cfi_def_cfa_offset 24
+ 200 0004 0390     		str	r0, [sp, #12]
+ 201 0006 0291     		str	r1, [sp, #8]
+ 202 0008 0192     		str	r2, [sp, #4]
+ 203 000a 0093     		str	r3, [sp]
+  57:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   memcpy((void *)dest, (void *)src, size);
+ 204              		.loc 1 57 3
+ 205 000c 029B     		ldr	r3, [sp, #8]
+ 206 000e 0399     		ldr	r1, [sp, #12]
+ 207 0010 019A     		ldr	r2, [sp, #4]
+ 208 0012 1846     		mov	r0, r3
+ 209 0014 FFF7FEFF 		bl	memcpy
+  58:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   *hash = bsdChecksum((uint8_t *)dest, size);
+ 210              		.loc 1 58 11
+ 211 0018 029B     		ldr	r3, [sp, #8]
+ 212 001a 019A     		ldr	r2, [sp, #4]
+ 213 001c 1146     		mov	r1, r2
+ 214 001e 1846     		mov	r0, r3
+ 215 0020 FFF7FEFF 		bl	bsdChecksum
+ 216 0024 0346     		mov	r3, r0
+ 217              		.loc 1 58 11 is_stmt 0 discriminator 1
+ 218 0026 1A46     		mov	r2, r3
+ 219              		.loc 1 58 9 is_stmt 1 discriminator 1
+ 220 0028 009B     		ldr	r3, [sp]
+ 221 002a 1A60     		str	r2, [r3]
+  59:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   return true;
+ 222              		.loc 1 59 10
+ 223 002c 0123     		movs	r3, #1
+  60:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** }
+ 224              		.loc 1 60 1
+ 225 002e 1846     		mov	r0, r3
+ 226 0030 05B0     		add	sp, sp, #20
+ 227              		.cfi_def_cfa_offset 4
+ 228              		@ sp needed
+ 229 0032 5DF804FB 		ldr	pc, [sp], #4
+ 230              		.cfi_endproc
+ 231              	.LFE3:
+ 233 0036 00BF     		.section	.text.aiPbCmdRWMemory,"ax",%progbits
+ 234              		.align	1
+ 235              		.p2align 4,,15
+ 236              		.global	aiPbCmdRWMemory
+ 237              		.syntax unified
+ 238              		.thumb
+ 239              		.thumb_func
+ 241              	aiPbCmdRWMemory:
+ 242              	.LFB4:
+  61:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** 
+  62:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** void aiPbCmdRWMemory(const reqMsg *req, respMsg *resp, void *param)
+  63:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** {
+ 243              		.loc 1 63 1
+ 244              		.cfi_startproc
+ 245              		@ args = 0, pretend = 0, frame = 64
+ 246              		@ frame_needed = 0, uses_anonymous_args = 0
+ 247 0000 00B5     		push	{lr}
+ 248              		.cfi_def_cfa_offset 4
+ 249              		.cfi_offset 14, -4
+ 250 0002 93B0     		sub	sp, sp, #76
+ 251              		.cfi_def_cfa_offset 80
+ 252 0004 0590     		str	r0, [sp, #20]
+ 253 0006 0491     		str	r1, [sp, #16]
+ 254 0008 0392     		str	r2, [sp, #12]
+  64:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   uint32_t addr = req->param;
+ 255              		.loc 1 64 12
+ 256 000a 059B     		ldr	r3, [sp, #20]
+ 257 000c 9B68     		ldr	r3, [r3, #8]
+ 258 000e 1193     		str	r3, [sp, #68]
+  65:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   uint32_t size = req->opt;
+ 259              		.loc 1 65 12
+ 260 0010 059B     		ldr	r3, [sp, #20]
+ 261 0012 DB6C     		ldr	r3, [r3, #76]
+ 262 0014 1093     		str	r3, [sp, #64]
+  66:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   uint32_t res = 0;
+ 263              		.loc 1 66 12
+ 264 0016 0023     		movs	r3, #0
+ 265 0018 0F93     		str	r3, [sp, #60]
+  67:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** 
+  68:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   static uint32_t buffer[1024 / 4];
+  69:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** #if defined(AI_PB_TEST) && (AI_PB_TEST == 1)
+  70:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   static uint32_t test[1024 / 4];
+  71:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** 
+  72:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   if (aiPbTestModeEnabled())
+  73:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     addr = (uint32_t)test;
+  74:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** #endif
+  75:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** 
+  76:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   if (!memory_valid_addr_range(addr, size, (int)param - EnumCmd_CMD_MEMORY_READ)) {
+ 266              		.loc 1 76 44
+ 267 001a 039B     		ldr	r3, [sp, #12]
+ 268              		.loc 1 76 8
+ 269 001c 143B     		subs	r3, r3, #20
+ 270 001e 1A46     		mov	r2, r3
+ 271 0020 1099     		ldr	r1, [sp, #64]
+ 272 0022 1198     		ldr	r0, [sp, #68]
+ 273 0024 FFF7FEFF 		bl	memory_valid_addr_range
+ 274 0028 0346     		mov	r3, r0
+ 275              		.loc 1 76 7 discriminator 1
+ 276 002a 83F00103 		eor	r3, r3, #1
+ 277 002e DBB2     		uxtb	r3, r3
+ 278              		.loc 1 76 6 discriminator 1
+ 279 0030 002B     		cmp	r3, #0
+ 280 0032 07D0     		beq	.L12
+  77:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     aiPbMgrSendAck(req, resp, EnumState_S_ERROR,
+ 281              		.loc 1 77 5
+ 282 0034 0F9B     		ldr	r3, [sp, #60]
+ 283 0036 0422     		movs	r2, #4
+ 284 0038 0092     		str	r2, [sp]
+ 285 003a 0422     		movs	r2, #4
+ 286 003c 0499     		ldr	r1, [sp, #16]
+ 287 003e 0598     		ldr	r0, [sp, #20]
+ 288 0040 FFF7FEFF 		bl	aiPbMgrSendAck
+ 289              	.L12:
+  78:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****         res, EnumError_E_INVALID_PARAM);
+  79:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   }
+  80:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** 
+  81:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   if ((uint32_t)param == EnumCmd_CMD_MEMORY_CHECKSUM) {
+ 290              		.loc 1 81 6
+ 291 0044 039B     		ldr	r3, [sp, #12]
+ 292 0046 162B     		cmp	r3, #22
+ 293 0048 0ED1     		bne	.L13
+  82:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     memory_checksum(addr, size, &res);
+ 294              		.loc 1 82 5
+ 295 004a 0FAB     		add	r3, sp, #60
+ 296 004c 1A46     		mov	r2, r3
+ 297 004e 1099     		ldr	r1, [sp, #64]
+ 298 0050 1198     		ldr	r0, [sp, #68]
+ 299 0052 FFF7FEFF 		bl	memory_checksum
+  83:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     aiPbMgrSendAck(req, resp, EnumState_S_DONE,
+ 300              		.loc 1 83 5
+ 301 0056 0F9B     		ldr	r3, [sp, #60]
+ 302 0058 0022     		movs	r2, #0
+ 303 005a 0092     		str	r2, [sp]
+ 304 005c 0322     		movs	r2, #3
+ 305 005e 0499     		ldr	r1, [sp, #16]
+ 306 0060 0598     		ldr	r0, [sp, #20]
+ 307 0062 FFF7FEFF 		bl	aiPbMgrSendAck
+  84:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****         res, EnumError_E_NONE);
+  85:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   }
+  86:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   else if ((uint32_t)param == EnumCmd_CMD_MEMORY_WRITE) {
+  87:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     aiPbData data = {0, size>1024?1024:size, (uintptr_t)buffer, 0};
+  88:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     aiPbMgrSendAck(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_WAITING,
+  89:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****           data.size, EnumError_E_NONE);
+  90:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     while (size) {
+  91:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       aiPbMgrReceiveData(&data);
+  92:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       if (data.nb_read > data.size) {
+  93:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****         aiPbMgrSendAck(req, resp, EnumState_S_ERROR, data.nb_read - data.size,
+  94:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****             EnumError_E_MEM_OVERFLOW);
+  95:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       }
+  96:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** #if defined(AI_PB_TEST) && (AI_PB_TEST == 1)
+  97:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       memory_write((uintptr_t)buffer, (uint32_t)test, data.nb_read, &res);
+  98:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** #else
+  99:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       memory_write((uintptr_t)buffer, addr, data.nb_read, &res);
+ 100:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** #endif
+ 101:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       size -= data.nb_read;
+ 102:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       addr += data.nb_read;
+ 103:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       aiPbMgrSendAck(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_WAITING, res,
+ 104:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****           EnumError_E_NONE);
+ 105:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       data.size = size>1024?1024:size;
+ 106:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       data.addr = (uintptr_t)buffer;
+ 107:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     }
+ 108:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   }
+ 109:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   else { // EnumCmd_CMD_MEMORY_READ
+ 110:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     aiPbData data = {0, size>1024?1024:size, (uintptr_t)addr, 0};
+ 111:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     aiPbMgrSendAck(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_PROCESSING,
+ 112:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****           data.size, EnumError_E_NONE);
+ 113:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     while (size) {
+ 114:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       data.addr = addr;
+ 115:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       size -= data.size;
+ 116:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       addr += data.size;
+ 117:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       aiPbMgrSendData(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_PROCESSING, &data);
+ 118:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       data.size = size>1024?1024:size;
+ 119:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     };
+ 120:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****   }
+ 121:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** }
+ 308              		.loc 1 121 1
+ 309 0066 91E0     		b	.L29
+ 310              	.L13:
+  86:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     aiPbData data = {0, size>1024?1024:size, (uintptr_t)buffer, 0};
+ 311              		.loc 1 86 11
+ 312 0068 039B     		ldr	r3, [sp, #12]
+ 313 006a 152B     		cmp	r3, #21
+ 314 006c 54D1     		bne	.L15
+ 315              	.LBB2:
+  87:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     aiPbMgrSendAck(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_WAITING,
+ 316              		.loc 1 87 14
+ 317 006e 0023     		movs	r3, #0
+ 318 0070 0B93     		str	r3, [sp, #44]
+  87:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     aiPbMgrSendAck(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_WAITING,
+ 319              		.loc 1 87 39
+ 320 0072 109B     		ldr	r3, [sp, #64]
+ 321 0074 B3F5806F 		cmp	r3, #1024
+ 322 0078 28BF     		it	cs
+ 323 007a 4FF48063 		movcs	r3, #1024
+  87:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     aiPbMgrSendAck(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_WAITING,
+ 324              		.loc 1 87 14
+ 325 007e 0C93     		str	r3, [sp, #48]
+  87:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     aiPbMgrSendAck(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_WAITING,
+ 326              		.loc 1 87 46
+ 327 0080 444B     		ldr	r3, .L30
+  87:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     aiPbMgrSendAck(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_WAITING,
+ 328              		.loc 1 87 14
+ 329 0082 0D93     		str	r3, [sp, #52]
+ 330 0084 0023     		movs	r3, #0
+ 331 0086 0E93     		str	r3, [sp, #56]
+  88:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****           data.size, EnumError_E_NONE);
+ 332              		.loc 1 88 5
+ 333 0088 109B     		ldr	r3, [sp, #64]
+ 334 008a 002B     		cmp	r3, #0
+ 335 008c 01D1     		bne	.L16
+  88:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****           data.size, EnumError_E_NONE);
+ 336              		.loc 1 88 5 is_stmt 0 discriminator 1
+ 337 008e 0322     		movs	r2, #3
+ 338 0090 00E0     		b	.L17
+ 339              	.L16:
+  88:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****           data.size, EnumError_E_NONE);
+ 340              		.loc 1 88 5 discriminator 2
+ 341 0092 0122     		movs	r2, #1
+ 342              	.L17:
+  88:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****           data.size, EnumError_E_NONE);
+ 343              		.loc 1 88 5 discriminator 4
+ 344 0094 0C9B     		ldr	r3, [sp, #48]
+ 345 0096 0021     		movs	r1, #0
+ 346 0098 0091     		str	r1, [sp]
+ 347 009a 0499     		ldr	r1, [sp, #16]
+ 348 009c 0598     		ldr	r0, [sp, #20]
+ 349 009e FFF7FEFF 		bl	aiPbMgrSendAck
+  90:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       aiPbMgrReceiveData(&data);
+ 350              		.loc 1 90 11 is_stmt 1
+ 351 00a2 35E0     		b	.L18
+ 352              	.L22:
+  91:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       if (data.nb_read > data.size) {
+ 353              		.loc 1 91 7
+ 354 00a4 0BAB     		add	r3, sp, #44
+ 355 00a6 1846     		mov	r0, r3
+ 356 00a8 FFF7FEFF 		bl	aiPbMgrReceiveData
+  92:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****         aiPbMgrSendAck(req, resp, EnumState_S_ERROR, data.nb_read - data.size,
+ 357              		.loc 1 92 15
+ 358 00ac 0E9A     		ldr	r2, [sp, #56]
+  92:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****         aiPbMgrSendAck(req, resp, EnumState_S_ERROR, data.nb_read - data.size,
+ 359              		.loc 1 92 30
+ 360 00ae 0C9B     		ldr	r3, [sp, #48]
+  92:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****         aiPbMgrSendAck(req, resp, EnumState_S_ERROR, data.nb_read - data.size,
+ 361              		.loc 1 92 10
+ 362 00b0 9A42     		cmp	r2, r3
+ 363 00b2 09D9     		bls	.L19
+  93:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****             EnumError_E_MEM_OVERFLOW);
+ 364              		.loc 1 93 58
+ 365 00b4 0E9A     		ldr	r2, [sp, #56]
+  93:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****             EnumError_E_MEM_OVERFLOW);
+ 366              		.loc 1 93 73
+ 367 00b6 0C9B     		ldr	r3, [sp, #48]
+  93:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****             EnumError_E_MEM_OVERFLOW);
+ 368              		.loc 1 93 9
+ 369 00b8 D31A     		subs	r3, r2, r3
+ 370 00ba 0822     		movs	r2, #8
+ 371 00bc 0092     		str	r2, [sp]
+ 372 00be 0422     		movs	r2, #4
+ 373 00c0 0499     		ldr	r1, [sp, #16]
+ 374 00c2 0598     		ldr	r0, [sp, #20]
+ 375 00c4 FFF7FEFF 		bl	aiPbMgrSendAck
+ 376              	.L19:
+  99:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c **** #endif
+ 377              		.loc 1 99 7
+ 378 00c8 3248     		ldr	r0, .L30
+ 379 00ca 0E9A     		ldr	r2, [sp, #56]
+ 380 00cc 0FAB     		add	r3, sp, #60
+ 381 00ce 1199     		ldr	r1, [sp, #68]
+ 382 00d0 FFF7FEFF 		bl	memory_write
+ 101:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       addr += data.nb_read;
+ 383              		.loc 1 101 19
+ 384 00d4 0E9B     		ldr	r3, [sp, #56]
+ 101:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       addr += data.nb_read;
+ 385              		.loc 1 101 12
+ 386 00d6 109A     		ldr	r2, [sp, #64]
+ 387 00d8 D31A     		subs	r3, r2, r3
+ 388 00da 1093     		str	r3, [sp, #64]
+ 102:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       aiPbMgrSendAck(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_WAITING, res,
+ 389              		.loc 1 102 19
+ 390 00dc 0E9B     		ldr	r3, [sp, #56]
+ 102:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       aiPbMgrSendAck(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_WAITING, res,
+ 391              		.loc 1 102 12
+ 392 00de 119A     		ldr	r2, [sp, #68]
+ 393 00e0 1344     		add	r3, r3, r2
+ 394 00e2 1193     		str	r3, [sp, #68]
+ 103:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****           EnumError_E_NONE);
+ 395              		.loc 1 103 7
+ 396 00e4 109B     		ldr	r3, [sp, #64]
+ 397 00e6 002B     		cmp	r3, #0
+ 398 00e8 01D1     		bne	.L20
+ 103:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****           EnumError_E_NONE);
+ 399              		.loc 1 103 7 is_stmt 0 discriminator 1
+ 400 00ea 0322     		movs	r2, #3
+ 401 00ec 00E0     		b	.L21
+ 402              	.L20:
+ 103:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****           EnumError_E_NONE);
+ 403              		.loc 1 103 7 discriminator 2
+ 404 00ee 0122     		movs	r2, #1
+ 405              	.L21:
+ 103:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****           EnumError_E_NONE);
+ 406              		.loc 1 103 7 discriminator 4
+ 407 00f0 0F9B     		ldr	r3, [sp, #60]
+ 408 00f2 0021     		movs	r1, #0
+ 409 00f4 0091     		str	r1, [sp]
+ 410 00f6 0499     		ldr	r1, [sp, #16]
+ 411 00f8 0598     		ldr	r0, [sp, #20]
+ 412 00fa FFF7FEFF 		bl	aiPbMgrSendAck
+ 105:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       data.addr = (uintptr_t)buffer;
+ 413              		.loc 1 105 33 is_stmt 1
+ 414 00fe 109B     		ldr	r3, [sp, #64]
+ 415 0100 B3F5806F 		cmp	r3, #1024
+ 416 0104 28BF     		it	cs
+ 417 0106 4FF48063 		movcs	r3, #1024
+ 105:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       data.addr = (uintptr_t)buffer;
+ 418              		.loc 1 105 17
+ 419 010a 0C93     		str	r3, [sp, #48]
+ 106:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     }
+ 420              		.loc 1 106 19
+ 421 010c 214B     		ldr	r3, .L30
+ 106:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     }
+ 422              		.loc 1 106 17
+ 423 010e 0D93     		str	r3, [sp, #52]
+ 424              	.L18:
+  90:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       aiPbMgrReceiveData(&data);
+ 425              		.loc 1 90 12
+ 426 0110 109B     		ldr	r3, [sp, #64]
+ 427 0112 002B     		cmp	r3, #0
+ 428 0114 C6D1     		bne	.L22
+ 429              	.LBE2:
+ 430              		.loc 1 121 1
+ 431 0116 39E0     		b	.L29
+ 432              	.L15:
+ 433              	.LBB3:
+ 110:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     aiPbMgrSendAck(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_PROCESSING,
+ 434              		.loc 1 110 14
+ 435 0118 0023     		movs	r3, #0
+ 436 011a 0793     		str	r3, [sp, #28]
+ 110:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     aiPbMgrSendAck(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_PROCESSING,
+ 437              		.loc 1 110 39
+ 438 011c 109B     		ldr	r3, [sp, #64]
+ 439 011e B3F5806F 		cmp	r3, #1024
+ 440 0122 28BF     		it	cs
+ 441 0124 4FF48063 		movcs	r3, #1024
+ 110:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     aiPbMgrSendAck(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_PROCESSING,
+ 442              		.loc 1 110 14
+ 443 0128 0893     		str	r3, [sp, #32]
+ 444 012a 119B     		ldr	r3, [sp, #68]
+ 445 012c 0993     		str	r3, [sp, #36]
+ 446 012e 0023     		movs	r3, #0
+ 447 0130 0A93     		str	r3, [sp, #40]
+ 111:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****           data.size, EnumError_E_NONE);
+ 448              		.loc 1 111 5
+ 449 0132 109B     		ldr	r3, [sp, #64]
+ 450 0134 002B     		cmp	r3, #0
+ 451 0136 01D1     		bne	.L23
+ 111:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****           data.size, EnumError_E_NONE);
+ 452              		.loc 1 111 5 is_stmt 0 discriminator 1
+ 453 0138 0322     		movs	r2, #3
+ 454 013a 00E0     		b	.L24
+ 455              	.L23:
+ 111:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****           data.size, EnumError_E_NONE);
+ 456              		.loc 1 111 5 discriminator 2
+ 457 013c 0222     		movs	r2, #2
+ 458              	.L24:
+ 111:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****           data.size, EnumError_E_NONE);
+ 459              		.loc 1 111 5 discriminator 4
+ 460 013e 089B     		ldr	r3, [sp, #32]
+ 461 0140 0021     		movs	r1, #0
+ 462 0142 0091     		str	r1, [sp]
+ 463 0144 0499     		ldr	r1, [sp, #16]
+ 464 0146 0598     		ldr	r0, [sp, #20]
+ 465 0148 FFF7FEFF 		bl	aiPbMgrSendAck
+ 113:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       data.addr = addr;
+ 466              		.loc 1 113 11 is_stmt 1
+ 467 014c 1BE0     		b	.L25
+ 468              	.L28:
+ 114:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       size -= data.size;
+ 469              		.loc 1 114 17
+ 470 014e 119B     		ldr	r3, [sp, #68]
+ 471 0150 0993     		str	r3, [sp, #36]
+ 115:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       addr += data.size;
+ 472              		.loc 1 115 19
+ 473 0152 089B     		ldr	r3, [sp, #32]
+ 115:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       addr += data.size;
+ 474              		.loc 1 115 12
+ 475 0154 109A     		ldr	r2, [sp, #64]
+ 476 0156 D31A     		subs	r3, r2, r3
+ 477 0158 1093     		str	r3, [sp, #64]
+ 116:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       aiPbMgrSendData(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_PROCESSING, &data);
+ 478              		.loc 1 116 19
+ 479 015a 089B     		ldr	r3, [sp, #32]
+ 116:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       aiPbMgrSendData(req, resp, (size == 0)?EnumState_S_DONE:EnumState_S_PROCESSING, &data);
+ 480              		.loc 1 116 12
+ 481 015c 119A     		ldr	r2, [sp, #68]
+ 482 015e 1344     		add	r3, r3, r2
+ 483 0160 1193     		str	r3, [sp, #68]
+ 117:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       data.size = size>1024?1024:size;
+ 484              		.loc 1 117 7
+ 485 0162 109B     		ldr	r3, [sp, #64]
+ 486 0164 002B     		cmp	r3, #0
+ 487 0166 01D1     		bne	.L26
+ 117:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       data.size = size>1024?1024:size;
+ 488              		.loc 1 117 7 is_stmt 0 discriminator 1
+ 489 0168 0322     		movs	r2, #3
+ 490 016a 00E0     		b	.L27
+ 491              	.L26:
+ 117:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       data.size = size>1024?1024:size;
+ 492              		.loc 1 117 7 discriminator 2
+ 493 016c 0222     		movs	r2, #2
+ 494              	.L27:
+ 117:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       data.size = size>1024?1024:size;
+ 495              		.loc 1 117 7 discriminator 4
+ 496 016e 07AB     		add	r3, sp, #28
+ 497 0170 0499     		ldr	r1, [sp, #16]
+ 498 0172 0598     		ldr	r0, [sp, #20]
+ 499 0174 FFF7FEFF 		bl	aiPbMgrSendData
+ 118:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     };
+ 500              		.loc 1 118 33 is_stmt 1
+ 501 0178 109B     		ldr	r3, [sp, #64]
+ 502 017a B3F5806F 		cmp	r3, #1024
+ 503 017e 28BF     		it	cs
+ 504 0180 4FF48063 		movcs	r3, #1024
+ 118:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****     };
+ 505              		.loc 1 118 17
+ 506 0184 0893     		str	r3, [sp, #32]
+ 507              	.L25:
+ 113:SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMemRWServices.c ****       data.addr = addr;
+ 508              		.loc 1 113 12
+ 509 0186 109B     		ldr	r3, [sp, #64]
+ 510 0188 002B     		cmp	r3, #0
+ 511 018a E0D1     		bne	.L28
+ 512              	.L29:
+ 513              	.LBE3:
+ 514              		.loc 1 121 1
+ 515 018c 00BF     		nop
+ 516 018e 13B0     		add	sp, sp, #76
+ 517              		.cfi_def_cfa_offset 4
+ 518              		@ sp needed
+ 519 0190 5DF804FB 		ldr	pc, [sp], #4
+ 520              	.L31:
+ 521              		.align	2
+ 522              	.L30:
+ 523 0194 00000000 		.word	buffer.0
+ 524              		.cfi_endproc
+ 525              	.LFE4:
+ 527              		.section	.bss.buffer.0,"aw",%nobits
+ 528              		.align	2
+ 531              	buffer.0:
+ 532 0000 00000000 		.space	1024
+ 532      00000000 
+ 532      00000000 
+ 532      00000000 
+ 532      00000000 
+ 533              		.text
+ 534              	.Letext0:
+ 535              		.file 2 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
+ 536              		.file 3 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
+ 537              		.file 4 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
+ 538              		.file 5 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/lib/gcc/arm-none-
+ 539              		.file 6 "SR5E1_AI_Demo_7000P/lib/validation/inc/pb.h"
+ 540              		.file 7 "SR5E1_AI_Demo_7000P/lib/validation/inc/stm32msg.pb.h"
+ 541              		.file 8 "SR5E1_AI_Demo_7000P/lib/validation/inc/aiPbMgr.h"
+ 542              		.file 9 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
+DEFINED SYMBOLS
+                            *ABS*:00000000 aiPbMemRWServices.c
+C:\Users\danie\AppData\Local\Temp\ccnlWzqG.s:20     .text.bsdChecksum:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccnlWzqG.s:27     .text.bsdChecksum:00000000 bsdChecksum
+C:\Users\danie\AppData\Local\Temp\ccnlWzqG.s:95     .text.memory_valid_addr_range:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccnlWzqG.s:102    .text.memory_valid_addr_range:00000000 memory_valid_addr_range
+C:\Users\danie\AppData\Local\Temp\ccnlWzqG.s:126    .text.memory_checksum:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccnlWzqG.s:133    .text.memory_checksum:00000000 memory_checksum
+C:\Users\danie\AppData\Local\Temp\ccnlWzqG.s:182    .text.memory_write:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccnlWzqG.s:189    .text.memory_write:00000000 memory_write
+C:\Users\danie\AppData\Local\Temp\ccnlWzqG.s:234    .text.aiPbCmdRWMemory:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccnlWzqG.s:241    .text.aiPbCmdRWMemory:00000000 aiPbCmdRWMemory
+C:\Users\danie\AppData\Local\Temp\ccnlWzqG.s:523    .text.aiPbCmdRWMemory:00000194 $d
+C:\Users\danie\AppData\Local\Temp\ccnlWzqG.s:531    .bss.buffer.0:00000000 buffer.0
+C:\Users\danie\AppData\Local\Temp\ccnlWzqG.s:528    .bss.buffer.0:00000000 $d
+                           .group:00000000 wm4.0.5030deb6392b4db6a7ac5ffd5733b4a1
+                           .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
+                           .group:00000000 wm4.features.h.33.5ea28ceb8be6621901b9d58b4c3ee651
+                           .group:00000000 wm4._default_types.h.15.247e5cd201eca3442cbf5404108c4935
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:00000000 wm4.pb.h.6.0211b766e64415182c5274e6ec52e2a2
+                           .group:00000000 wm4.stddef.h.39.38eb7ec030421799c657b13be5aa21c7
+                           .group:00000000 wm4.stdbool.h.29.c08aa3eec75cf5b9b5003883f43253f0
+                           .group:00000000 wm4.newlib.h.7.591ac1bd65c1f5b34864757667a05252
+                           .group:00000000 wm4.ieeefp.h.77.bd5feb87d9990dd328793ced294f6a87
+                           .group:00000000 wm4.config.h.224.10ee1ad185d877c6e334e6581faab44d
+                           .group:00000000 wm4._ansi.h.31.de524f58584151836e90d8620a16f8e8
+                           .group:00000000 wm4.cdefs.h.49.a0dc0a4a6c7d01e2e5d0aade9399215f
+                           .group:00000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:00000000 wm4.stddef.h.158.6f8e08a347b1cff664332fa350bfceb3
+                           .group:00000000 wm4._types.h.127.3bdfe3ff8ea2d0985b03d9cbe93480e3
+                           .group:00000000 wm4.reent.h.18.25503cdc8b7e55dd0d6ea7b3e5af7a03
+                           .group:00000000 wm4.lock.h.2.1461d1fff82dffe8bfddc23307f6484f
+                           .group:00000000 wm4.reent.h.78.6b87466b04591b1f1cb88c14fdf2ba9e
+                           .group:00000000 wm4.string.h.15.dab3980bf35408a4c507182805e2de3a
+                           .group:00000000 wm4.stddef.h.158.eec8bf00b5213f43d095cb984c5f22e3
+                           .group:00000000 wm4.pb.h.80.0c113d593b086601ad12440334e7ab1d
+                           .group:00000000 wm4.stm32msg.pb.h.22.d3db115741efa704f3254e5031b33609
+                           .group:00000000 wm4.aiPbMgr.h.28.ae664313e83b23a4b5c8434f949976d1
+
+UNDEFINED SYMBOLS
+memcpy
+aiPbMgrSendAck
+aiPbMgrReceiveData
+aiPbMgrSendData

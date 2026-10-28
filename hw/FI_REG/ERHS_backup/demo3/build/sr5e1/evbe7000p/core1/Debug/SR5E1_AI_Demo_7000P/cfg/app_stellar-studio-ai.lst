@@ -1,0 +1,2364 @@
+   1              		.cpu cortex-m7
+   2              		.arch armv7e-m
+   3              		.fpu fpv5-d16
+   4              		.eabi_attribute 28, 1
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 6
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.file	"app_stellar-studio-ai.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.file 1 "SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c"
+  19              		.section	.bss.data_in_1,"aw",%nobits
+  20              		.align	5
+  23              	data_in_1:
+  24 0000 00       		.space	1
+  25              		.global	data_ins
+  26              		.section	.data.data_ins,"aw"
+  27              		.align	2
+  30              	data_ins:
+  31 0000 00000000 		.word	data_in_1
+  32              		.section	.bss.data_out_1,"aw",%nobits
+  33              		.align	5
+  36              	data_out_1:
+  37 0000 00       		.space	1
+  38              		.global	data_outs
+  39              		.section	.data.data_outs,"aw"
+  40              		.align	2
+  43              	data_outs:
+  44 0000 00000000 		.word	data_out_1
+  45              		.section	.bss.activations_1,"aw",%nobits
+  46              		.align	5
+  49              	activations_1:
+  50 0000 00000000 		.space	2944
+  50      00000000 
+  50      00000000 
+  50      00000000 
+  50      00000000 
+  51              		.global	data_activations
+  52              		.section	.data.data_activations,"aw"
+  53              		.align	2
+  56              	data_activations:
+  57 0000 00000000 		.word	activations_1
+  58              		.section	.bss.states_1,"aw",%nobits
+  59              		.align	5
+  62              	states_1:
+  63 0000 00000000 		.space	4
+  64              		.global	data_states
+  65              		.section	.data.data_states,"aw"
+  66              		.align	2
+  69              	data_states:
+  70 0000 00000000 		.word	states_1
+  71              		.global	_context_network
+  72              		.section	.bss._context_network,"aw",%nobits
+  73              		.align	3
+  76              	_context_network:
+  77 0000 00000000 		.space	48
+  77      00000000 
+  77      00000000 
+  77      00000000 
+  77      00000000 
+  78              		.global	stai_network_weights_addr
+  79              		.section	.bss.stai_network_weights_addr,"aw",%nobits
+  80              		.align	2
+  83              	stai_network_weights_addr:
+  84 0000 00000000 		.space	8
+  84      00000000 
+  85              		.section	.rodata
+  86              		.align	2
+  87              	.LC0:
+  88 0000 6E657477 		.ascii	"network\000"
+  88      6F726B00 
+  89              		.section	.rodata.networks,"a"
+  90              		.align	2
+  93              	networks:
+  94 0000 00000000 		.word	.LC0
+  95 0004 00000000 		.word	stai_network_get_context_size
+  96 0008 00000000 		.word	stai_network_init
+  97 000c 00000000 		.word	stai_network_deinit
+  98 0010 00000000 		.word	stai_network_run
+  99 0014 00000000 		.word	stai_network_get_info
+ 100 0018 00000000 		.word	stai_network_get_error
+ 101 001c 00000000 		.word	stai_network_get_activations
+ 102 0020 00000000 		.word	stai_network_get_states
+ 103 0024 00000000 		.word	stai_network_get_weights
+ 104 0028 00000000 		.word	stai_network_get_inputs
+ 105 002c 00000000 		.word	stai_network_get_outputs
+ 106 0030 00000000 		.word	stai_network_set_activations
+ 107 0034 00000000 		.word	stai_network_set_states
+ 108 0038 00000000 		.word	stai_network_set_weights
+ 109 003c 00000000 		.word	stai_network_set_inputs
+ 110 0040 00000000 		.word	stai_network_set_outputs
+ 111 0044 00000000 		.word	stai_network_set_callback
+ 112 0048 00000000 		.word	_context_network
+ 113 004c 01000000 		.word	1
+ 114 0050 01000000 		.word	1
+ 115 0054 01000000 		.word	1
+ 116 0058 00000000 		.word	0
+ 117 005c 01000000 		.word	1
+ 118 0060 00000000 		.word	stai_network_weights_addr
+ 119 0064 00000000 		.word	g_network_details
+ 120              		.section	.bss.gnetworks,"aw",%nobits
+ 121              		.align	2
+ 124              	gnetworks:
+ 125 0000 00000000 		.space	8
+ 125      00000000 
+ 126              		.section	.text._stai_mnetwork_is_valid,"ax",%progbits
+ 127              		.align	1
+ 128              		.p2align 4,,15
+ 129              		.syntax unified
+ 130              		.thumb
+ 131              		.thumb_func
+ 133              	_stai_mnetwork_is_valid:
+ 134              	.LFB450:
+   1:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** /****************************************************************************
+   2:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** *
+   3:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** * Copyright (c) 2026 STMicroelectronics - All Rights Reserved
+   4:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** *
+   5:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** * License terms: STMicroelectronics Proprietary in accordance with licensing
+   6:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** * terms SLA0098 at www.st.com.
+   7:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** *
+   8:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** * THIS SOFTWARE IS DISTRIBUTED "AS IS," AND ALL WARRANTIES ARE DISCLAIMED,
+   9:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** * INCLUDING MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+  10:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** *
+  11:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** *****************************************************************************/
+  12:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+  13:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** /**
+  14:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****  * @file    app_stellar-studio-ai.c
+  15:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****  * @author  MDRF GPAM team
+  16:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****  * @brief   Entry point for the Stellar AI test application
+  17:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****  *
+  18:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****  * @addtogroup APP_STELLAR-STUDIO-AI
+  19:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****  * @{
+  20:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****  */
+  21:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+  22:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #ifdef __cplusplus
+  23:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****  extern "C" {
+  24:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #endif
+  25:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+  26:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** /* Includes ------------------------------------------------------------------*/
+  27:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #include <string.h>
+  28:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #include "app_stellar-studio-ai.h"
+  29:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #include "stellar_ai_validate.h"
+  30:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #include "aiTestUtility.h"
+  31:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #include "aiValidation.h"
+  32:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+  33:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #if 0
+  34:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** int STELLAR_AI_Init(void)
+  35:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** {
+  36:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   int ret = 0;
+  37:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   /* SR5E1_UART_Init(); */
+  38:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   /* SR6X_UART_Init(); */
+  39:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   aiValidationInit();
+  40:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   /* USER CODE BEGIN */
+  41:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   /* USER CODE END */
+  42:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   return ret;
+  43:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** }
+  44:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+  45:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** int STELLAR_AI_Process(void)
+  46:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** {
+  47:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   int ret = aiValidationProcess();
+  48:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   port_hal_delay(1000); /* delay 1s */
+  49:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   /* USER CODE BEGIN */
+  50:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   /* USER CODE END */
+  51:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   return ret;
+  52:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** }
+  53:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #endif
+  54:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+  55:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** /* IO buffers ----------------------------------------------------------------*/
+  56:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+  57:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** DEF_DATA_IN
+  58:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+  59:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** DEF_DATA_OUT
+  60:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+  61:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+  62:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** /* Activations buffers allocation --------------------------------------------*/
+  63:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+  64:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #undef  STAI_MNETWORK_ACTIVATION_1_SIZE_BYTES
+  65:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #define STAI_MNETWORK_ACTIVATION_1_SIZE_BYTES STAI_NETWORK_ACTIVATION_1_SIZE_BYTES
+  66:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #undef  STAI_MNETWORK_ACTIVATION_2_SIZE_BYTES
+  67:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #define STAI_MNETWORK_ACTIVATION_2_SIZE_BYTES STAI_NETWORK_ACTIVATION_2_SIZE_BYTES
+  68:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #undef  STAI_MNETWORK_ACTIVATION_3_SIZE_BYTES
+  69:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #define STAI_MNETWORK_ACTIVATION_3_SIZE_BYTES STAI_NETWORK_ACTIVATION_3_SIZE_BYTES
+  70:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #undef  STAI_MNETWORK_ACTIVATION_4_SIZE_BYTES
+  71:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #define STAI_MNETWORK_ACTIVATION_4_SIZE_BYTES STAI_NETWORK_ACTIVATION_4_SIZE_BYTES
+  72:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+  73:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #if STAI_NETWORK_ACTIVATIONS_NUM == 0
+  74:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** /* Dummy buffer is allocated */
+  75:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_ALIGNED(32) static uint8_t activations_1[4];
+  76:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_ptr data_activations[] = {
+  77:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   activations_1
+  78:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** };
+  79:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #elif STAI_NETWORK_ACTIVATIONS_NUM == 1
+  80:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #if STAI_NETWORK_ACTIVATION_1_SIZE_BYTES == 0
+  81:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** /* Dummy buffer is allocated */
+  82:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_ALIGNED(32) static uint8_t activations_1[4];
+  83:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #else
+  84:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_ALIGNED(32) static uint8_t activations_1[STAI_MNETWORK_ACTIVATION_1_SIZE_BYTES];
+  85:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #endif
+  86:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_ptr data_activations[] = {
+  87:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   activations_1
+  88:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** };
+  89:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #elif STAI_NETWORK_ACTIVATIONS_NUM == 2
+  90:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_ALIGNED(32) static uint8_t activations_1[STAI_MNETWORK_ACTIVATION_1_SIZE_BYTES];
+  91:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_ALIGNED(32) static uint8_t activations_2[STAI_MNETWORK_ACTIVATION_2_SIZE_BYTES];
+  92:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_ptr data_activations[] = {
+  93:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   activations_1,
+  94:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   activations_2
+  95:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** };
+  96:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #elif STAI_NETWORK_ACTIVATIONS_NUM == 3
+  97:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_ALIGNED(32) static uint8_t activations_1[STAI_MNETWORK_ACTIVATION_1_SIZE_BYTES];
+  98:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_ALIGNED(32) static uint8_t activations_2[STAI_MNETWORK_ACTIVATION_2_SIZE_BYTES];
+  99:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_ALIGNED(32) static uint8_t activations_3[STAI_MNETWORK_ACTIVATION_3_SIZE_BYTES];
+ 100:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_ptr data_activations[] = {
+ 101:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   activations_1,
+ 102:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   activations_2,
+ 103:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   activations_3
+ 104:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** };
+ 105:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #elif STAI_NETWORK_ACTIVATIONS_NUM == 4
+ 106:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_ALIGNED(32) static uint8_t activations_1[STAI_MNETWORK_ACTIVATION_1_SIZE_BYTES];
+ 107:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_ALIGNED(32) static uint8_t activations_2[STAI_MNETWORK_ACTIVATION_2_SIZE_BYTES];
+ 108:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_ALIGNED(32) static uint8_t activations_3[STAI_MNETWORK_ACTIVATION_3_SIZE_BYTES];
+ 109:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_ALIGNED(32) static uint8_t activations_4[STAI_MNETWORK_ACTIVATION_4_SIZE_BYTES];
+ 110:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_ptr data_activations[] = {
+ 111:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   activations_1,
+ 112:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   activations_2,
+ 113:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   activations_3,
+ 114:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   activations_4
+ 115:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** };
+ 116:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #else
+ 117:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #error Maximum of 4 activations buffer are supported for the network named network
+ 118:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #endif
+ 119:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 120:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** /* States buffers allocation -------------------------------------------------*/
+ 121:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 122:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #undef  STAI_MNETWORK_STATE_1_SIZE_BYTES
+ 123:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #define STAI_MNETWORK_STATE_1_SIZE_BYTES STAI_NETWORK_STATE_1_SIZE_BYTES
+ 124:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #undef  STAI_MNETWORK_STATE_2_SIZE_BYTES
+ 125:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #define STAI_MNETWORK_STATE_2_SIZE_BYTES STAI_NETWORK_STATE_2_SIZE_BYTES
+ 126:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #undef  STAI_MNETWORK_STATE_3_SIZE_BYTES
+ 127:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #define STAI_MNETWORK_STATE_3_SIZE_BYTES STAI_NETWORK_STATE_3_SIZE_BYTES
+ 128:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #undef  STAI_MNETWORK_STATE_4_SIZE_BYTES
+ 129:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #define STAI_MNETWORK_STATE_4_SIZE_BYTES STAI_NETWORK_STATE_4_SIZE_BYTES
+ 130:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 131:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #if STAI_NETWORK_STATES_NUM == 0
+ 132:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** /* Dummy buffer is allocated */
+ 133:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_ALIGNED(32) static uint8_t states_1[4];
+ 134:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_ptr data_states[] = {
+ 135:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   states_1
+ 136:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** };
+ 137:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #elif STAI_NETWORK_STATES_NUM == 1
+ 138:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #if STAI_NETWORK_STATE_1_SIZE_BYTES == 0
+ 139:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** /* Dummy buffer is allocated */
+ 140:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_ALIGNED(32) static uint8_t states_1[4];
+ 141:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #else
+ 142:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_ALIGNED(32) static uint8_t states_1[STAI_MNETWORK_STATE_1_SIZE_BYTES];
+ 143:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #endif
+ 144:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_ptr data_states[] = {
+ 145:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   states_1
+ 146:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** };
+ 147:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #elif STAI_NETWORK_STATES_NUM == 2
+ 148:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_ALIGNED(32) static uint8_t states_1[STAI_MNETWORK_STATE_1_SIZE_BYTES];
+ 149:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_ALIGNED(32) static uint8_t states_2[STAI_MNETWORK_STATE_2_SIZE_BYTES];
+ 150:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_ptr data_states[] = {
+ 151:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   states_1,
+ 152:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   states_2
+ 153:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** };
+ 154:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #elif STAI_NETWORK_STATES_NUM == 3
+ 155:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_ALIGNED(32) static uint8_t states_1[STAI_MNETWORK_STATE_1_SIZE_BYTES];
+ 156:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_ALIGNED(32) static uint8_t states_2[STAI_MNETWORK_STATE_2_SIZE_BYTES];
+ 157:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_ALIGNED(32) static uint8_t states_3[STAI_MNETWORK_STATE_3_SIZE_BYTES];
+ 158:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_ptr data_states[] = {
+ 159:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   states_1,
+ 160:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   states_2,
+ 161:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   states_3
+ 162:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** };
+ 163:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #elif STAI_NETWORK_STATES_NUM == 4
+ 164:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_ALIGNED(32) static uint8_t states_1[STAI_MNETWORK_STATE_1_SIZE_BYTES];
+ 165:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_ALIGNED(32) static uint8_t states_2[STAI_MNETWORK_STATE_2_SIZE_BYTES];
+ 166:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_ALIGNED(32) static uint8_t states_3[STAI_MNETWORK_STATE_3_SIZE_BYTES];
+ 167:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_ALIGNED(32) static uint8_t states_4[STAI_MNETWORK_STATE_4_SIZE_BYTES];
+ 168:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_ptr data_states[] = {
+ 169:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   states_1,
+ 170:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   states_2,
+ 171:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   states_3,
+ 172:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   states_4
+ 173:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** };
+ 174:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #else
+ 175:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #error Maximum of 4 state buffer are supported for the network named network
+ 176:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #endif
+ 177:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 178:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** /* Multiple network support --------------------------------------------------*/
+ 179:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 180:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** #include <string.h>
+ 181:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 182:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_NETWORK_CONTEXT_DECLARE(_context_network, STAI_NETWORK_CONTEXT_SIZE)
+ 183:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** uintptr_t stai_network_weights_addr[STAI_NETWORK_WEIGHTS_NUM + 1 ];
+ 184:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** extern const stai_network_details g_network_details;
+ 185:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 186:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** static const stai_network_entry_t networks[STAI_MNETWORK_NUMBER] = {
+ 187:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** {
+ 188:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	.name = (const char *)STAI_NETWORK_MODEL_NAME,
+ 189:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	.get_context_size = stai_network_get_context_size,
+ 190:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	.init = stai_network_init,
+ 191:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	.deinit = stai_network_deinit,
+ 192:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	.run = stai_network_run,
+ 193:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	.get_info = stai_network_get_info,
+ 194:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	.get_error = stai_network_get_error,
+ 195:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	
+ 196:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	.get_activations = stai_network_get_activations,
+ 197:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	.get_states = stai_network_get_states,
+ 198:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	.get_weights = stai_network_get_weights,
+ 199:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	.get_inputs = stai_network_get_inputs,
+ 200:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	.get_outputs = stai_network_get_outputs,
+ 201:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	
+ 202:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	.set_activations = stai_network_set_activations,
+ 203:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	.set_states = stai_network_set_states,
+ 204:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	.set_weights = stai_network_set_weights,
+ 205:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	.set_inputs = stai_network_set_inputs,
+ 206:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	.set_outputs = stai_network_set_outputs,
+ 207:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	.set_callback = stai_network_set_callback,
+ 208:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	
+ 209:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	.context = _context_network,
+ 210:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	
+ 211:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	.n_inputs = STAI_NETWORK_IN_NUM,
+ 212:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	.n_outputs = STAI_NETWORK_OUT_NUM,
+ 213:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	
+ 214:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	.n_activations = STAI_NETWORK_ACTIVATIONS_NUM,
+ 215:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	.n_states = STAI_NETWORK_STATES_NUM,
+ 216:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	.n_weights = STAI_NETWORK_WEIGHTS_NUM,
+ 217:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	.weights_addr = stai_network_weights_addr,
+ 218:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	
+ 219:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	.details = &g_network_details,
+ 220:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 	},
+ 221:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** };
+ 222:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 223:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** struct network_instance {
+ 224:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****      const stai_network_entry_t *entry;
+ 225:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****      stai_ptr handle;
+ 226:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** };
+ 227:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 228:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** /* Number of instance is aligned on the number of network */
+ 229:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** static struct network_instance gnetworks[STAI_MNETWORK_NUMBER] = {0};
+ 230:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 231:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** static bool _stai_mnetwork_is_valid(const char* name,
+ 232:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     const stai_network_entry_t *entry)
+ 233:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** {
+ 135              		.loc 1 233 1
+ 136              		.cfi_startproc
+ 137              		@ args = 0, pretend = 0, frame = 8
+ 138              		@ frame_needed = 0, uses_anonymous_args = 0
+ 139 0000 10B5     		push	{r4, lr}
+ 140              		.cfi_def_cfa_offset 8
+ 141              		.cfi_offset 4, -8
+ 142              		.cfi_offset 14, -4
+ 143 0002 82B0     		sub	sp, sp, #8
+ 144              		.cfi_def_cfa_offset 16
+ 145 0004 0190     		str	r0, [sp, #4]
+ 146 0006 0091     		str	r1, [sp]
+ 234:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   if (name && (strlen(entry->name) == strlen(name)) &&
+ 147              		.loc 1 234 6
+ 148 0008 019B     		ldr	r3, [sp, #4]
+ 149 000a 002B     		cmp	r3, #0
+ 150 000c 1DD0     		beq	.L2
+ 151              		.loc 1 234 28 discriminator 1
+ 152 000e 009B     		ldr	r3, [sp]
+ 153 0010 1B68     		ldr	r3, [r3]
+ 154              		.loc 1 234 16 discriminator 1
+ 155 0012 1846     		mov	r0, r3
+ 156 0014 FFF7FEFF 		bl	strlen
+ 157 0018 0446     		mov	r4, r0
+ 158              		.loc 1 234 39 discriminator 1
+ 159 001a 0198     		ldr	r0, [sp, #4]
+ 160 001c FFF7FEFF 		bl	strlen
+ 161 0020 0346     		mov	r3, r0
+ 162              		.loc 1 234 12 discriminator 2
+ 163 0022 9C42     		cmp	r4, r3
+ 164 0024 11D1     		bne	.L2
+ 235:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****       (strncmp(entry->name, name, strlen(entry->name)) == 0))
+ 165              		.loc 1 235 21
+ 166 0026 009B     		ldr	r3, [sp]
+ 167 0028 1C68     		ldr	r4, [r3]
+ 168              		.loc 1 235 47
+ 169 002a 009B     		ldr	r3, [sp]
+ 170 002c 1B68     		ldr	r3, [r3]
+ 171              		.loc 1 235 8
+ 172 002e 1846     		mov	r0, r3
+ 173 0030 FFF7FEFF 		bl	strlen
+ 174 0034 0346     		mov	r3, r0
+ 175              		.loc 1 235 8 is_stmt 0 discriminator 1
+ 176 0036 1A46     		mov	r2, r3
+ 177 0038 0199     		ldr	r1, [sp, #4]
+ 178 003a 2046     		mov	r0, r4
+ 179 003c FFF7FEFF 		bl	strncmp
+ 180 0040 0346     		mov	r3, r0
+ 234:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   if (name && (strlen(entry->name) == strlen(name)) &&
+ 181              		.loc 1 234 53 is_stmt 1 discriminator 2
+ 182 0042 002B     		cmp	r3, #0
+ 183 0044 01D1     		bne	.L2
+ 236:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     return true;
+ 184              		.loc 1 236 12
+ 185 0046 0123     		movs	r3, #1
+ 186 0048 00E0     		b	.L3
+ 187              	.L2:
+ 237:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   return false;
+ 188              		.loc 1 237 10
+ 189 004a 0023     		movs	r3, #0
+ 190              	.L3:
+ 238:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** }
+ 191              		.loc 1 238 1
+ 192 004c 1846     		mov	r0, r3
+ 193 004e 02B0     		add	sp, sp, #8
+ 194              		.cfi_def_cfa_offset 8
+ 195              		@ sp needed
+ 196 0050 10BD     		pop	{r4, pc}
+ 197              		.cfi_endproc
+ 198              	.LFE450:
+ 200 0052 00BF     		.section	.text._stai_mnetwork_handle,"ax",%progbits
+ 201              		.align	1
+ 202              		.p2align 4,,15
+ 203              		.syntax unified
+ 204              		.thumb
+ 205              		.thumb_func
+ 207              	_stai_mnetwork_handle:
+ 208              	.LFB451:
+ 239:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 240:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** static struct network_instance *_stai_mnetwork_handle(struct network_instance *inst)
+ 241:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** {
+ 209              		.loc 1 241 1
+ 210              		.cfi_startproc
+ 211              		@ args = 0, pretend = 0, frame = 16
+ 212              		@ frame_needed = 0, uses_anonymous_args = 0
+ 213              		@ link register save eliminated.
+ 214 0000 84B0     		sub	sp, sp, #16
+ 215              		.cfi_def_cfa_offset 16
+ 216 0002 0190     		str	r0, [sp, #4]
+ 217              	.LBB2:
+ 242:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   for (int i=0; i<STAI_MNETWORK_NUMBER; i++) {
+ 218              		.loc 1 242 12
+ 219 0004 0023     		movs	r3, #0
+ 220 0006 0393     		str	r3, [sp, #12]
+ 221              		.loc 1 242 3
+ 222 0008 1CE0     		b	.L5
+ 223              	.L9:
+ 243:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     if ((inst) && (&gnetworks[i] == inst))
+ 224              		.loc 1 243 8
+ 225 000a 019B     		ldr	r3, [sp, #4]
+ 226 000c 002B     		cmp	r3, #0
+ 227 000e 08D0     		beq	.L6
+ 228              		.loc 1 243 20 discriminator 1
+ 229 0010 039B     		ldr	r3, [sp, #12]
+ 230 0012 DB00     		lsls	r3, r3, #3
+ 231 0014 0F4A     		ldr	r2, .L10
+ 232 0016 1344     		add	r3, r3, r2
+ 233              		.loc 1 243 16 discriminator 1
+ 234 0018 019A     		ldr	r2, [sp, #4]
+ 235 001a 9A42     		cmp	r2, r3
+ 236 001c 01D1     		bne	.L6
+ 244:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****       return inst;
+ 237              		.loc 1 244 14
+ 238 001e 019B     		ldr	r3, [sp, #4]
+ 239 0020 14E0     		b	.L7
+ 240              	.L6:
+ 245:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     else if ((!inst) && (gnetworks[i].entry == NULL))
+ 241              		.loc 1 245 13
+ 242 0022 019B     		ldr	r3, [sp, #4]
+ 243 0024 002B     		cmp	r3, #0
+ 244 0026 0AD1     		bne	.L8
+ 245              		.loc 1 245 38 discriminator 1
+ 246 0028 0A4A     		ldr	r2, .L10
+ 247 002a 039B     		ldr	r3, [sp, #12]
+ 248 002c 52F83330 		ldr	r3, [r2, r3, lsl #3]
+ 249              		.loc 1 245 22 discriminator 1
+ 250 0030 002B     		cmp	r3, #0
+ 251 0032 04D1     		bne	.L8
+ 246:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****       return &gnetworks[i];
+ 252              		.loc 1 246 14
+ 253 0034 039B     		ldr	r3, [sp, #12]
+ 254 0036 DB00     		lsls	r3, r3, #3
+ 255 0038 064A     		ldr	r2, .L10
+ 256 003a 1344     		add	r3, r3, r2
+ 257 003c 06E0     		b	.L7
+ 258              	.L8:
+ 242:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     if ((inst) && (&gnetworks[i] == inst))
+ 259              		.loc 1 242 42 discriminator 2
+ 260 003e 039B     		ldr	r3, [sp, #12]
+ 261 0040 0133     		adds	r3, r3, #1
+ 262 0042 0393     		str	r3, [sp, #12]
+ 263              	.L5:
+ 242:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     if ((inst) && (&gnetworks[i] == inst))
+ 264              		.loc 1 242 18 discriminator 1
+ 265 0044 039B     		ldr	r3, [sp, #12]
+ 266 0046 002B     		cmp	r3, #0
+ 267 0048 DFDD     		ble	.L9
+ 268              	.LBE2:
+ 247:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   }
+ 248:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   return NULL;
+ 269              		.loc 1 248 10
+ 270 004a 0023     		movs	r3, #0
+ 271              	.L7:
+ 249:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** }
+ 272              		.loc 1 249 1
+ 273 004c 1846     		mov	r0, r3
+ 274 004e 04B0     		add	sp, sp, #16
+ 275              		.cfi_def_cfa_offset 0
+ 276              		@ sp needed
+ 277 0050 7047     		bx	lr
+ 278              	.L11:
+ 279 0052 00BF     		.align	2
+ 280              	.L10:
+ 281 0054 00000000 		.word	gnetworks
+ 282              		.cfi_endproc
+ 283              	.LFE451:
+ 285              		.section	.text._stai_mnetwork_release_handle,"ax",%progbits
+ 286              		.align	1
+ 287              		.p2align 4,,15
+ 288              		.syntax unified
+ 289              		.thumb
+ 290              		.thumb_func
+ 292              	_stai_mnetwork_release_handle:
+ 293              	.LFB452:
+ 250:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 251:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** static void _stai_mnetwork_release_handle(struct network_instance *inst)
+ 252:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** {
+ 294              		.loc 1 252 1
+ 295              		.cfi_startproc
+ 296              		@ args = 0, pretend = 0, frame = 16
+ 297              		@ frame_needed = 0, uses_anonymous_args = 0
+ 298              		@ link register save eliminated.
+ 299 0000 84B0     		sub	sp, sp, #16
+ 300              		.cfi_def_cfa_offset 16
+ 301 0002 0190     		str	r0, [sp, #4]
+ 302              	.LBB3:
+ 253:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   for (int i=0; i<STAI_MNETWORK_NUMBER; i++) {
+ 303              		.loc 1 253 12
+ 304 0004 0023     		movs	r3, #0
+ 305 0006 0393     		str	r3, [sp, #12]
+ 306              		.loc 1 253 3
+ 307 0008 12E0     		b	.L13
+ 308              	.L16:
+ 254:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     if ((inst) && (&gnetworks[i] == inst)) {
+ 309              		.loc 1 254 8
+ 310 000a 019B     		ldr	r3, [sp, #4]
+ 311 000c 002B     		cmp	r3, #0
+ 312 000e 0CD0     		beq	.L14
+ 313              		.loc 1 254 20 discriminator 1
+ 314 0010 039B     		ldr	r3, [sp, #12]
+ 315 0012 DB00     		lsls	r3, r3, #3
+ 316 0014 094A     		ldr	r2, .L17
+ 317 0016 1344     		add	r3, r3, r2
+ 318              		.loc 1 254 16 discriminator 1
+ 319 0018 019A     		ldr	r2, [sp, #4]
+ 320 001a 9A42     		cmp	r2, r3
+ 321 001c 05D1     		bne	.L14
+ 255:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****       gnetworks[i].entry = NULL;
+ 322              		.loc 1 255 26
+ 323 001e 074A     		ldr	r2, .L17
+ 324 0020 039B     		ldr	r3, [sp, #12]
+ 325 0022 0021     		movs	r1, #0
+ 326 0024 42F83310 		str	r1, [r2, r3, lsl #3]
+ 256:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****       return;
+ 327              		.loc 1 256 7
+ 328 0028 05E0     		b	.L12
+ 329              	.L14:
+ 253:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     if ((inst) && (&gnetworks[i] == inst)) {
+ 330              		.loc 1 253 42 discriminator 2
+ 331 002a 039B     		ldr	r3, [sp, #12]
+ 332 002c 0133     		adds	r3, r3, #1
+ 333 002e 0393     		str	r3, [sp, #12]
+ 334              	.L13:
+ 253:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     if ((inst) && (&gnetworks[i] == inst)) {
+ 335              		.loc 1 253 18 discriminator 1
+ 336 0030 039B     		ldr	r3, [sp, #12]
+ 337 0032 002B     		cmp	r3, #0
+ 338 0034 E9DD     		ble	.L16
+ 339              	.L12:
+ 340              	.LBE3:
+ 257:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     }
+ 258:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   }
+ 259:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** }
+ 341              		.loc 1 259 1
+ 342 0036 04B0     		add	sp, sp, #16
+ 343              		.cfi_def_cfa_offset 0
+ 344              		@ sp needed
+ 345 0038 7047     		bx	lr
+ 346              	.L18:
+ 347 003a 00BF     		.align	2
+ 348              	.L17:
+ 349 003c 00000000 		.word	gnetworks
+ 350              		.cfi_endproc
+ 351              	.LFE452:
+ 353              		.section	.text.stai_mnetwork_get_internal_handle,"ax",%progbits
+ 354              		.align	1
+ 355              		.p2align 4,,15
+ 356              		.global	stai_mnetwork_get_internal_handle
+ 357              		.syntax unified
+ 358              		.thumb
+ 359              		.thumb_func
+ 361              	stai_mnetwork_get_internal_handle:
+ 362              	.LFB453:
+ 260:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 261:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_API_ENTRY
+ 262:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_ptr stai_mnetwork_get_internal_handle(const stai_ptr network)
+ 263:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** {
+ 363              		.loc 1 263 1
+ 364              		.cfi_startproc
+ 365              		@ args = 0, pretend = 0, frame = 16
+ 366              		@ frame_needed = 0, uses_anonymous_args = 0
+ 367 0000 00B5     		push	{lr}
+ 368              		.cfi_def_cfa_offset 4
+ 369              		.cfi_offset 14, -4
+ 370 0002 85B0     		sub	sp, sp, #20
+ 371              		.cfi_def_cfa_offset 24
+ 372 0004 0190     		str	r0, [sp, #4]
+ 264:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     struct network_instance *inn;
+ 265:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     inn =  _stai_mnetwork_handle((struct network_instance *)network);
+ 373              		.loc 1 265 12
+ 374 0006 0198     		ldr	r0, [sp, #4]
+ 375 0008 FFF7FEFF 		bl	_stai_mnetwork_handle
+ 376 000c 0390     		str	r0, [sp, #12]
+ 266:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     if (inn)
+ 377              		.loc 1 266 8
+ 378 000e 039B     		ldr	r3, [sp, #12]
+ 379 0010 002B     		cmp	r3, #0
+ 380 0012 02D0     		beq	.L20
+ 267:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****       return inn->handle;
+ 381              		.loc 1 267 17
+ 382 0014 039B     		ldr	r3, [sp, #12]
+ 383 0016 5B68     		ldr	r3, [r3, #4]
+ 384 0018 00E0     		b	.L21
+ 385              	.L20:
+ 268:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     return NULL;
+ 386              		.loc 1 268 12
+ 387 001a 0023     		movs	r3, #0
+ 388              	.L21:
+ 269:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** }
+ 389              		.loc 1 269 1
+ 390 001c 1846     		mov	r0, r3
+ 391 001e 05B0     		add	sp, sp, #20
+ 392              		.cfi_def_cfa_offset 4
+ 393              		@ sp needed
+ 394 0020 5DF804FB 		ldr	pc, [sp], #4
+ 395              		.cfi_endproc
+ 396              	.LFE453:
+ 398              		.section	.text.stai_mnetwork_find,"ax",%progbits
+ 399              		.align	1
+ 400              		.p2align 4,,15
+ 401              		.global	stai_mnetwork_find
+ 402              		.syntax unified
+ 403              		.thumb
+ 404              		.thumb_func
+ 406              	stai_mnetwork_find:
+ 407              	.LFB454:
+ 270:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 271:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_API_ENTRY
+ 272:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** const char* stai_mnetwork_find(const char *name, int idx)
+ 273:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** {
+ 408              		.loc 1 273 1
+ 409              		.cfi_startproc
+ 410              		@ args = 0, pretend = 0, frame = 16
+ 411              		@ frame_needed = 0, uses_anonymous_args = 0
+ 412 0000 00B5     		push	{lr}
+ 413              		.cfi_def_cfa_offset 4
+ 414              		.cfi_offset 14, -4
+ 415 0002 85B0     		sub	sp, sp, #20
+ 416              		.cfi_def_cfa_offset 24
+ 417 0004 0190     		str	r0, [sp, #4]
+ 418 0006 0091     		str	r1, [sp]
+ 419              	.LBB4:
+ 274:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   const stai_network_entry_t *entry;
+ 275:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 276:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   for (int i=0; i<STAI_MNETWORK_NUMBER; i++) {
+ 420              		.loc 1 276 12
+ 421 0008 0023     		movs	r3, #0
+ 422 000a 0393     		str	r3, [sp, #12]
+ 423              		.loc 1 276 3
+ 424 000c 1BE0     		b	.L23
+ 425              	.L27:
+ 277:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     entry = &networks[i];
+ 426              		.loc 1 277 11
+ 427 000e 039B     		ldr	r3, [sp, #12]
+ 428 0010 6822     		movs	r2, #104
+ 429 0012 02FB03F3 		mul	r3, r2, r3
+ 430 0016 104A     		ldr	r2, .L28
+ 431 0018 1344     		add	r3, r3, r2
+ 432 001a 0293     		str	r3, [sp, #8]
+ 278:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     if (_stai_mnetwork_is_valid(name, entry))
+ 433              		.loc 1 278 9
+ 434 001c 0299     		ldr	r1, [sp, #8]
+ 435 001e 0198     		ldr	r0, [sp, #4]
+ 436 0020 FFF7FEFF 		bl	_stai_mnetwork_is_valid
+ 437 0024 0346     		mov	r3, r0
+ 438              		.loc 1 278 8 discriminator 1
+ 439 0026 002B     		cmp	r3, #0
+ 440 0028 02D0     		beq	.L24
+ 279:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****       return entry->name;
+ 441              		.loc 1 279 19
+ 442 002a 029B     		ldr	r3, [sp, #8]
+ 443 002c 1B68     		ldr	r3, [r3]
+ 444 002e 0EE0     		b	.L25
+ 445              	.L24:
+ 280:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     else {
+ 281:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****       if (!idx--)
+ 446              		.loc 1 281 15
+ 447 0030 009B     		ldr	r3, [sp]
+ 448 0032 5A1E     		subs	r2, r3, #1
+ 449 0034 0092     		str	r2, [sp]
+ 450              		.loc 1 281 10
+ 451 0036 002B     		cmp	r3, #0
+ 452 0038 02D1     		bne	.L26
+ 282:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****         return entry->name;
+ 453              		.loc 1 282 21
+ 454 003a 029B     		ldr	r3, [sp, #8]
+ 455 003c 1B68     		ldr	r3, [r3]
+ 456 003e 06E0     		b	.L25
+ 457              	.L26:
+ 276:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     entry = &networks[i];
+ 458              		.loc 1 276 42 discriminator 2
+ 459 0040 039B     		ldr	r3, [sp, #12]
+ 460 0042 0133     		adds	r3, r3, #1
+ 461 0044 0393     		str	r3, [sp, #12]
+ 462              	.L23:
+ 276:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     entry = &networks[i];
+ 463              		.loc 1 276 18 discriminator 1
+ 464 0046 039B     		ldr	r3, [sp, #12]
+ 465 0048 002B     		cmp	r3, #0
+ 466 004a E0DD     		ble	.L27
+ 467              	.LBE4:
+ 283:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     }
+ 284:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   }
+ 285:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   return NULL;
+ 468              		.loc 1 285 10
+ 469 004c 0023     		movs	r3, #0
+ 470              	.L25:
+ 286:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** }
+ 471              		.loc 1 286 1
+ 472 004e 1846     		mov	r0, r3
+ 473 0050 05B0     		add	sp, sp, #20
+ 474              		.cfi_def_cfa_offset 4
+ 475              		@ sp needed
+ 476 0052 5DF804FB 		ldr	pc, [sp], #4
+ 477              	.L29:
+ 478 0056 00BF     		.align	2
+ 479              	.L28:
+ 480 0058 00000000 		.word	networks
+ 481              		.cfi_endproc
+ 482              	.LFE454:
+ 484              		.section	.text.stai_mnetwork_init,"ax",%progbits
+ 485              		.align	1
+ 486              		.p2align 4,,15
+ 487              		.global	stai_mnetwork_init
+ 488              		.syntax unified
+ 489              		.thumb
+ 490              		.thumb_func
+ 492              	stai_mnetwork_init:
+ 493              	.LFB455:
+ 287:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 288:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_API_ENTRY
+ 289:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_return_code stai_mnetwork_init(const char *name, stai_ptr* network)
+ 290:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** {
+ 494              		.loc 1 290 1
+ 495              		.cfi_startproc
+ 496              		@ args = 0, pretend = 0, frame = 32
+ 497              		@ frame_needed = 0, uses_anonymous_args = 0
+ 498 0000 00B5     		push	{lr}
+ 499              		.cfi_def_cfa_offset 4
+ 500              		.cfi_offset 14, -4
+ 501 0002 89B0     		sub	sp, sp, #36
+ 502              		.cfi_def_cfa_offset 40
+ 503 0004 0190     		str	r0, [sp, #4]
+ 504 0006 0091     		str	r1, [sp]
+ 291:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   const stai_network_entry_t *entry;
+ 292:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   const stai_network_entry_t *found = NULL;
+ 505              		.loc 1 292 31
+ 506 0008 0023     		movs	r3, #0
+ 507 000a 0793     		str	r3, [sp, #28]
+ 293:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   stai_return_code stai_err;
+ 294:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 295:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   struct network_instance *inst = _stai_mnetwork_handle(NULL);
+ 508              		.loc 1 295 35
+ 509 000c 0020     		movs	r0, #0
+ 510 000e FFF7FEFF 		bl	_stai_mnetwork_handle
+ 511 0012 0590     		str	r0, [sp, #20]
+ 296:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 297:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   if (!inst || !network) {
+ 512              		.loc 1 297 6
+ 513 0014 059B     		ldr	r3, [sp, #20]
+ 514 0016 002B     		cmp	r3, #0
+ 515 0018 02D0     		beq	.L31
+ 516              		.loc 1 297 13 discriminator 1
+ 517 001a 009B     		ldr	r3, [sp]
+ 518 001c 002B     		cmp	r3, #0
+ 519 001e 02D1     		bne	.L32
+ 520              	.L31:
+ 298:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     return STAI_ERROR_NETWORK_INVALID_CONTEXT_HANDLE;
+ 521              		.loc 1 298 12
+ 522 0020 4FF44033 		mov	r3, #196608
+ 523 0024 41E0     		b	.L33
+ 524              	.L32:
+ 299:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   }
+ 300:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 301:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   *network = NULL;
+ 525              		.loc 1 301 12
+ 526 0026 009B     		ldr	r3, [sp]
+ 527 0028 0022     		movs	r2, #0
+ 528 002a 1A60     		str	r2, [r3]
+ 529              	.LBB5:
+ 302:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 303:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   for (int i=0; i<STAI_MNETWORK_NUMBER; i++) {
+ 530              		.loc 1 303 12
+ 531 002c 0023     		movs	r3, #0
+ 532 002e 0693     		str	r3, [sp, #24]
+ 533              		.loc 1 303 3
+ 534 0030 13E0     		b	.L34
+ 535              	.L37:
+ 304:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     entry = &networks[i];
+ 536              		.loc 1 304 11
+ 537 0032 069B     		ldr	r3, [sp, #24]
+ 538 0034 6822     		movs	r2, #104
+ 539 0036 02FB03F3 		mul	r3, r2, r3
+ 540 003a 1E4A     		ldr	r2, .L40
+ 541 003c 1344     		add	r3, r3, r2
+ 542 003e 0493     		str	r3, [sp, #16]
+ 305:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     if (_stai_mnetwork_is_valid(name, entry)) {
+ 543              		.loc 1 305 9
+ 544 0040 0499     		ldr	r1, [sp, #16]
+ 545 0042 0198     		ldr	r0, [sp, #4]
+ 546 0044 FFF7FEFF 		bl	_stai_mnetwork_is_valid
+ 547 0048 0346     		mov	r3, r0
+ 548              		.loc 1 305 8 discriminator 1
+ 549 004a 002B     		cmp	r3, #0
+ 550 004c 02D0     		beq	.L35
+ 306:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****       found = entry;
+ 551              		.loc 1 306 13
+ 552 004e 049B     		ldr	r3, [sp, #16]
+ 553 0050 0793     		str	r3, [sp, #28]
+ 307:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****       break;
+ 554              		.loc 1 307 7
+ 555 0052 05E0     		b	.L36
+ 556              	.L35:
+ 303:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     entry = &networks[i];
+ 557              		.loc 1 303 42 discriminator 2
+ 558 0054 069B     		ldr	r3, [sp, #24]
+ 559 0056 0133     		adds	r3, r3, #1
+ 560 0058 0693     		str	r3, [sp, #24]
+ 561              	.L34:
+ 303:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     entry = &networks[i];
+ 562              		.loc 1 303 18 discriminator 1
+ 563 005a 069B     		ldr	r3, [sp, #24]
+ 564 005c 002B     		cmp	r3, #0
+ 565 005e E8DD     		ble	.L37
+ 566              	.L36:
+ 567              	.LBE5:
+ 308:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     }
+ 309:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   }
+ 310:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 311:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   if (!found) {
+ 568              		.loc 1 311 6
+ 569 0060 079B     		ldr	r3, [sp, #28]
+ 570 0062 002B     		cmp	r3, #0
+ 571 0064 02D1     		bne	.L38
+ 312:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     return STAI_ERROR_NETWORK_INVALID_CONTEXT_HANDLE;
+ 572              		.loc 1 312 12
+ 573 0066 4FF44033 		mov	r3, #196608
+ 574 006a 1EE0     		b	.L33
+ 575              	.L38:
+ 313:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   }
+ 314:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 315:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   stai_err = found->init(found->context);
+ 576              		.loc 1 315 19
+ 577 006c 079B     		ldr	r3, [sp, #28]
+ 578 006e 9B68     		ldr	r3, [r3, #8]
+ 579              		.loc 1 315 31
+ 580 0070 079A     		ldr	r2, [sp, #28]
+ 581 0072 926C     		ldr	r2, [r2, #72]
+ 582              		.loc 1 315 14
+ 583 0074 1046     		mov	r0, r2
+ 584 0076 9847     		blx	r3
+ 585              	.LVL0:
+ 586 0078 0390     		str	r0, [sp, #12]
+ 316:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   if (stai_err == STAI_SUCCESS) {
+ 587              		.loc 1 316 6
+ 588 007a 039B     		ldr	r3, [sp, #12]
+ 589 007c 002B     		cmp	r3, #0
+ 590 007e 13D1     		bne	.L39
+ 591              	.LBB6:
+ 317:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     stai_size tmp_;
+ 318:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     inst->entry = found;
+ 592              		.loc 1 318 17
+ 593 0080 059B     		ldr	r3, [sp, #20]
+ 594 0082 079A     		ldr	r2, [sp, #28]
+ 595 0084 1A60     		str	r2, [r3]
+ 319:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     inst->handle = found->context;
+ 596              		.loc 1 319 25
+ 597 0086 079B     		ldr	r3, [sp, #28]
+ 598 0088 9A6C     		ldr	r2, [r3, #72]
+ 599              		.loc 1 319 18
+ 600 008a 059B     		ldr	r3, [sp, #20]
+ 601 008c 5A60     		str	r2, [r3, #4]
+ 320:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     found->get_weights(found->context, (stai_ptr *)found->weights_addr, &tmp_);
+ 602              		.loc 1 320 10
+ 603 008e 079B     		ldr	r3, [sp, #28]
+ 604 0090 5B6A     		ldr	r3, [r3, #36]
+ 605              		.loc 1 320 29
+ 606 0092 079A     		ldr	r2, [sp, #28]
+ 607 0094 906C     		ldr	r0, [r2, #72]
+ 608              		.loc 1 320 57
+ 609 0096 079A     		ldr	r2, [sp, #28]
+ 610 0098 116E     		ldr	r1, [r2, #96]
+ 611              		.loc 1 320 5
+ 612 009a 02AA     		add	r2, sp, #8
+ 613 009c 9847     		blx	r3
+ 614              	.LVL1:
+ 321:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     *network = (stai_ptr)inst;
+ 615              		.loc 1 321 14
+ 616 009e 009B     		ldr	r3, [sp]
+ 617 00a0 059A     		ldr	r2, [sp, #20]
+ 618 00a2 1A60     		str	r2, [r3]
+ 322:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     return STAI_SUCCESS;
+ 619              		.loc 1 322 12
+ 620 00a4 0023     		movs	r3, #0
+ 621 00a6 00E0     		b	.L33
+ 622              	.L39:
+ 623              	.LBE6:
+ 323:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   }
+ 324:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   return stai_err;
+ 624              		.loc 1 324 10
+ 625 00a8 039B     		ldr	r3, [sp, #12]
+ 626              	.L33:
+ 325:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** }
+ 627              		.loc 1 325 1
+ 628 00aa 1846     		mov	r0, r3
+ 629 00ac 09B0     		add	sp, sp, #36
+ 630              		.cfi_def_cfa_offset 4
+ 631              		@ sp needed
+ 632 00ae 5DF804FB 		ldr	pc, [sp], #4
+ 633              	.L41:
+ 634 00b2 00BF     		.align	2
+ 635              	.L40:
+ 636 00b4 00000000 		.word	networks
+ 637              		.cfi_endproc
+ 638              	.LFE455:
+ 640              		.section	.text.stai_mnetwork_set_activations,"ax",%progbits
+ 641              		.align	1
+ 642              		.p2align 4,,15
+ 643              		.global	stai_mnetwork_set_activations
+ 644              		.syntax unified
+ 645              		.thumb
+ 646              		.thumb_func
+ 648              	stai_mnetwork_set_activations:
+ 649              	.LFB456:
+ 326:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 327:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_API_ENTRY
+ 328:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_return_code stai_mnetwork_set_activations(stai_ptr network, const stai_ptr* activations)
+ 329:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** {
+ 650              		.loc 1 329 1
+ 651              		.cfi_startproc
+ 652              		@ args = 0, pretend = 0, frame = 16
+ 653              		@ frame_needed = 0, uses_anonymous_args = 0
+ 654 0000 00B5     		push	{lr}
+ 655              		.cfi_def_cfa_offset 4
+ 656              		.cfi_offset 14, -4
+ 657 0002 85B0     		sub	sp, sp, #20
+ 658              		.cfi_def_cfa_offset 24
+ 659 0004 0190     		str	r0, [sp, #4]
+ 660 0006 0091     		str	r1, [sp]
+ 330:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   struct network_instance *inn;
+ 331:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   stai_return_code stai_err = STAI_ERROR_NETWORK_INVALID_CONTEXT_HANDLE;
+ 661              		.loc 1 331 20
+ 662 0008 4FF44033 		mov	r3, #196608
+ 663 000c 0393     		str	r3, [sp, #12]
+ 332:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 333:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   inn =  _stai_mnetwork_handle((struct network_instance *)network);
+ 664              		.loc 1 333 10
+ 665 000e 0198     		ldr	r0, [sp, #4]
+ 666 0010 FFF7FEFF 		bl	_stai_mnetwork_handle
+ 667 0014 0290     		str	r0, [sp, #8]
+ 334:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   if (inn) {
+ 668              		.loc 1 334 6
+ 669 0016 029B     		ldr	r3, [sp, #8]
+ 670 0018 002B     		cmp	r3, #0
+ 671 001a 0AD0     		beq	.L43
+ 335:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     stai_err = inn->entry->set_activations(inn->handle, activations, inn->entry->n_activations);
+ 672              		.loc 1 335 19
+ 673 001c 029B     		ldr	r3, [sp, #8]
+ 674 001e 1B68     		ldr	r3, [r3]
+ 675              		.loc 1 335 26
+ 676 0020 1B6B     		ldr	r3, [r3, #48]
+ 677              		.loc 1 335 47
+ 678 0022 029A     		ldr	r2, [sp, #8]
+ 679 0024 5068     		ldr	r0, [r2, #4]
+ 680              		.loc 1 335 73
+ 681 0026 029A     		ldr	r2, [sp, #8]
+ 682 0028 1268     		ldr	r2, [r2]
+ 683              		.loc 1 335 80
+ 684 002a 526D     		ldr	r2, [r2, #84]
+ 685              		.loc 1 335 16
+ 686 002c 0099     		ldr	r1, [sp]
+ 687 002e 9847     		blx	r3
+ 688              	.LVL2:
+ 689 0030 0390     		str	r0, [sp, #12]
+ 690              	.L43:
+ 336:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   }
+ 337:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   return stai_err;
+ 691              		.loc 1 337 10
+ 692 0032 039B     		ldr	r3, [sp, #12]
+ 338:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** }
+ 693              		.loc 1 338 1
+ 694 0034 1846     		mov	r0, r3
+ 695 0036 05B0     		add	sp, sp, #20
+ 696              		.cfi_def_cfa_offset 4
+ 697              		@ sp needed
+ 698 0038 5DF804FB 		ldr	pc, [sp], #4
+ 699              		.cfi_endproc
+ 700              	.LFE456:
+ 702              		.section	.text.stai_mnetwork_set_states,"ax",%progbits
+ 703              		.align	1
+ 704              		.p2align 4,,15
+ 705              		.global	stai_mnetwork_set_states
+ 706              		.syntax unified
+ 707              		.thumb
+ 708              		.thumb_func
+ 710              	stai_mnetwork_set_states:
+ 711              	.LFB457:
+ 339:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 340:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_API_ENTRY
+ 341:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_return_code stai_mnetwork_set_states(stai_ptr network, const stai_ptr* states)
+ 342:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** {
+ 712              		.loc 1 342 1
+ 713              		.cfi_startproc
+ 714              		@ args = 0, pretend = 0, frame = 16
+ 715              		@ frame_needed = 0, uses_anonymous_args = 0
+ 716 0000 00B5     		push	{lr}
+ 717              		.cfi_def_cfa_offset 4
+ 718              		.cfi_offset 14, -4
+ 719 0002 85B0     		sub	sp, sp, #20
+ 720              		.cfi_def_cfa_offset 24
+ 721 0004 0190     		str	r0, [sp, #4]
+ 722 0006 0091     		str	r1, [sp]
+ 343:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   struct network_instance *inn;
+ 344:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   stai_return_code stai_err = STAI_ERROR_NETWORK_INVALID_CONTEXT_HANDLE;
+ 723              		.loc 1 344 20
+ 724 0008 4FF44033 		mov	r3, #196608
+ 725 000c 0393     		str	r3, [sp, #12]
+ 345:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 346:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   inn =  _stai_mnetwork_handle((struct network_instance *)network);
+ 726              		.loc 1 346 10
+ 727 000e 0198     		ldr	r0, [sp, #4]
+ 728 0010 FFF7FEFF 		bl	_stai_mnetwork_handle
+ 729 0014 0290     		str	r0, [sp, #8]
+ 347:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   if (inn) {
+ 730              		.loc 1 347 6
+ 731 0016 029B     		ldr	r3, [sp, #8]
+ 732 0018 002B     		cmp	r3, #0
+ 733 001a 0AD0     		beq	.L46
+ 348:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     stai_err = inn->entry->set_states(inn->handle, states, inn->entry->n_states);
+ 734              		.loc 1 348 19
+ 735 001c 029B     		ldr	r3, [sp, #8]
+ 736 001e 1B68     		ldr	r3, [r3]
+ 737              		.loc 1 348 26
+ 738 0020 5B6B     		ldr	r3, [r3, #52]
+ 739              		.loc 1 348 42
+ 740 0022 029A     		ldr	r2, [sp, #8]
+ 741 0024 5068     		ldr	r0, [r2, #4]
+ 742              		.loc 1 348 63
+ 743 0026 029A     		ldr	r2, [sp, #8]
+ 744 0028 1268     		ldr	r2, [r2]
+ 745              		.loc 1 348 70
+ 746 002a 926D     		ldr	r2, [r2, #88]
+ 747              		.loc 1 348 16
+ 748 002c 0099     		ldr	r1, [sp]
+ 749 002e 9847     		blx	r3
+ 750              	.LVL3:
+ 751 0030 0390     		str	r0, [sp, #12]
+ 752              	.L46:
+ 349:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   }
+ 350:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   return stai_err;
+ 753              		.loc 1 350 10
+ 754 0032 039B     		ldr	r3, [sp, #12]
+ 351:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** }
+ 755              		.loc 1 351 1
+ 756 0034 1846     		mov	r0, r3
+ 757 0036 05B0     		add	sp, sp, #20
+ 758              		.cfi_def_cfa_offset 4
+ 759              		@ sp needed
+ 760 0038 5DF804FB 		ldr	pc, [sp], #4
+ 761              		.cfi_endproc
+ 762              	.LFE457:
+ 764              		.section	.text.stai_mnetwork_set_weights,"ax",%progbits
+ 765              		.align	1
+ 766              		.p2align 4,,15
+ 767              		.global	stai_mnetwork_set_weights
+ 768              		.syntax unified
+ 769              		.thumb
+ 770              		.thumb_func
+ 772              	stai_mnetwork_set_weights:
+ 773              	.LFB458:
+ 352:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 353:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_API_ENTRY
+ 354:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_return_code stai_mnetwork_set_weights(stai_ptr network, const stai_ptr* weights)
+ 355:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** {
+ 774              		.loc 1 355 1
+ 775              		.cfi_startproc
+ 776              		@ args = 0, pretend = 0, frame = 24
+ 777              		@ frame_needed = 0, uses_anonymous_args = 0
+ 778 0000 00B5     		push	{lr}
+ 779              		.cfi_def_cfa_offset 4
+ 780              		.cfi_offset 14, -4
+ 781 0002 87B0     		sub	sp, sp, #28
+ 782              		.cfi_def_cfa_offset 32
+ 783 0004 0190     		str	r0, [sp, #4]
+ 784 0006 0091     		str	r1, [sp]
+ 356:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   struct network_instance *inn;
+ 357:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   stai_return_code stai_err = STAI_ERROR_NETWORK_INVALID_CONTEXT_HANDLE;
+ 785              		.loc 1 357 20
+ 786 0008 4FF44033 		mov	r3, #196608
+ 787 000c 0593     		str	r3, [sp, #20]
+ 358:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 359:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   inn =  _stai_mnetwork_handle((struct network_instance *)network);
+ 788              		.loc 1 359 10
+ 789 000e 0198     		ldr	r0, [sp, #4]
+ 790 0010 FFF7FEFF 		bl	_stai_mnetwork_handle
+ 791 0014 0490     		str	r0, [sp, #16]
+ 360:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   if (inn) {
+ 792              		.loc 1 360 6
+ 793 0016 049B     		ldr	r3, [sp, #16]
+ 794 0018 002B     		cmp	r3, #0
+ 795 001a 14D0     		beq	.L49
+ 796              	.LBB7:
+ 361:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     stai_size tmp_;
+ 362:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     stai_err = inn->entry->set_weights(inn->handle, weights, inn->entry->n_weights);
+ 797              		.loc 1 362 19
+ 798 001c 049B     		ldr	r3, [sp, #16]
+ 799 001e 1B68     		ldr	r3, [r3]
+ 800              		.loc 1 362 26
+ 801 0020 9B6B     		ldr	r3, [r3, #56]
+ 802              		.loc 1 362 43
+ 803 0022 049A     		ldr	r2, [sp, #16]
+ 804 0024 5068     		ldr	r0, [r2, #4]
+ 805              		.loc 1 362 65
+ 806 0026 049A     		ldr	r2, [sp, #16]
+ 807 0028 1268     		ldr	r2, [r2]
+ 808              		.loc 1 362 72
+ 809 002a D26D     		ldr	r2, [r2, #92]
+ 810              		.loc 1 362 16
+ 811 002c 0099     		ldr	r1, [sp]
+ 812 002e 9847     		blx	r3
+ 813              	.LVL4:
+ 814 0030 0590     		str	r0, [sp, #20]
+ 363:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     inn->entry->get_weights(inn->handle, (stai_ptr *)inn->entry->weights_addr, &tmp_);
+ 815              		.loc 1 363 8
+ 816 0032 049B     		ldr	r3, [sp, #16]
+ 817 0034 1B68     		ldr	r3, [r3]
+ 818              		.loc 1 363 15
+ 819 0036 5B6A     		ldr	r3, [r3, #36]
+ 820              		.loc 1 363 32
+ 821 0038 049A     		ldr	r2, [sp, #16]
+ 822 003a 5068     		ldr	r0, [r2, #4]
+ 823              		.loc 1 363 57
+ 824 003c 049A     		ldr	r2, [sp, #16]
+ 825 003e 1268     		ldr	r2, [r2]
+ 826              		.loc 1 363 64
+ 827 0040 116E     		ldr	r1, [r2, #96]
+ 828              		.loc 1 363 5
+ 829 0042 03AA     		add	r2, sp, #12
+ 830 0044 9847     		blx	r3
+ 831              	.LVL5:
+ 832              	.L49:
+ 833              	.LBE7:
+ 364:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   }
+ 365:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   return stai_err;
+ 834              		.loc 1 365 10
+ 835 0046 059B     		ldr	r3, [sp, #20]
+ 366:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** }
+ 836              		.loc 1 366 1
+ 837 0048 1846     		mov	r0, r3
+ 838 004a 07B0     		add	sp, sp, #28
+ 839              		.cfi_def_cfa_offset 4
+ 840              		@ sp needed
+ 841 004c 5DF804FB 		ldr	pc, [sp], #4
+ 842              		.cfi_endproc
+ 843              	.LFE458:
+ 845              		.section	.text.stai_mnetwork_set_inputs,"ax",%progbits
+ 846              		.align	1
+ 847              		.p2align 4,,15
+ 848              		.global	stai_mnetwork_set_inputs
+ 849              		.syntax unified
+ 850              		.thumb
+ 851              		.thumb_func
+ 853              	stai_mnetwork_set_inputs:
+ 854              	.LFB459:
+ 367:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 368:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_API_ENTRY
+ 369:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_return_code stai_mnetwork_set_inputs(stai_ptr network, const stai_ptr* inputs)
+ 370:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** {
+ 855              		.loc 1 370 1
+ 856              		.cfi_startproc
+ 857              		@ args = 0, pretend = 0, frame = 16
+ 858              		@ frame_needed = 0, uses_anonymous_args = 0
+ 859 0000 00B5     		push	{lr}
+ 860              		.cfi_def_cfa_offset 4
+ 861              		.cfi_offset 14, -4
+ 862 0002 85B0     		sub	sp, sp, #20
+ 863              		.cfi_def_cfa_offset 24
+ 864 0004 0190     		str	r0, [sp, #4]
+ 865 0006 0091     		str	r1, [sp]
+ 371:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   struct network_instance *inn;
+ 372:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   stai_return_code stai_err = STAI_ERROR_NETWORK_INVALID_CONTEXT_HANDLE;
+ 866              		.loc 1 372 20
+ 867 0008 4FF44033 		mov	r3, #196608
+ 868 000c 0393     		str	r3, [sp, #12]
+ 373:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 374:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   inn = _stai_mnetwork_handle((struct network_instance *)network);
+ 869              		.loc 1 374 9
+ 870 000e 0198     		ldr	r0, [sp, #4]
+ 871 0010 FFF7FEFF 		bl	_stai_mnetwork_handle
+ 872 0014 0290     		str	r0, [sp, #8]
+ 375:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   if (inn) {
+ 873              		.loc 1 375 6
+ 874 0016 029B     		ldr	r3, [sp, #8]
+ 875 0018 002B     		cmp	r3, #0
+ 876 001a 0AD0     		beq	.L52
+ 376:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     stai_err = inn->entry->set_inputs(inn->handle, inputs, inn->entry->n_inputs);
+ 877              		.loc 1 376 19
+ 878 001c 029B     		ldr	r3, [sp, #8]
+ 879 001e 1B68     		ldr	r3, [r3]
+ 880              		.loc 1 376 26
+ 881 0020 DB6B     		ldr	r3, [r3, #60]
+ 882              		.loc 1 376 42
+ 883 0022 029A     		ldr	r2, [sp, #8]
+ 884 0024 5068     		ldr	r0, [r2, #4]
+ 885              		.loc 1 376 63
+ 886 0026 029A     		ldr	r2, [sp, #8]
+ 887 0028 1268     		ldr	r2, [r2]
+ 888              		.loc 1 376 70
+ 889 002a D26C     		ldr	r2, [r2, #76]
+ 890              		.loc 1 376 16
+ 891 002c 0099     		ldr	r1, [sp]
+ 892 002e 9847     		blx	r3
+ 893              	.LVL6:
+ 894 0030 0390     		str	r0, [sp, #12]
+ 895              	.L52:
+ 377:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   }
+ 378:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   return stai_err;
+ 896              		.loc 1 378 10
+ 897 0032 039B     		ldr	r3, [sp, #12]
+ 379:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** }
+ 898              		.loc 1 379 1
+ 899 0034 1846     		mov	r0, r3
+ 900 0036 05B0     		add	sp, sp, #20
+ 901              		.cfi_def_cfa_offset 4
+ 902              		@ sp needed
+ 903 0038 5DF804FB 		ldr	pc, [sp], #4
+ 904              		.cfi_endproc
+ 905              	.LFE459:
+ 907              		.section	.text.stai_mnetwork_set_outputs,"ax",%progbits
+ 908              		.align	1
+ 909              		.p2align 4,,15
+ 910              		.global	stai_mnetwork_set_outputs
+ 911              		.syntax unified
+ 912              		.thumb
+ 913              		.thumb_func
+ 915              	stai_mnetwork_set_outputs:
+ 916              	.LFB460:
+ 380:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 381:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_API_ENTRY
+ 382:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_return_code stai_mnetwork_set_outputs(stai_ptr network, const stai_ptr* outputs)
+ 383:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** {
+ 917              		.loc 1 383 1
+ 918              		.cfi_startproc
+ 919              		@ args = 0, pretend = 0, frame = 16
+ 920              		@ frame_needed = 0, uses_anonymous_args = 0
+ 921 0000 00B5     		push	{lr}
+ 922              		.cfi_def_cfa_offset 4
+ 923              		.cfi_offset 14, -4
+ 924 0002 85B0     		sub	sp, sp, #20
+ 925              		.cfi_def_cfa_offset 24
+ 926 0004 0190     		str	r0, [sp, #4]
+ 927 0006 0091     		str	r1, [sp]
+ 384:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   struct network_instance *inn;
+ 385:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   stai_return_code stai_err = STAI_ERROR_NETWORK_INVALID_CONTEXT_HANDLE;
+ 928              		.loc 1 385 20
+ 929 0008 4FF44033 		mov	r3, #196608
+ 930 000c 0393     		str	r3, [sp, #12]
+ 386:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 387:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   inn = _stai_mnetwork_handle((struct network_instance *)network);
+ 931              		.loc 1 387 9
+ 932 000e 0198     		ldr	r0, [sp, #4]
+ 933 0010 FFF7FEFF 		bl	_stai_mnetwork_handle
+ 934 0014 0290     		str	r0, [sp, #8]
+ 388:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   if (inn) {
+ 935              		.loc 1 388 6
+ 936 0016 029B     		ldr	r3, [sp, #8]
+ 937 0018 002B     		cmp	r3, #0
+ 938 001a 0AD0     		beq	.L55
+ 389:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     stai_err = inn->entry->set_outputs(inn->handle, outputs, inn->entry->n_outputs);
+ 939              		.loc 1 389 19
+ 940 001c 029B     		ldr	r3, [sp, #8]
+ 941 001e 1B68     		ldr	r3, [r3]
+ 942              		.loc 1 389 26
+ 943 0020 1B6C     		ldr	r3, [r3, #64]
+ 944              		.loc 1 389 43
+ 945 0022 029A     		ldr	r2, [sp, #8]
+ 946 0024 5068     		ldr	r0, [r2, #4]
+ 947              		.loc 1 389 65
+ 948 0026 029A     		ldr	r2, [sp, #8]
+ 949 0028 1268     		ldr	r2, [r2]
+ 950              		.loc 1 389 72
+ 951 002a 126D     		ldr	r2, [r2, #80]
+ 952              		.loc 1 389 16
+ 953 002c 0099     		ldr	r1, [sp]
+ 954 002e 9847     		blx	r3
+ 955              	.LVL7:
+ 956 0030 0390     		str	r0, [sp, #12]
+ 957              	.L55:
+ 390:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   }
+ 391:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   return stai_err;
+ 958              		.loc 1 391 10
+ 959 0032 039B     		ldr	r3, [sp, #12]
+ 392:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** }
+ 960              		.loc 1 392 1
+ 961 0034 1846     		mov	r0, r3
+ 962 0036 05B0     		add	sp, sp, #20
+ 963              		.cfi_def_cfa_offset 4
+ 964              		@ sp needed
+ 965 0038 5DF804FB 		ldr	pc, [sp], #4
+ 966              		.cfi_endproc
+ 967              	.LFE460:
+ 969              		.section	.text.stai_mnetwork_set_callback,"ax",%progbits
+ 970              		.align	1
+ 971              		.p2align 4,,15
+ 972              		.global	stai_mnetwork_set_callback
+ 973              		.syntax unified
+ 974              		.thumb
+ 975              		.thumb_func
+ 977              	stai_mnetwork_set_callback:
+ 978              	.LFB461:
+ 393:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 394:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_API_ENTRY
+ 395:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_return_code stai_mnetwork_set_callback(stai_ptr network, const stai_event_cb cb, void* cb_cook
+ 396:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** {
+ 979              		.loc 1 396 1
+ 980              		.cfi_startproc
+ 981              		@ args = 0, pretend = 0, frame = 24
+ 982              		@ frame_needed = 0, uses_anonymous_args = 0
+ 983 0000 00B5     		push	{lr}
+ 984              		.cfi_def_cfa_offset 4
+ 985              		.cfi_offset 14, -4
+ 986 0002 87B0     		sub	sp, sp, #28
+ 987              		.cfi_def_cfa_offset 32
+ 988 0004 0390     		str	r0, [sp, #12]
+ 989 0006 0291     		str	r1, [sp, #8]
+ 990 0008 0192     		str	r2, [sp, #4]
+ 397:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   struct network_instance *inn;
+ 398:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   stai_return_code stai_err = STAI_ERROR_NETWORK_INVALID_CONTEXT_HANDLE;
+ 991              		.loc 1 398 20
+ 992 000a 4FF44033 		mov	r3, #196608
+ 993 000e 0593     		str	r3, [sp, #20]
+ 399:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 400:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   inn = _stai_mnetwork_handle((struct network_instance *)network);
+ 994              		.loc 1 400 9
+ 995 0010 0398     		ldr	r0, [sp, #12]
+ 996 0012 FFF7FEFF 		bl	_stai_mnetwork_handle
+ 997 0016 0490     		str	r0, [sp, #16]
+ 401:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   if (inn) {
+ 998              		.loc 1 401 6
+ 999 0018 049B     		ldr	r3, [sp, #16]
+ 1000 001a 002B     		cmp	r3, #0
+ 1001 001c 08D0     		beq	.L58
+ 402:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     stai_err = inn->entry->set_callback(inn->handle, cb, cb_cookie);
+ 1002              		.loc 1 402 19
+ 1003 001e 049B     		ldr	r3, [sp, #16]
+ 1004 0020 1B68     		ldr	r3, [r3]
+ 1005              		.loc 1 402 26
+ 1006 0022 5B6C     		ldr	r3, [r3, #68]
+ 1007              		.loc 1 402 44
+ 1008 0024 049A     		ldr	r2, [sp, #16]
+ 1009 0026 5068     		ldr	r0, [r2, #4]
+ 1010              		.loc 1 402 16
+ 1011 0028 019A     		ldr	r2, [sp, #4]
+ 1012 002a 0299     		ldr	r1, [sp, #8]
+ 1013 002c 9847     		blx	r3
+ 1014              	.LVL8:
+ 1015 002e 0590     		str	r0, [sp, #20]
+ 1016              	.L58:
+ 403:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   }
+ 404:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   return stai_err;
+ 1017              		.loc 1 404 10
+ 1018 0030 059B     		ldr	r3, [sp, #20]
+ 405:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** }
+ 1019              		.loc 1 405 1
+ 1020 0032 1846     		mov	r0, r3
+ 1021 0034 07B0     		add	sp, sp, #28
+ 1022              		.cfi_def_cfa_offset 4
+ 1023              		@ sp needed
+ 1024 0036 5DF804FB 		ldr	pc, [sp], #4
+ 1025              		.cfi_endproc
+ 1026              	.LFE461:
+ 1028 003a 00BF     		.section	.text.stai_mnetwork_get_details,"ax",%progbits
+ 1029              		.align	1
+ 1030              		.p2align 4,,15
+ 1031              		.global	stai_mnetwork_get_details
+ 1032              		.syntax unified
+ 1033              		.thumb
+ 1034              		.thumb_func
+ 1036              	stai_mnetwork_get_details:
+ 1037              	.LFB462:
+ 406:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 407:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_API_ENTRY
+ 408:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** const stai_network_details *stai_mnetwork_get_details(stai_ptr network)
+ 409:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** {
+ 1038              		.loc 1 409 1
+ 1039              		.cfi_startproc
+ 1040              		@ args = 0, pretend = 0, frame = 16
+ 1041              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1042 0000 00B5     		push	{lr}
+ 1043              		.cfi_def_cfa_offset 4
+ 1044              		.cfi_offset 14, -4
+ 1045 0002 85B0     		sub	sp, sp, #20
+ 1046              		.cfi_def_cfa_offset 24
+ 1047 0004 0190     		str	r0, [sp, #4]
+ 410:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   struct network_instance *inn;
+ 411:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 412:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   inn = _stai_mnetwork_handle((struct network_instance *)network);
+ 1048              		.loc 1 412 9
+ 1049 0006 0198     		ldr	r0, [sp, #4]
+ 1050 0008 FFF7FEFF 		bl	_stai_mnetwork_handle
+ 1051 000c 0390     		str	r0, [sp, #12]
+ 413:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   if (inn) {
+ 1052              		.loc 1 413 6
+ 1053 000e 039B     		ldr	r3, [sp, #12]
+ 1054 0010 002B     		cmp	r3, #0
+ 1055 0012 03D0     		beq	.L61
+ 414:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     return inn->entry->details;
+ 1056              		.loc 1 414 15
+ 1057 0014 039B     		ldr	r3, [sp, #12]
+ 1058 0016 1B68     		ldr	r3, [r3]
+ 1059              		.loc 1 414 22
+ 1060 0018 5B6E     		ldr	r3, [r3, #100]
+ 1061 001a 00E0     		b	.L62
+ 1062              	.L61:
+ 415:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   }
+ 416:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   return NULL;
+ 1063              		.loc 1 416 10
+ 1064 001c 0023     		movs	r3, #0
+ 1065              	.L62:
+ 417:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** }
+ 1066              		.loc 1 417 1
+ 1067 001e 1846     		mov	r0, r3
+ 1068 0020 05B0     		add	sp, sp, #20
+ 1069              		.cfi_def_cfa_offset 4
+ 1070              		@ sp needed
+ 1071 0022 5DF804FB 		ldr	pc, [sp], #4
+ 1072              		.cfi_endproc
+ 1073              	.LFE462:
+ 1075 0026 00BF     		.section	.text.stai_mnetwork_get_activations,"ax",%progbits
+ 1076              		.align	1
+ 1077              		.p2align 4,,15
+ 1078              		.global	stai_mnetwork_get_activations
+ 1079              		.syntax unified
+ 1080              		.thumb
+ 1081              		.thumb_func
+ 1083              	stai_mnetwork_get_activations:
+ 1084              	.LFB463:
+ 418:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 419:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_API_ENTRY
+ 420:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_return_code stai_mnetwork_get_activations(stai_ptr network, stai_ptr* activations)
+ 421:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** {
+ 1085              		.loc 1 421 1
+ 1086              		.cfi_startproc
+ 1087              		@ args = 0, pretend = 0, frame = 24
+ 1088              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1089 0000 00B5     		push	{lr}
+ 1090              		.cfi_def_cfa_offset 4
+ 1091              		.cfi_offset 14, -4
+ 1092 0002 87B0     		sub	sp, sp, #28
+ 1093              		.cfi_def_cfa_offset 32
+ 1094 0004 0190     		str	r0, [sp, #4]
+ 1095 0006 0091     		str	r1, [sp]
+ 422:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   struct network_instance *inn;
+ 423:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   stai_return_code stai_err = STAI_ERROR_NETWORK_INVALID_CONTEXT_HANDLE;
+ 1096              		.loc 1 423 20
+ 1097 0008 4FF44033 		mov	r3, #196608
+ 1098 000c 0593     		str	r3, [sp, #20]
+ 424:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 425:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   inn = _stai_mnetwork_handle((struct network_instance *)network);
+ 1099              		.loc 1 425 9
+ 1100 000e 0198     		ldr	r0, [sp, #4]
+ 1101 0010 FFF7FEFF 		bl	_stai_mnetwork_handle
+ 1102 0014 0490     		str	r0, [sp, #16]
+ 426:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   if (inn) {
+ 1103              		.loc 1 426 6
+ 1104 0016 049B     		ldr	r3, [sp, #16]
+ 1105 0018 002B     		cmp	r3, #0
+ 1106 001a 08D0     		beq	.L64
+ 1107              	.LBB8:
+ 427:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     stai_size tmp_;
+ 428:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     stai_err = inn->entry->get_activations(inn->handle, activations, &tmp_);
+ 1108              		.loc 1 428 19
+ 1109 001c 049B     		ldr	r3, [sp, #16]
+ 1110 001e 1B68     		ldr	r3, [r3]
+ 1111              		.loc 1 428 26
+ 1112 0020 DB69     		ldr	r3, [r3, #28]
+ 1113              		.loc 1 428 47
+ 1114 0022 049A     		ldr	r2, [sp, #16]
+ 1115 0024 5068     		ldr	r0, [r2, #4]
+ 1116              		.loc 1 428 16
+ 1117 0026 03AA     		add	r2, sp, #12
+ 1118 0028 0099     		ldr	r1, [sp]
+ 1119 002a 9847     		blx	r3
+ 1120              	.LVL9:
+ 1121 002c 0590     		str	r0, [sp, #20]
+ 1122              	.L64:
+ 1123              	.LBE8:
+ 429:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   }
+ 430:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   return stai_err;
+ 1124              		.loc 1 430 10
+ 1125 002e 059B     		ldr	r3, [sp, #20]
+ 431:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** }
+ 1126              		.loc 1 431 1
+ 1127 0030 1846     		mov	r0, r3
+ 1128 0032 07B0     		add	sp, sp, #28
+ 1129              		.cfi_def_cfa_offset 4
+ 1130              		@ sp needed
+ 1131 0034 5DF804FB 		ldr	pc, [sp], #4
+ 1132              		.cfi_endproc
+ 1133              	.LFE463:
+ 1135              		.section	.text.stai_mnetwork_get_states,"ax",%progbits
+ 1136              		.align	1
+ 1137              		.p2align 4,,15
+ 1138              		.global	stai_mnetwork_get_states
+ 1139              		.syntax unified
+ 1140              		.thumb
+ 1141              		.thumb_func
+ 1143              	stai_mnetwork_get_states:
+ 1144              	.LFB464:
+ 432:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 433:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_API_ENTRY
+ 434:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_return_code stai_mnetwork_get_states(stai_ptr network, stai_ptr* states)
+ 435:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** {
+ 1145              		.loc 1 435 1
+ 1146              		.cfi_startproc
+ 1147              		@ args = 0, pretend = 0, frame = 24
+ 1148              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1149 0000 00B5     		push	{lr}
+ 1150              		.cfi_def_cfa_offset 4
+ 1151              		.cfi_offset 14, -4
+ 1152 0002 87B0     		sub	sp, sp, #28
+ 1153              		.cfi_def_cfa_offset 32
+ 1154 0004 0190     		str	r0, [sp, #4]
+ 1155 0006 0091     		str	r1, [sp]
+ 436:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   struct network_instance *inn;
+ 437:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   stai_return_code stai_err = STAI_ERROR_NETWORK_INVALID_CONTEXT_HANDLE;
+ 1156              		.loc 1 437 20
+ 1157 0008 4FF44033 		mov	r3, #196608
+ 1158 000c 0593     		str	r3, [sp, #20]
+ 438:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 439:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   inn = _stai_mnetwork_handle((struct network_instance *)network);
+ 1159              		.loc 1 439 9
+ 1160 000e 0198     		ldr	r0, [sp, #4]
+ 1161 0010 FFF7FEFF 		bl	_stai_mnetwork_handle
+ 1162 0014 0490     		str	r0, [sp, #16]
+ 440:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   if (inn) {
+ 1163              		.loc 1 440 6
+ 1164 0016 049B     		ldr	r3, [sp, #16]
+ 1165 0018 002B     		cmp	r3, #0
+ 1166 001a 08D0     		beq	.L67
+ 1167              	.LBB9:
+ 441:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     stai_size tmp_;
+ 442:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     stai_err = inn->entry->get_states(inn->handle, states, &tmp_);
+ 1168              		.loc 1 442 19
+ 1169 001c 049B     		ldr	r3, [sp, #16]
+ 1170 001e 1B68     		ldr	r3, [r3]
+ 1171              		.loc 1 442 26
+ 1172 0020 1B6A     		ldr	r3, [r3, #32]
+ 1173              		.loc 1 442 42
+ 1174 0022 049A     		ldr	r2, [sp, #16]
+ 1175 0024 5068     		ldr	r0, [r2, #4]
+ 1176              		.loc 1 442 16
+ 1177 0026 03AA     		add	r2, sp, #12
+ 1178 0028 0099     		ldr	r1, [sp]
+ 1179 002a 9847     		blx	r3
+ 1180              	.LVL10:
+ 1181 002c 0590     		str	r0, [sp, #20]
+ 1182              	.L67:
+ 1183              	.LBE9:
+ 443:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   }
+ 444:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   return stai_err;
+ 1184              		.loc 1 444 10
+ 1185 002e 059B     		ldr	r3, [sp, #20]
+ 445:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** }
+ 1186              		.loc 1 445 1
+ 1187 0030 1846     		mov	r0, r3
+ 1188 0032 07B0     		add	sp, sp, #28
+ 1189              		.cfi_def_cfa_offset 4
+ 1190              		@ sp needed
+ 1191 0034 5DF804FB 		ldr	pc, [sp], #4
+ 1192              		.cfi_endproc
+ 1193              	.LFE464:
+ 1195              		.section	.text.stai_mnetwork_get_weights,"ax",%progbits
+ 1196              		.align	1
+ 1197              		.p2align 4,,15
+ 1198              		.global	stai_mnetwork_get_weights
+ 1199              		.syntax unified
+ 1200              		.thumb
+ 1201              		.thumb_func
+ 1203              	stai_mnetwork_get_weights:
+ 1204              	.LFB465:
+ 446:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 447:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_API_ENTRY
+ 448:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_return_code stai_mnetwork_get_weights(stai_ptr network, stai_ptr* weights)
+ 449:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** {
+ 1205              		.loc 1 449 1
+ 1206              		.cfi_startproc
+ 1207              		@ args = 0, pretend = 0, frame = 24
+ 1208              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1209 0000 00B5     		push	{lr}
+ 1210              		.cfi_def_cfa_offset 4
+ 1211              		.cfi_offset 14, -4
+ 1212 0002 87B0     		sub	sp, sp, #28
+ 1213              		.cfi_def_cfa_offset 32
+ 1214 0004 0190     		str	r0, [sp, #4]
+ 1215 0006 0091     		str	r1, [sp]
+ 450:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   struct network_instance *inn;
+ 451:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   stai_return_code stai_err = STAI_ERROR_NETWORK_INVALID_CONTEXT_HANDLE;
+ 1216              		.loc 1 451 20
+ 1217 0008 4FF44033 		mov	r3, #196608
+ 1218 000c 0593     		str	r3, [sp, #20]
+ 452:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 453:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   inn = _stai_mnetwork_handle((struct network_instance *)network);
+ 1219              		.loc 1 453 9
+ 1220 000e 0198     		ldr	r0, [sp, #4]
+ 1221 0010 FFF7FEFF 		bl	_stai_mnetwork_handle
+ 1222 0014 0490     		str	r0, [sp, #16]
+ 454:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   if (inn) {
+ 1223              		.loc 1 454 6
+ 1224 0016 049B     		ldr	r3, [sp, #16]
+ 1225 0018 002B     		cmp	r3, #0
+ 1226 001a 08D0     		beq	.L70
+ 1227              	.LBB10:
+ 455:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     stai_size tmp_;
+ 456:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     stai_err = inn->entry->get_weights(inn->handle, weights, &tmp_);
+ 1228              		.loc 1 456 19
+ 1229 001c 049B     		ldr	r3, [sp, #16]
+ 1230 001e 1B68     		ldr	r3, [r3]
+ 1231              		.loc 1 456 26
+ 1232 0020 5B6A     		ldr	r3, [r3, #36]
+ 1233              		.loc 1 456 43
+ 1234 0022 049A     		ldr	r2, [sp, #16]
+ 1235 0024 5068     		ldr	r0, [r2, #4]
+ 1236              		.loc 1 456 16
+ 1237 0026 03AA     		add	r2, sp, #12
+ 1238 0028 0099     		ldr	r1, [sp]
+ 1239 002a 9847     		blx	r3
+ 1240              	.LVL11:
+ 1241 002c 0590     		str	r0, [sp, #20]
+ 1242              	.L70:
+ 1243              	.LBE10:
+ 457:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   }
+ 458:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   return stai_err;
+ 1244              		.loc 1 458 10
+ 1245 002e 059B     		ldr	r3, [sp, #20]
+ 459:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** }
+ 1246              		.loc 1 459 1
+ 1247 0030 1846     		mov	r0, r3
+ 1248 0032 07B0     		add	sp, sp, #28
+ 1249              		.cfi_def_cfa_offset 4
+ 1250              		@ sp needed
+ 1251 0034 5DF804FB 		ldr	pc, [sp], #4
+ 1252              		.cfi_endproc
+ 1253              	.LFE465:
+ 1255              		.section	.text.stai_mnetwork_get_weights_ext,"ax",%progbits
+ 1256              		.align	1
+ 1257              		.p2align 4,,15
+ 1258              		.global	stai_mnetwork_get_weights_ext
+ 1259              		.syntax unified
+ 1260              		.thumb
+ 1261              		.thumb_func
+ 1263              	stai_mnetwork_get_weights_ext:
+ 1264              	.LFB466:
+ 460:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 461:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_API_ENTRY
+ 462:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_ptr *stai_mnetwork_get_weights_ext(stai_ptr network)
+ 463:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** {
+ 1265              		.loc 1 463 1
+ 1266              		.cfi_startproc
+ 1267              		@ args = 0, pretend = 0, frame = 16
+ 1268              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1269 0000 00B5     		push	{lr}
+ 1270              		.cfi_def_cfa_offset 4
+ 1271              		.cfi_offset 14, -4
+ 1272 0002 85B0     		sub	sp, sp, #20
+ 1273              		.cfi_def_cfa_offset 24
+ 1274 0004 0190     		str	r0, [sp, #4]
+ 464:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   struct network_instance *inn;
+ 465:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 466:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   inn = _stai_mnetwork_handle((struct network_instance *)network);
+ 1275              		.loc 1 466 9
+ 1276 0006 0198     		ldr	r0, [sp, #4]
+ 1277 0008 FFF7FEFF 		bl	_stai_mnetwork_handle
+ 1278 000c 0390     		str	r0, [sp, #12]
+ 467:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   if (inn) {
+ 1279              		.loc 1 467 6
+ 1280 000e 039B     		ldr	r3, [sp, #12]
+ 1281 0010 002B     		cmp	r3, #0
+ 1282 0012 03D0     		beq	.L73
+ 468:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     return (stai_ptr *)inn->entry->weights_addr;
+ 1283              		.loc 1 468 27
+ 1284 0014 039B     		ldr	r3, [sp, #12]
+ 1285 0016 1B68     		ldr	r3, [r3]
+ 1286              		.loc 1 468 12
+ 1287 0018 1B6E     		ldr	r3, [r3, #96]
+ 1288 001a 00E0     		b	.L74
+ 1289              	.L73:
+ 469:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   }
+ 470:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   return NULL;
+ 1290              		.loc 1 470 10
+ 1291 001c 0023     		movs	r3, #0
+ 1292              	.L74:
+ 471:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** }
+ 1293              		.loc 1 471 1
+ 1294 001e 1846     		mov	r0, r3
+ 1295 0020 05B0     		add	sp, sp, #20
+ 1296              		.cfi_def_cfa_offset 4
+ 1297              		@ sp needed
+ 1298 0022 5DF804FB 		ldr	pc, [sp], #4
+ 1299              		.cfi_endproc
+ 1300              	.LFE466:
+ 1302 0026 00BF     		.section	.text.stai_mnetwork_get_inputs,"ax",%progbits
+ 1303              		.align	1
+ 1304              		.p2align 4,,15
+ 1305              		.global	stai_mnetwork_get_inputs
+ 1306              		.syntax unified
+ 1307              		.thumb
+ 1308              		.thumb_func
+ 1310              	stai_mnetwork_get_inputs:
+ 1311              	.LFB467:
+ 472:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 473:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_API_ENTRY
+ 474:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_return_code stai_mnetwork_get_inputs(stai_ptr network, stai_ptr* inputs)
+ 475:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** {
+ 1312              		.loc 1 475 1
+ 1313              		.cfi_startproc
+ 1314              		@ args = 0, pretend = 0, frame = 24
+ 1315              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1316 0000 00B5     		push	{lr}
+ 1317              		.cfi_def_cfa_offset 4
+ 1318              		.cfi_offset 14, -4
+ 1319 0002 87B0     		sub	sp, sp, #28
+ 1320              		.cfi_def_cfa_offset 32
+ 1321 0004 0190     		str	r0, [sp, #4]
+ 1322 0006 0091     		str	r1, [sp]
+ 476:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   struct network_instance *inn;
+ 477:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   stai_return_code stai_err = STAI_ERROR_NETWORK_INVALID_CONTEXT_HANDLE;
+ 1323              		.loc 1 477 20
+ 1324 0008 4FF44033 		mov	r3, #196608
+ 1325 000c 0593     		str	r3, [sp, #20]
+ 478:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 479:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   inn = _stai_mnetwork_handle((struct network_instance *)network);
+ 1326              		.loc 1 479 9
+ 1327 000e 0198     		ldr	r0, [sp, #4]
+ 1328 0010 FFF7FEFF 		bl	_stai_mnetwork_handle
+ 1329 0014 0490     		str	r0, [sp, #16]
+ 480:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   if (inn) {
+ 1330              		.loc 1 480 6
+ 1331 0016 049B     		ldr	r3, [sp, #16]
+ 1332 0018 002B     		cmp	r3, #0
+ 1333 001a 08D0     		beq	.L76
+ 1334              	.LBB11:
+ 481:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     stai_size tmp_;
+ 482:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     stai_err = inn->entry->get_inputs(inn->handle, inputs, &tmp_);
+ 1335              		.loc 1 482 19
+ 1336 001c 049B     		ldr	r3, [sp, #16]
+ 1337 001e 1B68     		ldr	r3, [r3]
+ 1338              		.loc 1 482 26
+ 1339 0020 9B6A     		ldr	r3, [r3, #40]
+ 1340              		.loc 1 482 42
+ 1341 0022 049A     		ldr	r2, [sp, #16]
+ 1342 0024 5068     		ldr	r0, [r2, #4]
+ 1343              		.loc 1 482 16
+ 1344 0026 03AA     		add	r2, sp, #12
+ 1345 0028 0099     		ldr	r1, [sp]
+ 1346 002a 9847     		blx	r3
+ 1347              	.LVL12:
+ 1348 002c 0590     		str	r0, [sp, #20]
+ 1349              	.L76:
+ 1350              	.LBE11:
+ 483:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   }
+ 484:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   return stai_err;
+ 1351              		.loc 1 484 10
+ 1352 002e 059B     		ldr	r3, [sp, #20]
+ 485:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** }
+ 1353              		.loc 1 485 1
+ 1354 0030 1846     		mov	r0, r3
+ 1355 0032 07B0     		add	sp, sp, #28
+ 1356              		.cfi_def_cfa_offset 4
+ 1357              		@ sp needed
+ 1358 0034 5DF804FB 		ldr	pc, [sp], #4
+ 1359              		.cfi_endproc
+ 1360              	.LFE467:
+ 1362              		.section	.text.stai_mnetwork_get_outputs,"ax",%progbits
+ 1363              		.align	1
+ 1364              		.p2align 4,,15
+ 1365              		.global	stai_mnetwork_get_outputs
+ 1366              		.syntax unified
+ 1367              		.thumb
+ 1368              		.thumb_func
+ 1370              	stai_mnetwork_get_outputs:
+ 1371              	.LFB468:
+ 486:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 487:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_API_ENTRY
+ 488:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_return_code stai_mnetwork_get_outputs(stai_ptr network, stai_ptr* outputs)
+ 489:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** {
+ 1372              		.loc 1 489 1
+ 1373              		.cfi_startproc
+ 1374              		@ args = 0, pretend = 0, frame = 24
+ 1375              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1376 0000 00B5     		push	{lr}
+ 1377              		.cfi_def_cfa_offset 4
+ 1378              		.cfi_offset 14, -4
+ 1379 0002 87B0     		sub	sp, sp, #28
+ 1380              		.cfi_def_cfa_offset 32
+ 1381 0004 0190     		str	r0, [sp, #4]
+ 1382 0006 0091     		str	r1, [sp]
+ 490:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   struct network_instance *inn;
+ 491:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   stai_return_code stai_err = STAI_ERROR_NETWORK_INVALID_CONTEXT_HANDLE;
+ 1383              		.loc 1 491 20
+ 1384 0008 4FF44033 		mov	r3, #196608
+ 1385 000c 0593     		str	r3, [sp, #20]
+ 492:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 493:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   inn = _stai_mnetwork_handle((struct network_instance *)network);
+ 1386              		.loc 1 493 9
+ 1387 000e 0198     		ldr	r0, [sp, #4]
+ 1388 0010 FFF7FEFF 		bl	_stai_mnetwork_handle
+ 1389 0014 0490     		str	r0, [sp, #16]
+ 494:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   if (inn) {
+ 1390              		.loc 1 494 6
+ 1391 0016 049B     		ldr	r3, [sp, #16]
+ 1392 0018 002B     		cmp	r3, #0
+ 1393 001a 08D0     		beq	.L79
+ 1394              	.LBB12:
+ 495:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     stai_size tmp_;
+ 496:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     stai_err = inn->entry->get_outputs(inn->handle, outputs, &tmp_);
+ 1395              		.loc 1 496 19
+ 1396 001c 049B     		ldr	r3, [sp, #16]
+ 1397 001e 1B68     		ldr	r3, [r3]
+ 1398              		.loc 1 496 26
+ 1399 0020 DB6A     		ldr	r3, [r3, #44]
+ 1400              		.loc 1 496 43
+ 1401 0022 049A     		ldr	r2, [sp, #16]
+ 1402 0024 5068     		ldr	r0, [r2, #4]
+ 1403              		.loc 1 496 16
+ 1404 0026 03AA     		add	r2, sp, #12
+ 1405 0028 0099     		ldr	r1, [sp]
+ 1406 002a 9847     		blx	r3
+ 1407              	.LVL13:
+ 1408 002c 0590     		str	r0, [sp, #20]
+ 1409              	.L79:
+ 1410              	.LBE12:
+ 497:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   }
+ 498:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   return stai_err;
+ 1411              		.loc 1 498 10
+ 1412 002e 059B     		ldr	r3, [sp, #20]
+ 499:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** }
+ 1413              		.loc 1 499 1
+ 1414 0030 1846     		mov	r0, r3
+ 1415 0032 07B0     		add	sp, sp, #28
+ 1416              		.cfi_def_cfa_offset 4
+ 1417              		@ sp needed
+ 1418 0034 5DF804FB 		ldr	pc, [sp], #4
+ 1419              		.cfi_endproc
+ 1420              	.LFE468:
+ 1422              		.section	.text.stai_mnetwork_deinit,"ax",%progbits
+ 1423              		.align	1
+ 1424              		.p2align 4,,15
+ 1425              		.global	stai_mnetwork_deinit
+ 1426              		.syntax unified
+ 1427              		.thumb
+ 1428              		.thumb_func
+ 1430              	stai_mnetwork_deinit:
+ 1431              	.LFB469:
+ 500:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 501:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 502:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_API_ENTRY
+ 503:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_return_code stai_mnetwork_deinit(stai_ptr network)
+ 504:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** {
+ 1432              		.loc 1 504 1
+ 1433              		.cfi_startproc
+ 1434              		@ args = 0, pretend = 0, frame = 16
+ 1435              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1436 0000 00B5     		push	{lr}
+ 1437              		.cfi_def_cfa_offset 4
+ 1438              		.cfi_offset 14, -4
+ 1439 0002 85B0     		sub	sp, sp, #20
+ 1440              		.cfi_def_cfa_offset 24
+ 1441 0004 0190     		str	r0, [sp, #4]
+ 505:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   struct network_instance *inn;
+ 506:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   stai_return_code stai_err = STAI_ERROR_NETWORK_INVALID_CONTEXT_HANDLE;
+ 1442              		.loc 1 506 20
+ 1443 0006 4FF44033 		mov	r3, #196608
+ 1444 000a 0393     		str	r3, [sp, #12]
+ 507:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 508:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   inn = _stai_mnetwork_handle((struct network_instance *)network);
+ 1445              		.loc 1 508 9
+ 1446 000c 0198     		ldr	r0, [sp, #4]
+ 1447 000e FFF7FEFF 		bl	_stai_mnetwork_handle
+ 1448 0012 0290     		str	r0, [sp, #8]
+ 509:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   if (inn) {
+ 1449              		.loc 1 509 6
+ 1450 0014 029B     		ldr	r3, [sp, #8]
+ 1451 0016 002B     		cmp	r3, #0
+ 1452 0018 0DD0     		beq	.L82
+ 510:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     stai_err = inn->entry->deinit(inn->handle);
+ 1453              		.loc 1 510 19
+ 1454 001a 029B     		ldr	r3, [sp, #8]
+ 1455 001c 1B68     		ldr	r3, [r3]
+ 1456              		.loc 1 510 26
+ 1457 001e DB68     		ldr	r3, [r3, #12]
+ 1458              		.loc 1 510 38
+ 1459 0020 029A     		ldr	r2, [sp, #8]
+ 1460 0022 5268     		ldr	r2, [r2, #4]
+ 1461              		.loc 1 510 16
+ 1462 0024 1046     		mov	r0, r2
+ 1463 0026 9847     		blx	r3
+ 1464              	.LVL14:
+ 1465 0028 0390     		str	r0, [sp, #12]
+ 511:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     if (stai_err == STAI_SUCCESS) {
+ 1466              		.loc 1 511 8
+ 1467 002a 039B     		ldr	r3, [sp, #12]
+ 1468 002c 002B     		cmp	r3, #0
+ 1469 002e 02D1     		bne	.L82
+ 512:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****       _stai_mnetwork_release_handle(inn);
+ 1470              		.loc 1 512 7
+ 1471 0030 0298     		ldr	r0, [sp, #8]
+ 1472 0032 FFF7FEFF 		bl	_stai_mnetwork_release_handle
+ 1473              	.L82:
+ 513:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     }
+ 514:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   }
+ 515:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   return stai_err;
+ 1474              		.loc 1 515 10
+ 1475 0036 039B     		ldr	r3, [sp, #12]
+ 516:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** }
+ 1476              		.loc 1 516 1
+ 1477 0038 1846     		mov	r0, r3
+ 1478 003a 05B0     		add	sp, sp, #20
+ 1479              		.cfi_def_cfa_offset 4
+ 1480              		@ sp needed
+ 1481 003c 5DF804FB 		ldr	pc, [sp], #4
+ 1482              		.cfi_endproc
+ 1483              	.LFE469:
+ 1485              		.section	.text.stai_mnetwork_get_info,"ax",%progbits
+ 1486              		.align	1
+ 1487              		.p2align 4,,15
+ 1488              		.global	stai_mnetwork_get_info
+ 1489              		.syntax unified
+ 1490              		.thumb
+ 1491              		.thumb_func
+ 1493              	stai_mnetwork_get_info:
+ 1494              	.LFB470:
+ 517:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 518:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_API_ENTRY
+ 519:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_return_code stai_mnetwork_get_info(stai_ptr network, stai_network_info* report)
+ 520:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** {
+ 1495              		.loc 1 520 1
+ 1496              		.cfi_startproc
+ 1497              		@ args = 0, pretend = 0, frame = 16
+ 1498              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1499 0000 00B5     		push	{lr}
+ 1500              		.cfi_def_cfa_offset 4
+ 1501              		.cfi_offset 14, -4
+ 1502 0002 85B0     		sub	sp, sp, #20
+ 1503              		.cfi_def_cfa_offset 24
+ 1504 0004 0190     		str	r0, [sp, #4]
+ 1505 0006 0091     		str	r1, [sp]
+ 521:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   struct network_instance *inn;
+ 522:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   stai_return_code stai_err = STAI_ERROR_NETWORK_INVALID_CONTEXT_HANDLE;
+ 1506              		.loc 1 522 20
+ 1507 0008 4FF44033 		mov	r3, #196608
+ 1508 000c 0393     		str	r3, [sp, #12]
+ 523:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 524:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   inn = _stai_mnetwork_handle((struct network_instance *)network);
+ 1509              		.loc 1 524 9
+ 1510 000e 0198     		ldr	r0, [sp, #4]
+ 1511 0010 FFF7FEFF 		bl	_stai_mnetwork_handle
+ 1512 0014 0290     		str	r0, [sp, #8]
+ 525:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   if (inn) {
+ 1513              		.loc 1 525 6
+ 1514 0016 029B     		ldr	r3, [sp, #8]
+ 1515 0018 002B     		cmp	r3, #0
+ 1516 001a 09D0     		beq	.L85
+ 526:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     return inn->entry->get_info(inn->handle, report);
+ 1517              		.loc 1 526 15
+ 1518 001c 029B     		ldr	r3, [sp, #8]
+ 1519 001e 1B68     		ldr	r3, [r3]
+ 1520              		.loc 1 526 22
+ 1521 0020 5B69     		ldr	r3, [r3, #20]
+ 1522              		.loc 1 526 36
+ 1523 0022 029A     		ldr	r2, [sp, #8]
+ 1524 0024 5268     		ldr	r2, [r2, #4]
+ 1525              		.loc 1 526 12
+ 1526 0026 0099     		ldr	r1, [sp]
+ 1527 0028 1046     		mov	r0, r2
+ 1528 002a 9847     		blx	r3
+ 1529              	.LVL15:
+ 1530 002c 0346     		mov	r3, r0
+ 1531 002e 00E0     		b	.L86
+ 1532              	.L85:
+ 527:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   }
+ 528:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   return stai_err;
+ 1533              		.loc 1 528 10
+ 1534 0030 039B     		ldr	r3, [sp, #12]
+ 1535              	.L86:
+ 529:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** }
+ 1536              		.loc 1 529 1
+ 1537 0032 1846     		mov	r0, r3
+ 1538 0034 05B0     		add	sp, sp, #20
+ 1539              		.cfi_def_cfa_offset 4
+ 1540              		@ sp needed
+ 1541 0036 5DF804FB 		ldr	pc, [sp], #4
+ 1542              		.cfi_endproc
+ 1543              	.LFE470:
+ 1545 003a 00BF     		.section	.text.stai_mnetwork_get_error,"ax",%progbits
+ 1546              		.align	1
+ 1547              		.p2align 4,,15
+ 1548              		.global	stai_mnetwork_get_error
+ 1549              		.syntax unified
+ 1550              		.thumb
+ 1551              		.thumb_func
+ 1553              	stai_mnetwork_get_error:
+ 1554              	.LFB471:
+ 530:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 531:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_API_ENTRY
+ 532:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_return_code stai_mnetwork_get_error(stai_ptr network)
+ 533:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** {
+ 1555              		.loc 1 533 1
+ 1556              		.cfi_startproc
+ 1557              		@ args = 0, pretend = 0, frame = 16
+ 1558              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1559 0000 00B5     		push	{lr}
+ 1560              		.cfi_def_cfa_offset 4
+ 1561              		.cfi_offset 14, -4
+ 1562 0002 85B0     		sub	sp, sp, #20
+ 1563              		.cfi_def_cfa_offset 24
+ 1564 0004 0190     		str	r0, [sp, #4]
+ 534:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   struct network_instance *inn;
+ 535:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   stai_return_code stai_err = STAI_ERROR_NETWORK_INVALID_CONTEXT_HANDLE;
+ 1565              		.loc 1 535 20
+ 1566 0006 4FF44033 		mov	r3, #196608
+ 1567 000a 0393     		str	r3, [sp, #12]
+ 536:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 537:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   inn = _stai_mnetwork_handle((struct network_instance *)network);
+ 1568              		.loc 1 537 9
+ 1569 000c 0198     		ldr	r0, [sp, #4]
+ 1570 000e FFF7FEFF 		bl	_stai_mnetwork_handle
+ 1571 0012 0290     		str	r0, [sp, #8]
+ 538:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   if (inn) {
+ 1572              		.loc 1 538 6
+ 1573 0014 029B     		ldr	r3, [sp, #8]
+ 1574 0016 002B     		cmp	r3, #0
+ 1575 0018 08D0     		beq	.L88
+ 539:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     return inn->entry->get_error(inn->handle);
+ 1576              		.loc 1 539 15
+ 1577 001a 029B     		ldr	r3, [sp, #8]
+ 1578 001c 1B68     		ldr	r3, [r3]
+ 1579              		.loc 1 539 22
+ 1580 001e 9B69     		ldr	r3, [r3, #24]
+ 1581              		.loc 1 539 37
+ 1582 0020 029A     		ldr	r2, [sp, #8]
+ 1583 0022 5268     		ldr	r2, [r2, #4]
+ 1584              		.loc 1 539 12
+ 1585 0024 1046     		mov	r0, r2
+ 1586 0026 9847     		blx	r3
+ 1587              	.LVL16:
+ 1588 0028 0346     		mov	r3, r0
+ 1589 002a 00E0     		b	.L89
+ 1590              	.L88:
+ 540:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   }
+ 541:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   return stai_err;
+ 1591              		.loc 1 541 10
+ 1592 002c 039B     		ldr	r3, [sp, #12]
+ 1593              	.L89:
+ 542:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** }
+ 1594              		.loc 1 542 1
+ 1595 002e 1846     		mov	r0, r3
+ 1596 0030 05B0     		add	sp, sp, #20
+ 1597              		.cfi_def_cfa_offset 4
+ 1598              		@ sp needed
+ 1599 0032 5DF804FB 		ldr	pc, [sp], #4
+ 1600              		.cfi_endproc
+ 1601              	.LFE471:
+ 1603 0036 00BF     		.section	.text.stai_mnetwork_run,"ax",%progbits
+ 1604              		.align	1
+ 1605              		.p2align 4,,15
+ 1606              		.global	stai_mnetwork_run
+ 1607              		.syntax unified
+ 1608              		.thumb
+ 1609              		.thumb_func
+ 1611              	stai_mnetwork_run:
+ 1612              	.LFB472:
+ 543:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 544:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** STAI_API_ENTRY
+ 545:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** stai_return_code stai_mnetwork_run(stai_ptr network)
+ 546:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** {
+ 1613              		.loc 1 546 1
+ 1614              		.cfi_startproc
+ 1615              		@ args = 0, pretend = 0, frame = 16
+ 1616              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1617 0000 00B5     		push	{lr}
+ 1618              		.cfi_def_cfa_offset 4
+ 1619              		.cfi_offset 14, -4
+ 1620 0002 85B0     		sub	sp, sp, #20
+ 1621              		.cfi_def_cfa_offset 24
+ 1622 0004 0190     		str	r0, [sp, #4]
+ 547:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   struct network_instance* inn;
+ 548:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   stai_return_code stai_err = STAI_ERROR_NETWORK_INVALID_CONTEXT_HANDLE;
+ 1623              		.loc 1 548 20
+ 1624 0006 4FF44033 		mov	r3, #196608
+ 1625 000a 0393     		str	r3, [sp, #12]
+ 549:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** 
+ 550:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   inn = _stai_mnetwork_handle((struct network_instance *)network);
+ 1626              		.loc 1 550 9
+ 1627 000c 0198     		ldr	r0, [sp, #4]
+ 1628 000e FFF7FEFF 		bl	_stai_mnetwork_handle
+ 1629 0012 0290     		str	r0, [sp, #8]
+ 551:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   if (inn) {
+ 1630              		.loc 1 551 6
+ 1631 0014 029B     		ldr	r3, [sp, #8]
+ 1632 0016 002B     		cmp	r3, #0
+ 1633 0018 09D0     		beq	.L91
+ 552:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****     return inn->entry->run(inn->handle, STAI_MODE_SYNC);
+ 1634              		.loc 1 552 15
+ 1635 001a 029B     		ldr	r3, [sp, #8]
+ 1636 001c 1B68     		ldr	r3, [r3]
+ 1637              		.loc 1 552 22
+ 1638 001e 1B69     		ldr	r3, [r3, #16]
+ 1639              		.loc 1 552 31
+ 1640 0020 029A     		ldr	r2, [sp, #8]
+ 1641 0022 5268     		ldr	r2, [r2, #4]
+ 1642              		.loc 1 552 12
+ 1643 0024 0121     		movs	r1, #1
+ 1644 0026 1046     		mov	r0, r2
+ 1645 0028 9847     		blx	r3
+ 1646              	.LVL17:
+ 1647 002a 0346     		mov	r3, r0
+ 1648 002c 00E0     		b	.L92
+ 1649              	.L91:
+ 553:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   }
+ 554:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c ****   return stai_err;
+ 1650              		.loc 1 554 10
+ 1651 002e 039B     		ldr	r3, [sp, #12]
+ 1652              	.L92:
+ 555:SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.c **** }
+ 1653              		.loc 1 555 1
+ 1654 0030 1846     		mov	r0, r3
+ 1655 0032 05B0     		add	sp, sp, #20
+ 1656              		.cfi_def_cfa_offset 4
+ 1657              		@ sp needed
+ 1658 0034 5DF804FB 		ldr	pc, [sp], #4
+ 1659              		.cfi_endproc
+ 1660              	.LFE472:
+ 1662              		.text
+ 1663              	.Letext0:
+ 1664              		.file 2 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/lib/gcc/arm-none-
+ 1665              		.file 3 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
+ 1666              		.file 4 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
+ 1667              		.file 5 "SR5E1_AI_Demo_7000P/lib/ai/inc/stai.h"
+ 1668              		.file 6 "SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.h"
+ 1669              		.file 7 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
+ 1670              		.file 8 "SR5E1_AI_Demo_7000P/cfg/inc/network.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 app_stellar-studio-ai.c
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:20     .bss.data_in_1:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:23     .bss.data_in_1:00000000 data_in_1
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:30     .data.data_ins:00000000 data_ins
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:27     .data.data_ins:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:33     .bss.data_out_1:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:36     .bss.data_out_1:00000000 data_out_1
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:43     .data.data_outs:00000000 data_outs
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:40     .data.data_outs:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:46     .bss.activations_1:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:49     .bss.activations_1:00000000 activations_1
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:56     .data.data_activations:00000000 data_activations
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:53     .data.data_activations:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:59     .bss.states_1:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:62     .bss.states_1:00000000 states_1
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:69     .data.data_states:00000000 data_states
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:66     .data.data_states:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:76     .bss._context_network:00000000 _context_network
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:73     .bss._context_network:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:83     .bss.stai_network_weights_addr:00000000 stai_network_weights_addr
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:80     .bss.stai_network_weights_addr:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:86     .rodata:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:90     .rodata.networks:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:93     .rodata.networks:00000000 networks
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:121    .bss.gnetworks:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:124    .bss.gnetworks:00000000 gnetworks
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:127    .text._stai_mnetwork_is_valid:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:133    .text._stai_mnetwork_is_valid:00000000 _stai_mnetwork_is_valid
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:201    .text._stai_mnetwork_handle:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:207    .text._stai_mnetwork_handle:00000000 _stai_mnetwork_handle
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:281    .text._stai_mnetwork_handle:00000054 $d
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:286    .text._stai_mnetwork_release_handle:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:292    .text._stai_mnetwork_release_handle:00000000 _stai_mnetwork_release_handle
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:349    .text._stai_mnetwork_release_handle:0000003c $d
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:354    .text.stai_mnetwork_get_internal_handle:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:361    .text.stai_mnetwork_get_internal_handle:00000000 stai_mnetwork_get_internal_handle
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:399    .text.stai_mnetwork_find:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:406    .text.stai_mnetwork_find:00000000 stai_mnetwork_find
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:480    .text.stai_mnetwork_find:00000058 $d
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:485    .text.stai_mnetwork_init:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:492    .text.stai_mnetwork_init:00000000 stai_mnetwork_init
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:636    .text.stai_mnetwork_init:000000b4 $d
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:641    .text.stai_mnetwork_set_activations:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:648    .text.stai_mnetwork_set_activations:00000000 stai_mnetwork_set_activations
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:703    .text.stai_mnetwork_set_states:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:710    .text.stai_mnetwork_set_states:00000000 stai_mnetwork_set_states
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:765    .text.stai_mnetwork_set_weights:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:772    .text.stai_mnetwork_set_weights:00000000 stai_mnetwork_set_weights
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:846    .text.stai_mnetwork_set_inputs:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:853    .text.stai_mnetwork_set_inputs:00000000 stai_mnetwork_set_inputs
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:908    .text.stai_mnetwork_set_outputs:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:915    .text.stai_mnetwork_set_outputs:00000000 stai_mnetwork_set_outputs
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:970    .text.stai_mnetwork_set_callback:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:977    .text.stai_mnetwork_set_callback:00000000 stai_mnetwork_set_callback
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1029   .text.stai_mnetwork_get_details:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1036   .text.stai_mnetwork_get_details:00000000 stai_mnetwork_get_details
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1076   .text.stai_mnetwork_get_activations:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1083   .text.stai_mnetwork_get_activations:00000000 stai_mnetwork_get_activations
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1136   .text.stai_mnetwork_get_states:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1143   .text.stai_mnetwork_get_states:00000000 stai_mnetwork_get_states
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1196   .text.stai_mnetwork_get_weights:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1203   .text.stai_mnetwork_get_weights:00000000 stai_mnetwork_get_weights
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1256   .text.stai_mnetwork_get_weights_ext:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1263   .text.stai_mnetwork_get_weights_ext:00000000 stai_mnetwork_get_weights_ext
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1303   .text.stai_mnetwork_get_inputs:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1310   .text.stai_mnetwork_get_inputs:00000000 stai_mnetwork_get_inputs
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1363   .text.stai_mnetwork_get_outputs:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1370   .text.stai_mnetwork_get_outputs:00000000 stai_mnetwork_get_outputs
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1423   .text.stai_mnetwork_deinit:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1430   .text.stai_mnetwork_deinit:00000000 stai_mnetwork_deinit
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1486   .text.stai_mnetwork_get_info:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1493   .text.stai_mnetwork_get_info:00000000 stai_mnetwork_get_info
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1546   .text.stai_mnetwork_get_error:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1553   .text.stai_mnetwork_get_error:00000000 stai_mnetwork_get_error
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1604   .text.stai_mnetwork_run:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1611   .text.stai_mnetwork_run:00000000 stai_mnetwork_run
+                           .group:00000000 wm4.0.5030deb6392b4db6a7ac5ffd5733b4a1
+                           .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
+                           .group:00000000 wm4.newlib.h.27.4b972ceed5d01f491020c20f1e546cab
+                           .group:00000000 wm4.ieeefp.h.77.bd5feb87d9990dd328793ced294f6a87
+                           .group:00000000 wm4.features.h.22.a1226fadde5a2c599ac12b49c0ddb447
+                           .group:00000000 wm4.config.h.224.10ee1ad185d877c6e334e6581faab44d
+                           .group:00000000 wm4._ansi.h.31.de524f58584151836e90d8620a16f8e8
+                           .group:00000000 wm4.stddef.h.39.38eb7ec030421799c657b13be5aa21c7
+                           .group:00000000 wm4._default_types.h.6.959254cf5f09734ea7516c89e8bb21bd
+                           .group:00000000 wm4.cdefs.h.49.a0dc0a4a6c7d01e2e5d0aade9399215f
+                           .group:00000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:00000000 wm4.stddef.h.158.6f8e08a347b1cff664332fa350bfceb3
+                           .group:00000000 wm4._types.h.127.3bdfe3ff8ea2d0985b03d9cbe93480e3
+                           .group:00000000 wm4.reent.h.18.25503cdc8b7e55dd0d6ea7b3e5af7a03
+                           .group:00000000 wm4.lock.h.2.1461d1fff82dffe8bfddc23307f6484f
+                           .group:00000000 wm4.reent.h.78.6b87466b04591b1f1cb88c14fdf2ba9e
+                           .group:00000000 wm4.string.h.15.dab3980bf35408a4c507182805e2de3a
+                           .group:00000000 wm4.stddef.h.158.eec8bf00b5213f43d095cb984c5f22e3
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:00000000 wm4.stai.h.24.608d6af21070ca68aec6fa67c427ed38
+                           .group:00000000 wm4.stdbool.h.29.c08aa3eec75cf5b9b5003883f43253f0
+                           .group:00000000 wm4.stai.h.38.8b7b3b20574e05eb8d4bb79c3a135768
+                           .group:00000000 wm4.stai_debug.h.37.4be079c70c66033549ba26b63a31db94
+                           .group:00000000 wm4.network.h.26.b7847d442a108daf4406804071fbba60
+                           .group:00000000 wm4.app_stellarstudioai.h.34.09d4d4538ab8661d6d0406dbdedd94c9
+                           .group:00000000 wm4.stellar_ai_cfg.h.22.b8366a3a45f39e9e09a10028cf2dd2bf
+                           .group:00000000 wm4.sr5e1xx.h.22.e5c808533cc52ed19fb0830cd7d98924
+                           .group:00000000 wm4.cmsis_version.h.32.0f826810625204eca22a19868bdc7586
+                           .group:00000000 wm4.core_cm7.h.66.8ab2de36917d6fcae18019067fda13e0
+                           .group:00000000 wm4.cmsis_gcc.h.26.498d0ad17a45fc9ef20fdc01caf02259
+                           .group:00000000 wm4.core_cm7.h.174.43edb295ecdaadad738f48ba6011ffad
+                           .group:00000000 wm4.mpu_armv7.h.32.83326921a797fa9d6f70449916b4b839
+                           .group:00000000 wm4.cachel1_armv7.h.32.abd77761a989e008b0c60891114a33c7
+                           .group:00000000 wm4.SR5E1_ADC.h.14.ae169e40e9f684c773c07c5a3820e545
+                           .group:00000000 wm4.SR5E1_CEM.h.14.01fe5742c8f1ae35b1f3af05932f702e
+                           .group:00000000 wm4.SR5E1_CMU.h.14.2617b38b159abe38028862394531e06d
+                           .group:00000000 wm4.SR5E1_COMP.h.14.4b6fdfe4f5f7fd9bedf3a99b98bdf4cd
+                           .group:00000000 wm4.SR5E1_CORDIC.h.14.354fbf7c9eaf6963d38eaa25cf28ffe8
+                           .group:00000000 wm4.SR5E1_CRC.h.14.c64d0f7767671ddb92e9ead0a1162100
+                           .group:00000000 wm4.SR5E1_DAC.h.14.8c26a0ff04b0cfeb55306cc3f22187b8
+                           .group:00000000 wm4.SR5E1_DBGMCU.h.14.427df893d53a8044654f017ba01c25ed
+                           .group:00000000 wm4.SR5E1_DMA.h.14.a7f9a92f844b40a86965798c2e64240b
+                           .group:00000000 wm4.SR5E1_DMAMUX.h.14.471b3b4dfd4d41515f1df49493698866
+                           .group:00000000 wm4.SR5E1_EXTI.h.14.a325ea3fe89cd84894660551c33241ea
+                           .group:00000000 wm4.SR5E1_FCCU.h.14.0ebf0f0f36e079d28613ad2c80e17e23
+                           .group:00000000 wm4.SR5E1_FDCAN.h.14.92cca1acd00b06d527134cd2ce2de963
+                           .group:00000000 wm4.SR5E1_FLASH_REG_ITF.h.14.d23d1d44923f9b20b8c8fdb51d66aefd
+                           .group:00000000 wm4.SR5E1_GPIO.h.14.1c84071e130d7c64b62470ab0e18a1f1
+                           .group:00000000 wm4.SR5E1_HRTIM.h.24.03932387d2522e6bd5c772a4edaf2f5d
+                           .group:00000000 wm4.SR5E1_HSEM.h.14.cbe70eee519f01b16452c3f8c99d8df1
+                           .group:00000000 wm4.SR5E1_I2C.h.14.350ba3e0f4fd57828457efa80135c36c
+                           .group:00000000 wm4.SR5E1_IMA.h.14.62b7088985ab2b7ce9b030a02daa1f7d
+                           .group:00000000 wm4.SR5E1_IWDG.h.14.20b7c5f05cf7ae94464c360d7af3660d
+                           .group:00000000 wm4.SR5E1_MEMU.h.14.04bad7ae4c52ce334a4fc900aad2ae5b
+                           .group:00000000 wm4.SR5E1_NVM_CTRL.h.14.5f442617f0628d4f16258f211c614ef9
+                           .group:00000000 wm4.SR5E1_PLLDIG.h.14.bd87a8e6917eee17dae2f312c8e5fa53
+                           .group:00000000 wm4.SR5E1_PMC_DIG.h.14.54173b566c6656344766ec4ef46c9281
+                           .group:00000000 wm4.typedefs.h.36.07fe3956b4e751037cfee70edcd0b397
+                           .group:00000000 wm4.SR5E1_PRAMC.h.30.1c0b9354fe6c8cac480bcfc44eff2d7e
+                           .group:00000000 wm4.SR5E1_RCC.h.14.6d8396933f006e04e798678fd043e24c
+                           .group:00000000 wm4.SR5E1_RTC.h.14.c054aa0839c8cf8ac24f324aa927c4ec
+                           .group:00000000 wm4.SR5E1_SD_ADC.h.14.552b97d0b8f3c1fd4df6d8964b2f1a80
+                           .group:00000000 wm4.SR5E1_SMPU.h.14.8ce5bb6d5d7c579cd725f492f46e9085
+                           .group:00000000 wm4.SR5E1_SPI.h.14.42d52112e540f85ade4d9135f8b87d72
+                           .group:00000000 wm4.SR5E1_SSCM.h.14.8e6a2ad0ce5fca422fc3d69939b6125b
+                           .group:00000000 wm4.SR5E1_SYSCFG.h.14.02b969490118ce4069914b5e94f7ca65
+                           .group:00000000 wm4.SR5E1_TDM.h.14.a40ed7928cad243a57fd233fccf01ad2
+                           .group:00000000 wm4.SR5E1_TIM.h.14.05b8efc5395873619642d61a4b0b5a54
+                           .group:00000000 wm4.SR5E1_UART.h.14.eec3ab82b02b3bdb3de500483675b83f
+                           .group:00000000 wm4.SR5E1_WWDG.h.14.59b45efc70e442cc6ef03702aad4ad88
+                           .group:00000000 wm4.irq_numbers.h.38.6294b95aed1bf7b3a2cda0eed8ce8f57
+                           .group:00000000 wm4.regs.h.23.2ac145b4f57126d16daed5fbd86d99c6
+                           .group:00000000 wm4.version.h.23.e4b8916ae3b2be9dc2d78f3d1936fa22
+                           .group:00000000 wm4.clock_cfg.h.23.3c8ba5c0347398a4587362787f86fe62
+                           .group:00000000 wm4.clock.h.37.58835f83108bcb182d0fd3c9e58df3b9
+                           .group:00000000 wm4.dwt.h.60.bb144dd848d9adaa1c08f830ce597105
+                           .group:00000000 wm4.stellar_ai_validate.h.45.75e4a2a01e30f67dcffdab062bc0d3ca
+                           .group:00000000 wm4.stdio.h.27.3fc80220048df77954e38daec3bb9670
+                           .group:00000000 wm4.stdarg.h.34.3a23a216c0c293b3d2ea2e89281481e6
+                           .group:00000000 wm4.stdio.h.47.dc31ec4674d7bcb103c9f08809549f45
+                           .group:00000000 wm4.stdio.h.2.4aa87247282eca6c8f36f9de33d8df1a
+                           .group:00000000 wm4.stdio.h.87.a1e20d2651f9bfb66e51bfbe849db00a
+                           .group:00000000 wm4.ai_device_adaptor.h.109.339b692f14d4287c521e098c99de753a
+                           .group:00000000 wm4.aiTestUtility.h.45.f6a90115c9418808f9b3799456c285ff
+                           .group:00000000 wm4.stdlib.h.13.4ed386f5c1a80d71e72172885d946ef2
+                           .group:00000000 wm4.alloca.h.8.dfc0c703c47ec3e69746825b17d9e66d
+                           .group:00000000 wm4.stdlib.h.56.f4862cfbf4363a1db01842d5bdf72c18
+                           .group:00000000 wm4.aiTestUtility.h.158.768c6f983dc99fc892896b77759c5e43
+
+UNDEFINED SYMBOLS
+stai_network_get_context_size
+stai_network_init
+stai_network_deinit
+stai_network_run
+stai_network_get_info
+stai_network_get_error
+stai_network_get_activations
+stai_network_get_states
+stai_network_get_weights
+stai_network_get_inputs
+stai_network_get_outputs
+stai_network_set_activations
+stai_network_set_states
+stai_network_set_weights
+stai_network_set_inputs
+stai_network_set_outputs
+stai_network_set_callback
+g_network_details
+strlen
+strncmp

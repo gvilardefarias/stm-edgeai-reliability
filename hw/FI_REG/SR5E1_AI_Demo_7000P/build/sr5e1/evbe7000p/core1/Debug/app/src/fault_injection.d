@@ -58,7 +58,11 @@ build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o: \
  C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/TIM/include/sr5e1/tim_instances.h \
  SR5E1_AI_Demo_7000P/lib/ai/inc/stai.h \
  SR5E1_AI_Demo_7000P/lib/ai/inc/stai_events.h \
- SR5E1_AI_Demo_7000P/lib/ai/inc/stai.h
+ SR5E1_AI_Demo_7000P/lib/ai/inc/stai.h \
+ SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.h \
+ SR5E1_AI_Demo_7000P/cfg/inc/network.h \
+ SR5E1_AI_Demo_7000P/lib/ai/inc/stai_debug.h \
+ SR5E1_AI_Demo_7000P/cfg/inc/network_data.h
 app/inc/fault_injection.h:
 C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/TIM/include/tim.h:
 C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/System/DMA/include/dma.h:
@@ -119,3 +123,7 @@ C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/TIM/include/
 SR5E1_AI_Demo_7000P/lib/ai/inc/stai.h:
 SR5E1_AI_Demo_7000P/lib/ai/inc/stai_events.h:
 SR5E1_AI_Demo_7000P/lib/ai/inc/stai.h:
+SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.h:
+SR5E1_AI_Demo_7000P/cfg/inc/network.h:
+SR5E1_AI_Demo_7000P/lib/ai/inc/stai_debug.h:
+SR5E1_AI_Demo_7000P/cfg/inc/network_data.h:

@@ -1,0 +1,913 @@
+   1              		.cpu cortex-m7
+   2              		.arch armv7e-m
+   3              		.fpu fpv5-d16
+   4              		.eabi_attribute 28, 1
+   5              		.eabi_attribute 20, 1
+   6              		.eabi_attribute 21, 1
+   7              		.eabi_attribute 23, 3
+   8              		.eabi_attribute 24, 1
+   9              		.eabi_attribute 25, 1
+  10              		.eabi_attribute 26, 1
+  11              		.eabi_attribute 30, 6
+  12              		.eabi_attribute 34, 1
+  13              		.eabi_attribute 18, 4
+  14              		.file	"dwt.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.file 1 "C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src/dwt.c"
+  19              		.section	.bss.dwt_ticks_per_sec,"aw",%nobits
+  20              		.align	2
+  23              	dwt_ticks_per_sec:
+  24 0000 00000000 		.space	4
+  25              		.section	.text.dwt_init,"ax",%progbits
+  26              		.align	1
+  27              		.p2align 4,,15
+  28              		.global	dwt_init
+  29              		.syntax unified
+  30              		.thumb
+  31              		.thumb_func
+  33              	dwt_init:
+  34              	.LFB436:
+   1:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** /****************************************************************************
+   2:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****  *
+   3:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****  * Copyright (c) 2022 STMicroelectronics - All Rights Reserved
+   4:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****  *
+   5:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****  * License terms: STMicroelectronics Proprietary in accordance with licensing
+   6:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****  * terms SLA0098 at www.st.com.
+   7:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****  *
+   8:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****  * THIS SOFTWARE IS DISTRIBUTED "AS IS," AND ALL WARRANTIES ARE DISCLAIMED,
+   9:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****  * INCLUDING MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+  10:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****  *
+  11:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****  *****************************************************************************/
+  12:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** /**
+  13:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****  * @file    dwt.c
+  14:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****  * @brief   DWT driver source file.
+  15:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****  *
+  16:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****  * @addtogroup DRIVERS
+  17:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****  * @addtogroup TIMERS
+  18:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****  * @ingroup DRIVERS
+  19:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****  * @addtogroup DWT
+  20:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****  * @ingroup TIMERS
+  21:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****  * @{
+  22:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****  */
+  23:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+  24:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** #include <dwt.h>
+  25:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+  26:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** /*===========================================================================*/
+  27:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** /* Module local definitions.                                                 */
+  28:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** /*===========================================================================*/
+  29:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+  30:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** /**
+  31:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****  * @brief   DWT tick frequency
+  32:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****  * @details Number of ticks per second.
+  33:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****  */
+  34:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** static uint32_t dwt_ticks_per_sec = 0U;
+  35:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+  36:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** /*===========================================================================*/
+  37:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** /* Module exported variables.                                                */
+  38:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** /*===========================================================================*/
+  39:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+  40:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** /*===========================================================================*/
+  41:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** /* Module local types.                                                       */
+  42:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** /*===========================================================================*/
+  43:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+  44:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** /*===========================================================================*/
+  45:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** /* Module local variables.                                                   */
+  46:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** /*===========================================================================*/
+  47:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+  48:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** /*===========================================================================*/
+  49:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** /* Local function prototypes                                                 */
+  50:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** /*===========================================================================*/
+  51:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+  52:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** /*===========================================================================*/
+  53:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** /* Module local functions.                                                   */
+  54:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** /*===========================================================================*/
+  55:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+  56:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** /*===========================================================================*/
+  57:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** /* Module exported functions.                                                */
+  58:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** /*===========================================================================*/
+  59:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+  60:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** void dwt_init(void) {
+  35              		.loc 1 60 21
+  36              		.cfi_startproc
+  37              		@ args = 0, pretend = 0, frame = 0
+  38              		@ frame_needed = 0, uses_anonymous_args = 0
+  39              		@ link register save eliminated.
+  61:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+  62:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****     /* Initialize the number of ticks per second to the core frequency.*/
+  63:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****     dwt_ticks_per_sec = CLOCK_SYSCLKDIV;
+  40              		.loc 1 63 23
+  41 0000 0B4B     		ldr	r3, .L2
+  42 0002 0C4A     		ldr	r2, .L2+4
+  43 0004 1A60     		str	r2, [r3]
+  64:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+  65:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****     /* Enable DWT and ITM blocks.*/
+  66:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****     CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+  44              		.loc 1 66 14
+  45 0006 0C4B     		ldr	r3, .L2+8
+  46 0008 DB68     		ldr	r3, [r3, #12]
+  47 000a 0B4A     		ldr	r2, .L2+8
+  48              		.loc 1 66 22
+  49 000c 43F08073 		orr	r3, r3, #16777216
+  50 0010 D360     		str	r3, [r2, #12]
+  67:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+  68:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****     /* Unlock access to DWT registers.*/
+  69:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****     DWT->LAR          = 0xC5ACCE55U;
+  51              		.loc 1 69 8
+  52 0012 0A4B     		ldr	r3, .L2+12
+  53              		.loc 1 69 23
+  54 0014 0A4A     		ldr	r2, .L2+16
+  55 0016 C3F8B02F 		str	r2, [r3, #4016]
+  70:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****     /* Clear DWT cycle counter.*/
+  71:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****     DWT->CYCCNT       = 0U;
+  56              		.loc 1 71 8
+  57 001a 084B     		ldr	r3, .L2+12
+  58              		.loc 1 71 23
+  59 001c 0022     		movs	r2, #0
+  60 001e 5A60     		str	r2, [r3, #4]
+  72:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****     /* Enable DWT cycle counter.*/
+  73:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****     DWT->CTRL        |= DWT_CTRL_CYCCNTENA_Msk;
+  61              		.loc 1 73 8
+  62 0020 064B     		ldr	r3, .L2+12
+  63 0022 1B68     		ldr	r3, [r3]
+  64 0024 054A     		ldr	r2, .L2+12
+  65              		.loc 1 73 22
+  66 0026 43F00103 		orr	r3, r3, #1
+  67 002a 1360     		str	r3, [r2]
+  74:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** }
+  68              		.loc 1 74 1
+  69 002c 00BF     		nop
+  70 002e 7047     		bx	lr
+  71              	.L3:
+  72              		.align	2
+  73              	.L2:
+  74 0030 00000000 		.word	dwt_ticks_per_sec
+  75 0034 00A3E111 		.word	300000000
+  76 0038 F0ED00E0 		.word	-536810000
+  77 003c 001000E0 		.word	-536866816
+  78 0040 55CEACC5 		.word	-978530731
+  79              		.cfi_endproc
+  80              	.LFE436:
+  82              		.section	.text.dwt_s2t,"ax",%progbits
+  83              		.align	1
+  84              		.p2align 4,,15
+  85              		.global	dwt_s2t
+  86              		.syntax unified
+  87              		.thumb
+  88              		.thumb_func
+  90              	dwt_s2t:
+  91              	.LFB437:
+  75:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+  76:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** uint32_t dwt_s2t(uint32_t sec) {
+  92              		.loc 1 76 32
+  93              		.cfi_startproc
+  94              		@ args = 0, pretend = 0, frame = 8
+  95              		@ frame_needed = 0, uses_anonymous_args = 0
+  96              		@ link register save eliminated.
+  97 0000 82B0     		sub	sp, sp, #8
+  98              		.cfi_def_cfa_offset 8
+  99 0002 0190     		str	r0, [sp, #4]
+  77:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+  78:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****     return ((uint32_t)((sec) * (dwt_ticks_per_sec)));
+ 100              		.loc 1 78 30
+ 101 0004 034B     		ldr	r3, .L6
+ 102 0006 1B68     		ldr	r3, [r3]
+ 103              		.loc 1 78 13
+ 104 0008 019A     		ldr	r2, [sp, #4]
+ 105 000a 02FB03F3 		mul	r3, r2, r3
+  79:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** }
+ 106              		.loc 1 79 1
+ 107 000e 1846     		mov	r0, r3
+ 108 0010 02B0     		add	sp, sp, #8
+ 109              		.cfi_def_cfa_offset 0
+ 110              		@ sp needed
+ 111 0012 7047     		bx	lr
+ 112              	.L7:
+ 113              		.align	2
+ 114              	.L6:
+ 115 0014 00000000 		.word	dwt_ticks_per_sec
+ 116              		.cfi_endproc
+ 117              	.LFE437:
+ 119              		.global	__aeabi_uldivmod
+ 120              		.section	.text.dwt_ms2t,"ax",%progbits
+ 121              		.align	1
+ 122              		.p2align 4,,15
+ 123              		.global	dwt_ms2t
+ 124              		.syntax unified
+ 125              		.thumb
+ 126              		.thumb_func
+ 128              	dwt_ms2t:
+ 129              	.LFB438:
+  80:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+  81:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** uint32_t dwt_ms2t(uint32_t msec) {
+ 130              		.loc 1 81 34
+ 131              		.cfi_startproc
+ 132              		@ args = 0, pretend = 0, frame = 8
+ 133              		@ frame_needed = 0, uses_anonymous_args = 0
+ 134 0000 2DE9F043 		push	{r4, r5, r6, r7, r8, r9, lr}
+ 135              		.cfi_def_cfa_offset 28
+ 136              		.cfi_offset 4, -28
+ 137              		.cfi_offset 5, -24
+ 138              		.cfi_offset 6, -20
+ 139              		.cfi_offset 7, -16
+ 140              		.cfi_offset 8, -12
+ 141              		.cfi_offset 9, -8
+ 142              		.cfi_offset 14, -4
+ 143 0004 83B0     		sub	sp, sp, #12
+ 144              		.cfi_def_cfa_offset 40
+ 145 0006 0190     		str	r0, [sp, #4]
+  82:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+  83:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****     return ((msec == 0U) ? ((uint32_t) 0) :
+ 146              		.loc 1 83 43
+ 147 0008 0199     		ldr	r1, [sp, #4]
+ 148 000a 0029     		cmp	r1, #0
+ 149 000c 22D0     		beq	.L9
+  84:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****                            ((uint32_t)(((((uint64_t)(msec)) * ((uint64_t)(dwt_ticks_per_sec)) - 1UL
+ 150              		.loc 1 84 43
+ 151 000e 0199     		ldr	r1, [sp, #4]
+ 152 0010 0020     		movs	r0, #0
+ 153 0012 0E46     		mov	r6, r1
+ 154 0014 0746     		mov	r7, r0
+ 155              		.loc 1 84 64
+ 156 0016 1249     		ldr	r1, .L12
+ 157 0018 0968     		ldr	r1, [r1]
+ 158 001a 0020     		movs	r0, #0
+ 159 001c 0C46     		mov	r4, r1
+ 160 001e 0546     		mov	r5, r0
+ 161              		.loc 1 84 61
+ 162 0020 04FB07F0 		mul	r0, r4, r7
+ 163 0024 06FB05F1 		mul	r1, r6, r5
+ 164 0028 0144     		add	r1, r1, r0
+ 165 002a A6FB0423 		umull	r2, r3, r6, r4
+ 166 002e 1944     		add	r1, r1, r3
+ 167 0030 0B46     		mov	r3, r1
+ 168              		.loc 1 84 95
+ 169 0032 12F1FF38 		adds	r8, r2, #-1
+ 170 0036 43F1FF39 		adc	r9, r3, #-1
+ 171              		.loc 1 84 103
+ 172 003a 4FF47A72 		mov	r2, #1000
+ 173 003e 4FF00003 		mov	r3, #0
+ 174 0042 4046     		mov	r0, r8
+ 175 0044 4946     		mov	r1, r9
+ 176 0046 FFF7FEFF 		bl	__aeabi_uldivmod
+ 177 004a 0246     		mov	r2, r0
+ 178 004c 0B46     		mov	r3, r1
+  83:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****                            ((uint32_t)(((((uint64_t)(msec)) * ((uint64_t)(dwt_ticks_per_sec)) - 1UL
+ 179              		.loc 1 83 43 discriminator 1
+ 180 004e 1346     		mov	r3, r2
+ 181 0050 0133     		adds	r3, r3, #1
+  83:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****                            ((uint32_t)(((((uint64_t)(msec)) * ((uint64_t)(dwt_ticks_per_sec)) - 1UL
+ 182              		.loc 1 83 43 is_stmt 0
+ 183 0052 00E0     		b	.L11
+ 184              	.L9:
+  83:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****                            ((uint32_t)(((((uint64_t)(msec)) * ((uint64_t)(dwt_ticks_per_sec)) - 1UL
+ 185              		.loc 1 83 43 discriminator 2
+ 186 0054 0023     		movs	r3, #0
+ 187              	.L11:
+  85:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** }
+ 188              		.loc 1 85 1 is_stmt 1
+ 189 0056 1846     		mov	r0, r3
+ 190 0058 03B0     		add	sp, sp, #12
+ 191              		.cfi_def_cfa_offset 28
+ 192              		@ sp needed
+ 193 005a BDE8F083 		pop	{r4, r5, r6, r7, r8, r9, pc}
+ 194              	.L13:
+ 195 005e 00BF     		.align	2
+ 196              	.L12:
+ 197 0060 00000000 		.word	dwt_ticks_per_sec
+ 198              		.cfi_endproc
+ 199              	.LFE438:
+ 201              		.section	.text.dwt_us2t,"ax",%progbits
+ 202              		.align	1
+ 203              		.p2align 4,,15
+ 204              		.global	dwt_us2t
+ 205              		.syntax unified
+ 206              		.thumb
+ 207              		.thumb_func
+ 209              	dwt_us2t:
+ 210              	.LFB439:
+  86:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+  87:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** uint32_t dwt_us2t(uint32_t usec) {
+ 211              		.loc 1 87 34
+ 212              		.cfi_startproc
+ 213              		@ args = 0, pretend = 0, frame = 8
+ 214              		@ frame_needed = 0, uses_anonymous_args = 0
+ 215 0000 2DE9F043 		push	{r4, r5, r6, r7, r8, r9, lr}
+ 216              		.cfi_def_cfa_offset 28
+ 217              		.cfi_offset 4, -28
+ 218              		.cfi_offset 5, -24
+ 219              		.cfi_offset 6, -20
+ 220              		.cfi_offset 7, -16
+ 221              		.cfi_offset 8, -12
+ 222              		.cfi_offset 9, -8
+ 223              		.cfi_offset 14, -4
+ 224 0004 83B0     		sub	sp, sp, #12
+ 225              		.cfi_def_cfa_offset 40
+ 226 0006 0190     		str	r0, [sp, #4]
+  88:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+  89:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****     return ((usec == 0U) ? ((uint32_t) 0) :
+ 227              		.loc 1 89 43
+ 228 0008 0199     		ldr	r1, [sp, #4]
+ 229 000a 0029     		cmp	r1, #0
+ 230 000c 21D0     		beq	.L15
+  90:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****                            ((uint32_t)(((((uint64_t)(usec)) * ((uint64_t)(dwt_ticks_per_sec)) - 1UL
+ 231              		.loc 1 90 43
+ 232 000e 0199     		ldr	r1, [sp, #4]
+ 233 0010 0020     		movs	r0, #0
+ 234 0012 0E46     		mov	r6, r1
+ 235 0014 0746     		mov	r7, r0
+ 236              		.loc 1 90 64
+ 237 0016 1149     		ldr	r1, .L18
+ 238 0018 0968     		ldr	r1, [r1]
+ 239 001a 0020     		movs	r0, #0
+ 240 001c 0C46     		mov	r4, r1
+ 241 001e 0546     		mov	r5, r0
+ 242              		.loc 1 90 61
+ 243 0020 04FB07F0 		mul	r0, r4, r7
+ 244 0024 06FB05F1 		mul	r1, r6, r5
+ 245 0028 0144     		add	r1, r1, r0
+ 246 002a A6FB0423 		umull	r2, r3, r6, r4
+ 247 002e 1944     		add	r1, r1, r3
+ 248 0030 0B46     		mov	r3, r1
+ 249              		.loc 1 90 95
+ 250 0032 12F1FF38 		adds	r8, r2, #-1
+ 251 0036 43F1FF39 		adc	r9, r3, #-1
+ 252              		.loc 1 90 103
+ 253 003a 094A     		ldr	r2, .L18+4
+ 254 003c 4FF00003 		mov	r3, #0
+ 255 0040 4046     		mov	r0, r8
+ 256 0042 4946     		mov	r1, r9
+ 257 0044 FFF7FEFF 		bl	__aeabi_uldivmod
+ 258 0048 0246     		mov	r2, r0
+ 259 004a 0B46     		mov	r3, r1
+  89:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****                            ((uint32_t)(((((uint64_t)(usec)) * ((uint64_t)(dwt_ticks_per_sec)) - 1UL
+ 260              		.loc 1 89 43 discriminator 1
+ 261 004c 1346     		mov	r3, r2
+ 262 004e 0133     		adds	r3, r3, #1
+  89:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****                            ((uint32_t)(((((uint64_t)(usec)) * ((uint64_t)(dwt_ticks_per_sec)) - 1UL
+ 263              		.loc 1 89 43 is_stmt 0
+ 264 0050 00E0     		b	.L17
+ 265              	.L15:
+  89:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****                            ((uint32_t)(((((uint64_t)(usec)) * ((uint64_t)(dwt_ticks_per_sec)) - 1UL
+ 266              		.loc 1 89 43 discriminator 2
+ 267 0052 0023     		movs	r3, #0
+ 268              	.L17:
+  91:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** }
+ 269              		.loc 1 91 1 is_stmt 1
+ 270 0054 1846     		mov	r0, r3
+ 271 0056 03B0     		add	sp, sp, #12
+ 272              		.cfi_def_cfa_offset 28
+ 273              		@ sp needed
+ 274 0058 BDE8F083 		pop	{r4, r5, r6, r7, r8, r9, pc}
+ 275              	.L19:
+ 276              		.align	2
+ 277              	.L18:
+ 278 005c 00000000 		.word	dwt_ticks_per_sec
+ 279 0060 40420F00 		.word	1000000
+ 280              		.cfi_endproc
+ 281              	.LFE439:
+ 283              		.section	.text.dwt_ns2t,"ax",%progbits
+ 284              		.align	1
+ 285              		.p2align 4,,15
+ 286              		.global	dwt_ns2t
+ 287              		.syntax unified
+ 288              		.thumb
+ 289              		.thumb_func
+ 291              	dwt_ns2t:
+ 292              	.LFB440:
+  92:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+  93:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** uint32_t dwt_ns2t(uint32_t nsec) {
+ 293              		.loc 1 93 34
+ 294              		.cfi_startproc
+ 295              		@ args = 0, pretend = 0, frame = 8
+ 296              		@ frame_needed = 0, uses_anonymous_args = 0
+ 297 0000 2DE9F043 		push	{r4, r5, r6, r7, r8, r9, lr}
+ 298              		.cfi_def_cfa_offset 28
+ 299              		.cfi_offset 4, -28
+ 300              		.cfi_offset 5, -24
+ 301              		.cfi_offset 6, -20
+ 302              		.cfi_offset 7, -16
+ 303              		.cfi_offset 8, -12
+ 304              		.cfi_offset 9, -8
+ 305              		.cfi_offset 14, -4
+ 306 0004 83B0     		sub	sp, sp, #12
+ 307              		.cfi_def_cfa_offset 40
+ 308 0006 0190     		str	r0, [sp, #4]
+  94:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+  95:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****     return ((nsec == 0U) ? ((uint32_t) 0) :
+ 309              		.loc 1 95 43
+ 310 0008 0199     		ldr	r1, [sp, #4]
+ 311 000a 0029     		cmp	r1, #0
+ 312 000c 21D0     		beq	.L21
+  96:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****                            ((uint32_t)(((((uint64_t)(nsec)) * ((uint64_t)(dwt_ticks_per_sec)) - 1UL
+ 313              		.loc 1 96 43
+ 314 000e 0199     		ldr	r1, [sp, #4]
+ 315 0010 0020     		movs	r0, #0
+ 316 0012 0E46     		mov	r6, r1
+ 317 0014 0746     		mov	r7, r0
+ 318              		.loc 1 96 64
+ 319 0016 1449     		ldr	r1, .L24+8
+ 320 0018 0968     		ldr	r1, [r1]
+ 321 001a 0020     		movs	r0, #0
+ 322 001c 0C46     		mov	r4, r1
+ 323 001e 0546     		mov	r5, r0
+ 324              		.loc 1 96 61
+ 325 0020 04FB07F0 		mul	r0, r4, r7
+ 326 0024 06FB05F1 		mul	r1, r6, r5
+ 327 0028 0144     		add	r1, r1, r0
+ 328 002a A6FB0423 		umull	r2, r3, r6, r4
+ 329 002e 1944     		add	r1, r1, r3
+ 330 0030 0B46     		mov	r3, r1
+ 331              		.loc 1 96 95
+ 332 0032 12F1FF38 		adds	r8, r2, #-1
+ 333 0036 43F1FF39 		adc	r9, r3, #-1
+ 334              		.loc 1 96 103
+ 335 003a 09A3     		adr	r3, .L24
+ 336 003c D3E90023 		ldrd	r2, [r3]
+ 337 0040 4046     		mov	r0, r8
+ 338 0042 4946     		mov	r1, r9
+ 339 0044 FFF7FEFF 		bl	__aeabi_uldivmod
+ 340 0048 0246     		mov	r2, r0
+ 341 004a 0B46     		mov	r3, r1
+  95:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****                            ((uint32_t)(((((uint64_t)(nsec)) * ((uint64_t)(dwt_ticks_per_sec)) - 1UL
+ 342              		.loc 1 95 43 discriminator 1
+ 343 004c 1346     		mov	r3, r2
+ 344 004e 0133     		adds	r3, r3, #1
+  95:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****                            ((uint32_t)(((((uint64_t)(nsec)) * ((uint64_t)(dwt_ticks_per_sec)) - 1UL
+ 345              		.loc 1 95 43 is_stmt 0
+ 346 0050 00E0     		b	.L23
+ 347              	.L21:
+  95:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****                            ((uint32_t)(((((uint64_t)(nsec)) * ((uint64_t)(dwt_ticks_per_sec)) - 1UL
+ 348              		.loc 1 95 43 discriminator 2
+ 349 0052 0023     		movs	r3, #0
+ 350              	.L23:
+  97:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** }
+ 351              		.loc 1 97 1 is_stmt 1
+ 352 0054 1846     		mov	r0, r3
+ 353 0056 03B0     		add	sp, sp, #12
+ 354              		.cfi_def_cfa_offset 28
+ 355              		@ sp needed
+ 356 0058 BDE8F083 		pop	{r4, r5, r6, r7, r8, r9, pc}
+ 357              	.L25:
+ 358 005c AFF30080 		.align	3
+ 359              	.L24:
+ 360 0060 00CA9A3B 		.word	1000000000
+ 361 0064 00000000 		.word	0
+ 362 0068 00000000 		.word	dwt_ticks_per_sec
+ 363              		.cfi_endproc
+ 364              	.LFE440:
+ 366              		.section	.text.dwt_t2s,"ax",%progbits
+ 367              		.align	1
+ 368              		.p2align 4,,15
+ 369              		.global	dwt_t2s
+ 370              		.syntax unified
+ 371              		.thumb
+ 372              		.thumb_func
+ 374              	dwt_t2s:
+ 375              	.LFB441:
+  98:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+  99:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** uint32_t dwt_t2s(uint32_t ticks) {
+ 376              		.loc 1 99 34
+ 377              		.cfi_startproc
+ 378              		@ args = 0, pretend = 0, frame = 8
+ 379              		@ frame_needed = 0, uses_anonymous_args = 0
+ 380              		@ link register save eliminated.
+ 381 0000 82B0     		sub	sp, sp, #8
+ 382              		.cfi_def_cfa_offset 8
+ 383 0002 0190     		str	r0, [sp, #4]
+ 100:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+ 101:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****     return (uint32_t)(((uint64_t)ticks) / ((uint64_t)dwt_ticks_per_sec));
+ 384              		.loc 1 101 12
+ 385 0004 034B     		ldr	r3, .L28
+ 386 0006 1B68     		ldr	r3, [r3]
+ 387 0008 019A     		ldr	r2, [sp, #4]
+ 388 000a B2FBF3F3 		udiv	r3, r2, r3
+ 102:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** }
+ 389              		.loc 1 102 1
+ 390 000e 1846     		mov	r0, r3
+ 391 0010 02B0     		add	sp, sp, #8
+ 392              		.cfi_def_cfa_offset 0
+ 393              		@ sp needed
+ 394 0012 7047     		bx	lr
+ 395              	.L29:
+ 396              		.align	2
+ 397              	.L28:
+ 398 0014 00000000 		.word	dwt_ticks_per_sec
+ 399              		.cfi_endproc
+ 400              	.LFE441:
+ 402              		.section	.text.dwt_t2ms,"ax",%progbits
+ 403              		.align	1
+ 404              		.p2align 4,,15
+ 405              		.global	dwt_t2ms
+ 406              		.syntax unified
+ 407              		.thumb
+ 408              		.thumb_func
+ 410              	dwt_t2ms:
+ 411              	.LFB442:
+ 103:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+ 104:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** uint32_t dwt_t2ms(uint32_t ticks) {
+ 412              		.loc 1 104 35
+ 413              		.cfi_startproc
+ 414              		@ args = 0, pretend = 0, frame = 8
+ 415              		@ frame_needed = 0, uses_anonymous_args = 0
+ 416 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 417              		.cfi_def_cfa_offset 36
+ 418              		.cfi_offset 4, -36
+ 419              		.cfi_offset 5, -32
+ 420              		.cfi_offset 6, -28
+ 421              		.cfi_offset 7, -24
+ 422              		.cfi_offset 8, -20
+ 423              		.cfi_offset 9, -16
+ 424              		.cfi_offset 10, -12
+ 425              		.cfi_offset 11, -8
+ 426              		.cfi_offset 14, -4
+ 427 0004 83B0     		sub	sp, sp, #12
+ 428              		.cfi_def_cfa_offset 48
+ 429 0006 0190     		str	r0, [sp, #4]
+ 105:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+ 106:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****     return (uint32_t)(((uint64_t)ticks * 1000ULL) / ((uint64_t)dwt_ticks_per_sec));
+ 430              		.loc 1 106 24
+ 431 0008 0199     		ldr	r1, [sp, #4]
+ 432 000a 0020     		movs	r0, #0
+ 433 000c 0C46     		mov	r4, r1
+ 434 000e 0546     		mov	r5, r0
+ 435              		.loc 1 106 40
+ 436 0010 2046     		mov	r0, r4
+ 437 0012 2946     		mov	r1, r5
+ 438 0014 4FF00008 		mov	r8, #0
+ 439 0018 4FF00009 		mov	r9, #0
+ 440 001c 4FEA4119 		lsl	r9, r1, #5
+ 441 0020 49EAD069 		orr	r9, r9, r0, lsr #27
+ 442 0024 4FEA4018 		lsl	r8, r0, #5
+ 443 0028 4046     		mov	r0, r8
+ 444 002a 4946     		mov	r1, r9
+ 445 002c 021B     		subs	r2, r0, r4
+ 446 002e 61EB0503 		sbc	r3, r1, r5
+ 447 0032 4FF00000 		mov	r0, #0
+ 448 0036 4FF00001 		mov	r1, #0
+ 449 003a 9900     		lsls	r1, r3, #2
+ 450 003c 41EA9271 		orr	r1, r1, r2, lsr #30
+ 451 0040 9000     		lsls	r0, r2, #2
+ 452 0042 0246     		mov	r2, r0
+ 453 0044 0B46     		mov	r3, r1
+ 454 0046 1619     		adds	r6, r2, r4
+ 455 0048 43EB0507 		adc	r7, r3, r5
+ 456 004c 4FF00002 		mov	r2, #0
+ 457 0050 4FF00003 		mov	r3, #0
+ 458 0054 FB00     		lsls	r3, r7, #3
+ 459 0056 43EA5673 		orr	r3, r3, r6, lsr #29
+ 460 005a F200     		lsls	r2, r6, #3
+ 461 005c 1646     		mov	r6, r2
+ 462 005e 1F46     		mov	r7, r3
+ 463 0060 3046     		mov	r0, r6
+ 464 0062 3946     		mov	r1, r7
+ 465              		.loc 1 106 54
+ 466 0064 074B     		ldr	r3, .L32
+ 467 0066 1B68     		ldr	r3, [r3]
+ 468 0068 0022     		movs	r2, #0
+ 469 006a 9A46     		mov	r10, r3
+ 470 006c 9346     		mov	fp, r2
+ 471              		.loc 1 106 51
+ 472 006e 5246     		mov	r2, r10
+ 473 0070 5B46     		mov	r3, fp
+ 474 0072 FFF7FEFF 		bl	__aeabi_uldivmod
+ 475 0076 0246     		mov	r2, r0
+ 476 0078 0B46     		mov	r3, r1
+ 477              		.loc 1 106 12
+ 478 007a 1346     		mov	r3, r2
+ 107:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** }
+ 479              		.loc 1 107 1
+ 480 007c 1846     		mov	r0, r3
+ 481 007e 03B0     		add	sp, sp, #12
+ 482              		.cfi_def_cfa_offset 36
+ 483              		@ sp needed
+ 484 0080 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 485              	.L33:
+ 486              		.align	2
+ 487              	.L32:
+ 488 0084 00000000 		.word	dwt_ticks_per_sec
+ 489              		.cfi_endproc
+ 490              	.LFE442:
+ 492              		.section	.text.dwt_t2us,"ax",%progbits
+ 493              		.align	1
+ 494              		.p2align 4,,15
+ 495              		.global	dwt_t2us
+ 496              		.syntax unified
+ 497              		.thumb
+ 498              		.thumb_func
+ 500              	dwt_t2us:
+ 501              	.LFB443:
+ 108:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+ 109:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** uint32_t dwt_t2us(uint32_t ticks) {
+ 502              		.loc 1 109 35
+ 503              		.cfi_startproc
+ 504              		@ args = 0, pretend = 0, frame = 24
+ 505              		@ frame_needed = 0, uses_anonymous_args = 0
+ 506 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 507              		.cfi_def_cfa_offset 36
+ 508              		.cfi_offset 4, -36
+ 509              		.cfi_offset 5, -32
+ 510              		.cfi_offset 6, -28
+ 511              		.cfi_offset 7, -24
+ 512              		.cfi_offset 8, -20
+ 513              		.cfi_offset 9, -16
+ 514              		.cfi_offset 10, -12
+ 515              		.cfi_offset 11, -8
+ 516              		.cfi_offset 14, -4
+ 517 0004 87B0     		sub	sp, sp, #28
+ 518              		.cfi_def_cfa_offset 64
+ 519 0006 0590     		str	r0, [sp, #20]
+ 110:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+ 111:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****     return (uint32_t)(((uint64_t)ticks * 1000000ULL) / ((uint64_t)dwt_ticks_per_sec));
+ 520              		.loc 1 111 24
+ 521 0008 059B     		ldr	r3, [sp, #20]
+ 522 000a 0022     		movs	r2, #0
+ 523 000c 9846     		mov	r8, r3
+ 524 000e 9146     		mov	r9, r2
+ 525              		.loc 1 111 40
+ 526 0010 4246     		mov	r2, r8
+ 527 0012 4B46     		mov	r3, r9
+ 528 0014 4FF00000 		mov	r0, #0
+ 529 0018 4FF00001 		mov	r1, #0
+ 530 001c 5901     		lsls	r1, r3, #5
+ 531 001e 41EAD261 		orr	r1, r1, r2, lsr #27
+ 532 0022 5001     		lsls	r0, r2, #5
+ 533 0024 0246     		mov	r2, r0
+ 534 0026 0B46     		mov	r3, r1
+ 535 0028 B2EB0804 		subs	r4, r2, r8
+ 536 002c 63EB0905 		sbc	r5, r3, r9
+ 537 0030 4FF00002 		mov	r2, #0
+ 538 0034 4FF00003 		mov	r3, #0
+ 539 0038 6B02     		lsls	r3, r5, #9
+ 540 003a 43EAD453 		orr	r3, r3, r4, lsr #23
+ 541 003e 6202     		lsls	r2, r4, #9
+ 542 0040 1446     		mov	r4, r2
+ 543 0042 1D46     		mov	r5, r3
+ 544 0044 14EB0806 		adds	r6, r4, r8
+ 545 0048 45EB0907 		adc	r7, r5, r9
+ 546 004c 4FF00002 		mov	r2, #0
+ 547 0050 4FF00003 		mov	r3, #0
+ 548 0054 BB01     		lsls	r3, r7, #6
+ 549 0056 43EA9663 		orr	r3, r3, r6, lsr #26
+ 550 005a B201     		lsls	r2, r6, #6
+ 551 005c B2EB060A 		subs	r10, r2, r6
+ 552 0060 63EB070B 		sbc	fp, r3, r7
+ 553 0064 1AEB0803 		adds	r3, r10, r8
+ 554 0068 0093     		str	r3, [sp]
+ 555 006a 4BEB0903 		adc	r3, fp, r9
+ 556 006e 0193     		str	r3, [sp, #4]
+ 557              		.loc 1 111 57
+ 558 0070 084B     		ldr	r3, .L36
+ 559 0072 1B68     		ldr	r3, [r3]
+ 560 0074 0022     		movs	r2, #0
+ 561 0076 0293     		str	r3, [sp, #8]
+ 562 0078 0392     		str	r2, [sp, #12]
+ 563              		.loc 1 111 54
+ 564 007a DDE90223 		ldrd	r2, [sp, #8]
+ 565 007e DDE90001 		ldrd	r0, [sp]
+ 566 0082 FFF7FEFF 		bl	__aeabi_uldivmod
+ 567 0086 0246     		mov	r2, r0
+ 568 0088 0B46     		mov	r3, r1
+ 569              		.loc 1 111 12
+ 570 008a 1346     		mov	r3, r2
+ 112:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** }
+ 571              		.loc 1 112 1
+ 572 008c 1846     		mov	r0, r3
+ 573 008e 07B0     		add	sp, sp, #28
+ 574              		.cfi_def_cfa_offset 36
+ 575              		@ sp needed
+ 576 0090 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 577              	.L37:
+ 578              		.align	2
+ 579              	.L36:
+ 580 0094 00000000 		.word	dwt_ticks_per_sec
+ 581              		.cfi_endproc
+ 582              	.LFE443:
+ 584              		.section	.text.dwt_t2ns,"ax",%progbits
+ 585              		.align	1
+ 586              		.p2align 4,,15
+ 587              		.global	dwt_t2ns
+ 588              		.syntax unified
+ 589              		.thumb
+ 590              		.thumb_func
+ 592              	dwt_t2ns:
+ 593              	.LFB444:
+ 113:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+ 114:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** uint32_t dwt_t2ns(uint32_t ticks) {
+ 594              		.loc 1 114 35
+ 595              		.cfi_startproc
+ 596              		@ args = 0, pretend = 0, frame = 8
+ 597              		@ frame_needed = 0, uses_anonymous_args = 0
+ 598 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 599              		.cfi_def_cfa_offset 20
+ 600              		.cfi_offset 4, -20
+ 601              		.cfi_offset 5, -16
+ 602              		.cfi_offset 6, -12
+ 603              		.cfi_offset 7, -8
+ 604              		.cfi_offset 14, -4
+ 605 0002 83B0     		sub	sp, sp, #12
+ 606              		.cfi_def_cfa_offset 32
+ 607 0004 0190     		str	r0, [sp, #4]
+ 115:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+ 116:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****     return (uint32_t)(((uint64_t)ticks * 1000000000ULL) / ((uint64_t)dwt_ticks_per_sec));
+ 608              		.loc 1 116 24
+ 609 0006 0199     		ldr	r1, [sp, #4]
+ 610 0008 0020     		movs	r0, #0
+ 611 000a 0A46     		mov	r2, r1
+ 612 000c 0346     		mov	r3, r0
+ 613              		.loc 1 116 40
+ 614 000e 0E49     		ldr	r1, .L40
+ 615 0010 01FB03F0 		mul	r0, r1, r3
+ 616 0014 0021     		movs	r1, #0
+ 617 0016 02FB01F1 		mul	r1, r2, r1
+ 618 001a 0144     		add	r1, r1, r0
+ 619 001c 0A48     		ldr	r0, .L40
+ 620 001e A2FB0045 		umull	r4, r5, r2, r0
+ 621 0022 4B19     		adds	r3, r1, r5
+ 622 0024 1D46     		mov	r5, r3
+ 623              		.loc 1 116 60
+ 624 0026 094B     		ldr	r3, .L40+4
+ 625 0028 1B68     		ldr	r3, [r3]
+ 626 002a 0022     		movs	r2, #0
+ 627 002c 1E46     		mov	r6, r3
+ 628 002e 1746     		mov	r7, r2
+ 629              		.loc 1 116 57
+ 630 0030 3246     		mov	r2, r6
+ 631 0032 3B46     		mov	r3, r7
+ 632 0034 2046     		mov	r0, r4
+ 633 0036 2946     		mov	r1, r5
+ 634 0038 FFF7FEFF 		bl	__aeabi_uldivmod
+ 635 003c 0246     		mov	r2, r0
+ 636 003e 0B46     		mov	r3, r1
+ 637              		.loc 1 116 12
+ 638 0040 1346     		mov	r3, r2
+ 117:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** }
+ 639              		.loc 1 117 1
+ 640 0042 1846     		mov	r0, r3
+ 641 0044 03B0     		add	sp, sp, #12
+ 642              		.cfi_def_cfa_offset 20
+ 643              		@ sp needed
+ 644 0046 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 645              	.L41:
+ 646              		.align	2
+ 647              	.L40:
+ 648 0048 00CA9A3B 		.word	1000000000
+ 649 004c 00000000 		.word	dwt_ticks_per_sec
+ 650              		.cfi_endproc
+ 651              	.LFE444:
+ 653              		.section	.text.dwt_deinit,"ax",%progbits
+ 654              		.align	1
+ 655              		.p2align 4,,15
+ 656              		.global	dwt_deinit
+ 657              		.syntax unified
+ 658              		.thumb
+ 659              		.thumb_func
+ 661              	dwt_deinit:
+ 662              	.LFB445:
+ 118:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+ 119:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** void dwt_deinit(void) {
+ 663              		.loc 1 119 23
+ 664              		.cfi_startproc
+ 665              		@ args = 0, pretend = 0, frame = 0
+ 666              		@ frame_needed = 0, uses_anonymous_args = 0
+ 667              		@ link register save eliminated.
+ 120:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+ 121:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****     /* Disable DWT cycle counter.*/
+ 122:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****     DWT->CTRL        &= ~DWT_CTRL_CYCCNTENA_Msk;
+ 668              		.loc 1 122 8
+ 669 0000 084B     		ldr	r3, .L43
+ 670 0002 1B68     		ldr	r3, [r3]
+ 671 0004 074A     		ldr	r2, .L43
+ 672              		.loc 1 122 22
+ 673 0006 23F00103 		bic	r3, r3, #1
+ 674 000a 1360     		str	r3, [r2]
+ 123:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+ 124:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****     /* Clear DWT cycle counter.*/
+ 125:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****     DWT->CYCCNT       = 0U;
+ 675              		.loc 1 125 8
+ 676 000c 054B     		ldr	r3, .L43
+ 677              		.loc 1 125 23
+ 678 000e 0022     		movs	r2, #0
+ 679 0010 5A60     		str	r2, [r3, #4]
+ 126:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** 
+ 127:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****     /* Disable DWT and ITM blocks.*/
+ 128:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c ****     CoreDebug->DEMCR &= ~CoreDebug_DEMCR_TRCENA_Msk;
+ 680              		.loc 1 128 14
+ 681 0012 054B     		ldr	r3, .L43+4
+ 682 0014 DB68     		ldr	r3, [r3, #12]
+ 683 0016 044A     		ldr	r2, .L43+4
+ 684              		.loc 1 128 22
+ 685 0018 23F08073 		bic	r3, r3, #16777216
+ 686 001c D360     		str	r3, [r2, #12]
+ 129:C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/DWT/src\dwt.c **** }
+ 687              		.loc 1 129 1
+ 688 001e 00BF     		nop
+ 689 0020 7047     		bx	lr
+ 690              	.L44:
+ 691 0022 00BF     		.align	2
+ 692              	.L43:
+ 693 0024 001000E0 		.word	-536866816
+ 694 0028 F0ED00E0 		.word	-536810000
+ 695              		.cfi_endproc
+ 696              	.LFE445:
+ 698              		.text
+ 699              	.Letext0:
+ 700              		.file 2 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
+ 701              		.file 3 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
+ 702              		.file 4 "C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Platform/CMSIS/Core/Include/core_cm7
+DEFINED SYMBOLS
+                            *ABS*:00000000 dwt.c
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:20     .bss.dwt_ticks_per_sec:00000000 $d
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:23     .bss.dwt_ticks_per_sec:00000000 dwt_ticks_per_sec
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:26     .text.dwt_init:00000000 $t
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:33     .text.dwt_init:00000000 dwt_init
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:74     .text.dwt_init:00000030 $d
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:83     .text.dwt_s2t:00000000 $t
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:90     .text.dwt_s2t:00000000 dwt_s2t
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:115    .text.dwt_s2t:00000014 $d
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:121    .text.dwt_ms2t:00000000 $t
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:128    .text.dwt_ms2t:00000000 dwt_ms2t
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:197    .text.dwt_ms2t:00000060 $d
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:202    .text.dwt_us2t:00000000 $t
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:209    .text.dwt_us2t:00000000 dwt_us2t
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:278    .text.dwt_us2t:0000005c $d
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:284    .text.dwt_ns2t:00000000 $t
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:291    .text.dwt_ns2t:00000000 dwt_ns2t
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:360    .text.dwt_ns2t:00000060 $d
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:367    .text.dwt_t2s:00000000 $t
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:374    .text.dwt_t2s:00000000 dwt_t2s
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:398    .text.dwt_t2s:00000014 $d
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:403    .text.dwt_t2ms:00000000 $t
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:410    .text.dwt_t2ms:00000000 dwt_t2ms
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:488    .text.dwt_t2ms:00000084 $d
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:493    .text.dwt_t2us:00000000 $t
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:500    .text.dwt_t2us:00000000 dwt_t2us
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:580    .text.dwt_t2us:00000094 $d
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:585    .text.dwt_t2ns:00000000 $t
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:592    .text.dwt_t2ns:00000000 dwt_t2ns
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:648    .text.dwt_t2ns:00000048 $d
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:654    .text.dwt_deinit:00000000 $t
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:661    .text.dwt_deinit:00000000 dwt_deinit
+C:\Users\danie\AppData\Local\Temp\cceGMmSb.s:693    .text.dwt_deinit:00000024 $d
+                           .group:00000000 wm4.0.5030deb6392b4db6a7ac5ffd5733b4a1
+                           .group:00000000 wm4.clock_cfg.h.23.3c8ba5c0347398a4587362787f86fe62
+                           .group:00000000 wm4.sr5e1xx.h.22.e5c808533cc52ed19fb0830cd7d98924
+                           .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
+                           .group:00000000 wm4.features.h.33.5ea28ceb8be6621901b9d58b4c3ee651
+                           .group:00000000 wm4._default_types.h.15.247e5cd201eca3442cbf5404108c4935
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:00000000 wm4.cmsis_version.h.32.0f826810625204eca22a19868bdc7586
+                           .group:00000000 wm4.core_cm7.h.66.8ab2de36917d6fcae18019067fda13e0
+                           .group:00000000 wm4.cmsis_gcc.h.26.498d0ad17a45fc9ef20fdc01caf02259
+                           .group:00000000 wm4.core_cm7.h.174.43edb295ecdaadad738f48ba6011ffad
+                           .group:00000000 wm4.mpu_armv7.h.32.83326921a797fa9d6f70449916b4b839
+                           .group:00000000 wm4.cachel1_armv7.h.32.abd77761a989e008b0c60891114a33c7
+                           .group:00000000 wm4.SR5E1_ADC.h.14.ae169e40e9f684c773c07c5a3820e545
+                           .group:00000000 wm4.SR5E1_CEM.h.14.01fe5742c8f1ae35b1f3af05932f702e
+                           .group:00000000 wm4.SR5E1_CMU.h.14.2617b38b159abe38028862394531e06d
+                           .group:00000000 wm4.SR5E1_COMP.h.14.4b6fdfe4f5f7fd9bedf3a99b98bdf4cd
+                           .group:00000000 wm4.SR5E1_CORDIC.h.14.354fbf7c9eaf6963d38eaa25cf28ffe8
+                           .group:00000000 wm4.SR5E1_CRC.h.14.c64d0f7767671ddb92e9ead0a1162100
+                           .group:00000000 wm4.SR5E1_DAC.h.14.8c26a0ff04b0cfeb55306cc3f22187b8
+                           .group:00000000 wm4.SR5E1_DBGMCU.h.14.427df893d53a8044654f017ba01c25ed
+                           .group:00000000 wm4.SR5E1_DMA.h.14.a7f9a92f844b40a86965798c2e64240b
+                           .group:00000000 wm4.SR5E1_DMAMUX.h.14.471b3b4dfd4d41515f1df49493698866
+                           .group:00000000 wm4.SR5E1_EXTI.h.14.a325ea3fe89cd84894660551c33241ea
+                           .group:00000000 wm4.SR5E1_FCCU.h.14.0ebf0f0f36e079d28613ad2c80e17e23
+                           .group:00000000 wm4.SR5E1_FDCAN.h.14.92cca1acd00b06d527134cd2ce2de963
+                           .group:00000000 wm4.SR5E1_FLASH_REG_ITF.h.14.d23d1d44923f9b20b8c8fdb51d66aefd
+                           .group:00000000 wm4.SR5E1_GPIO.h.14.1c84071e130d7c64b62470ab0e18a1f1
+                           .group:00000000 wm4.SR5E1_HRTIM.h.24.03932387d2522e6bd5c772a4edaf2f5d
+                           .group:00000000 wm4.SR5E1_HSEM.h.14.cbe70eee519f01b16452c3f8c99d8df1
+                           .group:00000000 wm4.SR5E1_I2C.h.14.350ba3e0f4fd57828457efa80135c36c
+                           .group:00000000 wm4.SR5E1_IMA.h.14.62b7088985ab2b7ce9b030a02daa1f7d
+                           .group:00000000 wm4.SR5E1_IWDG.h.14.20b7c5f05cf7ae94464c360d7af3660d
+                           .group:00000000 wm4.SR5E1_MEMU.h.14.04bad7ae4c52ce334a4fc900aad2ae5b
+                           .group:00000000 wm4.SR5E1_NVM_CTRL.h.14.5f442617f0628d4f16258f211c614ef9
+                           .group:00000000 wm4.SR5E1_PLLDIG.h.14.bd87a8e6917eee17dae2f312c8e5fa53
+                           .group:00000000 wm4.SR5E1_PMC_DIG.h.14.54173b566c6656344766ec4ef46c9281
+                           .group:00000000 wm4.stdbool.h.29.c08aa3eec75cf5b9b5003883f43253f0
+                           .group:00000000 wm4.stddef.h.39.38eb7ec030421799c657b13be5aa21c7
+                           .group:00000000 wm4.typedefs.h.36.07fe3956b4e751037cfee70edcd0b397
+                           .group:00000000 wm4.SR5E1_PRAMC.h.30.1c0b9354fe6c8cac480bcfc44eff2d7e
+                           .group:00000000 wm4.SR5E1_RCC.h.14.6d8396933f006e04e798678fd043e24c
+                           .group:00000000 wm4.SR5E1_RTC.h.14.c054aa0839c8cf8ac24f324aa927c4ec
+                           .group:00000000 wm4.SR5E1_SD_ADC.h.14.552b97d0b8f3c1fd4df6d8964b2f1a80
+                           .group:00000000 wm4.SR5E1_SMPU.h.14.8ce5bb6d5d7c579cd725f492f46e9085
+                           .group:00000000 wm4.SR5E1_SPI.h.14.42d52112e540f85ade4d9135f8b87d72
+                           .group:00000000 wm4.SR5E1_SSCM.h.14.8e6a2ad0ce5fca422fc3d69939b6125b
+                           .group:00000000 wm4.SR5E1_SYSCFG.h.14.02b969490118ce4069914b5e94f7ca65
+                           .group:00000000 wm4.SR5E1_TDM.h.14.a40ed7928cad243a57fd233fccf01ad2
+                           .group:00000000 wm4.SR5E1_TIM.h.14.05b8efc5395873619642d61a4b0b5a54
+                           .group:00000000 wm4.SR5E1_UART.h.14.eec3ab82b02b3bdb3de500483675b83f
+                           .group:00000000 wm4.SR5E1_WWDG.h.14.59b45efc70e442cc6ef03702aad4ad88
+                           .group:00000000 wm4.irq_numbers.h.38.6294b95aed1bf7b3a2cda0eed8ce8f57
+                           .group:00000000 wm4.regs.h.23.2ac145b4f57126d16daed5fbd86d99c6
+                           .group:00000000 wm4.clock.h.37.58835f83108bcb182d0fd3c9e58df3b9
+                           .group:00000000 wm4.dwt.h.60.bb144dd848d9adaa1c08f830ce597105
+
+UNDEFINED SYMBOLS
+__aeabi_uldivmod
