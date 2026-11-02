@@ -27,13 +27,7 @@
 
 #define FI_CAMPAIGN 1
 
-#define W_SIZE 730
-#define FC_W_SIZE 730
-//#define FC_W_SIZE 2
-//#define FC_BIT_RANGE 4
-#define FC_BIT_RANGE 16
-#define FC_BIT_START 63
-#define FC_BIT_STEP 32
+#define FC_F_NB 730
 
 #if !defined(USE_OBSERVER)
 #define USE_OBSERVER         1 /* 0: remove the registration of the user CB to evaluate the inference time by layer */
@@ -65,11 +59,6 @@
 /* AI header files */
 #include <stai.h>
 
-#if FI_CAMPAIGN == 1
-STAI_ALIGNED(8)
-extern uint64_t g_network_weights_array[W_SIZE];
-#endif
-
 
 #if defined(SR5E1) || defined(SR6X)
 #include <app_stellar-studio-ai.h>
@@ -88,6 +77,10 @@ extern uint64_t g_network_weights_array[W_SIZE];
 
 #ifndef UNUSED
 #define UNUSED(x) ((void)(x))
+#endif
+
+#if FI_CAMPAIGN == 1
+extern fi_log_t fi_log;			        // struct with important info on the injection
 #endif
 
 /* -----------------------------------------------------------------------------
@@ -876,13 +869,6 @@ static void _reset_states(const reqMsg *req, struct ai_network_exec_ctx *ctx)
   }
 }
 
-#if FI_CAMPAIGN == 1
-void w_bit_flip(int w_idx, int b_idx)
-{
-  g_network_weights_array[w_idx] ^= (1ULL << b_idx);
-}
-#endif
-
 void aiPbCmdNNRun(const reqMsg *req, respMsg *resp, void *param)
 {
   stai_return_code stai_err;
@@ -959,12 +945,8 @@ void aiPbCmdNNRun(const reqMsg *req, respMsg *resp, void *param)
   PB_LC_PRINT(ctx->debug, "RUN: %ld ticks to download %d input(s)\r\n", tick, ctx->report.n_inputs);
 
 #if FI_CAMPAIGN == 1
-  for(int w_idx = 0; w_idx < FC_W_SIZE; w_idx++) {
-    for(int b_start = FC_BIT_START; b_start >= 0 ; b_start -= FC_BIT_STEP) {
-       for(int b_idx = b_start; b_idx > b_start - FC_BIT_RANGE; b_idx--) {
-         w_bit_flip(w_idx, b_idx);
-
-         PB_LC_PRINT(ctx->debug, "Fault injected in weight %d, bit %d\r\n", w_idx, b_idx);
+  for(int f_idx = 0; f_idx < FC_F_NB; f_idx++) {
+    PB_LC_PRINT(ctx->debug, "Fault %d injected\r\n", f_idx);
 #endif
 
   _reset_states(req, ctx);
@@ -1006,6 +988,9 @@ void aiPbCmdNNRun(const reqMsg *req, respMsg *resp, void *param)
   PB_LC_PRINT(ctx->debug, "RUN: Processing done. delta_tick=%ld\r\n", tick);
 
   /* 4 - Send basic report (optional) ------------------------------ */
+#if FI_CAMPAIGN == 1
+  aiOpPerf perf = {dwtCyclesToFloatMs(tend), 0,  2, (uint32_t *)&fi_log, -1, -1};
+#else
 #if defined(_APP_STACK_MONITOR_) && _APP_STACK_MONITOR_ == 1 && defined(_IS_GCC_COMPILER) && _IS_GCC_COMPILER
   aiOpPerf perf = {dwtCyclesToFloatMs(tend), 0,  2, (uint32_t *)&tend, io_stack.susage, io_malloc.used};
 #if defined(USE_OBSERVER) && USE_OBSERVER == 1
@@ -1016,6 +1001,7 @@ void aiPbCmdNNRun(const reqMsg *req, respMsg *resp, void *param)
 #endif
 #else
   aiOpPerf perf = {dwtCyclesToFloatMs(tend), 0,  2, (uint32_t *)&tend, -1, -1};
+#endif
 #endif
   
   aiPbMgrSendOperator(req, resp, EnumState_S_PROCESSING, ctx->report.c_model_name, 0, 0, &perf);
@@ -1037,9 +1023,6 @@ void aiPbCmdNNRun(const reqMsg *req, respMsg *resp, void *param)
   }
 
 #if FI_CAMPAIGN == 1
-         w_bit_flip(w_idx, b_idx);
-       }
-    }
   }
 #endif
 }
