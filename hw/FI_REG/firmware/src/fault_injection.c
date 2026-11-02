@@ -4,15 +4,15 @@
 #include "core_cm7.h"
 #include "stai.h"
 #include "stai_events.h"
-#include "app_stellar-studio-ai.h" 		// stai_mnetwork_get_outputs, data_activations)
+#include "app_stellar-studio-ai.h" 		// stai_mnetwork_get_outputs, data_activations
 #include <setjmp.h>
 #include <math.h>
 
-/* Stato del meccanismo per l'inferenza in corso. */
-#define FI_IDLE            0U        /* nessuna inferenza armata          */
+/* Possible states during the inference process */
+#define FI_IDLE            0U        /* No Armed Inference state          */
 #define FI_WAIT_FLIP       1U        /* TIM2 conta fino all'istante del flip */
 #define FI_WATCHDOG        2U        /* flip fatto: TIM2 conta fino al timeout */
-#define FI_MPU_PSP_HI   0x24004000U      /* regione 2: parte alta dello stack PSP, 4 KB */
+#define FI_MPU_PSP_HI   0x24004000U      /* region 2: high part of PSP stack, 4 KB */
 
 /* Regione 5: ingresso della rete (0x24001080-0x240011BF) in sola lettura nei layer 1-3.
  * 512 B a 0x24001000, sottoregioni da 64 B; la 7 (scratch della conv) esclusa. */
@@ -212,7 +212,7 @@ stai_return_code __wrap_stai_mnetwork_run(stai_ptr network) {
     fi_record.abort_cause = FI_ABORT_NONE;
 
     fi_log.done        = 0U;
-    fi_log.delay_ticks = (uint16_t) t;
+    fi_log.delay_ticks = (uint32_t) t;
     fi_log.abort_cause = FI_ABORT_NONE;
 
     fi_timer_arm(t);
@@ -269,11 +269,12 @@ static uint32_t fi_abort(fi_exc_frame_t *frame, uint32_t exc_ret) {
     return 1U;
 }
 
-/* Chiamata dal trampolino.
- * frame : frame HW (R0-R3, R12, LR, PC, xPSR) del contesto interrotto
- * r4_r11: copia di R4..R11 salvata dal trampolino, ricaricata con POP all'uscita
- * exc_ret: valore EXC_RETURN (LR all'ingresso dell'interrupt) */
-void fi_dispatch(fi_exc_frame_t *frame, uint32_t *r4_r11, uint32_t exc_ret) {
+/* Dispatch call.
+ * frame : frame HW (R0-R3, R12, LR, PC, xPSR, S0-S15, FPSCR) of interrupted context
+ * r4_r11: copy of R4..R11
+ * s16_s31: copy of S16-S31
+ * exc_ret: EXC_RETURN value (LR at interrupt beginning) */
+void fi_dispatch(fi_exc_frame_t *frame, uint32_t *r4_r11, uint32_t exc_ret, uint32_t *s16_s31) {
     __tim_serve_interrupt(&DRV_TIM2);            /* ack dell'update */
 
     if (fi_phase == FI_WATCHDOG) {               /* FI_TIMEOUT_US di calcolo dopo il flip */
@@ -290,16 +291,22 @@ void fi_dispatch(fi_exc_frame_t *frame, uint32_t *r4_r11, uint32_t exc_ret) {
         return;                                  /* fuori da un layer: nessun flip */
     }
 
-    uint32_t reg = xorshift32() % 13U;           /* R0..R12 */
+    /* 0..12 = R0..R12, 13..44 = S0..S31. Without FPU context in the frame
+     * if (EXC_RETURN bit 4 = 1) the choice is between R0..R12 only */
+    uint32_t reg = xorshift32() % (((exc_ret & 0x10U) == 0U) ? 45U : 13U);
     uint32_t bit = xorshift32() & 0x1FU;         /* 0..31   */
 
     volatile uint32_t *target;
     if (reg <= 3U) {
-        target = &((volatile uint32_t *)frame)[reg];   /* R0..R3 */
+        target = &((volatile uint32_t *)frame)[reg];   	/* R0..R3 */
     } else if (reg == 12U) {
-        target = &frame->r12;                          /* R12    */
+        target = &frame->r12;                          	/* R12 */
+    } else if (reg < 12U) {
+        target = &r4_r11[reg - 4U];                    	/* R4..R11 */
+    } else if (reg < 29U) {
+    	target = &frame->s[reg - 13U];                	/* S0..S15   */
     } else {
-        target = &r4_r11[reg - 4U];                    /* R4..R11 */
+    	target = &s16_s31[reg - 29U];					/* S16..S31 */
     }
 
     fi_record.reg          = reg;
@@ -362,22 +369,25 @@ __attribute__((naked)) void HardFault_Handler(void) {
     );
 }
 
-/* TIM2 IRQ: salva tutto, chiama il dispatcher, ripristina tutto
- * (con l'eventuale bit flippato). */
+/* TIM2 IRQ: save all registers, call the dispatcher, restore all registers
+ * (one of them has the bit flip). */
 __attribute__((naked)) void IRQ_TIM2_HANDLER(void) {
     __asm volatile (
-        "TST    LR, #4          \n"   /* thread interrotto su MSP o PSP?  */
+        "TST    LR, #4          \n"   /* Interrupted thread on MSP or PSP?  */
         "ITE    EQ              \n"
         "MRSEQ  R0, MSP         \n"   /* R0 = frame HW                    */
         "MRSNE  R0, PSP         \n"
-        "PUSH   {R4-R11}        \n"   /* copia di R4..R11                 */
-        "MOV    R1, SP          \n"   /* R1 = indirizzo della copia       */
+        "PUSH   {R4-R11}        \n"   /* R4..R11 copy */
+        "MOV    R1, SP          \n"   /* R1 = address of R4..R11 copy */
+    	"VPUSH  {S16-S31}       \n"   /* S16..S31 copy */
+    	"MOV    R3, SP          \n"   /* R3 = address of S16..S31 copy */
         "MOV    R2, LR          \n"   /* R2 = EXC_RETURN                  */
-        "PUSH   {R4, LR}        \n"   /* salva EXC_RETURN (R4 serve solo a mantenere SP allineato a 8 byte)  */
-        "BL     fi_dispatch     \n"	  /* fi_dispatch(frame, r4_r11, exc_ret)*/
+        "PUSH   {R4, LR}        \n"   /* save EXC_RETURN (R4 is just for align SP to 8 byte)  */
+        "BL     fi_dispatch     \n"	  /* fi_dispatch(frame, r4_r11, exc_ret, s16_31)*/
         "POP    {R4, LR}        \n"
-        "POP    {R4-R11}        \n"   /* ricarica R4..R11 DALLA COPIA, eventualmente modificata */
-        "BX     LR              \n"   /* l'HW ricarica R0-R3, R12 dal frame */
+    	"VPOP	{S16-S31}		\n"	  /* reload S16..S31 from copy */
+        "POP    {R4-R11}        \n"   /* reload R4..R11 from copy */
+        "BX     LR              \n"   /* the HW reload R0-R3, R12, S0-S15, FPSCR from frame */
     );
 }
 

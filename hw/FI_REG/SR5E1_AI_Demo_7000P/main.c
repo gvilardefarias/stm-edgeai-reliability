@@ -99,17 +99,13 @@ void SystemInit(void)
  * Application entry point for validation process
  */
 
-extern void fi_mpu_init(void);
-extern void fi_mpu_on(void);
 
 int main(void) {
 
   SystemInit();
 
-  FI_Init();
-  FI_Start();
-
-
+  FI_Init();	// Inizialize Timer and Protected Memory
+  FI_Start();	// Enable timer
 
   aiValidateStart();
 

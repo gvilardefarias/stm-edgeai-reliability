@@ -2233,11 +2233,9 @@
   99:main.c        ****  * Application entry point for validation process
  100:main.c        ****  */
  101:main.c        **** 
- 102:main.c        **** extern void fi_mpu_init(void);
- 103:main.c        **** extern void fi_mpu_on(void);
- 104:main.c        **** 
- 105:main.c        **** int main(void) {
- 1032              		.loc 1 105 16
+ 102:main.c        **** 
+ 103:main.c        **** int main(void) {
+ 1032              		.loc 1 103 16
  1033              		.cfi_startproc
  1034              		@ args = 0, pretend = 0, frame = 0
  1035              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -2245,28 +2243,26 @@
  1037              		.cfi_def_cfa_offset 8
  1038              		.cfi_offset 3, -8
  1039              		.cfi_offset 14, -4
- 106:main.c        **** 
- 107:main.c        ****   SystemInit();
- 1040              		.loc 1 107 3
+ 104:main.c        **** 
+ 105:main.c        ****   SystemInit();
+ 1040              		.loc 1 105 3
  1041 0002 FFF7FEFF 		bl	SystemInit
- 108:main.c        **** 
- 109:main.c        ****   FI_Init();
- 1042              		.loc 1 109 3
+ 106:main.c        **** 
+ 107:main.c        ****   FI_Init();	// Inizialize Timer and Protected Memory
+ 1042              		.loc 1 107 3
  1043 0006 FFF7FEFF 		bl	FI_Init
- 110:main.c        ****   FI_Start();
- 1044              		.loc 1 110 3
+ 108:main.c        ****   FI_Start();	// Enable timer
+ 1044              		.loc 1 108 3
  1045 000a FFF7FEFF 		bl	FI_Start
- 111:main.c        **** 
- 112:main.c        **** 
- 113:main.c        **** 
- 114:main.c        ****   aiValidateStart();
- 1046              		.loc 1 114 3
+ 109:main.c        **** 
+ 110:main.c        ****   aiValidateStart();
+ 1046              		.loc 1 110 3
  1047 000e FFF7FEFF 		bl	aiValidateStart
  1048              	.L39:
- 115:main.c        **** 
- 116:main.c        ****   /* never here...*/
- 117:main.c        ****   while (true) {
- 1049              		.loc 1 117 9
+ 111:main.c        **** 
+ 112:main.c        ****   /* never here...*/
+ 113:main.c        ****   while (true) {
+ 1049              		.loc 1 113 9
  1050 0012 00BF     		nop
  1051 0014 FDE7     		b	.L39
  1052              		.cfi_endproc
@@ -2287,31 +2283,31 @@
  1068              		.file 16 "C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Comms/UART/include/sr5e1/ua
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\danie\AppData\Local\Temp\ccgFoKLd.s:20     .text.gpio_set_pin_moder:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccgFoKLd.s:26     .text.gpio_set_pin_moder:00000000 gpio_set_pin_moder
-C:\Users\danie\AppData\Local\Temp\ccgFoKLd.s:93     .text.gpio_set_pin_otyper:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccgFoKLd.s:99     .text.gpio_set_pin_otyper:00000000 gpio_set_pin_otyper
-C:\Users\danie\AppData\Local\Temp\ccgFoKLd.s:162    .text.gpio_set_pin_ospeedr:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccgFoKLd.s:168    .text.gpio_set_pin_ospeedr:00000000 gpio_set_pin_ospeedr
-C:\Users\danie\AppData\Local\Temp\ccgFoKLd.s:234    .text.gpio_set_pin_pupdr:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccgFoKLd.s:240    .text.gpio_set_pin_pupdr:00000000 gpio_set_pin_pupdr
-C:\Users\danie\AppData\Local\Temp\ccgFoKLd.s:306    .text.gpio_set_pin_afr:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccgFoKLd.s:312    .text.gpio_set_pin_afr:00000000 gpio_set_pin_afr
-C:\Users\danie\AppData\Local\Temp\ccgFoKLd.s:405    .text.gpio_set_pin_ihystr:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccgFoKLd.s:411    .text.gpio_set_pin_ihystr:00000000 gpio_set_pin_ihystr
-C:\Users\danie\AppData\Local\Temp\ccgFoKLd.s:477    .text.gpio_set_pin_trigenr:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccgFoKLd.s:483    .text.gpio_set_pin_trigenr:00000000 gpio_set_pin_trigenr
-C:\Users\danie\AppData\Local\Temp\ccgFoKLd.s:546    .text.gpio_set_pin_safeselr:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccgFoKLd.s:552    .text.gpio_set_pin_safeselr:00000000 gpio_set_pin_safeselr
-C:\Users\danie\AppData\Local\Temp\ccgFoKLd.s:615    .text.gpio_set_pin_safevalr:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccgFoKLd.s:621    .text.gpio_set_pin_safevalr:00000000 gpio_set_pin_safevalr
-C:\Users\danie\AppData\Local\Temp\ccgFoKLd.s:684    .text.gpio_set_pin_mode:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccgFoKLd.s:690    .text.gpio_set_pin_mode:00000000 gpio_set_pin_mode
-C:\Users\danie\AppData\Local\Temp\ccgFoKLd.s:807    .text.SystemInit:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccgFoKLd.s:814    .text.SystemInit:00000000 SystemInit
-C:\Users\danie\AppData\Local\Temp\ccgFoKLd.s:1017   .text.SystemInit:000000fc $d
-C:\Users\danie\AppData\Local\Temp\ccgFoKLd.s:1023   .text.main:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccgFoKLd.s:1030   .text.main:00000000 main
+C:\Users\danie\AppData\Local\Temp\ccWsrC3y.s:20     .text.gpio_set_pin_moder:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccWsrC3y.s:26     .text.gpio_set_pin_moder:00000000 gpio_set_pin_moder
+C:\Users\danie\AppData\Local\Temp\ccWsrC3y.s:93     .text.gpio_set_pin_otyper:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccWsrC3y.s:99     .text.gpio_set_pin_otyper:00000000 gpio_set_pin_otyper
+C:\Users\danie\AppData\Local\Temp\ccWsrC3y.s:162    .text.gpio_set_pin_ospeedr:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccWsrC3y.s:168    .text.gpio_set_pin_ospeedr:00000000 gpio_set_pin_ospeedr
+C:\Users\danie\AppData\Local\Temp\ccWsrC3y.s:234    .text.gpio_set_pin_pupdr:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccWsrC3y.s:240    .text.gpio_set_pin_pupdr:00000000 gpio_set_pin_pupdr
+C:\Users\danie\AppData\Local\Temp\ccWsrC3y.s:306    .text.gpio_set_pin_afr:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccWsrC3y.s:312    .text.gpio_set_pin_afr:00000000 gpio_set_pin_afr
+C:\Users\danie\AppData\Local\Temp\ccWsrC3y.s:405    .text.gpio_set_pin_ihystr:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccWsrC3y.s:411    .text.gpio_set_pin_ihystr:00000000 gpio_set_pin_ihystr
+C:\Users\danie\AppData\Local\Temp\ccWsrC3y.s:477    .text.gpio_set_pin_trigenr:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccWsrC3y.s:483    .text.gpio_set_pin_trigenr:00000000 gpio_set_pin_trigenr
+C:\Users\danie\AppData\Local\Temp\ccWsrC3y.s:546    .text.gpio_set_pin_safeselr:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccWsrC3y.s:552    .text.gpio_set_pin_safeselr:00000000 gpio_set_pin_safeselr
+C:\Users\danie\AppData\Local\Temp\ccWsrC3y.s:615    .text.gpio_set_pin_safevalr:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccWsrC3y.s:621    .text.gpio_set_pin_safevalr:00000000 gpio_set_pin_safevalr
+C:\Users\danie\AppData\Local\Temp\ccWsrC3y.s:684    .text.gpio_set_pin_mode:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccWsrC3y.s:690    .text.gpio_set_pin_mode:00000000 gpio_set_pin_mode
+C:\Users\danie\AppData\Local\Temp\ccWsrC3y.s:807    .text.SystemInit:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccWsrC3y.s:814    .text.SystemInit:00000000 SystemInit
+C:\Users\danie\AppData\Local\Temp\ccWsrC3y.s:1017   .text.SystemInit:000000fc $d
+C:\Users\danie\AppData\Local\Temp\ccWsrC3y.s:1023   .text.main:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccWsrC3y.s:1030   .text.main:00000000 main
                            .group:00000000 wm4.0.5030deb6392b4db6a7ac5ffd5733b4a1
                            .group:00000000 wm4.stdbool.h.29.c08aa3eec75cf5b9b5003883f43253f0
                            .group:00000000 wm4.stddef.h.39.38eb7ec030421799c657b13be5aa21c7
