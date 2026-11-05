@@ -10,6 +10,8 @@
 #include <math.h>
 #include <errno.h>
 
+#include <stdio.h>
+
 /* Possible states during the inference process */
 #define FI_IDLE            0U        /* No Armed Inference state          */
 #define FI_WAIT_FLIP       1U        /* TIM2 counts until bit flip instant */
@@ -272,7 +274,7 @@ stai_return_code __wrap_stai_mnetwork_run(stai_ptr network) {
     fi_record.delay_ticks = t;
     fi_record.abort_cause = FI_ABORT_NONE;
 
-    fi_log.done        = 0U;
+    fi_log.done_and_bit = 0U;
     fi_log.delay_ticks = (uint32_t) t;
     fi_log.abort_cause = FI_ABORT_NONE;
 
@@ -384,11 +386,11 @@ void fi_dispatch(fi_exc_frame_t *frame, uint32_t *r4_r11, uint32_t exc_ret, uint
     fi_record.node         = fi_node_ids[fi_node_idx - 1U];
     fi_n_injected++;
 
-    fi_log.done         = 1;
+    fi_log.done_and_bit = 1 << 7 | (uint8_t)bit;
     fi_log.reg          = (uint8_t)reg;
-    fi_log.bit          = (uint8_t)bit;
     fi_log.node         = (uint8_t)fi_node_ids[fi_node_idx - 1U];
     fi_log.abort_cause  = FI_ABORT_NONE;
+
 
     /* Da qui TIM2 fa da watchdog: conta il calcolo dei layer dopo il flip. */
     fi_phase = FI_WATCHDOG;

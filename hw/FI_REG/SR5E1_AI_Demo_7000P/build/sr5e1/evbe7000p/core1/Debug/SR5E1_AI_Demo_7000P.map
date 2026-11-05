@@ -572,6 +572,12 @@ Discarded input sections
  .group         0x00000000        0xc build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
  .group         0x00000000        0xc build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
  .group         0x00000000        0xc build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .group         0x00000000        0xc build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .group         0x00000000        0xc build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .group         0x00000000        0xc build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .group         0x00000000        0xc build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .group         0x00000000        0xc build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .group         0x00000000        0xc build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
  .text          0x00000000        0x0 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
  .data          0x00000000        0x0 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
  .bss           0x00000000        0x0 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
@@ -643,6 +649,10 @@ Discarded input sections
  .debug_macro   0x00000000       0x10 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
  .debug_macro   0x00000000       0x58 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
  .debug_macro   0x00000000      0x1e5 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .debug_macro   0x00000000       0x3c build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .debug_macro   0x00000000       0x10 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .debug_macro   0x00000000       0x16 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .debug_macro   0x00000000      0x170 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
  .group         0x00000000        0xc build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.o
  .group         0x00000000        0xc build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.o
  .group         0x00000000        0xc build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.o
@@ -783,8 +793,10 @@ Discarded input sections
  .debug_macro   0x00000000       0x10 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
  .debug_macro   0x00000000       0x58 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
  .debug_macro   0x00000000      0x1e5 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
+ .debug_macro   0x00000000       0x1c build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
  .debug_macro   0x00000000       0x3c build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
  .debug_macro   0x00000000       0x10 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
+ .debug_macro   0x00000000       0x1c build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
  .debug_macro   0x00000000       0x16 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
  .debug_macro   0x00000000      0x170 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
  .debug_macro   0x00000000       0x22 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
@@ -8629,23 +8641,23 @@ destructors     0x0800040c        0x0
                 0x0000001c                        __itcm_size__ = SIZEOF (.itcm)
                 0x0801a140                        __itcm_load__ = LOADADDR (.itcm)
 
-.dtcm           0x20000000       0x60 load address 0x0801a15c
+.dtcm           0x20000000       0x5c load address 0x0801a15c
                 0x20000000                        __dtcm__ = .
- .dtcm          0x20000000       0x60 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .dtcm          0x20000000       0x5c build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
                 0x20000000                fi_record
                 0x20000030                fi_log
-                0x2000003c                fi_n_injected
-                0x20000040                fi_n_crash
-                0x20000044                fi_n_hang
-                0x20000054                fi_in_inference
-                0x2000005c                fi_n_runs
+                0x20000038                fi_n_injected
+                0x2000003c                fi_n_crash
+                0x20000040                fi_n_hang
+                0x20000050                fi_in_inference
+                0x20000058                fi_n_runs
                 0x20000000                        __dtcm_start__ = ORIGIN (core1_dtcm_dir)
                 0x00010000                        __dtcm_len__ = LENGTH (core1_dtcm_dir)
                 0x20010000                        __dtcm_end__ = (__dtcm_start__ + __dtcm_len__)
-                0x00000060                        __dtcm_size__ = SIZEOF (.dtcm)
+                0x0000005c                        __dtcm_size__ = SIZEOF (.dtcm)
                 0x0801a15c                        __dtcm_load__ = LOADADDR (.dtcm)
 
-.data           0x24000000      0x908 load address 0x0801a1bc
+.data           0x24000000      0x908 load address 0x0801a1b8
                 0x24000000                        . = ALIGN (0x4)
                 0x24000000                        PROVIDE (__data_start__ = .)
  *(.data)
@@ -8742,12 +8754,12 @@ destructors     0x0800040c        0x0
  *(.gnu.linkonce.d.*)
                 0x24000908                        PROVIDE (__data_end__ = .)
                 0x00000908                        __data_size__ = SIZEOF (.data)
-                0x0801a1bc                        __data_load__ = LOADADDR (.data)
+                0x0801a1b8                        __data_load__ = LOADADDR (.data)
 
-.igot.plt       0x24000908        0x0 load address 0x0801aac4
+.igot.plt       0x24000908        0x0 load address 0x0801aac0
  .igot.plt      0x24000908        0x0 build/sr5e1/evbe7000p/core1/Debug/Projects/SDKTests/CommonBuild/src/test_env.o
 
-.bss            0x24002000     0x357c load address 0x0801aac4
+.bss            0x24002000     0x357c load address 0x0801aac0
                 0x24002000                        . = ALIGN (0x8)
                 [!provide]                        PROVIDE (__bss_start__ = .)
  *(.bss)
@@ -8880,7 +8892,7 @@ destructors     0x0800040c        0x0
  *(COMMON)
                 [!provide]                        PROVIDE (__bss_end__ = .)
 
-.mstack         0x2400557c     0x1004 load address 0x0801aac4
+.mstack         0x2400557c     0x1004 load address 0x0801aac0
                 0x24005580                        . = ALIGN (0x8)
  *fill*         0x2400557c        0x4 
                 0x24005580                        __main_stack_base__ = .
@@ -8889,7 +8901,7 @@ destructors     0x0800040c        0x0
                 0x24006580                        . = ALIGN (0x8)
                 0x24006580                        __main_stack_end__ = .
 
-.pstack         0x24006580     0x1000 load address 0x0801aac4
+.pstack         0x24006580     0x1000 load address 0x0801aac0
                 0x24006580                        __process_stack_base__ = .
                 0x24006580                        __main_thread_stack_base__ = .
                 0x24007580                        . = (. + 0x1000)
@@ -8955,42 +8967,42 @@ END GROUP
 OUTPUT(build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P.elf elf32-littlearm)
 LOAD linker stubs
 
-.debug_info     0x00000000    0x1f6bb
+.debug_info     0x00000000    0x1f6a1
  .debug_info    0x00000000      0x7b7 build/sr5e1/evbe7000p/core1/Debug/Projects/SDKTests/CommonBuild/src/test_env.o
  .debug_info    0x000007b7      0xf68 build/sr5e1/evbe7000p/core1/Debug/main.o
- .debug_info    0x0000171f     0x1619 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
- .debug_info    0x00002d38       0xa7 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.o
- .debug_info    0x00002ddf      0x5cf build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
- .debug_info    0x000033ae     0x1722 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMgr.o
- .debug_info    0x00004ad0     0x2d6e build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiValidation_ST_AI.o
- .debug_info    0x0000783e      0x2f0 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.o
- .debug_info    0x00007b2e     0x1823 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/pb_decode.o
- .debug_info    0x00009351     0x1285 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/pb_encode.o
- .debug_info    0x0000a5d6      0x4a7 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.o
- .debug_info    0x0000aa7d      0xc01 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/stm32msg.pb.o
- .debug_info    0x0000b67e       0xb5 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/ai_device_adaptor.o
- .debug_info    0x0000b733      0xa2f build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.o
- .debug_info    0x0000c162      0xe95 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
- .debug_info    0x0000cff7       0xc6 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network_data.o
- .debug_info    0x0000d0bd     0x2365 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_info    0x0000f422     0x16c0 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.o
- .debug_info    0x00010ae2      0x53d build/sr5e1/evbe7000p/core1/Debug/Modules/Boot/src/crt1.o
- .debug_info    0x0001101f      0x8d3 build/sr5e1/evbe7000p/core1/Debug/Modules/Platform/Clock/src/sr5e1/clock.o
- .debug_info    0x000118f2     0x1619 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/System/DMA/src/dma.o
- .debug_info    0x00012f0b       0x94 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/System/GPIO/src/gpio.o
- .debug_info    0x00012f9f      0x68b build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/System/GPIO/src/sr5e1/gpio_dev.o
- .debug_info    0x0001362a     0x2010 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Comms/UART/src/uart.o
- .debug_info    0x0001563a      0xbc1 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Comms/UART/src/sr5e1/uart_instances.o
- .debug_info    0x000161fb     0x143a build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Comms/UART/src/sr5e1/uart_dev.o
- .debug_info    0x00017635      0x44a build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/DWT/src/dwt.o
- .debug_info    0x00017a7f      0xf0d build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/SYSTICK/src/systick.o
- .debug_info    0x0001898c     0x269f build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/TIM/src/tim.o
- .debug_info    0x0001b02b      0xe87 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/TIM/src/sr5e1/tim_instances.o
- .debug_info    0x0001beb2     0x2356 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/TIM/src/sr5e1/tim_dev.o
- .debug_info    0x0001e208      0x603 build/sr5e1/evbe7000p/core1/Debug/Modules/OS/OSAL/src/osal.o
- .debug_info    0x0001e80b      0xe64 build/sr5e1/evbe7000p/core1/Debug/Modules/Runtime/IO/src/ARM/io.o
- .debug_info    0x0001f66f       0x26 build/sr5e1/evbe7000p/core1/Debug/Modules/Boot/src/GCC/crt0.o
- .debug_info    0x0001f695       0x26 build/sr5e1/evbe7000p/core1/Debug/Modules/Boot/src/GCC/vectors.o
+ .debug_info    0x0000171f     0x15ff build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .debug_info    0x00002d1e       0xa7 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.o
+ .debug_info    0x00002dc5      0x5cf build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
+ .debug_info    0x00003394     0x1722 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMgr.o
+ .debug_info    0x00004ab6     0x2d6e build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiValidation_ST_AI.o
+ .debug_info    0x00007824      0x2f0 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.o
+ .debug_info    0x00007b14     0x1823 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/pb_decode.o
+ .debug_info    0x00009337     0x1285 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/pb_encode.o
+ .debug_info    0x0000a5bc      0x4a7 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.o
+ .debug_info    0x0000aa63      0xc01 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/stm32msg.pb.o
+ .debug_info    0x0000b664       0xb5 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/ai_device_adaptor.o
+ .debug_info    0x0000b719      0xa2f build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.o
+ .debug_info    0x0000c148      0xe95 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
+ .debug_info    0x0000cfdd       0xc6 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network_data.o
+ .debug_info    0x0000d0a3     0x2365 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_info    0x0000f408     0x16c0 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.o
+ .debug_info    0x00010ac8      0x53d build/sr5e1/evbe7000p/core1/Debug/Modules/Boot/src/crt1.o
+ .debug_info    0x00011005      0x8d3 build/sr5e1/evbe7000p/core1/Debug/Modules/Platform/Clock/src/sr5e1/clock.o
+ .debug_info    0x000118d8     0x1619 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/System/DMA/src/dma.o
+ .debug_info    0x00012ef1       0x94 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/System/GPIO/src/gpio.o
+ .debug_info    0x00012f85      0x68b build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/System/GPIO/src/sr5e1/gpio_dev.o
+ .debug_info    0x00013610     0x2010 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Comms/UART/src/uart.o
+ .debug_info    0x00015620      0xbc1 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Comms/UART/src/sr5e1/uart_instances.o
+ .debug_info    0x000161e1     0x143a build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Comms/UART/src/sr5e1/uart_dev.o
+ .debug_info    0x0001761b      0x44a build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/DWT/src/dwt.o
+ .debug_info    0x00017a65      0xf0d build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/SYSTICK/src/systick.o
+ .debug_info    0x00018972     0x269f build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/TIM/src/tim.o
+ .debug_info    0x0001b011      0xe87 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/TIM/src/sr5e1/tim_instances.o
+ .debug_info    0x0001be98     0x2356 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/TIM/src/sr5e1/tim_dev.o
+ .debug_info    0x0001e1ee      0x603 build/sr5e1/evbe7000p/core1/Debug/Modules/OS/OSAL/src/osal.o
+ .debug_info    0x0001e7f1      0xe64 build/sr5e1/evbe7000p/core1/Debug/Modules/Runtime/IO/src/ARM/io.o
+ .debug_info    0x0001f655       0x26 build/sr5e1/evbe7000p/core1/Debug/Modules/Boot/src/GCC/crt0.o
+ .debug_info    0x0001f67b       0x26 build/sr5e1/evbe7000p/core1/Debug/Modules/Boot/src/GCC/vectors.o
 
 .debug_abbrev   0x00000000     0x4a73
  .debug_abbrev  0x00000000      0x1d7 build/sr5e1/evbe7000p/core1/Debug/Projects/SDKTests/CommonBuild/src/test_env.o
@@ -9131,7 +9143,7 @@ LOAD linker stubs
  .debug_ranges  0x00001160       0xa0 build/sr5e1/evbe7000p/core1/Debug/Modules/OS/OSAL/src/osal.o
  .debug_ranges  0x00001200       0x78 build/sr5e1/evbe7000p/core1/Debug/Modules/Runtime/IO/src/ARM/io.o
 
-.debug_macro    0x00000000    0x2b9e6
+.debug_macro    0x00000000    0x2ba1a
  .debug_macro   0x00000000      0x2e0 build/sr5e1/evbe7000p/core1/Debug/Projects/SDKTests/CommonBuild/src/test_env.o
  .debug_macro   0x000002e0      0xb44 build/sr5e1/evbe7000p/core1/Debug/Projects/SDKTests/CommonBuild/src/test_env.o
  .debug_macro   0x00000e24       0x22 build/sr5e1/evbe7000p/core1/Debug/Projects/SDKTests/CommonBuild/src/test_env.o
@@ -9217,213 +9229,213 @@ LOAD linker stubs
  .debug_macro   0x00021a4d      0x170 build/sr5e1/evbe7000p/core1/Debug/main.o
  .debug_macro   0x00021bbd       0x3a build/sr5e1/evbe7000p/core1/Debug/main.o
  .debug_macro   0x00021bf7       0x10 build/sr5e1/evbe7000p/core1/Debug/main.o
- .debug_macro   0x00021c07      0x43c build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
- .debug_macro   0x00022043       0x34 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
- .debug_macro   0x00022077      0x2eb build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
- .debug_macro   0x00022362       0x64 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
- .debug_macro   0x000223c6      0x1ec build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
- .debug_macro   0x000225b2       0x1f build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
- .debug_macro   0x000225d1       0xcf build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
- .debug_macro   0x000226a0       0x10 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
- .debug_macro   0x000226b0       0x16 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
- .debug_macro   0x000226c6      0x1be build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
- .debug_macro   0x00022884       0x53 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
- .debug_macro   0x000228d7       0x10 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
- .debug_macro   0x000228e7      0x19b build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
- .debug_macro   0x00022a82       0x10 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
- .debug_macro   0x00022a92      0x242 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
- .debug_macro   0x00022cd4       0x85 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.o
- .debug_macro   0x00022d59       0x10 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.o
- .debug_macro   0x00022d69      0x4f3 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
- .debug_macro   0x0002325c       0x16 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
- .debug_macro   0x00023272      0x11c build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
- .debug_macro   0x0002338e       0x94 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
- .debug_macro   0x00023422       0x16 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
- .debug_macro   0x00023438       0x29 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
- .debug_macro   0x00023461       0x1c build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
- .debug_macro   0x0002347d       0x1c build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
- .debug_macro   0x00023499       0x10 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
- .debug_macro   0x000234a9      0x4cc build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
- .debug_macro   0x00023975       0x16 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
- .debug_macro   0x0002398b       0x22 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
- .debug_macro   0x000239ad      0x27a build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
- .debug_macro   0x00023c27       0x59 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
- .debug_macro   0x00023c80       0x10 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
- .debug_macro   0x00023c90       0x16 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
- .debug_macro   0x00023ca6       0x3b build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
- .debug_macro   0x00023ce1       0xb3 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
- .debug_macro   0x00023d94       0x7c build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
- .debug_macro   0x00023e10      0x405 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
- .debug_macro   0x00024215      0x1d6 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMgr.o
- .debug_macro   0x000243eb       0x10 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMgr.o
- .debug_macro   0x000243fb       0x4b build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMgr.o
- .debug_macro   0x00024446      0x530 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiValidation_ST_AI.o
- .debug_macro   0x00024976       0x4c build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiValidation_ST_AI.o
- .debug_macro   0x000249c2       0x70 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiValidation_ST_AI.o
- .debug_macro   0x00024a32       0x16 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiValidation_ST_AI.o
- .debug_macro   0x00024a48      0x147 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.o
- .debug_macro   0x00024b8f      0x167 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/pb_decode.o
- .debug_macro   0x00024cf6      0x16d build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/pb_encode.o
- .debug_macro   0x00024e63      0x359 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.o
- .debug_macro   0x000251bc       0x28 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.o
- .debug_macro   0x000251e4       0xab build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.o
- .debug_macro   0x0002528f      0x14c build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/stm32msg.pb.o
- .debug_macro   0x000253db      0x425 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/ai_device_adaptor.o
- .debug_macro   0x00025800       0x12 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/ai_device_adaptor.o
- .debug_macro   0x00025812       0xa5 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/ai_device_adaptor.o
- .debug_macro   0x000258b7       0x12 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/ai_device_adaptor.o
- .debug_macro   0x000258c9      0x496 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.o
- .debug_macro   0x00025d5f       0x75 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.o
- .debug_macro   0x00025dd4       0x94 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.o
- .debug_macro   0x00025e68       0x57 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.o
- .debug_macro   0x00025ebf       0x9e build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.o
- .debug_macro   0x00025f5d      0x10b build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.o
- .debug_macro   0x00026068       0x28 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.o
- .debug_macro   0x00026090       0x58 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.o
- .debug_macro   0x000260e8      0x5bc build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
- .debug_macro   0x000266a4       0x16 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
- .debug_macro   0x000266ba       0x10 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
- .debug_macro   0x000266ca       0x1c build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
- .debug_macro   0x000266e6       0x52 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
- .debug_macro   0x00026738       0x22 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
- .debug_macro   0x0002675a       0x10 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
- .debug_macro   0x0002676a       0x52 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
- .debug_macro   0x000267bc       0xc1 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
- .debug_macro   0x0002687d       0x1c build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
- .debug_macro   0x00026899       0x3d build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
- .debug_macro   0x000268d6      0x51a build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
- .debug_macro   0x00026df0       0x93 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network_data.o
- .debug_macro   0x00026e83      0x666 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x000274e9       0x3a build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x00027523       0x46 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x00027569      0x342 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x000278ab       0x16 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x000278c1       0x22 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x000278e3       0x10 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x000278f3       0xc0 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x000279b3      0x229 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x00027bdc       0x2e build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x00027c0a      0x1ed build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x00027df7       0x16 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x00027e0d       0x2e build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x00027e3b       0xdc build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x00027f17       0x4d build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x00027f64       0x25 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x00027f89       0x6d build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x00027ff6       0x16 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x0002800c       0x7c build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x00028088       0x22 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x000280aa       0x10 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x000280ba       0x10 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x000280ca       0x11 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x000280db       0x2e build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x00028109       0x2e build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x00028137       0x7c build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x000281b3       0x17 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x000281ca      0x118 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x000282e2      0x202 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x000284e4       0x3a build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x0002851e       0x10 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_macro   0x0002852e      0x4f0 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.o
- .debug_macro   0x00028a1e      0x108 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.o
- .debug_macro   0x00028b26      0x281 build/sr5e1/evbe7000p/core1/Debug/Modules/Boot/src/crt1.o
- .debug_macro   0x00028da7       0x22 build/sr5e1/evbe7000p/core1/Debug/Modules/Boot/src/crt1.o
- .debug_macro   0x00028dc9      0x290 build/sr5e1/evbe7000p/core1/Debug/Modules/Platform/Clock/src/sr5e1/clock.o
- .debug_macro   0x00029059      0x2c1 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/System/DMA/src/dma.o
- .debug_macro   0x0002931a      0x292 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/System/GPIO/src/gpio.o
- .debug_macro   0x000295ac      0x1fb build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/System/GPIO/src/gpio.o
- .debug_macro   0x000297a7      0x292 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/System/GPIO/src/sr5e1/gpio_dev.o
- .debug_macro   0x00029a39      0x301 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Comms/UART/src/uart.o
- .debug_macro   0x00029d3a      0x2dd build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Comms/UART/src/sr5e1/uart_instances.o
- .debug_macro   0x0002a017      0x2dd build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Comms/UART/src/sr5e1/uart_dev.o
- .debug_macro   0x0002a2f4      0x29f build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/DWT/src/dwt.o
- .debug_macro   0x0002a593      0x2b3 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/SYSTICK/src/systick.o
- .debug_macro   0x0002a846      0x2eb build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/TIM/src/tim.o
- .debug_macro   0x0002ab31      0x2df build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/TIM/src/sr5e1/tim_instances.o
- .debug_macro   0x0002ae10      0x30f build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/TIM/src/sr5e1/tim_dev.o
- .debug_macro   0x0002b11f      0x2e4 build/sr5e1/evbe7000p/core1/Debug/Modules/OS/OSAL/src/osal.o
- .debug_macro   0x0002b403       0x1c build/sr5e1/evbe7000p/core1/Debug/Modules/OS/OSAL/src/osal.o
- .debug_macro   0x0002b41f      0x430 build/sr5e1/evbe7000p/core1/Debug/Modules/Runtime/IO/src/ARM/io.o
- .debug_macro   0x0002b84f       0x16 build/sr5e1/evbe7000p/core1/Debug/Modules/Runtime/IO/src/ARM/io.o
- .debug_macro   0x0002b865       0x10 build/sr5e1/evbe7000p/core1/Debug/Modules/Runtime/IO/src/ARM/io.o
- .debug_macro   0x0002b875       0x10 build/sr5e1/evbe7000p/core1/Debug/Modules/Runtime/IO/src/ARM/io.o
- .debug_macro   0x0002b885       0x35 build/sr5e1/evbe7000p/core1/Debug/Modules/Runtime/IO/src/ARM/io.o
- .debug_macro   0x0002b8ba      0x12c build/sr5e1/evbe7000p/core1/Debug/Modules/Runtime/IO/src/ARM/io.o
+ .debug_macro   0x00021c07      0x470 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .debug_macro   0x00022077       0x34 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .debug_macro   0x000220ab      0x2eb build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .debug_macro   0x00022396       0x64 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .debug_macro   0x000223fa      0x1ec build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .debug_macro   0x000225e6       0x1f build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .debug_macro   0x00022605       0xcf build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .debug_macro   0x000226d4       0x10 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .debug_macro   0x000226e4       0x16 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .debug_macro   0x000226fa      0x1be build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .debug_macro   0x000228b8       0x53 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .debug_macro   0x0002290b       0x10 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .debug_macro   0x0002291b      0x19b build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .debug_macro   0x00022ab6       0x10 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .debug_macro   0x00022ac6      0x242 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .debug_macro   0x00022d08       0x1c build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .debug_macro   0x00022d24       0x1c build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .debug_macro   0x00022d40       0x85 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.o
+ .debug_macro   0x00022dc5       0x10 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.o
+ .debug_macro   0x00022dd5      0x4f3 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
+ .debug_macro   0x000232c8       0x16 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
+ .debug_macro   0x000232de      0x11c build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
+ .debug_macro   0x000233fa       0x94 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
+ .debug_macro   0x0002348e       0x16 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
+ .debug_macro   0x000234a4       0x29 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
+ .debug_macro   0x000234cd       0x10 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
+ .debug_macro   0x000234dd      0x4cc build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
+ .debug_macro   0x000239a9       0x16 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
+ .debug_macro   0x000239bf       0x22 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
+ .debug_macro   0x000239e1      0x27a build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
+ .debug_macro   0x00023c5b       0x59 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
+ .debug_macro   0x00023cb4       0x10 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
+ .debug_macro   0x00023cc4       0x16 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
+ .debug_macro   0x00023cda       0x3b build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
+ .debug_macro   0x00023d15       0xb3 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
+ .debug_macro   0x00023dc8       0x7c build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
+ .debug_macro   0x00023e44      0x405 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
+ .debug_macro   0x00024249      0x1d6 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMgr.o
+ .debug_macro   0x0002441f       0x10 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMgr.o
+ .debug_macro   0x0002442f       0x4b build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMgr.o
+ .debug_macro   0x0002447a      0x530 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiValidation_ST_AI.o
+ .debug_macro   0x000249aa       0x4c build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiValidation_ST_AI.o
+ .debug_macro   0x000249f6       0x70 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiValidation_ST_AI.o
+ .debug_macro   0x00024a66       0x16 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiValidation_ST_AI.o
+ .debug_macro   0x00024a7c      0x147 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.o
+ .debug_macro   0x00024bc3      0x167 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/pb_decode.o
+ .debug_macro   0x00024d2a      0x16d build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/pb_encode.o
+ .debug_macro   0x00024e97      0x359 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.o
+ .debug_macro   0x000251f0       0x28 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.o
+ .debug_macro   0x00025218       0xab build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.o
+ .debug_macro   0x000252c3      0x14c build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/stm32msg.pb.o
+ .debug_macro   0x0002540f      0x425 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/ai_device_adaptor.o
+ .debug_macro   0x00025834       0x12 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/ai_device_adaptor.o
+ .debug_macro   0x00025846       0xa5 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/ai_device_adaptor.o
+ .debug_macro   0x000258eb       0x12 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/ai_device_adaptor.o
+ .debug_macro   0x000258fd      0x496 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.o
+ .debug_macro   0x00025d93       0x75 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.o
+ .debug_macro   0x00025e08       0x94 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.o
+ .debug_macro   0x00025e9c       0x57 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.o
+ .debug_macro   0x00025ef3       0x9e build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.o
+ .debug_macro   0x00025f91      0x10b build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.o
+ .debug_macro   0x0002609c       0x28 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.o
+ .debug_macro   0x000260c4       0x58 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.o
+ .debug_macro   0x0002611c      0x5bc build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
+ .debug_macro   0x000266d8       0x16 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
+ .debug_macro   0x000266ee       0x10 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
+ .debug_macro   0x000266fe       0x1c build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
+ .debug_macro   0x0002671a       0x52 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
+ .debug_macro   0x0002676c       0x22 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
+ .debug_macro   0x0002678e       0x10 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
+ .debug_macro   0x0002679e       0x52 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
+ .debug_macro   0x000267f0       0xc1 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
+ .debug_macro   0x000268b1       0x1c build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
+ .debug_macro   0x000268cd       0x3d build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
+ .debug_macro   0x0002690a      0x51a build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
+ .debug_macro   0x00026e24       0x93 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network_data.o
+ .debug_macro   0x00026eb7      0x666 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x0002751d       0x3a build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x00027557       0x46 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x0002759d      0x342 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x000278df       0x16 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x000278f5       0x22 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x00027917       0x10 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x00027927       0xc0 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x000279e7      0x229 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x00027c10       0x2e build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x00027c3e      0x1ed build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x00027e2b       0x16 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x00027e41       0x2e build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x00027e6f       0xdc build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x00027f4b       0x4d build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x00027f98       0x25 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x00027fbd       0x6d build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x0002802a       0x16 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x00028040       0x7c build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x000280bc       0x22 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x000280de       0x10 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x000280ee       0x10 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x000280fe       0x11 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x0002810f       0x2e build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x0002813d       0x2e build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x0002816b       0x7c build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x000281e7       0x17 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x000281fe      0x118 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x00028316      0x202 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x00028518       0x3a build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x00028552       0x10 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_macro   0x00028562      0x4f0 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.o
+ .debug_macro   0x00028a52      0x108 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.o
+ .debug_macro   0x00028b5a      0x281 build/sr5e1/evbe7000p/core1/Debug/Modules/Boot/src/crt1.o
+ .debug_macro   0x00028ddb       0x22 build/sr5e1/evbe7000p/core1/Debug/Modules/Boot/src/crt1.o
+ .debug_macro   0x00028dfd      0x290 build/sr5e1/evbe7000p/core1/Debug/Modules/Platform/Clock/src/sr5e1/clock.o
+ .debug_macro   0x0002908d      0x2c1 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/System/DMA/src/dma.o
+ .debug_macro   0x0002934e      0x292 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/System/GPIO/src/gpio.o
+ .debug_macro   0x000295e0      0x1fb build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/System/GPIO/src/gpio.o
+ .debug_macro   0x000297db      0x292 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/System/GPIO/src/sr5e1/gpio_dev.o
+ .debug_macro   0x00029a6d      0x301 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Comms/UART/src/uart.o
+ .debug_macro   0x00029d6e      0x2dd build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Comms/UART/src/sr5e1/uart_instances.o
+ .debug_macro   0x0002a04b      0x2dd build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Comms/UART/src/sr5e1/uart_dev.o
+ .debug_macro   0x0002a328      0x29f build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/DWT/src/dwt.o
+ .debug_macro   0x0002a5c7      0x2b3 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/SYSTICK/src/systick.o
+ .debug_macro   0x0002a87a      0x2eb build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/TIM/src/tim.o
+ .debug_macro   0x0002ab65      0x2df build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/TIM/src/sr5e1/tim_instances.o
+ .debug_macro   0x0002ae44      0x30f build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/TIM/src/sr5e1/tim_dev.o
+ .debug_macro   0x0002b153      0x2e4 build/sr5e1/evbe7000p/core1/Debug/Modules/OS/OSAL/src/osal.o
+ .debug_macro   0x0002b437       0x1c build/sr5e1/evbe7000p/core1/Debug/Modules/OS/OSAL/src/osal.o
+ .debug_macro   0x0002b453      0x430 build/sr5e1/evbe7000p/core1/Debug/Modules/Runtime/IO/src/ARM/io.o
+ .debug_macro   0x0002b883       0x16 build/sr5e1/evbe7000p/core1/Debug/Modules/Runtime/IO/src/ARM/io.o
+ .debug_macro   0x0002b899       0x10 build/sr5e1/evbe7000p/core1/Debug/Modules/Runtime/IO/src/ARM/io.o
+ .debug_macro   0x0002b8a9       0x10 build/sr5e1/evbe7000p/core1/Debug/Modules/Runtime/IO/src/ARM/io.o
+ .debug_macro   0x0002b8b9       0x35 build/sr5e1/evbe7000p/core1/Debug/Modules/Runtime/IO/src/ARM/io.o
+ .debug_macro   0x0002b8ee      0x12c build/sr5e1/evbe7000p/core1/Debug/Modules/Runtime/IO/src/ARM/io.o
 
-.debug_line     0x00000000    0x19c78
+.debug_line     0x00000000    0x19c99
  .debug_line    0x00000000      0xbda build/sr5e1/evbe7000p/core1/Debug/Projects/SDKTests/CommonBuild/src/test_env.o
  .debug_line    0x00000bda      0xd9e build/sr5e1/evbe7000p/core1/Debug/main.o
- .debug_line    0x00001978     0x111d build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
- .debug_line    0x00002a95      0x301 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.o
- .debug_line    0x00002d96      0xcfc build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
- .debug_line    0x00003a92      0x915 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMgr.o
- .debug_line    0x000043a7     0x17c0 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiValidation_ST_AI.o
- .debug_line    0x00005b67      0x45c build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.o
- .debug_line    0x00005fc3     0x11fd build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/pb_decode.o
- .debug_line    0x000071c0      0xd32 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/pb_encode.o
- .debug_line    0x00007ef2      0xa2f build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.o
- .debug_line    0x00008921      0x343 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/stm32msg.pb.o
- .debug_line    0x00008c64      0xa04 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/ai_device_adaptor.o
- .debug_line    0x00009668      0xd98 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.o
- .debug_line    0x0000a400      0xf66 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
- .debug_line    0x0000b366      0x2b7 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network_data.o
- .debug_line    0x0000b61d     0x16cc build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_line    0x0000cce9      0xf50 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.o
- .debug_line    0x0000dc39      0x77f build/sr5e1/evbe7000p/core1/Debug/Modules/Boot/src/crt1.o
- .debug_line    0x0000e3b8      0x92a build/sr5e1/evbe7000p/core1/Debug/Modules/Platform/Clock/src/sr5e1/clock.o
- .debug_line    0x0000ece2      0xd92 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/System/DMA/src/dma.o
- .debug_line    0x0000fa74      0x759 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/System/GPIO/src/gpio.o
- .debug_line    0x000101cd      0x798 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/System/GPIO/src/sr5e1/gpio_dev.o
- .debug_line    0x00010965     0x181c build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Comms/UART/src/uart.o
- .debug_line    0x00012181      0x8e0 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Comms/UART/src/sr5e1/uart_instances.o
- .debug_line    0x00012a61      0xb5b build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Comms/UART/src/sr5e1/uart_dev.o
- .debug_line    0x000135bc      0x8da build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/DWT/src/dwt.o
- .debug_line    0x00013e96      0xb57 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/SYSTICK/src/systick.o
- .debug_line    0x000149ed     0x2028 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/TIM/src/tim.o
- .debug_line    0x00016a15      0x88d build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/TIM/src/sr5e1/tim_instances.o
- .debug_line    0x000172a2     0x13c3 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/TIM/src/sr5e1/tim_dev.o
- .debug_line    0x00018665      0x9e2 build/sr5e1/evbe7000p/core1/Debug/Modules/OS/OSAL/src/osal.o
- .debug_line    0x00019047      0xaa3 build/sr5e1/evbe7000p/core1/Debug/Modules/Runtime/IO/src/ARM/io.o
- .debug_line    0x00019aea      0x10d build/sr5e1/evbe7000p/core1/Debug/Modules/Boot/src/GCC/crt0.o
- .debug_line    0x00019bf7       0x81 build/sr5e1/evbe7000p/core1/Debug/Modules/Boot/src/GCC/vectors.o
+ .debug_line    0x00001978     0x113e build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .debug_line    0x00002ab6      0x301 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.o
+ .debug_line    0x00002db7      0xcfc build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
+ .debug_line    0x00003ab3      0x915 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMgr.o
+ .debug_line    0x000043c8     0x17c0 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiValidation_ST_AI.o
+ .debug_line    0x00005b88      0x45c build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.o
+ .debug_line    0x00005fe4     0x11fd build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/pb_decode.o
+ .debug_line    0x000071e1      0xd32 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/pb_encode.o
+ .debug_line    0x00007f13      0xa2f build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.o
+ .debug_line    0x00008942      0x343 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/stm32msg.pb.o
+ .debug_line    0x00008c85      0xa04 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/ai_device_adaptor.o
+ .debug_line    0x00009689      0xd98 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.o
+ .debug_line    0x0000a421      0xf66 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
+ .debug_line    0x0000b387      0x2b7 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network_data.o
+ .debug_line    0x0000b63e     0x16cc build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_line    0x0000cd0a      0xf50 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.o
+ .debug_line    0x0000dc5a      0x77f build/sr5e1/evbe7000p/core1/Debug/Modules/Boot/src/crt1.o
+ .debug_line    0x0000e3d9      0x92a build/sr5e1/evbe7000p/core1/Debug/Modules/Platform/Clock/src/sr5e1/clock.o
+ .debug_line    0x0000ed03      0xd92 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/System/DMA/src/dma.o
+ .debug_line    0x0000fa95      0x759 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/System/GPIO/src/gpio.o
+ .debug_line    0x000101ee      0x798 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/System/GPIO/src/sr5e1/gpio_dev.o
+ .debug_line    0x00010986     0x181c build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Comms/UART/src/uart.o
+ .debug_line    0x000121a2      0x8e0 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Comms/UART/src/sr5e1/uart_instances.o
+ .debug_line    0x00012a82      0xb5b build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Comms/UART/src/sr5e1/uart_dev.o
+ .debug_line    0x000135dd      0x8da build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/DWT/src/dwt.o
+ .debug_line    0x00013eb7      0xb57 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/SYSTICK/src/systick.o
+ .debug_line    0x00014a0e     0x2028 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/TIM/src/tim.o
+ .debug_line    0x00016a36      0x88d build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/TIM/src/sr5e1/tim_instances.o
+ .debug_line    0x000172c3     0x13c3 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/TIM/src/sr5e1/tim_dev.o
+ .debug_line    0x00018686      0x9e2 build/sr5e1/evbe7000p/core1/Debug/Modules/OS/OSAL/src/osal.o
+ .debug_line    0x00019068      0xaa3 build/sr5e1/evbe7000p/core1/Debug/Modules/Runtime/IO/src/ARM/io.o
+ .debug_line    0x00019b0b      0x10d build/sr5e1/evbe7000p/core1/Debug/Modules/Boot/src/GCC/crt0.o
+ .debug_line    0x00019c18       0x81 build/sr5e1/evbe7000p/core1/Debug/Modules/Boot/src/GCC/vectors.o
 
-.debug_str      0x00000000    0xf4ff5
- .debug_str     0x00000000    0xf4ff5 build/sr5e1/evbe7000p/core1/Debug/Projects/SDKTests/CommonBuild/src/test_env.o
+.debug_str      0x00000000    0xf4ffc
+ .debug_str     0x00000000    0xf4ffc build/sr5e1/evbe7000p/core1/Debug/Projects/SDKTests/CommonBuild/src/test_env.o
                               0xd3677 (size before relaxing)
- .debug_str     0x000f4ff5    0xd72f1 build/sr5e1/evbe7000p/core1/Debug/main.o
- .debug_str     0x000f4ff5    0xd00cd build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
- .debug_str     0x000f4ff5     0x3fd5 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.o
- .debug_str     0x000f4ff5    0xd370b build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
- .debug_str     0x000f4ff5     0xc2f8 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMgr.o
- .debug_str     0x000f4ff5    0xd58e0 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiValidation_ST_AI.o
- .debug_str     0x000f4ff5     0x8977 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.o
- .debug_str     0x000f4ff5     0x8fee build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/pb_decode.o
- .debug_str     0x000f4ff5     0x8e67 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/pb_encode.o
- .debug_str     0x000f4ff5    0xcaf95 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.o
- .debug_str     0x000f4ff5     0xb003 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/stm32msg.pb.o
- .debug_str     0x000f4ff5    0xcdf4c build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/ai_device_adaptor.o
- .debug_str     0x000f4ff5    0xcf21d build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.o
- .debug_str     0x000f4ff5    0xd0d23 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
- .debug_str     0x000f4ff5     0x47dc build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network_data.o
- .debug_str     0x000f4ff5    0x15ad8 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
- .debug_str     0x000f4ff5    0xcf981 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.o
- .debug_str     0x000f4ff5    0xc7761 build/sr5e1/evbe7000p/core1/Debug/Modules/Boot/src/crt1.o
- .debug_str     0x000f4ff5    0xc969f build/sr5e1/evbe7000p/core1/Debug/Modules/Platform/Clock/src/sr5e1/clock.o
- .debug_str     0x000f4ff5    0xcb63f build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/System/DMA/src/dma.o
- .debug_str     0x000f4ff5    0xc805e build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/System/GPIO/src/gpio.o
- .debug_str     0x000f4ff5    0xc8476 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/System/GPIO/src/sr5e1/gpio_dev.o
- .debug_str     0x000f4ff5    0xcc2eb build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Comms/UART/src/uart.o
- .debug_str     0x000f4ff5    0xcb79c build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Comms/UART/src/sr5e1/uart_instances.o
- .debug_str     0x000f4ff5    0xcbc75 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Comms/UART/src/sr5e1/uart_dev.o
- .debug_str     0x000f4ff5    0xc9422 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/DWT/src/dwt.o
- .debug_str     0x000f4ff5    0xc9f85 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/SYSTICK/src/systick.o
- .debug_str     0x000f4ff5    0xcc6da build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/TIM/src/tim.o
- .debug_str     0x000f4ff5    0xcbc43 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/TIM/src/sr5e1/tim_instances.o
- .debug_str     0x000f4ff5    0xcc46f build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/TIM/src/sr5e1/tim_dev.o
- .debug_str     0x000f4ff5    0xc97f4 build/sr5e1/evbe7000p/core1/Debug/Modules/OS/OSAL/src/osal.o
- .debug_str     0x000f4ff5    0xcc2c3 build/sr5e1/evbe7000p/core1/Debug/Modules/Runtime/IO/src/ARM/io.o
- .debug_str     0x000f4ff5       0x8a build/sr5e1/evbe7000p/core1/Debug/Modules/Boot/src/GCC/crt0.o
- .debug_str     0x000f4ff5       0x8d build/sr5e1/evbe7000p/core1/Debug/Modules/Boot/src/GCC/vectors.o
+ .debug_str     0x000f4ffc    0xd72f1 build/sr5e1/evbe7000p/core1/Debug/main.o
+ .debug_str     0x000f4ffc    0xd07a5 build/sr5e1/evbe7000p/core1/Debug/app/src/fault_injection.o
+ .debug_str     0x000f4ffc     0x3fd5 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/stellar/src/stellar_ai.o
+ .debug_str     0x000f4ffc    0xd370b build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbIO.o
+ .debug_str     0x000f4ffc     0xc2f8 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiPbMgr.o
+ .debug_str     0x000f4ffc    0xd58e0 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/aiValidation_ST_AI.o
+ .debug_str     0x000f4ffc     0x8977 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/pb_common.o
+ .debug_str     0x000f4ffc     0x8fee build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/pb_decode.o
+ .debug_str     0x000f4ffc     0x8e67 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/pb_encode.o
+ .debug_str     0x000f4ffc    0xcaf95 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/stellar_ai_validate.o
+ .debug_str     0x000f4ffc     0xb003 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/validation/src/stm32msg.pb.o
+ .debug_str     0x000f4ffc    0xcdf4c build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/ai_device_adaptor.o
+ .debug_str     0x000f4ffc    0xcf21d build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestHelper_ST_AI.o
+ .debug_str     0x000f4ffc    0xd0d23 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/lib/misc/src/aiTestUtility.o
+ .debug_str     0x000f4ffc     0x47dc build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network_data.o
+ .debug_str     0x000f4ffc    0x15ad8 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/src/network.o
+ .debug_str     0x000f4ffc    0xcf981 build/sr5e1/evbe7000p/core1/Debug/SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.o
+ .debug_str     0x000f4ffc    0xc7761 build/sr5e1/evbe7000p/core1/Debug/Modules/Boot/src/crt1.o
+ .debug_str     0x000f4ffc    0xc969f build/sr5e1/evbe7000p/core1/Debug/Modules/Platform/Clock/src/sr5e1/clock.o
+ .debug_str     0x000f4ffc    0xcb63f build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/System/DMA/src/dma.o
+ .debug_str     0x000f4ffc    0xc805e build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/System/GPIO/src/gpio.o
+ .debug_str     0x000f4ffc    0xc8476 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/System/GPIO/src/sr5e1/gpio_dev.o
+ .debug_str     0x000f4ffc    0xcc2eb build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Comms/UART/src/uart.o
+ .debug_str     0x000f4ffc    0xcb79c build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Comms/UART/src/sr5e1/uart_instances.o
+ .debug_str     0x000f4ffc    0xcbc75 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Comms/UART/src/sr5e1/uart_dev.o
+ .debug_str     0x000f4ffc    0xc9422 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/DWT/src/dwt.o
+ .debug_str     0x000f4ffc    0xc9f85 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/SYSTICK/src/systick.o
+ .debug_str     0x000f4ffc    0xcc6da build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/TIM/src/tim.o
+ .debug_str     0x000f4ffc    0xcbc43 build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/TIM/src/sr5e1/tim_instances.o
+ .debug_str     0x000f4ffc    0xcc46f build/sr5e1/evbe7000p/core1/Debug/Modules/Drivers/Timers/TIM/src/sr5e1/tim_dev.o
+ .debug_str     0x000f4ffc    0xc97f4 build/sr5e1/evbe7000p/core1/Debug/Modules/OS/OSAL/src/osal.o
+ .debug_str     0x000f4ffc    0xcc2c3 build/sr5e1/evbe7000p/core1/Debug/Modules/Runtime/IO/src/ARM/io.o
+ .debug_str     0x000f4ffc       0x8a build/sr5e1/evbe7000p/core1/Debug/Modules/Boot/src/GCC/crt0.o
+ .debug_str     0x000f4ffc       0x8d build/sr5e1/evbe7000p/core1/Debug/Modules/Boot/src/GCC/vectors.o
 
 .comment        0x00000000       0x88
  .comment       0x00000000       0x88 build/sr5e1/evbe7000p/core1/Debug/Projects/SDKTests/CommonBuild/src/test_env.o

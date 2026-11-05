@@ -351,41 +351,40 @@
  120              		.global	fi_log
  121              		.align	2
  124              	fi_log:
- 125 0030 00000000 		.space	12
- 125      00000000 
+ 125 0030 00000000 		.space	8
  125      00000000 
  126              		.global	fi_n_injected
  127              		.align	2
  130              	fi_n_injected:
- 131 003c 00000000 		.space	4
+ 131 0038 00000000 		.space	4
  132              		.global	fi_n_crash
  133              		.align	2
  136              	fi_n_crash:
- 137 0040 00000000 		.space	4
+ 137 003c 00000000 		.space	4
  138              		.global	fi_n_hang
  139              		.align	2
  142              	fi_n_hang:
- 143 0044 00000000 		.space	4
+ 143 0040 00000000 		.space	4
  144              		.align	2
  147              	fi_phase:
- 148 0048 00000000 		.space	4
+ 148 0044 00000000 		.space	4
  149              		.align	2
  152              	xs_state:
- 153 004c 00000000 		.space	4
+ 153 0048 00000000 		.space	4
  154              		.align	2
  157              	fi_sp_top:
- 158 0050 00000000 		.space	4
+ 158 004c 00000000 		.space	4
  159              		.global	fi_in_inference
  160              		.align	2
  163              	fi_in_inference:
- 164 0054 00000000 		.space	4
+ 164 0050 00000000 		.space	4
  165              		.align	2
  168              	fi_node_idx:
- 169 0058 00000000 		.space	4
+ 169 0054 00000000 		.space	4
  170              		.global	fi_n_runs
  171              		.align	2
  174              	fi_n_runs:
- 175 005c 00000000 		.space	4
+ 175 0058 00000000 		.space	4
  176              		.section	.bss.fi_layers_ticks,"aw",%nobits
  177              		.align	2
  180              	fi_layers_ticks:
@@ -421,7 +420,7 @@
  216              		.thumb
  217              		.thumb_func
  219              	xorshift32:
- 220              	.LFB457:
+ 220              	.LFB460:
    1:app/src/fault_injection.c **** #include "fault_injection.h"
    2:app/src/fault_injection.c **** #include "tim.h"
    3:app/src/fault_injection.c **** #include <platform.h>          /* TIM2, TIM_CR1_CEN, TIM_EGR_UG */
@@ -434,118 +433,120 @@
   10:app/src/fault_injection.c **** #include <math.h>
   11:app/src/fault_injection.c **** #include <errno.h>
   12:app/src/fault_injection.c **** 
-  13:app/src/fault_injection.c **** /* Possible states during the inference process */
-  14:app/src/fault_injection.c **** #define FI_IDLE            0U        /* No Armed Inference state          */
-  15:app/src/fault_injection.c **** #define FI_WAIT_FLIP       1U        /* TIM2 counts until bit flip instant */
-  16:app/src/fault_injection.c **** #define FI_WATCHDOG        2U        /* flip done: TIM2 counts until timeout */
-  17:app/src/fault_injection.c **** 
-  18:app/src/fault_injection.c **** /* Activations (fi_act substitute activations_1, 8 KB aligned) */
-  19:app/src/fault_injection.c **** #define FI_ACT_SIZE        STAI_NETWORK_ACTIVATION_1_SIZE_BYTES          	/* 4352 B */
-  20:app/src/fault_injection.c **** #define FI_ACT_SUB         1024U                                          	/* subregion */
-  21:app/src/fault_injection.c **** #define FI_ACT_N_SUB       ((FI_ACT_SIZE + FI_ACT_SUB - 1U) / FI_ACT_SUB) 	/* 5 */
-  22:app/src/fault_injection.c **** #define FI_ACT_ALIGN       (8U * FI_ACT_SUB)                              	/* 8 KB */
-  23:app/src/fault_injection.c **** _Static_assert(FI_ACT_N_SUB <= 8U, "activations too large for a 8 KB region");
-  24:app/src/fault_injection.c **** 
-  25:app/src/fault_injection.c **** /* Input (network.c: _inputs[0] = activations + 4032, 288 B)
-  26:app/src/fault_injection.c ****  *   6: fi_act + 0xFC0, 64 B                                    -> [4032, 4096)
-  27:app/src/fault_injection.c ****  *   7: fi_act + 0x1000, 256 B, subregions of 32 B, 7 excluded  -> [4096, 4320) */
-  28:app/src/fault_injection.c **** #define FI_IN_OFFSET       4032U
-  29:app/src/fault_injection.c **** _Static_assert((FI_IN_OFFSET == 0xFC0U) && (STAI_NETWORK_IN_1_SIZE_BYTES == 288U),
-  30:app/src/fault_injection.c ****                "Input moved: computes MPU regions 6 e 7");
-  31:app/src/fault_injection.c **** #define FI_MPU_IN_A_RASR   ARM_MPU_RASR(0U, ARM_MPU_AP_RO, 1U, 0U, 1U, 1U, 0x00U, ARM_MPU_REGION_SI
-  32:app/src/fault_injection.c **** #define FI_MPU_IN_B_RASR   ARM_MPU_RASR(0U, ARM_MPU_AP_RO, 1U, 0U, 1U, 1U, 0x80U, ARM_MPU_REGION_SI
-  33:app/src/fault_injection.c **** 
-  34:app/src/fault_injection.c **** extern uint8_t __main_stack_base__[];     /* simboli del linker script */
-  35:app/src/fault_injection.c **** extern uint8_t __process_stack_end__[];
-  36:app/src/fault_injection.c **** 
-  37:app/src/fault_injection.c **** __attribute__((aligned(FI_ACT_ALIGN))) static uint8_t fi_act[FI_ACT_N_SUB * FI_ACT_SUB];
+  13:app/src/fault_injection.c **** #include <stdio.h>
+  14:app/src/fault_injection.c **** 
+  15:app/src/fault_injection.c **** /* Possible states during the inference process */
+  16:app/src/fault_injection.c **** #define FI_IDLE            0U        /* No Armed Inference state          */
+  17:app/src/fault_injection.c **** #define FI_WAIT_FLIP       1U        /* TIM2 counts until bit flip instant */
+  18:app/src/fault_injection.c **** #define FI_WATCHDOG        2U        /* flip done: TIM2 counts until timeout */
+  19:app/src/fault_injection.c **** 
+  20:app/src/fault_injection.c **** /* Activations (fi_act substitute activations_1, 8 KB aligned) */
+  21:app/src/fault_injection.c **** #define FI_ACT_SIZE        STAI_NETWORK_ACTIVATION_1_SIZE_BYTES          	/* 4352 B */
+  22:app/src/fault_injection.c **** #define FI_ACT_SUB         1024U                                          	/* subregion */
+  23:app/src/fault_injection.c **** #define FI_ACT_N_SUB       ((FI_ACT_SIZE + FI_ACT_SUB - 1U) / FI_ACT_SUB) 	/* 5 */
+  24:app/src/fault_injection.c **** #define FI_ACT_ALIGN       (8U * FI_ACT_SUB)                              	/* 8 KB */
+  25:app/src/fault_injection.c **** _Static_assert(FI_ACT_N_SUB <= 8U, "activations too large for a 8 KB region");
+  26:app/src/fault_injection.c **** 
+  27:app/src/fault_injection.c **** /* Input (network.c: _inputs[0] = activations + 4032, 288 B)
+  28:app/src/fault_injection.c ****  *   6: fi_act + 0xFC0, 64 B                                    -> [4032, 4096)
+  29:app/src/fault_injection.c ****  *   7: fi_act + 0x1000, 256 B, subregions of 32 B, 7 excluded  -> [4096, 4320) */
+  30:app/src/fault_injection.c **** #define FI_IN_OFFSET       4032U
+  31:app/src/fault_injection.c **** _Static_assert((FI_IN_OFFSET == 0xFC0U) && (STAI_NETWORK_IN_1_SIZE_BYTES == 288U),
+  32:app/src/fault_injection.c ****                "Input moved: computes MPU regions 6 e 7");
+  33:app/src/fault_injection.c **** #define FI_MPU_IN_A_RASR   ARM_MPU_RASR(0U, ARM_MPU_AP_RO, 1U, 0U, 1U, 1U, 0x00U, ARM_MPU_REGION_SI
+  34:app/src/fault_injection.c **** #define FI_MPU_IN_B_RASR   ARM_MPU_RASR(0U, ARM_MPU_AP_RO, 1U, 0U, 1U, 1U, 0x80U, ARM_MPU_REGION_SI
+  35:app/src/fault_injection.c **** 
+  36:app/src/fault_injection.c **** extern uint8_t __main_stack_base__[];     /* simboli del linker script */
+  37:app/src/fault_injection.c **** extern uint8_t __process_stack_end__[];
   38:app/src/fault_injection.c **** 
-  39:app/src/fault_injection.c **** static const uint8_t fi_node_ids[FI_N_NODES] = FI_NODE_IDS;
-  40:app/src/fault_injection.c **** _Static_assert(FI_N_NODES == STAI_NETWORK_NODES_NUM, "numero di layer cambiato: aggiornare FI_NODE_
-  41:app/src/fault_injection.c **** 
-  42:app/src/fault_injection.c **** // Variables
-  43:app/src/fault_injection.c **** __attribute__((section(".dtcm"))) fi_record_t fi_record;
-  44:app/src/fault_injection.c **** __attribute__((section(".dtcm"))) fi_log_t fi_log;
-  45:app/src/fault_injection.c **** __attribute__((section(".dtcm"))) volatile uint32_t fi_n_injected = 0U;
-  46:app/src/fault_injection.c **** __attribute__((section(".dtcm"))) volatile uint32_t fi_n_crash = 0U;
-  47:app/src/fault_injection.c **** __attribute__((section(".dtcm"))) volatile uint32_t fi_n_hang = 0U;
-  48:app/src/fault_injection.c **** __attribute__((section(".dtcm"))) static volatile uint32_t fi_phase = FI_IDLE;
-  49:app/src/fault_injection.c **** __attribute__((section(".dtcm"))) static uint32_t xs_state = 0U;   				/* written in ISR with MPU a
-  50:app/src/fault_injection.c **** __attribute__((section(".dtcm"))) static uint32_t fi_sp_top = 0U;  				/* PSP at network beginning,
-  51:app/src/fault_injection.c **** __attribute__((section(".dtcm"))) volatile uint32_t fi_in_inference = 0U;  		/* 1 during stai_mnetw
-  52:app/src/fault_injection.c **** __attribute__((section(".dtcm"))) static volatile uint32_t fi_node_idx = 0U; 	/* posizione 1..FI_N_
-  53:app/src/fault_injection.c **** __attribute__((section(".dtcm"))) volatile uint32_t fi_n_runs = 0U;        		/* inferenze completat
-  54:app/src/fault_injection.c **** static uint32_t fi_layers_ticks = 0U;     /* FI_LAYERS_US convertito in tick di TIM2 */
-  55:app/src/fault_injection.c **** static uint32_t fi_timeout_ticks = 0U;    /* FI_TIMEOUT_US convertito in tick di TIM2 */
-  56:app/src/fault_injection.c **** 
-  57:app/src/fault_injection.c **** /* Recupero da crash/stallo: punto di ritorno nel wrapper. */
-  58:app/src/fault_injection.c **** static jmp_buf fi_jmp;
-  59:app/src/fault_injection.c **** static volatile uint32_t fi_stops_done = 0U;  /* NODE_STOP già inoltrati all'observer */
-  60:app/src/fault_injection.c **** 
-  61:app/src/fault_injection.c **** // Callbacks
-  62:app/src/fault_injection.c **** static stai_event_cb fi_user_cb = NULL;    /* callback registrata dalla validazione */
-  63:app/src/fault_injection.c **** static void *fi_user_cookie = NULL;
-  64:app/src/fault_injection.c **** 
-  65:app/src/fault_injection.c **** /* xorshift32, seed from SysTick at first call. */
-  66:app/src/fault_injection.c **** static uint32_t xorshift32(void) {
- 221              		.loc 1 66 34
+  39:app/src/fault_injection.c **** __attribute__((aligned(FI_ACT_ALIGN))) static uint8_t fi_act[FI_ACT_N_SUB * FI_ACT_SUB];
+  40:app/src/fault_injection.c **** 
+  41:app/src/fault_injection.c **** static const uint8_t fi_node_ids[FI_N_NODES] = FI_NODE_IDS;
+  42:app/src/fault_injection.c **** _Static_assert(FI_N_NODES == STAI_NETWORK_NODES_NUM, "numero di layer cambiato: aggiornare FI_NODE_
+  43:app/src/fault_injection.c **** 
+  44:app/src/fault_injection.c **** // Variables
+  45:app/src/fault_injection.c **** __attribute__((section(".dtcm"))) fi_record_t fi_record;
+  46:app/src/fault_injection.c **** __attribute__((section(".dtcm"))) fi_log_t fi_log;
+  47:app/src/fault_injection.c **** __attribute__((section(".dtcm"))) volatile uint32_t fi_n_injected = 0U;
+  48:app/src/fault_injection.c **** __attribute__((section(".dtcm"))) volatile uint32_t fi_n_crash = 0U;
+  49:app/src/fault_injection.c **** __attribute__((section(".dtcm"))) volatile uint32_t fi_n_hang = 0U;
+  50:app/src/fault_injection.c **** __attribute__((section(".dtcm"))) static volatile uint32_t fi_phase = FI_IDLE;
+  51:app/src/fault_injection.c **** __attribute__((section(".dtcm"))) static uint32_t xs_state = 0U;   				/* written in ISR with MPU a
+  52:app/src/fault_injection.c **** __attribute__((section(".dtcm"))) static uint32_t fi_sp_top = 0U;  				/* PSP at network beginning,
+  53:app/src/fault_injection.c **** __attribute__((section(".dtcm"))) volatile uint32_t fi_in_inference = 0U;  		/* 1 during stai_mnetw
+  54:app/src/fault_injection.c **** __attribute__((section(".dtcm"))) static volatile uint32_t fi_node_idx = 0U; 	/* posizione 1..FI_N_
+  55:app/src/fault_injection.c **** __attribute__((section(".dtcm"))) volatile uint32_t fi_n_runs = 0U;        		/* inferenze completat
+  56:app/src/fault_injection.c **** static uint32_t fi_layers_ticks = 0U;     /* FI_LAYERS_US convertito in tick di TIM2 */
+  57:app/src/fault_injection.c **** static uint32_t fi_timeout_ticks = 0U;    /* FI_TIMEOUT_US convertito in tick di TIM2 */
+  58:app/src/fault_injection.c **** 
+  59:app/src/fault_injection.c **** /* Recupero da crash/stallo: punto di ritorno nel wrapper. */
+  60:app/src/fault_injection.c **** static jmp_buf fi_jmp;
+  61:app/src/fault_injection.c **** static volatile uint32_t fi_stops_done = 0U;  /* NODE_STOP già inoltrati all'observer */
+  62:app/src/fault_injection.c **** 
+  63:app/src/fault_injection.c **** // Callbacks
+  64:app/src/fault_injection.c **** static stai_event_cb fi_user_cb = NULL;    /* callback registrata dalla validazione */
+  65:app/src/fault_injection.c **** static void *fi_user_cookie = NULL;
+  66:app/src/fault_injection.c **** 
+  67:app/src/fault_injection.c **** /* xorshift32, seed from SysTick at first call. */
+  68:app/src/fault_injection.c **** static uint32_t xorshift32(void) {
+ 221              		.loc 1 68 34
  222              		.cfi_startproc
  223              		@ args = 0, pretend = 0, frame = 8
  224              		@ frame_needed = 0, uses_anonymous_args = 0
  225              		@ link register save eliminated.
  226 0000 82B0     		sub	sp, sp, #8
  227              		.cfi_def_cfa_offset 8
-  67:app/src/fault_injection.c ****     uint32_t x = xs_state;
- 228              		.loc 1 67 14
+  69:app/src/fault_injection.c ****     uint32_t x = xs_state;
+ 228              		.loc 1 69 14
  229 0002 104B     		ldr	r3, .L10
  230 0004 1B68     		ldr	r3, [r3]
  231 0006 0193     		str	r3, [sp, #4]
-  68:app/src/fault_injection.c ****     if (x == 0U) { x = SysTick->VAL | 1U; }
- 232              		.loc 1 68 8
+  70:app/src/fault_injection.c ****     if (x == 0U) { x = SysTick->VAL | 1U; }
+ 232              		.loc 1 70 8
  233 0008 019B     		ldr	r3, [sp, #4]
  234 000a 002B     		cmp	r3, #0
  235 000c 04D1     		bne	.L8
- 236              		.loc 1 68 31 discriminator 1
+ 236              		.loc 1 70 31 discriminator 1
  237 000e 0E4B     		ldr	r3, .L10+4
  238 0010 9B68     		ldr	r3, [r3, #8]
- 239              		.loc 1 68 22 discriminator 1
+ 239              		.loc 1 70 22 discriminator 1
  240 0012 43F00103 		orr	r3, r3, #1
  241 0016 0193     		str	r3, [sp, #4]
  242              	.L8:
-  69:app/src/fault_injection.c ****     x ^= x << 13;
- 243              		.loc 1 69 12
+  71:app/src/fault_injection.c ****     x ^= x << 13;
+ 243              		.loc 1 71 12
  244 0018 019B     		ldr	r3, [sp, #4]
  245 001a 5B03     		lsls	r3, r3, #13
- 246              		.loc 1 69 7
+ 246              		.loc 1 71 7
  247 001c 019A     		ldr	r2, [sp, #4]
  248 001e 5340     		eors	r3, r3, r2
  249 0020 0193     		str	r3, [sp, #4]
-  70:app/src/fault_injection.c ****     x ^= x >> 17;
- 250              		.loc 1 70 12
+  72:app/src/fault_injection.c ****     x ^= x >> 17;
+ 250              		.loc 1 72 12
  251 0022 019B     		ldr	r3, [sp, #4]
  252 0024 5B0C     		lsrs	r3, r3, #17
- 253              		.loc 1 70 7
+ 253              		.loc 1 72 7
  254 0026 019A     		ldr	r2, [sp, #4]
  255 0028 5340     		eors	r3, r3, r2
  256 002a 0193     		str	r3, [sp, #4]
-  71:app/src/fault_injection.c ****     x ^= x << 5;
- 257              		.loc 1 71 12
+  73:app/src/fault_injection.c ****     x ^= x << 5;
+ 257              		.loc 1 73 12
  258 002c 019B     		ldr	r3, [sp, #4]
  259 002e 5B01     		lsls	r3, r3, #5
- 260              		.loc 1 71 7
+ 260              		.loc 1 73 7
  261 0030 019A     		ldr	r2, [sp, #4]
  262 0032 5340     		eors	r3, r3, r2
  263 0034 0193     		str	r3, [sp, #4]
-  72:app/src/fault_injection.c ****     xs_state = x;
- 264              		.loc 1 72 14
+  74:app/src/fault_injection.c ****     xs_state = x;
+ 264              		.loc 1 74 14
  265 0036 034A     		ldr	r2, .L10
  266 0038 019B     		ldr	r3, [sp, #4]
  267 003a 1360     		str	r3, [r2]
-  73:app/src/fault_injection.c ****     return x;
- 268              		.loc 1 73 12
+  75:app/src/fault_injection.c ****     return x;
+ 268              		.loc 1 75 12
  269 003c 019B     		ldr	r3, [sp, #4]
-  74:app/src/fault_injection.c **** }
- 270              		.loc 1 74 1
+  76:app/src/fault_injection.c **** }
+ 270              		.loc 1 76 1
  271 003e 1846     		mov	r0, r3
  272 0040 02B0     		add	sp, sp, #8
  273              		.cfi_def_cfa_offset 0
@@ -554,10 +555,10 @@
  276              	.L11:
  277              		.align	2
  278              	.L10:
- 279 0044 4C000000 		.word	xs_state
+ 279 0044 48000000 		.word	xs_state
  280 0048 10E000E0 		.word	-536813552
  281              		.cfi_endproc
- 282              	.LFE457:
+ 282              	.LFE460:
  284              		.section	.text.fi_mpu_cover,"ax",%progbits
  285              		.align	1
  286              		.p2align 4,,15
@@ -565,13 +566,13 @@
  288              		.thumb
  289              		.thumb_func
  291              	fi_mpu_cover:
- 292              	.LFB458:
-  75:app/src/fault_injection.c **** 
-  76:app/src/fault_injection.c **** /* Regione 'rnr' su [a, b): 8 sottoregioni da g byte (g >= 32), la più fine possibile.
-  77:app/src/fault_injection.c ****  * outward = 1: copre tutto [a,b) (fino a g byte in più ai bordi)
-  78:app/src/fault_injection.c ****  * outward = 0: niente sotto 'a' (i primi < g byte possono restare scoperti) */
-  79:app/src/fault_injection.c **** static uint32_t fi_mpu_cover(uint32_t rnr, uint32_t a, uint32_t b, uint32_t ap, uint32_t outward) {
- 293              		.loc 1 79 99
+ 292              	.LFB461:
+  77:app/src/fault_injection.c **** 
+  78:app/src/fault_injection.c **** /* Regione 'rnr' su [a, b): 8 sottoregioni da g byte (g >= 32), la più fine possibile.
+  79:app/src/fault_injection.c ****  * outward = 1: copre tutto [a,b) (fino a g byte in più ai bordi)
+  80:app/src/fault_injection.c ****  * outward = 0: niente sotto 'a' (i primi < g byte possono restare scoperti) */
+  81:app/src/fault_injection.c **** static uint32_t fi_mpu_cover(uint32_t rnr, uint32_t a, uint32_t b, uint32_t ap, uint32_t outward) {
+ 293              		.loc 1 81 99
  294              		.cfi_startproc
  295              		@ args = 4, pretend = 0, frame = 48
  296              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -584,98 +585,98 @@
  303 0006 0291     		str	r1, [sp, #8]
  304 0008 0192     		str	r2, [sp, #4]
  305 000a 0093     		str	r3, [sp]
-  80:app/src/fault_injection.c ****     uint32_t g;
-  81:app/src/fault_injection.c ****     for (g = 32U; g <= 0x08000000U; g <<= 1) {
- 306              		.loc 1 81 12
+  82:app/src/fault_injection.c ****     uint32_t g;
+  83:app/src/fault_injection.c ****     for (g = 32U; g <= 0x08000000U; g <<= 1) {
+ 306              		.loc 1 83 12
  307 000c 2023     		movs	r3, #32
  308 000e 0B93     		str	r3, [sp, #44]
- 309              		.loc 1 81 5
+ 309              		.loc 1 83 5
  310 0010 87E0     		b	.L13
  311              	.L20:
  312              	.LBB25:
-  82:app/src/fault_injection.c ****         uint32_t size = 8U * g;
- 313              		.loc 1 82 18
+  84:app/src/fault_injection.c ****         uint32_t size = 8U * g;
+ 313              		.loc 1 84 18
  314 0012 0B9B     		ldr	r3, [sp, #44]
  315 0014 DB00     		lsls	r3, r3, #3
  316 0016 0993     		str	r3, [sp, #36]
-  83:app/src/fault_injection.c ****         uint32_t base = a & ~(size - 1U);
- 317              		.loc 1 83 29
+  85:app/src/fault_injection.c ****         uint32_t base = a & ~(size - 1U);
+ 317              		.loc 1 85 29
  318 0018 099B     		ldr	r3, [sp, #36]
  319 001a 5B42     		rsbs	r3, r3, #0
- 320              		.loc 1 83 18
+ 320              		.loc 1 85 18
  321 001c 029A     		ldr	r2, [sp, #8]
  322 001e 1340     		ands	r3, r3, r2
  323 0020 0893     		str	r3, [sp, #32]
-  84:app/src/fault_injection.c ****         uint32_t lo   = (a - base) / g;
- 324              		.loc 1 84 28
+  86:app/src/fault_injection.c ****         uint32_t lo   = (a - base) / g;
+ 324              		.loc 1 86 28
  325 0022 029A     		ldr	r2, [sp, #8]
  326 0024 089B     		ldr	r3, [sp, #32]
  327 0026 D21A     		subs	r2, r2, r3
- 328              		.loc 1 84 18
+ 328              		.loc 1 86 18
  329 0028 0B9B     		ldr	r3, [sp, #44]
  330 002a B2FBF3F3 		udiv	r3, r2, r3
  331 002e 0A93     		str	r3, [sp, #40]
-  85:app/src/fault_injection.c ****         uint32_t hi   = (b - base + g - 1U) / g;
- 332              		.loc 1 85 28
+  87:app/src/fault_injection.c ****         uint32_t hi   = (b - base + g - 1U) / g;
+ 332              		.loc 1 87 28
  333 0030 019A     		ldr	r2, [sp, #4]
  334 0032 089B     		ldr	r3, [sp, #32]
  335 0034 D21A     		subs	r2, r2, r3
- 336              		.loc 1 85 35
+ 336              		.loc 1 87 35
  337 0036 0B9B     		ldr	r3, [sp, #44]
  338 0038 1344     		add	r3, r3, r2
- 339              		.loc 1 85 39
+ 339              		.loc 1 87 39
  340 003a 5A1E     		subs	r2, r3, #1
- 341              		.loc 1 85 18
+ 341              		.loc 1 87 18
  342 003c 0B9B     		ldr	r3, [sp, #44]
  343 003e B2FBF3F3 		udiv	r3, r2, r3
  344 0042 0793     		str	r3, [sp, #28]
-  86:app/src/fault_injection.c ****         if ((outward == 0U) && (((a - base) % g) != 0U)) { lo++; }
- 345              		.loc 1 86 12
+  88:app/src/fault_injection.c ****         if ((outward == 0U) && (((a - base) % g) != 0U)) { lo++; }
+ 345              		.loc 1 88 12
  346 0044 0E9B     		ldr	r3, [sp, #56]
  347 0046 002B     		cmp	r3, #0
  348 0048 0ED1     		bne	.L14
- 349              		.loc 1 86 37 discriminator 1
+ 349              		.loc 1 88 37 discriminator 1
  350 004a 029A     		ldr	r2, [sp, #8]
  351 004c 089B     		ldr	r3, [sp, #32]
  352 004e D31A     		subs	r3, r2, r3
- 353              		.loc 1 86 45 discriminator 1
+ 353              		.loc 1 88 45 discriminator 1
  354 0050 0B9A     		ldr	r2, [sp, #44]
  355 0052 B3FBF2F2 		udiv	r2, r3, r2
  356 0056 0B99     		ldr	r1, [sp, #44]
  357 0058 01FB02F2 		mul	r2, r1, r2
  358 005c 9B1A     		subs	r3, r3, r2
- 359              		.loc 1 86 29 discriminator 1
+ 359              		.loc 1 88 29 discriminator 1
  360 005e 002B     		cmp	r3, #0
  361 0060 02D0     		beq	.L14
- 362              		.loc 1 86 62 discriminator 2
+ 362              		.loc 1 88 62 discriminator 2
  363 0062 0A9B     		ldr	r3, [sp, #40]
  364 0064 0133     		adds	r3, r3, #1
  365 0066 0A93     		str	r3, [sp, #40]
  366              	.L14:
-  87:app/src/fault_injection.c ****         if ((hi <= 8U) && (lo < hi)) {
- 367              		.loc 1 87 12
+  89:app/src/fault_injection.c ****         if ((hi <= 8U) && (lo < hi)) {
+ 367              		.loc 1 89 12
  368 0068 079B     		ldr	r3, [sp, #28]
  369 006a 082B     		cmp	r3, #8
  370 006c 56D8     		bhi	.L15
- 371              		.loc 1 87 24 discriminator 1
+ 371              		.loc 1 89 24 discriminator 1
  372 006e 0A9A     		ldr	r2, [sp, #40]
  373 0070 079B     		ldr	r3, [sp, #28]
  374 0072 9A42     		cmp	r2, r3
  375 0074 52D2     		bcs	.L15
  376              	.LBB26:
-  88:app/src/fault_injection.c ****             uint32_t srd = ~(((1U << hi) - 1U) & ~((1U << lo) - 1U)) & 0xFFU;
- 377              		.loc 1 88 48
+  90:app/src/fault_injection.c ****             uint32_t srd = ~(((1U << hi) - 1U) & ~((1U << lo) - 1U)) & 0xFFU;
+ 377              		.loc 1 90 48
  378 0076 4FF0FF32 		mov	r2, #-1
  379 007a 079B     		ldr	r3, [sp, #28]
  380 007c 9A40     		lsls	r2, r2, r3
- 381              		.loc 1 88 56
+ 381              		.loc 1 90 56
  382 007e 0121     		movs	r1, #1
  383 0080 0A9B     		ldr	r3, [sp, #40]
  384 0082 01FA03F3 		lsl	r3, r1, r3
- 385              		.loc 1 88 28
+ 385              		.loc 1 90 28
  386 0086 013B     		subs	r3, r3, #1
  387 0088 1343     		orrs	r3, r3, r2
- 388              		.loc 1 88 22
+ 388              		.loc 1 90 22
  389 008a DBB2     		uxtb	r3, r3
  390 008c 0693     		str	r3, [sp, #24]
  391 008e 099B     		ldr	r3, [sp, #36]
@@ -1117,21 +1118,21 @@
  409              	.L17:
  410              	.LBE28:
  411              	.LBE27:
-  89:app/src/fault_injection.c ****             uint32_t size_field = (31U - __CLZ(size)) - 1U;   /* log2(size) - 1 */
- 412              		.loc 1 89 22 is_stmt 1 discriminator 1
+  91:app/src/fault_injection.c ****             uint32_t size_field = (31U - __CLZ(size)) - 1U;   /* log2(size) - 1 */
+ 412              		.loc 1 91 22 is_stmt 1 discriminator 1
  413 00a4 C3F11E03 		rsb	r3, r3, #30
  414 00a8 0593     		str	r3, [sp, #20]
-  90:app/src/fault_injection.c ****             ARM_MPU_SetRegion(ARM_MPU_RBAR(rnr, base),
- 415              		.loc 1 90 31
+  92:app/src/fault_injection.c ****             ARM_MPU_SetRegion(ARM_MPU_RBAR(rnr, base),
+ 415              		.loc 1 92 31
  416 00aa 089B     		ldr	r3, [sp, #32]
  417 00ac 23F01F02 		bic	r2, r3, #31
  418 00b0 039B     		ldr	r3, [sp, #12]
  419 00b2 03F00F03 		and	r3, r3, #15
  420 00b6 1343     		orrs	r3, r3, r2
- 421              		.loc 1 90 13
+ 421              		.loc 1 92 13
  422 00b8 43F01000 		orr	r0, r3, #16
-  91:app/src/fault_injection.c ****                 ARM_MPU_RASR(0U, ap, 1U, 0U, 1U, 1U, srd, size_field));
- 423              		.loc 1 91 17
+  93:app/src/fault_injection.c ****                 ARM_MPU_RASR(0U, ap, 1U, 0U, 1U, 1U, srd, size_field));
+ 423              		.loc 1 93 17
  424 00bc 009B     		ldr	r3, [sp]
  425 00be 1B06     		lsls	r3, r3, #24
  426 00c0 03F0E062 		and	r2, r3, #117440512
@@ -1143,80 +1144,80 @@
  432 00ce 5B00     		lsls	r3, r3, #1
  433 00d0 03F03E03 		and	r3, r3, #62
  434 00d4 1A43     		orrs	r2, r2, r3
-  90:app/src/fault_injection.c ****             ARM_MPU_SetRegion(ARM_MPU_RBAR(rnr, base),
- 435              		.loc 1 90 13
+  92:app/src/fault_injection.c ****             ARM_MPU_SetRegion(ARM_MPU_RBAR(rnr, base),
+ 435              		.loc 1 92 13
  436 00d6 1A4B     		ldr	r3, .L21
  437 00d8 1343     		orrs	r3, r3, r2
  438 00da 1946     		mov	r1, r3
  439 00dc FFF7FEFF 		bl	ARM_MPU_SetRegion
-  92:app/src/fault_injection.c ****             if (outward != 0U) { return (a - (base + lo * g)) + ((base + hi * g) - b); }
- 440              		.loc 1 92 16
+  94:app/src/fault_injection.c ****             if (outward != 0U) { return (a - (base + lo * g)) + ((base + hi * g) - b); }
+ 440              		.loc 1 94 16
  441 00e0 0E9B     		ldr	r3, [sp, #56]
  442 00e2 002B     		cmp	r3, #0
  443 00e4 11D0     		beq	.L18
- 444              		.loc 1 92 57 discriminator 1
+ 444              		.loc 1 94 57 discriminator 1
  445 00e6 0A9B     		ldr	r3, [sp, #40]
  446 00e8 0B9A     		ldr	r2, [sp, #44]
  447 00ea 03FB02F2 		mul	r2, r3, r2
- 448              		.loc 1 92 52 discriminator 1
+ 448              		.loc 1 94 52 discriminator 1
  449 00ee 089B     		ldr	r3, [sp, #32]
  450 00f0 1344     		add	r3, r3, r2
- 451              		.loc 1 92 44 discriminator 1
+ 451              		.loc 1 94 44 discriminator 1
  452 00f2 029A     		ldr	r2, [sp, #8]
  453 00f4 D21A     		subs	r2, r2, r3
- 454              		.loc 1 92 77 discriminator 1
+ 454              		.loc 1 94 77 discriminator 1
  455 00f6 079B     		ldr	r3, [sp, #28]
  456 00f8 0B99     		ldr	r1, [sp, #44]
  457 00fa 03FB01F1 		mul	r1, r3, r1
- 458              		.loc 1 92 72 discriminator 1
+ 458              		.loc 1 94 72 discriminator 1
  459 00fe 089B     		ldr	r3, [sp, #32]
  460 0100 1944     		add	r1, r1, r3
- 461              		.loc 1 92 82 discriminator 1
+ 461              		.loc 1 94 82 discriminator 1
  462 0102 019B     		ldr	r3, [sp, #4]
  463 0104 CB1A     		subs	r3, r1, r3
- 464              		.loc 1 92 63 discriminator 1
+ 464              		.loc 1 94 63 discriminator 1
  465 0106 1344     		add	r3, r3, r2
- 466              		.loc 1 92 63 is_stmt 0
+ 466              		.loc 1 94 63 is_stmt 0
  467 0108 15E0     		b	.L19
  468              	.L18:
-  93:app/src/fault_injection.c ****             return (base + lo * g) - a;
- 469              		.loc 1 93 31 is_stmt 1
+  95:app/src/fault_injection.c ****             return (base + lo * g) - a;
+ 469              		.loc 1 95 31 is_stmt 1
  470 010a 0A9B     		ldr	r3, [sp, #40]
  471 010c 0B9A     		ldr	r2, [sp, #44]
  472 010e 03FB02F2 		mul	r2, r3, r2
- 473              		.loc 1 93 26
+ 473              		.loc 1 95 26
  474 0112 089B     		ldr	r3, [sp, #32]
  475 0114 1A44     		add	r2, r2, r3
- 476              		.loc 1 93 36
+ 476              		.loc 1 95 36
  477 0116 029B     		ldr	r3, [sp, #8]
  478 0118 D31A     		subs	r3, r2, r3
  479 011a 0CE0     		b	.L19
  480              	.L15:
  481              	.LBE26:
  482              	.LBE25:
-  81:app/src/fault_injection.c ****         uint32_t size = 8U * g;
- 483              		.loc 1 81 39 discriminator 2
+  83:app/src/fault_injection.c ****         uint32_t size = 8U * g;
+ 483              		.loc 1 83 39 discriminator 2
  484 011c 0B9B     		ldr	r3, [sp, #44]
  485 011e 5B00     		lsls	r3, r3, #1
  486 0120 0B93     		str	r3, [sp, #44]
  487              	.L13:
-  81:app/src/fault_injection.c ****         uint32_t size = 8U * g;
- 488              		.loc 1 81 21 discriminator 1
+  83:app/src/fault_injection.c ****         uint32_t size = 8U * g;
+ 488              		.loc 1 83 21 discriminator 1
  489 0122 0B9B     		ldr	r3, [sp, #44]
  490 0124 B3F1006F 		cmp	r3, #134217728
  491 0128 7FF673AF 		bls	.L20
-  94:app/src/fault_injection.c ****         }
-  95:app/src/fault_injection.c ****     }
-  96:app/src/fault_injection.c ****     ARM_MPU_ClrRegion(rnr);
- 492              		.loc 1 96 5
+  96:app/src/fault_injection.c ****         }
+  97:app/src/fault_injection.c ****     }
+  98:app/src/fault_injection.c ****     ARM_MPU_ClrRegion(rnr);
+ 492              		.loc 1 98 5
  493 012c 0398     		ldr	r0, [sp, #12]
  494 012e FFF7FEFF 		bl	ARM_MPU_ClrRegion
-  97:app/src/fault_injection.c ****     return 0xFFFFFFFFU;
- 495              		.loc 1 97 12
+  99:app/src/fault_injection.c ****     return 0xFFFFFFFFU;
+ 495              		.loc 1 99 12
  496 0132 4FF0FF33 		mov	r3, #-1
  497              	.L19:
-  98:app/src/fault_injection.c **** }
- 498              		.loc 1 98 1
+ 100:app/src/fault_injection.c **** }
+ 498              		.loc 1 100 1
  499 0136 1846     		mov	r0, r3
  500 0138 0DB0     		add	sp, sp, #52
  501              		.cfi_def_cfa_offset 4
@@ -1227,7 +1228,7 @@
  506              	.L21:
  507 0140 01000B00 		.word	720897
  508              		.cfi_endproc
- 509              	.LFE458:
+ 509              	.LFE461:
  511              		.section	.text.fi_mpu_cover_rw2,"ax",%progbits
  512              		.align	1
  513              		.p2align 4,,15
@@ -1235,11 +1236,11 @@
  515              		.thumb
  516              		.thumb_func
  518              	fi_mpu_cover_rw2:
- 519              	.LFB459:
-  99:app/src/fault_injection.c **** 
- 100:app/src/fault_injection.c **** /* [a, b) in scrittura con 2 regioni, divise sul confine più allineato (stack non allineati). */
- 101:app/src/fault_injection.c **** static uint32_t fi_mpu_cover_rw2(uint32_t rnr_lo, uint32_t rnr_hi, uint32_t a, uint32_t b) {
- 520              		.loc 1 101 92
+ 519              	.LFB462:
+ 101:app/src/fault_injection.c **** 
+ 102:app/src/fault_injection.c **** /* [a, b) in scrittura con 2 regioni, divise sul confine più allineato (stack non allineati). */
+ 103:app/src/fault_injection.c **** static uint32_t fi_mpu_cover_rw2(uint32_t rnr_lo, uint32_t rnr_hi, uint32_t a, uint32_t b) {
+ 520              		.loc 1 103 92
  521              		.cfi_startproc
  522              		@ args = 0, pretend = 0, frame = 24
  523              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -1253,40 +1254,40 @@
  531 0006 0491     		str	r1, [sp, #16]
  532 0008 0392     		str	r2, [sp, #12]
  533 000a 0293     		str	r3, [sp, #8]
- 102:app/src/fault_injection.c ****     int32_t k;
- 103:app/src/fault_injection.c ****     for (k = 31; k >= 5; k--) {
- 534              		.loc 1 103 12
+ 104:app/src/fault_injection.c ****     int32_t k;
+ 105:app/src/fault_injection.c ****     for (k = 31; k >= 5; k--) {
+ 534              		.loc 1 105 12
  535 000c 1F23     		movs	r3, #31
  536 000e 0793     		str	r3, [sp, #28]
- 537              		.loc 1 103 5
+ 537              		.loc 1 105 5
  538 0010 26E0     		b	.L24
  539              	.L27:
  540              	.LBB29:
- 104:app/src/fault_injection.c ****         uint32_t m = b & ~((1U << (uint32_t)k) - 1U);
- 541              		.loc 1 104 35
+ 106:app/src/fault_injection.c ****         uint32_t m = b & ~((1U << (uint32_t)k) - 1U);
+ 541              		.loc 1 106 35
  542 0012 079B     		ldr	r3, [sp, #28]
- 543              		.loc 1 104 32
+ 543              		.loc 1 106 32
  544 0014 0122     		movs	r2, #1
  545 0016 02FA03F3 		lsl	r3, r2, r3
- 546              		.loc 1 104 26
+ 546              		.loc 1 106 26
  547 001a 5B42     		rsbs	r3, r3, #0
- 548              		.loc 1 104 18
+ 548              		.loc 1 106 18
  549 001c 029A     		ldr	r2, [sp, #8]
  550 001e 1340     		ands	r3, r3, r2
  551 0020 0693     		str	r3, [sp, #24]
- 105:app/src/fault_injection.c ****         if ((m > a) && (m < b)) {
- 552              		.loc 1 105 12
+ 107:app/src/fault_injection.c ****         if ((m > a) && (m < b)) {
+ 552              		.loc 1 107 12
  553 0022 069A     		ldr	r2, [sp, #24]
  554 0024 039B     		ldr	r3, [sp, #12]
  555 0026 9A42     		cmp	r2, r3
  556 0028 17D9     		bls	.L25
- 557              		.loc 1 105 21 discriminator 1
+ 557              		.loc 1 107 21 discriminator 1
  558 002a 069A     		ldr	r2, [sp, #24]
  559 002c 029B     		ldr	r3, [sp, #8]
  560 002e 9A42     		cmp	r2, r3
  561 0030 13D2     		bcs	.L25
- 106:app/src/fault_injection.c ****             return fi_mpu_cover(rnr_lo, a, m, ARM_MPU_AP_FULL, 1U) +
- 562              		.loc 1 106 20
+ 108:app/src/fault_injection.c ****             return fi_mpu_cover(rnr_lo, a, m, ARM_MPU_AP_FULL, 1U) +
+ 562              		.loc 1 108 20
  563 0032 0123     		movs	r3, #1
  564 0034 0093     		str	r3, [sp]
  565 0036 0323     		movs	r3, #3
@@ -1295,8 +1296,8 @@
  568 003c 0598     		ldr	r0, [sp, #20]
  569 003e FFF7FEFF 		bl	fi_mpu_cover
  570 0042 0446     		mov	r4, r0
- 107:app/src/fault_injection.c ****                    fi_mpu_cover(rnr_hi, m, b, ARM_MPU_AP_FULL, 1U);
- 571              		.loc 1 107 20
+ 109:app/src/fault_injection.c ****                    fi_mpu_cover(rnr_hi, m, b, ARM_MPU_AP_FULL, 1U);
+ 571              		.loc 1 109 20
  572 0044 0123     		movs	r3, #1
  573 0046 0093     		str	r3, [sp]
  574 0048 0323     		movs	r3, #3
@@ -1305,31 +1306,31 @@
  577 004e 0498     		ldr	r0, [sp, #16]
  578 0050 FFF7FEFF 		bl	fi_mpu_cover
  579 0054 0346     		mov	r3, r0
- 106:app/src/fault_injection.c ****             return fi_mpu_cover(rnr_lo, a, m, ARM_MPU_AP_FULL, 1U) +
- 580              		.loc 1 106 68
+ 108:app/src/fault_injection.c ****             return fi_mpu_cover(rnr_lo, a, m, ARM_MPU_AP_FULL, 1U) +
+ 580              		.loc 1 108 68
  581 0056 2344     		add	r3, r3, r4
  582 0058 11E0     		b	.L26
  583              	.L25:
  584              	.LBE29:
- 103:app/src/fault_injection.c ****         uint32_t m = b & ~((1U << (uint32_t)k) - 1U);
- 585              		.loc 1 103 27 discriminator 2
+ 105:app/src/fault_injection.c ****         uint32_t m = b & ~((1U << (uint32_t)k) - 1U);
+ 585              		.loc 1 105 27 discriminator 2
  586 005a 079B     		ldr	r3, [sp, #28]
  587 005c 013B     		subs	r3, r3, #1
  588 005e 0793     		str	r3, [sp, #28]
  589              	.L24:
- 103:app/src/fault_injection.c ****         uint32_t m = b & ~((1U << (uint32_t)k) - 1U);
- 590              		.loc 1 103 20 discriminator 1
+ 105:app/src/fault_injection.c ****         uint32_t m = b & ~((1U << (uint32_t)k) - 1U);
+ 590              		.loc 1 105 20 discriminator 1
  591 0060 079B     		ldr	r3, [sp, #28]
  592 0062 042B     		cmp	r3, #4
  593 0064 D5DC     		bgt	.L27
- 108:app/src/fault_injection.c ****         }
- 109:app/src/fault_injection.c ****     }
- 110:app/src/fault_injection.c ****     ARM_MPU_ClrRegion(rnr_hi);
- 594              		.loc 1 110 5
+ 110:app/src/fault_injection.c ****         }
+ 111:app/src/fault_injection.c ****     }
+ 112:app/src/fault_injection.c ****     ARM_MPU_ClrRegion(rnr_hi);
+ 594              		.loc 1 112 5
  595 0066 0498     		ldr	r0, [sp, #16]
  596 0068 FFF7FEFF 		bl	ARM_MPU_ClrRegion
- 111:app/src/fault_injection.c ****     return fi_mpu_cover(rnr_lo, a, b, ARM_MPU_AP_FULL, 1U);
- 597              		.loc 1 111 12
+ 113:app/src/fault_injection.c ****     return fi_mpu_cover(rnr_lo, a, b, ARM_MPU_AP_FULL, 1U);
+ 597              		.loc 1 113 12
  598 006c 0123     		movs	r3, #1
  599 006e 0093     		str	r3, [sp]
  600 0070 0323     		movs	r3, #3
@@ -1339,15 +1340,15 @@
  604 0078 FFF7FEFF 		bl	fi_mpu_cover
  605 007c 0346     		mov	r3, r0
  606              	.L26:
- 112:app/src/fault_injection.c **** }
- 607              		.loc 1 112 1
+ 114:app/src/fault_injection.c **** }
+ 607              		.loc 1 114 1
  608 007e 1846     		mov	r0, r3
  609 0080 08B0     		add	sp, sp, #32
  610              		.cfi_def_cfa_offset 8
  611              		@ sp needed
  612 0082 10BD     		pop	{r4, pc}
  613              		.cfi_endproc
- 614              	.LFE459:
+ 614              	.LFE462:
  616              		.section	.text.fi_mpu_init,"ax",%progbits
  617              		.align	1
  618              		.p2align 4,,15
@@ -1355,12 +1356,12 @@
  620              		.thumb
  621              		.thumb_func
  623              	fi_mpu_init:
- 624              	.LFB460:
- 113:app/src/fault_injection.c **** 
- 114:app/src/fault_injection.c **** /* Regioni MPU attive solo durante i layer (vince il numero più alto).
- 115:app/src/fault_injection.c ****  * Attributi = default SRAM: Normal, write-back write-allocate (TEX=1,C=1,B=1), non shareable. */
- 116:app/src/fault_injection.c **** static void fi_mpu_init(void) {
- 625              		.loc 1 116 31
+ 624              	.LFB463:
+ 115:app/src/fault_injection.c **** 
+ 116:app/src/fault_injection.c **** /* Regioni MPU attive solo durante i layer (vince il numero più alto).
+ 117:app/src/fault_injection.c ****  * Attributi = default SRAM: Normal, write-back write-allocate (TEX=1,C=1,B=1), non shareable. */
+ 118:app/src/fault_injection.c **** static void fi_mpu_init(void) {
+ 625              		.loc 1 118 31
  626              		.cfi_startproc
  627              		@ args = 0, pretend = 0, frame = 8
  628              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -1370,15 +1371,15 @@
  632              		.cfi_offset 14, -4
  633 0002 84B0     		sub	sp, sp, #16
  634              		.cfi_def_cfa_offset 24
- 117:app/src/fault_injection.c ****     const uint32_t act = (uint32_t)fi_act;
- 635              		.loc 1 117 20
+ 119:app/src/fault_injection.c ****     const uint32_t act = (uint32_t)fi_act;
+ 635              		.loc 1 119 20
  636 0004 244B     		ldr	r3, .L29
  637 0006 0393     		str	r3, [sp, #12]
- 118:app/src/fault_injection.c **** 
- 119:app/src/fault_injection.c ****     MPU->CTRL = 0U;
- 638              		.loc 1 119 8
+ 120:app/src/fault_injection.c **** 
+ 121:app/src/fault_injection.c ****     MPU->CTRL = 0U;
+ 638              		.loc 1 121 8
  639 0008 244B     		ldr	r3, .L29+4
- 640              		.loc 1 119 15
+ 640              		.loc 1 121 15
  641 000a 0022     		movs	r2, #0
  642 000c 5A60     		str	r2, [r3, #4]
  643              	.LBB30:
@@ -1411,46 +1412,46 @@
  666 0018 00BF     		nop
  667              	.LBE33:
  668              	.LBE32:
- 120:app/src/fault_injection.c ****     __DSB(); __ISB();
- 121:app/src/fault_injection.c **** 
- 122:app/src/fault_injection.c ****     ARM_MPU_SetRegion(ARM_MPU_RBAR(0U, 0x24000000U),
- 669              		.loc 1 122 5
+ 122:app/src/fault_injection.c ****     __DSB(); __ISB();
+ 123:app/src/fault_injection.c **** 
+ 124:app/src/fault_injection.c ****     ARM_MPU_SetRegion(ARM_MPU_RBAR(0U, 0x24000000U),
+ 669              		.loc 1 124 5
  670 001a 2149     		ldr	r1, .L29+8
  671 001c 2148     		ldr	r0, .L29+12
  672 001e FFF7FEFF 		bl	ARM_MPU_SetRegion
- 123:app/src/fault_injection.c ****         ARM_MPU_RASR(0U, ARM_MPU_AP_RO,   1U, 0U, 1U, 1U, 0x00U, ARM_MPU_REGION_SIZE_256KB));
- 124:app/src/fault_injection.c ****     ARM_MPU_SetRegion(ARM_MPU_RBAR(1U, act),
- 673              		.loc 1 124 23
+ 125:app/src/fault_injection.c ****         ARM_MPU_RASR(0U, ARM_MPU_AP_RO,   1U, 0U, 1U, 1U, 0x00U, ARM_MPU_REGION_SIZE_256KB));
+ 126:app/src/fault_injection.c ****     ARM_MPU_SetRegion(ARM_MPU_RBAR(1U, act),
+ 673              		.loc 1 126 23
  674 0022 039B     		ldr	r3, [sp, #12]
  675 0024 23F01F03 		bic	r3, r3, #31
- 676              		.loc 1 124 5
+ 676              		.loc 1 126 5
  677 0028 43F01103 		orr	r3, r3, #17
  678 002c 1E49     		ldr	r1, .L29+16
  679 002e 1846     		mov	r0, r3
  680 0030 FFF7FEFF 		bl	ARM_MPU_SetRegion
- 125:app/src/fault_injection.c ****         ARM_MPU_RASR(0U, ARM_MPU_AP_FULL, 1U, 0U, 1U, 1U,
- 126:app/src/fault_injection.c ****                      (uint8_t)(0xFFU << FI_ACT_N_SUB), ARM_MPU_REGION_SIZE_8KB));
- 127:app/src/fault_injection.c ****     (void) fi_mpu_cover_rw2(2U, 3U, (uint32_t)__main_stack_base__, (uint32_t)__process_stack_end__)
- 681              		.loc 1 127 12
+ 127:app/src/fault_injection.c ****         ARM_MPU_RASR(0U, ARM_MPU_AP_FULL, 1U, 0U, 1U, 1U,
+ 128:app/src/fault_injection.c ****                      (uint8_t)(0xFFU << FI_ACT_N_SUB), ARM_MPU_REGION_SIZE_8KB));
+ 129:app/src/fault_injection.c ****     (void) fi_mpu_cover_rw2(2U, 3U, (uint32_t)__main_stack_base__, (uint32_t)__process_stack_end__)
+ 681              		.loc 1 129 12
  682 0034 1D4A     		ldr	r2, .L29+20
  683 0036 1E4B     		ldr	r3, .L29+24
  684 0038 0321     		movs	r1, #3
  685 003a 0220     		movs	r0, #2
  686 003c FFF7FEFF 		bl	fi_mpu_cover_rw2
- 128:app/src/fault_injection.c ****     ARM_MPU_ClrRegion(4U);
- 687              		.loc 1 128 5
+ 130:app/src/fault_injection.c ****     ARM_MPU_ClrRegion(4U);
+ 687              		.loc 1 130 5
  688 0040 0420     		movs	r0, #4
  689 0042 FFF7FEFF 		bl	ARM_MPU_ClrRegion
- 129:app/src/fault_injection.c ****     (void)fi_mpu_cover(5U, (uint32_t)&errno, (uint32_t)&errno + sizeof(errno), ARM_MPU_AP_FULL, 1U)
- 690              		.loc 1 129 38
+ 131:app/src/fault_injection.c ****     (void)fi_mpu_cover(5U, (uint32_t)&errno, (uint32_t)&errno + sizeof(errno), ARM_MPU_AP_FULL, 1U)
+ 690              		.loc 1 131 38
  691 0046 FFF7FEFF 		bl	__errno
  692 004a 0346     		mov	r3, r0
- 693              		.loc 1 129 11 discriminator 1
+ 693              		.loc 1 131 11 discriminator 1
  694 004c 1C46     		mov	r4, r3
- 695              		.loc 1 129 56 discriminator 1
+ 695              		.loc 1 131 56 discriminator 1
  696 004e FFF7FEFF 		bl	__errno
  697 0052 0346     		mov	r3, r0
- 698              		.loc 1 129 11 discriminator 2
+ 698              		.loc 1 131 11 discriminator 2
  699 0054 1A1D     		adds	r2, r3, #4
  700 0056 0123     		movs	r3, #1
  701 0058 0093     		str	r3, [sp]
@@ -1458,28 +1459,28 @@
  703 005c 2146     		mov	r1, r4
  704 005e 0520     		movs	r0, #5
  705 0060 FFF7FEFF 		bl	fi_mpu_cover
- 130:app/src/fault_injection.c ****     ARM_MPU_SetRegion(ARM_MPU_RBAR(6U, act + FI_IN_OFFSET), 0U);         /* [4032, 4096) */
- 706              		.loc 1 130 23
+ 132:app/src/fault_injection.c ****     ARM_MPU_SetRegion(ARM_MPU_RBAR(6U, act + FI_IN_OFFSET), 0U);         /* [4032, 4096) */
+ 706              		.loc 1 132 23
  707 0064 039B     		ldr	r3, [sp, #12]
  708 0066 03F57C63 		add	r3, r3, #4032
  709 006a 23F01F03 		bic	r3, r3, #31
- 710              		.loc 1 130 5
+ 710              		.loc 1 132 5
  711 006e 43F01603 		orr	r3, r3, #22
  712 0072 0021     		movs	r1, #0
  713 0074 1846     		mov	r0, r3
  714 0076 FFF7FEFF 		bl	ARM_MPU_SetRegion
- 131:app/src/fault_injection.c ****     ARM_MPU_SetRegion(ARM_MPU_RBAR(7U, act + FI_IN_OFFSET + 64U), 0U);   /* [4096, 4320) */
- 715              		.loc 1 131 23
+ 133:app/src/fault_injection.c ****     ARM_MPU_SetRegion(ARM_MPU_RBAR(7U, act + FI_IN_OFFSET + 64U), 0U);   /* [4096, 4320) */
+ 715              		.loc 1 133 23
  716 007a 039B     		ldr	r3, [sp, #12]
  717 007c 03F58053 		add	r3, r3, #4096
  718 0080 23F01F03 		bic	r3, r3, #31
- 719              		.loc 1 131 5
+ 719              		.loc 1 133 5
  720 0084 43F01703 		orr	r3, r3, #23
  721 0088 0021     		movs	r1, #0
  722 008a 1846     		mov	r0, r3
  723 008c FFF7FEFF 		bl	ARM_MPU_SetRegion
- 132:app/src/fault_injection.c **** }
- 724              		.loc 1 132 1
+ 134:app/src/fault_injection.c **** }
+ 724              		.loc 1 134 1
  725 0090 00BF     		nop
  726 0092 04B0     		add	sp, sp, #16
  727              		.cfi_def_cfa_offset 8
@@ -1496,7 +1497,7 @@
  738 00ac 00000000 		.word	__main_stack_base__
  739 00b0 00000000 		.word	__process_stack_end__
  740              		.cfi_endproc
- 741              	.LFE460:
+ 741              	.LFE463:
  743              		.section	.text.fi_mpu_on,"ax",%progbits
  744              		.align	1
  745              		.p2align 4,,15
@@ -1504,89 +1505,89 @@
  747              		.thumb
  748              		.thumb_func
  750              	fi_mpu_on:
- 751              	.LFB461:
- 133:app/src/fault_injection.c **** /* Accende la protezione: solo lo stack sotto fi_sp_top resta scrivibile,
- 134:app/src/fault_injection.c ****  * SysTick (4) e UART (5) mascherati, TIM2 (2) no.
- 135:app/src/fault_injection.c ****  * MEMFAULTENA resta 0: il fault escala a HardFault -> fi_fault_dispatch. */
- 136:app/src/fault_injection.c **** static void fi_mpu_on(void) {
- 752              		.loc 1 136 29
+ 751              	.LFB464:
+ 135:app/src/fault_injection.c **** /* Accende la protezione: solo lo stack sotto fi_sp_top resta scrivibile,
+ 136:app/src/fault_injection.c ****  * SysTick (4) e UART (5) mascherati, TIM2 (2) no.
+ 137:app/src/fault_injection.c ****  * MEMFAULTENA resta 0: il fault escala a HardFault -> fi_fault_dispatch. */
+ 138:app/src/fault_injection.c **** static void fi_mpu_on(void) {
+ 752              		.loc 1 138 29
  753              		.cfi_startproc
  754              		@ args = 0, pretend = 0, frame = 8
  755              		@ frame_needed = 0, uses_anonymous_args = 0
  756              		@ link register save eliminated.
  757 0000 82B0     		sub	sp, sp, #8
  758              		.cfi_def_cfa_offset 8
- 137:app/src/fault_injection.c **** 	const uint32_t in = ((fi_node_idx != 0U) && (fi_node_ids[fi_node_idx - 1U] == FI_INPUT_NODE_ID)) ?
- 759              		.loc 1 137 36
+ 139:app/src/fault_injection.c **** 	const uint32_t in = ((fi_node_idx != 0U) && (fi_node_ids[fi_node_idx - 1U] == FI_INPUT_NODE_ID)) ?
+ 759              		.loc 1 139 36
  760 0002 1B4B     		ldr	r3, .L38
  761 0004 1B68     		ldr	r3, [r3]
- 762              		.loc 1 137 104
+ 762              		.loc 1 139 104
  763 0006 002B     		cmp	r3, #0
  764 0008 08D0     		beq	.L32
- 765              		.loc 1 137 71 discriminator 1
+ 765              		.loc 1 139 71 discriminator 1
  766 000a 194B     		ldr	r3, .L38
  767 000c 1B68     		ldr	r3, [r3]
  768 000e 013B     		subs	r3, r3, #1
- 769              		.loc 1 137 58 discriminator 1
+ 769              		.loc 1 139 58 discriminator 1
  770 0010 184A     		ldr	r2, .L38+4
  771 0012 D35C     		ldrb	r3, [r2, r3]	@ zero_extendqisi2
- 772              		.loc 1 137 43 discriminator 1
+ 772              		.loc 1 139 43 discriminator 1
  773 0014 032B     		cmp	r3, #3
  774 0016 01D1     		bne	.L32
- 775              		.loc 1 137 104 discriminator 3
+ 775              		.loc 1 139 104 discriminator 3
  776 0018 0123     		movs	r3, #1
- 777              		.loc 1 137 104 is_stmt 0
+ 777              		.loc 1 139 104 is_stmt 0
  778 001a 00E0     		b	.L33
  779              	.L32:
- 780              		.loc 1 137 104 discriminator 4
+ 780              		.loc 1 139 104 discriminator 4
  781 001c 0023     		movs	r3, #0
  782              	.L33:
- 783              		.loc 1 137 17 is_stmt 1 discriminator 6
+ 783              		.loc 1 139 17 is_stmt 1 discriminator 6
  784 001e 0193     		str	r3, [sp, #4]
- 138:app/src/fault_injection.c **** 
- 139:app/src/fault_injection.c ****     MPU->RNR  = 6U;
- 785              		.loc 1 139 8
+ 140:app/src/fault_injection.c **** 
+ 141:app/src/fault_injection.c ****     MPU->RNR  = 6U;
+ 785              		.loc 1 141 8
  786 0020 154B     		ldr	r3, .L38+8
- 787              		.loc 1 139 15
+ 787              		.loc 1 141 15
  788 0022 0622     		movs	r2, #6
  789 0024 9A60     		str	r2, [r3, #8]
- 140:app/src/fault_injection.c ****     MPU->RASR = (in != 0U) ? FI_MPU_IN_A_RASR : 0U;
- 790              		.loc 1 140 47
+ 142:app/src/fault_injection.c ****     MPU->RASR = (in != 0U) ? FI_MPU_IN_A_RASR : 0U;
+ 790              		.loc 1 142 47
  791 0026 019B     		ldr	r3, [sp, #4]
  792 0028 002B     		cmp	r3, #0
  793 002a 01D0     		beq	.L34
- 794              		.loc 1 140 47 is_stmt 0 discriminator 1
+ 794              		.loc 1 142 47 is_stmt 0 discriminator 1
  795 002c 134B     		ldr	r3, .L38+12
  796 002e 00E0     		b	.L35
  797              	.L34:
- 798              		.loc 1 140 47 discriminator 2
+ 798              		.loc 1 142 47 discriminator 2
  799 0030 0023     		movs	r3, #0
  800              	.L35:
- 801              		.loc 1 140 8 is_stmt 1 discriminator 4
+ 801              		.loc 1 142 8 is_stmt 1 discriminator 4
  802 0032 114A     		ldr	r2, .L38+8
- 803              		.loc 1 140 15 discriminator 4
+ 803              		.loc 1 142 15 discriminator 4
  804 0034 1361     		str	r3, [r2, #16]
- 141:app/src/fault_injection.c ****     MPU->RNR  = 7U;
- 805              		.loc 1 141 8
+ 143:app/src/fault_injection.c ****     MPU->RNR  = 7U;
+ 805              		.loc 1 143 8
  806 0036 104B     		ldr	r3, .L38+8
- 807              		.loc 1 141 15
+ 807              		.loc 1 143 15
  808 0038 0722     		movs	r2, #7
  809 003a 9A60     		str	r2, [r3, #8]
- 142:app/src/fault_injection.c ****     MPU->RASR = (in != 0U) ? FI_MPU_IN_B_RASR : 0U;
- 810              		.loc 1 142 47
+ 144:app/src/fault_injection.c ****     MPU->RASR = (in != 0U) ? FI_MPU_IN_B_RASR : 0U;
+ 810              		.loc 1 144 47
  811 003c 019B     		ldr	r3, [sp, #4]
  812 003e 002B     		cmp	r3, #0
  813 0040 01D0     		beq	.L36
- 814              		.loc 1 142 47 is_stmt 0 discriminator 1
+ 814              		.loc 1 144 47 is_stmt 0 discriminator 1
  815 0042 0F4B     		ldr	r3, .L38+16
  816 0044 00E0     		b	.L37
  817              	.L36:
- 818              		.loc 1 142 47 discriminator 2
+ 818              		.loc 1 144 47 discriminator 2
  819 0046 0023     		movs	r3, #0
  820              	.L37:
- 821              		.loc 1 142 8 is_stmt 1 discriminator 4
+ 821              		.loc 1 144 8 is_stmt 1 discriminator 4
  822 0048 0B4A     		ldr	r2, .L38+8
- 823              		.loc 1 142 15 discriminator 4
+ 823              		.loc 1 144 15 discriminator 4
  824 004a 1361     		str	r3, [r2, #16]
  825 004c 4023     		movs	r3, #64
  826 004e 0093     		str	r3, [sp]
@@ -2502,12 +2503,12 @@
  838 0056 00BF     		nop
  839              	.LBE35:
  840              	.LBE34:
- 143:app/src/fault_injection.c **** 
- 144:app/src/fault_injection.c ****     __set_BASEPRI(4U << (8U - __NVIC_PRIO_BITS));
- 145:app/src/fault_injection.c ****     MPU->CTRL = MPU_CTRL_PRIVDEFENA_Msk | MPU_CTRL_ENABLE_Msk;
- 841              		.loc 1 145 8
+ 145:app/src/fault_injection.c **** 
+ 146:app/src/fault_injection.c ****     __set_BASEPRI(4U << (8U - __NVIC_PRIO_BITS));
+ 147:app/src/fault_injection.c ****     MPU->CTRL = MPU_CTRL_PRIVDEFENA_Msk | MPU_CTRL_ENABLE_Msk;
+ 841              		.loc 1 147 8
  842 0058 074B     		ldr	r3, .L38+8
- 843              		.loc 1 145 15
+ 843              		.loc 1 147 15
  844 005a 0522     		movs	r2, #5
  845 005c 5A60     		str	r2, [r3, #4]
  846              	.LBB36:
@@ -2540,9 +2541,9 @@
  869 0068 00BF     		nop
  870              	.LBE39:
  871              	.LBE38:
- 146:app/src/fault_injection.c ****     __DSB(); __ISB();
- 147:app/src/fault_injection.c **** }
- 872              		.loc 1 147 1
+ 148:app/src/fault_injection.c ****     __DSB(); __ISB();
+ 149:app/src/fault_injection.c **** }
+ 872              		.loc 1 149 1
  873 006a 00BF     		nop
  874 006c 02B0     		add	sp, sp, #8
  875              		.cfi_def_cfa_offset 0
@@ -2551,13 +2552,13 @@
  878              	.L39:
  879              		.align	2
  880              	.L38:
- 881 0070 58000000 		.word	fi_node_idx
+ 881 0070 54000000 		.word	fi_node_idx
  882 0074 00000000 		.word	fi_node_ids
  883 0078 90ED00E0 		.word	-536810096
  884 007c 0B000B06 		.word	101384203
  885 0080 0F800B06 		.word	101416975
  886              		.cfi_endproc
- 887              	.LFE461:
+ 887              	.LFE464:
  889              		.section	.text.fi_mpu_off,"ax",%progbits
  890              		.align	1
  891              		.p2align 4,,15
@@ -2565,19 +2566,19 @@
  893              		.thumb
  894              		.thumb_func
  896              	fi_mpu_off:
- 897              	.LFB462:
- 148:app/src/fault_injection.c **** static void fi_mpu_off(void) {
- 898              		.loc 1 148 30
+ 897              	.LFB465:
+ 150:app/src/fault_injection.c **** static void fi_mpu_off(void) {
+ 898              		.loc 1 150 30
  899              		.cfi_startproc
  900              		@ args = 0, pretend = 0, frame = 8
  901              		@ frame_needed = 0, uses_anonymous_args = 0
  902              		@ link register save eliminated.
  903 0000 82B0     		sub	sp, sp, #8
  904              		.cfi_def_cfa_offset 8
- 149:app/src/fault_injection.c ****     MPU->CTRL = 0U;
- 905              		.loc 1 149 8
+ 151:app/src/fault_injection.c ****     MPU->CTRL = 0U;
+ 905              		.loc 1 151 8
  906 0002 094B     		ldr	r3, .L41
- 907              		.loc 1 149 15
+ 907              		.loc 1 151 15
  908 0004 0022     		movs	r2, #0
  909 0006 5A60     		str	r2, [r3, #4]
  910              	.LBB40:
@@ -2627,10 +2628,10 @@
  949 001e 00BF     		nop
  950              	.LBE45:
  951              	.LBE44:
- 150:app/src/fault_injection.c ****     __DSB(); __ISB();
- 151:app/src/fault_injection.c ****     __set_BASEPRI(0U);
- 152:app/src/fault_injection.c **** }
- 952              		.loc 1 152 1
+ 152:app/src/fault_injection.c ****     __DSB(); __ISB();
+ 153:app/src/fault_injection.c ****     __set_BASEPRI(0U);
+ 154:app/src/fault_injection.c **** }
+ 952              		.loc 1 154 1
  953 0020 00BF     		nop
  954 0022 02B0     		add	sp, sp, #8
  955              		.cfi_def_cfa_offset 0
@@ -2641,7 +2642,7 @@
  960              	.L41:
  961 0028 90ED00E0 		.word	-536810096
  962              		.cfi_endproc
- 963              	.LFE462:
+ 963              	.LFE465:
  965              		.section	.text.fi_timer_pause,"ax",%progbits
  966              		.align	1
  967              		.p2align 4,,15
@@ -2649,23 +2650,23 @@
  969              		.thumb
  970              		.thumb_func
  972              	fi_timer_pause:
- 973              	.LFB463:
- 153:app/src/fault_injection.c **** 
- 154:app/src/fault_injection.c **** /* TIM2 come "cronometro dei layer": conta solo tra NODE_START e NODE_STOP. */
- 155:app/src/fault_injection.c **** static inline void fi_timer_pause(void)  { TIM2->CR1 &= ~TIM_CR1_CEN; }
- 974              		.loc 1 155 42
+ 973              	.LFB466:
+ 155:app/src/fault_injection.c **** 
+ 156:app/src/fault_injection.c **** /* TIM2 come "cronometro dei layer": conta solo tra NODE_START e NODE_STOP. */
+ 157:app/src/fault_injection.c **** static inline void fi_timer_pause(void)  { TIM2->CR1 &= ~TIM_CR1_CEN; }
+ 974              		.loc 1 157 42
  975              		.cfi_startproc
  976              		@ args = 0, pretend = 0, frame = 0
  977              		@ frame_needed = 0, uses_anonymous_args = 0
  978              		@ link register save eliminated.
- 979              		.loc 1 155 48
+ 979              		.loc 1 157 48
  980 0000 034B     		ldr	r3, .L44
  981 0002 1B68     		ldr	r3, [r3]
  982 0004 024A     		ldr	r2, .L44
- 983              		.loc 1 155 54
+ 983              		.loc 1 157 54
  984 0006 23F00103 		bic	r3, r3, #1
  985 000a 1360     		str	r3, [r2]
- 986              		.loc 1 155 71
+ 986              		.loc 1 157 71
  987 000c 00BF     		nop
  988 000e 7047     		bx	lr
  989              	.L45:
@@ -2673,7 +2674,7 @@
  991              	.L44:
  992 0010 003C0040 		.word	1073757184
  993              		.cfi_endproc
- 994              	.LFE463:
+ 994              	.LFE466:
  996              		.section	.text.fi_timer_resume,"ax",%progbits
  997              		.align	1
  998              		.p2align 4,,15
@@ -2681,21 +2682,21 @@
  1000              		.thumb
  1001              		.thumb_func
  1003              	fi_timer_resume:
- 1004              	.LFB464:
- 156:app/src/fault_injection.c **** static inline void fi_timer_resume(void) { TIM2->CR1 |=  TIM_CR1_CEN; }
- 1005              		.loc 1 156 42
+ 1004              	.LFB467:
+ 158:app/src/fault_injection.c **** static inline void fi_timer_resume(void) { TIM2->CR1 |=  TIM_CR1_CEN; }
+ 1005              		.loc 1 158 42
  1006              		.cfi_startproc
  1007              		@ args = 0, pretend = 0, frame = 0
  1008              		@ frame_needed = 0, uses_anonymous_args = 0
  1009              		@ link register save eliminated.
- 1010              		.loc 1 156 48
+ 1010              		.loc 1 158 48
  1011 0000 034B     		ldr	r3, .L47
  1012 0002 1B68     		ldr	r3, [r3]
  1013 0004 024A     		ldr	r2, .L47
- 1014              		.loc 1 156 54
+ 1014              		.loc 1 158 54
  1015 0006 43F00103 		orr	r3, r3, #1
  1016 000a 1360     		str	r3, [r2]
- 1017              		.loc 1 156 71
+ 1017              		.loc 1 158 71
  1018 000c 00BF     		nop
  1019 000e 7047     		bx	lr
  1020              	.L48:
@@ -2703,7 +2704,7 @@
  1022              	.L47:
  1023 0010 003C0040 		.word	1073757184
  1024              		.cfi_endproc
- 1025              	.LFE464:
+ 1025              	.LFE467:
  1027              		.section	.text.fi_timer_arm,"ax",%progbits
  1028              		.align	1
  1029              		.p2align 4,,15
@@ -2711,11 +2712,11 @@
  1031              		.thumb
  1032              		.thumb_func
  1034              	fi_timer_arm:
- 1035              	.LFB465:
- 157:app/src/fault_injection.c **** 
- 158:app/src/fault_injection.c **** /* Azzera il contatore e imposta l'update dopo 't' tick, timer fermo. */
- 159:app/src/fault_injection.c **** static void fi_timer_arm(uint32_t t) {
- 1036              		.loc 1 159 38
+ 1035              	.LFB468:
+ 159:app/src/fault_injection.c **** 
+ 160:app/src/fault_injection.c **** /* Azzera il contatore e imposta l'update dopo 't' tick, timer fermo. */
+ 161:app/src/fault_injection.c **** static void fi_timer_arm(uint32_t t) {
+ 1036              		.loc 1 161 38
  1037              		.cfi_startproc
  1038              		@ args = 0, pretend = 0, frame = 8
  1039              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -2725,31 +2726,31 @@
  1043 0002 83B0     		sub	sp, sp, #12
  1044              		.cfi_def_cfa_offset 16
  1045 0004 0190     		str	r0, [sp, #4]
- 160:app/src/fault_injection.c ****     fi_timer_pause();
- 1046              		.loc 1 160 5
+ 162:app/src/fault_injection.c ****     fi_timer_pause();
+ 1046              		.loc 1 162 5
  1047 0006 FFF7FEFF 		bl	fi_timer_pause
- 161:app/src/fault_injection.c ****     TIM2->ARR = t - 1U;
- 1048              		.loc 1 161 9
+ 163:app/src/fault_injection.c ****     TIM2->ARR = t - 1U;
+ 1048              		.loc 1 163 9
  1049 000a 074A     		ldr	r2, .L50
- 1050              		.loc 1 161 19
+ 1050              		.loc 1 163 19
  1051 000c 019B     		ldr	r3, [sp, #4]
  1052 000e 013B     		subs	r3, r3, #1
- 1053              		.loc 1 161 15
+ 1053              		.loc 1 163 15
  1054 0010 D362     		str	r3, [r2, #44]
- 162:app/src/fault_injection.c ****     TIM2->EGR = TIM_EGR_UG;      /* CNT = 0, carica ARR/PSC (con URS=1 nessun IRQ) */
- 1055              		.loc 1 162 9
+ 164:app/src/fault_injection.c ****     TIM2->EGR = TIM_EGR_UG;      /* CNT = 0, carica ARR/PSC (con URS=1 nessun IRQ) */
+ 1055              		.loc 1 164 9
  1056 0012 054B     		ldr	r3, .L50
- 1057              		.loc 1 162 15
+ 1057              		.loc 1 164 15
  1058 0014 0122     		movs	r2, #1
  1059 0016 5A61     		str	r2, [r3, #20]
- 163:app/src/fault_injection.c ****     TIM2->SR  = 0U;
- 1060              		.loc 1 163 9
+ 165:app/src/fault_injection.c ****     TIM2->SR  = 0U;
+ 1060              		.loc 1 165 9
  1061 0018 034B     		ldr	r3, .L50
- 1062              		.loc 1 163 15
+ 1062              		.loc 1 165 15
  1063 001a 0022     		movs	r2, #0
  1064 001c 1A61     		str	r2, [r3, #16]
- 164:app/src/fault_injection.c **** }
- 1065              		.loc 1 164 1
+ 166:app/src/fault_injection.c **** }
+ 1065              		.loc 1 166 1
  1066 001e 00BF     		nop
  1067 0020 03B0     		add	sp, sp, #12
  1068              		.cfi_def_cfa_offset 4
@@ -2760,7 +2761,7 @@
  1073              	.L50:
  1074 0028 003C0040 		.word	1073757184
  1075              		.cfi_endproc
- 1076              	.LFE465:
+ 1076              	.LFE468:
  1078              		.section	.text.FI_Init,"ax",%progbits
  1079              		.align	1
  1080              		.p2align 4,,15
@@ -2769,10 +2770,10 @@
  1083              		.thumb
  1084              		.thumb_func
  1086              	FI_Init:
- 1087              	.LFB466:
- 165:app/src/fault_injection.c **** 
- 166:app/src/fault_injection.c **** void FI_Init(void) {
- 1088              		.loc 1 166 20
+ 1087              	.LFB469:
+ 167:app/src/fault_injection.c **** 
+ 168:app/src/fault_injection.c **** void FI_Init(void) {
+ 1088              		.loc 1 168 20
  1089              		.cfi_startproc
  1090              		@ args = 0, pretend = 0, frame = 8
  1091              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -2781,78 +2782,78 @@
  1094              		.cfi_offset 14, -4
  1095 0002 83B0     		sub	sp, sp, #12
  1096              		.cfi_def_cfa_offset 16
- 167:app/src/fault_injection.c **** 	uint32_t ticks_per_us;
- 168:app/src/fault_injection.c **** 
- 169:app/src/fault_injection.c **** 	tim_init(&DRV_TIM2);
- 1097              		.loc 1 169 2
+ 169:app/src/fault_injection.c **** 	uint32_t ticks_per_us;
+ 170:app/src/fault_injection.c **** 
+ 171:app/src/fault_injection.c **** 	tim_init(&DRV_TIM2);
+ 1097              		.loc 1 171 2
  1098 0004 1A48     		ldr	r0, .L53
  1099 0006 FFF7FEFF 		bl	tim_init
- 170:app/src/fault_injection.c **** 
- 171:app/src/fault_injection.c **** 	/* tick = 1 ciclo di TIMCLK2 (150 MHz) */
- 172:app/src/fault_injection.c **** 	ticks_per_us     = tim_get_clock(&DRV_TIM2) / 1000000U;
- 1100              		.loc 1 172 21
+ 172:app/src/fault_injection.c **** 
+ 173:app/src/fault_injection.c **** 	/* tick = 1 ciclo di TIMCLK2 (150 MHz) */
+ 174:app/src/fault_injection.c **** 	ticks_per_us     = tim_get_clock(&DRV_TIM2) / 1000000U;
+ 1100              		.loc 1 174 21
  1101 000a 1948     		ldr	r0, .L53
  1102 000c FFF7FEFF 		bl	tim_get_clock
  1103 0010 0346     		mov	r3, r0
- 1104              		.loc 1 172 19 discriminator 1
+ 1104              		.loc 1 174 19 discriminator 1
  1105 0012 184A     		ldr	r2, .L53+4
  1106 0014 A2FB0323 		umull	r2, r3, r2, r3
  1107 0018 9B0C     		lsrs	r3, r3, #18
  1108 001a 0193     		str	r3, [sp, #4]
- 173:app/src/fault_injection.c **** 	fi_layers_ticks  = ticks_per_us * FI_LAYERS_US;
- 1109              		.loc 1 173 34
+ 175:app/src/fault_injection.c **** 	fi_layers_ticks  = ticks_per_us * FI_LAYERS_US;
+ 1109              		.loc 1 175 34
  1110 001c 019B     		ldr	r3, [sp, #4]
  1111 001e 40F2CB52 		movw	r2, #1483
  1112 0022 02FB03F3 		mul	r3, r2, r3
- 1113              		.loc 1 173 19
+ 1113              		.loc 1 175 19
  1114 0026 144A     		ldr	r2, .L53+8
  1115 0028 1360     		str	r3, [r2]
- 174:app/src/fault_injection.c **** 	fi_timeout_ticks = ticks_per_us * FI_TIMEOUT_US;
- 1116              		.loc 1 174 34
+ 176:app/src/fault_injection.c **** 	fi_timeout_ticks = ticks_per_us * FI_TIMEOUT_US;
+ 1116              		.loc 1 176 34
  1117 002a 019B     		ldr	r3, [sp, #4]
  1118 002c 47F23052 		movw	r2, #30000
  1119 0030 02FB03F3 		mul	r3, r2, r3
- 1120              		.loc 1 174 19
+ 1120              		.loc 1 176 19
  1121 0034 114A     		ldr	r2, .L53+12
  1122 0036 1360     		str	r3, [r2]
- 175:app/src/fault_injection.c **** 
- 176:app/src/fault_injection.c ****     tim_set_prio(&DRV_TIM2, 2);
- 1123              		.loc 1 176 5
+ 177:app/src/fault_injection.c **** 
+ 178:app/src/fault_injection.c ****     tim_set_prio(&DRV_TIM2, 2);
+ 1123              		.loc 1 178 5
  1124 0038 0221     		movs	r1, #2
  1125 003a 0D48     		ldr	r0, .L53
  1126 003c FFF7FEFF 		bl	tim_set_prio
- 177:app/src/fault_injection.c ****     tim_set_presc(&DRV_TIM2, TIM_DIVIDE_BY(1U));		/* PSC = 0: nessuna divisione */
- 1127              		.loc 1 177 5
+ 179:app/src/fault_injection.c ****     tim_set_presc(&DRV_TIM2, TIM_DIVIDE_BY(1U));		/* PSC = 0: nessuna divisione */
+ 1127              		.loc 1 179 5
  1128 0040 0021     		movs	r1, #0
  1129 0042 0B48     		ldr	r0, .L53
  1130 0044 FFF7FEFF 		bl	tim_set_presc
- 178:app/src/fault_injection.c ****     tim_start(&DRV_TIM2);
- 1131              		.loc 1 178 5
+ 180:app/src/fault_injection.c ****     tim_start(&DRV_TIM2);
+ 1131              		.loc 1 180 5
  1132 0048 0948     		ldr	r0, .L53
  1133 004a FFF7FEFF 		bl	tim_start
- 179:app/src/fault_injection.c ****     tim_enable_update_callback(&DRV_TIM2);
- 1134              		.loc 1 179 5
+ 181:app/src/fault_injection.c ****     tim_enable_update_callback(&DRV_TIM2);
+ 1134              		.loc 1 181 5
  1135 004e 0848     		ldr	r0, .L53
  1136 0050 FFF7FEFF 		bl	tim_enable_update_callback
- 180:app/src/fault_injection.c **** 
- 181:app/src/fault_injection.c ****     data_activations[0] = fi_act;
- 1137              		.loc 1 181 25
+ 182:app/src/fault_injection.c **** 
+ 183:app/src/fault_injection.c ****     data_activations[0] = fi_act;
+ 1137              		.loc 1 183 25
  1138 0054 0A4B     		ldr	r3, .L53+16
  1139 0056 0B4A     		ldr	r2, .L53+20
  1140 0058 1A60     		str	r2, [r3]
- 182:app/src/fault_injection.c ****     fi_mpu_init();
- 1141              		.loc 1 182 5
+ 184:app/src/fault_injection.c ****     fi_mpu_init();
+ 1141              		.loc 1 184 5
  1142 005a FFF7FEFF 		bl	fi_mpu_init
- 183:app/src/fault_injection.c **** 
- 184:app/src/fault_injection.c ****     tim_enable(&DRV_TIM2);               /* imposta ARPE/URS e abilita l'IRQ di update */
- 1143              		.loc 1 184 5
+ 185:app/src/fault_injection.c **** 
+ 186:app/src/fault_injection.c ****     tim_enable(&DRV_TIM2);               /* imposta ARPE/URS e abilita l'IRQ di update */
+ 1143              		.loc 1 186 5
  1144 005e 0448     		ldr	r0, .L53
  1145 0060 FFF7FEFF 		bl	tim_enable
- 185:app/src/fault_injection.c ****     fi_timer_pause();                    /* parte solo dentro i layer */
- 1146              		.loc 1 185 5
+ 187:app/src/fault_injection.c ****     fi_timer_pause();                    /* parte solo dentro i layer */
+ 1146              		.loc 1 187 5
  1147 0064 FFF7FEFF 		bl	fi_timer_pause
- 186:app/src/fault_injection.c **** }
- 1148              		.loc 1 186 1
+ 188:app/src/fault_injection.c **** }
+ 1148              		.loc 1 188 1
  1149 0068 00BF     		nop
  1150 006a 03B0     		add	sp, sp, #12
  1151              		.cfi_def_cfa_offset 4
@@ -2868,7 +2869,7 @@
  1161 0080 00000000 		.word	data_activations
  1162 0084 00000000 		.word	fi_act
  1163              		.cfi_endproc
- 1164              	.LFE466:
+ 1164              	.LFE469:
  1166              		.section	.text.fi_event_cb,"ax",%progbits
  1167              		.align	1
  1168              		.p2align 4,,15
@@ -2876,12 +2877,12 @@
  1170              		.thumb
  1171              		.thumb_func
  1173              	fi_event_cb:
- 1174              	.LFB467:
- 187:app/src/fault_injection.c **** 
- 188:app/src/fault_injection.c **** /* Callback on layer events: It updates fi_node_idx and send
- 189:app/src/fault_injection.c ****  * the event to validation callback (observer), if present. */
- 190:app/src/fault_injection.c **** static void fi_event_cb(void *cookie, const stai_event_type type, const void *payload) {
- 1175              		.loc 1 190 88
+ 1174              	.LFB470:
+ 189:app/src/fault_injection.c **** 
+ 190:app/src/fault_injection.c **** /* Callback on layer events: It updates fi_node_idx and send
+ 191:app/src/fault_injection.c ****  * the event to validation callback (observer), if present. */
+ 192:app/src/fault_injection.c **** static void fi_event_cb(void *cookie, const stai_event_type type, const void *payload) {
+ 1175              		.loc 1 192 88
  1176              		.cfi_startproc
  1177              		@ args = 0, pretend = 0, frame = 24
  1178              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -2893,39 +2894,39 @@
  1184 0004 0390     		str	r0, [sp, #12]
  1185 0006 0291     		str	r1, [sp, #8]
  1186 0008 0192     		str	r2, [sp, #4]
- 191:app/src/fault_injection.c ****     const stai_event_node_start_stop *ev = (const stai_event_node_start_stop *)payload;
- 1187              		.loc 1 191 39
+ 193:app/src/fault_injection.c ****     const stai_event_node_start_stop *ev = (const stai_event_node_start_stop *)payload;
+ 1187              		.loc 1 193 39
  1188 000a 019B     		ldr	r3, [sp, #4]
  1189 000c 0493     		str	r3, [sp, #16]
- 192:app/src/fault_injection.c **** 
- 193:app/src/fault_injection.c ****     if (type == STAI_EVENT_NODE_STOP) {
- 1190              		.loc 1 193 8
+ 194:app/src/fault_injection.c **** 
+ 195:app/src/fault_injection.c ****     if (type == STAI_EVENT_NODE_STOP) {
+ 1190              		.loc 1 195 8
  1191 000e 029B     		ldr	r3, [sp, #8]
  1192 0010 022B     		cmp	r3, #2
  1193 0012 06D1     		bne	.L56
- 194:app/src/fault_injection.c ****     	fi_mpu_off();						/* prima di tutto: l'observer deve poter scrivere */
- 1194              		.loc 1 194 6
+ 196:app/src/fault_injection.c ****     	fi_mpu_off();						/* prima di tutto: l'observer deve poter scrivere */
+ 1194              		.loc 1 196 6
  1195 0014 FFF7FEFF 		bl	fi_mpu_off
- 195:app/src/fault_injection.c **** 
- 196:app/src/fault_injection.c ****         fi_timer_pause();                        /* prima: l'observer non conta */
- 1196              		.loc 1 196 9
+ 197:app/src/fault_injection.c **** 
+ 198:app/src/fault_injection.c ****         fi_timer_pause();                        /* prima: l'observer non conta */
+ 1196              		.loc 1 198 9
  1197 0018 FFF7FEFF 		bl	fi_timer_pause
- 197:app/src/fault_injection.c ****         fi_node_idx = 0U;
- 1198              		.loc 1 197 21
+ 199:app/src/fault_injection.c ****         fi_node_idx = 0U;
+ 1198              		.loc 1 199 21
  1199 001c 1E4B     		ldr	r3, .L65
  1200 001e 0022     		movs	r2, #0
  1201 0020 1A60     		str	r2, [r3]
  1202              	.L56:
- 198:app/src/fault_injection.c ****     }
- 199:app/src/fault_injection.c ****     if (fi_user_cb != NULL) {
- 1203              		.loc 1 199 20
+ 200:app/src/fault_injection.c ****     }
+ 201:app/src/fault_injection.c ****     if (fi_user_cb != NULL) {
+ 1203              		.loc 1 201 20
  1204 0022 1E4B     		ldr	r3, .L65+4
  1205 0024 1B68     		ldr	r3, [r3]
- 1206              		.loc 1 199 8
+ 1206              		.loc 1 201 8
  1207 0026 002B     		cmp	r3, #0
  1208 0028 05D0     		beq	.L57
- 200:app/src/fault_injection.c ****         fi_user_cb(cookie, type, payload);
- 1209              		.loc 1 200 9
+ 202:app/src/fault_injection.c ****         fi_user_cb(cookie, type, payload);
+ 1209              		.loc 1 202 9
  1210 002a 1C4B     		ldr	r3, .L65+4
  1211 002c 1B68     		ldr	r3, [r3]
  1212 002e 019A     		ldr	r2, [sp, #4]
@@ -2934,100 +2935,100 @@
  1215 0034 9847     		blx	r3
  1216              	.LVL0:
  1217              	.L57:
- 201:app/src/fault_injection.c ****     }
- 202:app/src/fault_injection.c ****     if (type == STAI_EVENT_NODE_STOP) {
- 1218              		.loc 1 202 8
+ 203:app/src/fault_injection.c ****     }
+ 204:app/src/fault_injection.c ****     if (type == STAI_EVENT_NODE_STOP) {
+ 1218              		.loc 1 204 8
  1219 0036 029B     		ldr	r3, [sp, #8]
  1220 0038 022B     		cmp	r3, #2
  1221 003a 04D1     		bne	.L58
- 203:app/src/fault_injection.c ****         fi_stops_done++;                         /* layer chiuso anche per l'observer */
- 1222              		.loc 1 203 22
+ 205:app/src/fault_injection.c ****         fi_stops_done++;                         /* layer chiuso anche per l'observer */
+ 1222              		.loc 1 205 22
  1223 003c 184B     		ldr	r3, .L65+8
  1224 003e 1B68     		ldr	r3, [r3]
  1225 0040 0133     		adds	r3, r3, #1
  1226 0042 174A     		ldr	r2, .L65+8
  1227 0044 1360     		str	r3, [r2]
  1228              	.L58:
- 204:app/src/fault_injection.c ****     }
- 205:app/src/fault_injection.c ****     if (type == STAI_EVENT_NODE_START) {
- 1229              		.loc 1 205 8
+ 206:app/src/fault_injection.c ****     }
+ 207:app/src/fault_injection.c ****     if (type == STAI_EVENT_NODE_START) {
+ 1229              		.loc 1 207 8
  1230 0046 029B     		ldr	r3, [sp, #8]
  1231 0048 012B     		cmp	r3, #1
  1232 004a 21D1     		bne	.L64
  1233              	.LBB46:
- 206:app/src/fault_injection.c ****         uint32_t i;
- 207:app/src/fault_injection.c **** 
- 208:app/src/fault_injection.c ****         fi_node_idx = 0U;
- 1234              		.loc 1 208 21
+ 208:app/src/fault_injection.c ****         uint32_t i;
+ 209:app/src/fault_injection.c **** 
+ 210:app/src/fault_injection.c ****         fi_node_idx = 0U;
+ 1234              		.loc 1 210 21
  1235 004c 124B     		ldr	r3, .L65
  1236 004e 0022     		movs	r2, #0
  1237 0050 1A60     		str	r2, [r3]
- 209:app/src/fault_injection.c ****         for (i = 0U; i < FI_N_NODES; i++) {      /* node idx -> posizione 1..FI_N_NODES */
- 1238              		.loc 1 209 16
+ 211:app/src/fault_injection.c ****         for (i = 0U; i < FI_N_NODES; i++) {      /* node idx -> posizione 1..FI_N_NODES */
+ 1238              		.loc 1 211 16
  1239 0052 0023     		movs	r3, #0
  1240 0054 0593     		str	r3, [sp, #20]
- 1241              		.loc 1 209 9
+ 1241              		.loc 1 211 9
  1242 0056 10E0     		b	.L60
  1243              	.L63:
- 210:app/src/fault_injection.c ****             if ((uint32_t)fi_node_ids[i] == (uint32_t)ev->node_id) {
- 1244              		.loc 1 210 38
+ 212:app/src/fault_injection.c ****             if ((uint32_t)fi_node_ids[i] == (uint32_t)ev->node_id) {
+ 1244              		.loc 1 212 38
  1245 0058 124A     		ldr	r2, .L65+12
  1246 005a 059B     		ldr	r3, [sp, #20]
  1247 005c 1344     		add	r3, r3, r2
  1248 005e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 1249              		.loc 1 210 17
+ 1249              		.loc 1 212 17
  1250 0060 1A46     		mov	r2, r3
- 1251              		.loc 1 210 57
+ 1251              		.loc 1 212 57
  1252 0062 049B     		ldr	r3, [sp, #16]
  1253 0064 1B68     		ldr	r3, [r3]
- 1254              		.loc 1 210 16
+ 1254              		.loc 1 212 16
  1255 0066 9A42     		cmp	r2, r3
  1256 0068 04D1     		bne	.L61
- 211:app/src/fault_injection.c ****                 fi_node_idx = i + 1U;
- 1257              		.loc 1 211 33
+ 213:app/src/fault_injection.c ****                 fi_node_idx = i + 1U;
+ 1257              		.loc 1 213 33
  1258 006a 059B     		ldr	r3, [sp, #20]
  1259 006c 0133     		adds	r3, r3, #1
- 1260              		.loc 1 211 29
+ 1260              		.loc 1 213 29
  1261 006e 0A4A     		ldr	r2, .L65
  1262 0070 1360     		str	r3, [r2]
- 212:app/src/fault_injection.c ****                 break;
- 1263              		.loc 1 212 17
+ 214:app/src/fault_injection.c ****                 break;
+ 1263              		.loc 1 214 17
  1264 0072 05E0     		b	.L62
  1265              	.L61:
- 209:app/src/fault_injection.c ****             if ((uint32_t)fi_node_ids[i] == (uint32_t)ev->node_id) {
- 1266              		.loc 1 209 39 discriminator 2
+ 211:app/src/fault_injection.c ****             if ((uint32_t)fi_node_ids[i] == (uint32_t)ev->node_id) {
+ 1266              		.loc 1 211 39 discriminator 2
  1267 0074 059B     		ldr	r3, [sp, #20]
  1268 0076 0133     		adds	r3, r3, #1
  1269 0078 0593     		str	r3, [sp, #20]
  1270              	.L60:
- 209:app/src/fault_injection.c ****             if ((uint32_t)fi_node_ids[i] == (uint32_t)ev->node_id) {
- 1271              		.loc 1 209 24 discriminator 1
+ 211:app/src/fault_injection.c ****             if ((uint32_t)fi_node_ids[i] == (uint32_t)ev->node_id) {
+ 1271              		.loc 1 211 24 discriminator 1
  1272 007a 059B     		ldr	r3, [sp, #20]
  1273 007c 042B     		cmp	r3, #4
  1274 007e EBD9     		bls	.L63
  1275              	.L62:
- 213:app/src/fault_injection.c ****             }
- 214:app/src/fault_injection.c ****         }
- 215:app/src/fault_injection.c **** 
- 216:app/src/fault_injection.c ****         if (fi_phase != FI_IDLE) {
- 1276              		.loc 1 216 22
+ 215:app/src/fault_injection.c ****             }
+ 216:app/src/fault_injection.c ****         }
+ 217:app/src/fault_injection.c **** 
+ 218:app/src/fault_injection.c ****         if (fi_phase != FI_IDLE) {
+ 1276              		.loc 1 218 22
  1277 0080 094B     		ldr	r3, .L65+16
  1278 0082 1B68     		ldr	r3, [r3]
- 1279              		.loc 1 216 12
+ 1279              		.loc 1 218 12
  1280 0084 002B     		cmp	r3, #0
  1281 0086 03D0     		beq	.L64
- 217:app/src/fault_injection.c ****             fi_timer_resume();                  /* conta anche durante il watchdog */
- 1282              		.loc 1 217 13
+ 219:app/src/fault_injection.c ****             fi_timer_resume();                  /* conta anche durante il watchdog */
+ 1282              		.loc 1 219 13
  1283 0088 FFF7FEFF 		bl	fi_timer_resume
- 218:app/src/fault_injection.c ****             fi_mpu_on();						/* ultima cosa: da qui solo il layer */
- 1284              		.loc 1 218 13
+ 220:app/src/fault_injection.c ****             fi_mpu_on();						/* ultima cosa: da qui solo il layer */
+ 1284              		.loc 1 220 13
  1285 008c FFF7FEFF 		bl	fi_mpu_on
  1286              	.L64:
  1287              	.LBE46:
- 219:app/src/fault_injection.c ****         }
- 220:app/src/fault_injection.c ****     }
- 221:app/src/fault_injection.c **** }
- 1288              		.loc 1 221 1
+ 221:app/src/fault_injection.c ****         }
+ 222:app/src/fault_injection.c ****     }
+ 223:app/src/fault_injection.c **** }
+ 1288              		.loc 1 223 1
  1289 0090 00BF     		nop
  1290 0092 07B0     		add	sp, sp, #28
  1291              		.cfi_def_cfa_offset 4
@@ -3036,13 +3037,13 @@
  1294              	.L66:
  1295              		.align	2
  1296              	.L65:
- 1297 0098 58000000 		.word	fi_node_idx
+ 1297 0098 54000000 		.word	fi_node_idx
  1298 009c 00000000 		.word	fi_user_cb
  1299 00a0 00000000 		.word	fi_stops_done
  1300 00a4 00000000 		.word	fi_node_ids
- 1301 00a8 48000000 		.word	fi_phase
+ 1301 00a8 44000000 		.word	fi_phase
  1302              		.cfi_endproc
- 1303              	.LFE467:
+ 1303              	.LFE470:
  1305              		.section	.text.__wrap_stai_mnetwork_set_callback,"ax",%progbits
  1306              		.align	1
  1307              		.p2align 4,,15
@@ -3051,12 +3052,12 @@
  1310              		.thumb
  1311              		.thumb_func
  1313              	__wrap_stai_mnetwork_set_callback:
- 1314              	.LFB468:
- 222:app/src/fault_injection.c **** 
- 223:app/src/fault_injection.c **** extern stai_return_code __real_stai_mnetwork_set_callback(stai_ptr network, const stai_event_cb cb,
- 224:app/src/fault_injection.c **** stai_return_code __wrap_stai_mnetwork_set_callback(stai_ptr network,
- 225:app/src/fault_injection.c ****                                                    const stai_event_cb cb, void *cb_cookie) {
- 1315              		.loc 1 225 93
+ 1314              	.LFB471:
+ 224:app/src/fault_injection.c **** 
+ 225:app/src/fault_injection.c **** extern stai_return_code __real_stai_mnetwork_set_callback(stai_ptr network, const stai_event_cb cb,
+ 226:app/src/fault_injection.c **** stai_return_code __wrap_stai_mnetwork_set_callback(stai_ptr network,
+ 227:app/src/fault_injection.c ****                                                    const stai_event_cb cb, void *cb_cookie) {
+ 1315              		.loc 1 227 93
  1316              		.cfi_startproc
  1317              		@ args = 0, pretend = 0, frame = 16
  1318              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -3068,15 +3069,15 @@
  1324 0004 0390     		str	r0, [sp, #12]
  1325 0006 0291     		str	r1, [sp, #8]
  1326 0008 0192     		str	r2, [sp, #4]
- 226:app/src/fault_injection.c ****     if (fi_layers_ticks == 0U) {                 /* FI_Init non chiamata: nessuna interferenza */
- 1327              		.loc 1 226 25
+ 228:app/src/fault_injection.c ****     if (fi_layers_ticks == 0U) {                 /* FI_Init non chiamata: nessuna interferenza */
+ 1327              		.loc 1 228 25
  1328 000a 0D4B     		ldr	r3, .L70
  1329 000c 1B68     		ldr	r3, [r3]
- 1330              		.loc 1 226 8
+ 1330              		.loc 1 228 8
  1331 000e 002B     		cmp	r3, #0
  1332 0010 06D1     		bne	.L68
- 227:app/src/fault_injection.c ****         return __real_stai_mnetwork_set_callback(network, cb, cb_cookie);
- 1333              		.loc 1 227 16
+ 229:app/src/fault_injection.c ****         return __real_stai_mnetwork_set_callback(network, cb, cb_cookie);
+ 1333              		.loc 1 229 16
  1334 0012 019A     		ldr	r2, [sp, #4]
  1335 0014 0299     		ldr	r1, [sp, #8]
  1336 0016 0398     		ldr	r0, [sp, #12]
@@ -3084,27 +3085,27 @@
  1338 001c 0346     		mov	r3, r0
  1339 001e 0BE0     		b	.L69
  1340              	.L68:
- 228:app/src/fault_injection.c ****     }
- 229:app/src/fault_injection.c ****     fi_user_cb = cb;
- 1341              		.loc 1 229 16
+ 230:app/src/fault_injection.c ****     }
+ 231:app/src/fault_injection.c ****     fi_user_cb = cb;
+ 1341              		.loc 1 231 16
  1342 0020 084A     		ldr	r2, .L70+4
  1343 0022 029B     		ldr	r3, [sp, #8]
  1344 0024 1360     		str	r3, [r2]
- 230:app/src/fault_injection.c ****     fi_user_cookie = cb_cookie;
- 1345              		.loc 1 230 20
+ 232:app/src/fault_injection.c ****     fi_user_cookie = cb_cookie;
+ 1345              		.loc 1 232 20
  1346 0026 084A     		ldr	r2, .L70+8
  1347 0028 019B     		ldr	r3, [sp, #4]
  1348 002a 1360     		str	r3, [r2]
- 231:app/src/fault_injection.c ****     return __real_stai_mnetwork_set_callback(network, fi_event_cb, cb_cookie);
- 1349              		.loc 1 231 12
+ 233:app/src/fault_injection.c ****     return __real_stai_mnetwork_set_callback(network, fi_event_cb, cb_cookie);
+ 1349              		.loc 1 233 12
  1350 002c 019A     		ldr	r2, [sp, #4]
  1351 002e 0749     		ldr	r1, .L70+12
  1352 0030 0398     		ldr	r0, [sp, #12]
  1353 0032 FFF7FEFF 		bl	__real_stai_mnetwork_set_callback
  1354 0036 0346     		mov	r3, r0
  1355              	.L69:
- 232:app/src/fault_injection.c **** }
- 1356              		.loc 1 232 1
+ 234:app/src/fault_injection.c **** }
+ 1356              		.loc 1 234 1
  1357 0038 1846     		mov	r0, r3
  1358 003a 05B0     		add	sp, sp, #20
  1359              		.cfi_def_cfa_offset 4
@@ -3118,7 +3119,7 @@
  1367 0048 00000000 		.word	fi_user_cookie
  1368 004c 00000000 		.word	fi_event_cb
  1369              		.cfi_endproc
- 1370              	.LFE468:
+ 1370              	.LFE471:
  1372              		.section	.text.fi_send_event,"ax",%progbits
  1373              		.align	1
  1374              		.p2align 4,,15
@@ -3126,12 +3127,12 @@
  1376              		.thumb
  1377              		.thumb_func
  1379              	fi_send_event:
- 1380              	.LFB469:
- 233:app/src/fault_injection.c **** 
- 234:app/src/fault_injection.c **** /* Inferenza interrotta: manda all'observer gli eventi dei layer non completati,
- 235:app/src/fault_injection.c ****  * così l'host riceve la stessa sequenza di messaggi di un'inferenza normale. */
- 236:app/src/fault_injection.c **** static void fi_send_event(stai_event_type type, uint32_t id) {
- 1381              		.loc 1 236 62
+ 1380              	.LFB472:
+ 235:app/src/fault_injection.c **** 
+ 236:app/src/fault_injection.c **** /* Inferenza interrotta: manda all'observer gli eventi dei layer non completati,
+ 237:app/src/fault_injection.c ****  * così l'host riceve la stessa sequenza di messaggi di un'inferenza normale. */
+ 238:app/src/fault_injection.c **** static void fi_send_event(stai_event_type type, uint32_t id) {
+ 1381              		.loc 1 238 62
  1382              		.cfi_startproc
  1383              		@ args = 0, pretend = 0, frame = 24
  1384              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -3142,34 +3143,34 @@
  1389              		.cfi_def_cfa_offset 32
  1390 0004 0190     		str	r0, [sp, #4]
  1391 0006 0091     		str	r1, [sp]
- 237:app/src/fault_injection.c ****     const stai_ptr bufs[1] = { data_activations[0] };   /* RAM valida, dati non significativi */
- 1392              		.loc 1 237 48
+ 239:app/src/fault_injection.c ****     const stai_ptr bufs[1] = { data_activations[0] };   /* RAM valida, dati non significativi */
+ 1392              		.loc 1 239 48
  1393 0008 0B4B     		ldr	r3, .L75
  1394 000a 1B68     		ldr	r3, [r3]
- 1395              		.loc 1 237 20
+ 1395              		.loc 1 239 20
  1396 000c 0593     		str	r3, [sp, #20]
- 238:app/src/fault_injection.c ****     const stai_event_node_start_stop ev = {
- 239:app/src/fault_injection.c ****         .node_id = (int32_t)id,
- 1397              		.loc 1 239 20
+ 240:app/src/fault_injection.c ****     const stai_event_node_start_stop ev = {
+ 241:app/src/fault_injection.c ****         .node_id = (int32_t)id,
+ 1397              		.loc 1 241 20
  1398 000e 009B     		ldr	r3, [sp]
- 238:app/src/fault_injection.c ****     const stai_event_node_start_stop ev = {
- 1399              		.loc 1 238 38
+ 240:app/src/fault_injection.c ****     const stai_event_node_start_stop ev = {
+ 1399              		.loc 1 240 38
  1400 0010 0293     		str	r3, [sp, #8]
  1401 0012 0123     		movs	r3, #1
  1402 0014 0393     		str	r3, [sp, #12]
  1403 0016 05AB     		add	r3, sp, #20
  1404 0018 0493     		str	r3, [sp, #16]
- 240:app/src/fault_injection.c ****         .buffers = { .size = 1, .data = bufs }
- 241:app/src/fault_injection.c ****     };
- 242:app/src/fault_injection.c ****     if (fi_user_cb != NULL) {
- 1405              		.loc 1 242 20
+ 242:app/src/fault_injection.c ****         .buffers = { .size = 1, .data = bufs }
+ 243:app/src/fault_injection.c ****     };
+ 244:app/src/fault_injection.c ****     if (fi_user_cb != NULL) {
+ 1405              		.loc 1 244 20
  1406 001a 084B     		ldr	r3, .L75+4
  1407 001c 1B68     		ldr	r3, [r3]
- 1408              		.loc 1 242 8
+ 1408              		.loc 1 244 8
  1409 001e 002B     		cmp	r3, #0
  1410 0020 06D0     		beq	.L74
- 243:app/src/fault_injection.c ****         fi_user_cb(fi_user_cookie, type, &ev);
- 1411              		.loc 1 243 9
+ 245:app/src/fault_injection.c ****         fi_user_cb(fi_user_cookie, type, &ev);
+ 1411              		.loc 1 245 9
  1412 0022 064B     		ldr	r3, .L75+4
  1413 0024 1B68     		ldr	r3, [r3]
  1414 0026 064A     		ldr	r2, .L75+8
@@ -3179,9 +3180,9 @@
  1418 002e 9847     		blx	r3
  1419              	.LVL1:
  1420              	.L74:
- 244:app/src/fault_injection.c ****     }
- 245:app/src/fault_injection.c **** }
- 1421              		.loc 1 245 1
+ 246:app/src/fault_injection.c ****     }
+ 247:app/src/fault_injection.c **** }
+ 1421              		.loc 1 247 1
  1422 0030 00BF     		nop
  1423 0032 07B0     		add	sp, sp, #28
  1424              		.cfi_def_cfa_offset 4
@@ -3194,7 +3195,7 @@
  1431 003c 00000000 		.word	fi_user_cb
  1432 0040 00000000 		.word	fi_user_cookie
  1433              		.cfi_endproc
- 1434              	.LFE469:
+ 1434              	.LFE472:
  1436              		.section	.text.fi_complete_events,"ax",%progbits
  1437              		.align	1
  1438              		.p2align 4,,15
@@ -3202,9 +3203,9 @@
  1440              		.thumb
  1441              		.thumb_func
  1443              	fi_complete_events:
- 1444              	.LFB470:
- 246:app/src/fault_injection.c **** static void fi_complete_events(uint32_t idx) {
- 1445              		.loc 1 246 46
+ 1444              	.LFB473:
+ 248:app/src/fault_injection.c **** static void fi_complete_events(uint32_t idx) {
+ 1445              		.loc 1 248 46
  1446              		.cfi_startproc
  1447              		@ args = 0, pretend = 0, frame = 16
  1448              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -3214,77 +3215,77 @@
  1452 0002 85B0     		sub	sp, sp, #20
  1453              		.cfi_def_cfa_offset 24
  1454 0004 0190     		str	r0, [sp, #4]
- 247:app/src/fault_injection.c ****     uint32_t k = fi_stops_done;                  /* layer in posizione 1..k già chiusi */
- 1455              		.loc 1 247 14
+ 249:app/src/fault_injection.c ****     uint32_t k = fi_stops_done;                  /* layer in posizione 1..k già chiusi */
+ 1455              		.loc 1 249 14
  1456 0006 174B     		ldr	r3, .L81
  1457 0008 1B68     		ldr	r3, [r3]
  1458 000a 0393     		str	r3, [sp, #12]
- 248:app/src/fault_injection.c ****     if (idx != 0U) {
- 1459              		.loc 1 248 8
+ 250:app/src/fault_injection.c ****     if (idx != 0U) {
+ 1459              		.loc 1 250 8
  1460 000c 019B     		ldr	r3, [sp, #4]
  1461 000e 002B     		cmp	r3, #0
  1462 0010 09D0     		beq	.L78
- 249:app/src/fault_injection.c ****         fi_send_event(STAI_EVENT_NODE_STOP, fi_node_ids[idx - 1U]);
- 1463              		.loc 1 249 61
+ 251:app/src/fault_injection.c ****         fi_send_event(STAI_EVENT_NODE_STOP, fi_node_ids[idx - 1U]);
+ 1463              		.loc 1 251 61
  1464 0012 019B     		ldr	r3, [sp, #4]
  1465 0014 013B     		subs	r3, r3, #1
- 1466              		.loc 1 249 56
+ 1466              		.loc 1 251 56
  1467 0016 144A     		ldr	r2, .L81+4
  1468 0018 D35C     		ldrb	r3, [r2, r3]	@ zero_extendqisi2
- 1469              		.loc 1 249 9
+ 1469              		.loc 1 251 9
  1470 001a 1946     		mov	r1, r3
  1471 001c 0220     		movs	r0, #2
  1472 001e FFF7FEFF 		bl	fi_send_event
- 250:app/src/fault_injection.c ****         k = idx;
- 1473              		.loc 1 250 11
+ 252:app/src/fault_injection.c ****         k = idx;
+ 1473              		.loc 1 252 11
  1474 0022 019B     		ldr	r3, [sp, #4]
  1475 0024 0393     		str	r3, [sp, #12]
  1476              	.L78:
- 251:app/src/fault_injection.c ****     }
- 252:app/src/fault_injection.c ****     for (k = k + 1U; k <= FI_N_NODES; k++) {
- 1477              		.loc 1 252 12
+ 253:app/src/fault_injection.c ****     }
+ 254:app/src/fault_injection.c ****     for (k = k + 1U; k <= FI_N_NODES; k++) {
+ 1477              		.loc 1 254 12
  1478 0026 039B     		ldr	r3, [sp, #12]
  1479 0028 0133     		adds	r3, r3, #1
  1480 002a 0393     		str	r3, [sp, #12]
- 1481              		.loc 1 252 5
+ 1481              		.loc 1 254 5
  1482 002c 12E0     		b	.L79
  1483              	.L80:
- 253:app/src/fault_injection.c ****         fi_send_event(STAI_EVENT_NODE_START, fi_node_ids[k - 1U]);
- 1484              		.loc 1 253 60
+ 255:app/src/fault_injection.c ****         fi_send_event(STAI_EVENT_NODE_START, fi_node_ids[k - 1U]);
+ 1484              		.loc 1 255 60
  1485 002e 039B     		ldr	r3, [sp, #12]
  1486 0030 013B     		subs	r3, r3, #1
- 1487              		.loc 1 253 57
+ 1487              		.loc 1 255 57
  1488 0032 0D4A     		ldr	r2, .L81+4
  1489 0034 D35C     		ldrb	r3, [r2, r3]	@ zero_extendqisi2
- 1490              		.loc 1 253 9
+ 1490              		.loc 1 255 9
  1491 0036 1946     		mov	r1, r3
  1492 0038 0120     		movs	r0, #1
  1493 003a FFF7FEFF 		bl	fi_send_event
- 254:app/src/fault_injection.c ****         fi_send_event(STAI_EVENT_NODE_STOP,  fi_node_ids[k - 1U]);
- 1494              		.loc 1 254 60
+ 256:app/src/fault_injection.c ****         fi_send_event(STAI_EVENT_NODE_STOP,  fi_node_ids[k - 1U]);
+ 1494              		.loc 1 256 60
  1495 003e 039B     		ldr	r3, [sp, #12]
  1496 0040 013B     		subs	r3, r3, #1
- 1497              		.loc 1 254 57
+ 1497              		.loc 1 256 57
  1498 0042 094A     		ldr	r2, .L81+4
  1499 0044 D35C     		ldrb	r3, [r2, r3]	@ zero_extendqisi2
- 1500              		.loc 1 254 9
+ 1500              		.loc 1 256 9
  1501 0046 1946     		mov	r1, r3
  1502 0048 0220     		movs	r0, #2
  1503 004a FFF7FEFF 		bl	fi_send_event
- 252:app/src/fault_injection.c ****         fi_send_event(STAI_EVENT_NODE_START, fi_node_ids[k - 1U]);
- 1504              		.loc 1 252 40 discriminator 3
+ 254:app/src/fault_injection.c ****         fi_send_event(STAI_EVENT_NODE_START, fi_node_ids[k - 1U]);
+ 1504              		.loc 1 254 40 discriminator 3
  1505 004e 039B     		ldr	r3, [sp, #12]
  1506 0050 0133     		adds	r3, r3, #1
  1507 0052 0393     		str	r3, [sp, #12]
  1508              	.L79:
- 252:app/src/fault_injection.c ****         fi_send_event(STAI_EVENT_NODE_START, fi_node_ids[k - 1U]);
- 1509              		.loc 1 252 24 discriminator 1
+ 254:app/src/fault_injection.c ****         fi_send_event(STAI_EVENT_NODE_START, fi_node_ids[k - 1U]);
+ 1509              		.loc 1 254 24 discriminator 1
  1510 0054 039B     		ldr	r3, [sp, #12]
  1511 0056 052B     		cmp	r3, #5
  1512 0058 E9D9     		bls	.L80
- 255:app/src/fault_injection.c ****     }
- 256:app/src/fault_injection.c **** }
- 1513              		.loc 1 256 1
+ 257:app/src/fault_injection.c ****     }
+ 258:app/src/fault_injection.c **** }
+ 1513              		.loc 1 258 1
  1514 005a 00BF     		nop
  1515 005c 00BF     		nop
  1516 005e 05B0     		add	sp, sp, #20
@@ -3297,7 +3298,7 @@
  1523 0064 00000000 		.word	fi_stops_done
  1524 0068 00000000 		.word	fi_node_ids
  1525              		.cfi_endproc
- 1526              	.LFE470:
+ 1526              	.LFE473:
  1528              		.section	.text.__wrap_stai_mnetwork_run,"ax",%progbits
  1529              		.align	1
  1530              		.p2align 4,,15
@@ -3306,11 +3307,11 @@
  1533              		.thumb
  1534              		.thumb_func
  1536              	__wrap_stai_mnetwork_run:
- 1537              	.LFB471:
- 257:app/src/fault_injection.c **** 
- 258:app/src/fault_injection.c **** extern stai_return_code __real_stai_mnetwork_run(stai_ptr network);
- 259:app/src/fault_injection.c **** stai_return_code __wrap_stai_mnetwork_run(stai_ptr network) {
- 1538              		.loc 1 259 61
+ 1537              	.LFB474:
+ 259:app/src/fault_injection.c **** 
+ 260:app/src/fault_injection.c **** extern stai_return_code __real_stai_mnetwork_run(stai_ptr network);
+ 261:app/src/fault_injection.c **** stai_return_code __wrap_stai_mnetwork_run(stai_ptr network) {
+ 1538              		.loc 1 261 61
  1539              		.cfi_startproc
  1540              		@ args = 0, pretend = 0, frame = 32
  1541              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -3320,106 +3321,106 @@
  1545 0002 8BB0     		sub	sp, sp, #44
  1546              		.cfi_def_cfa_offset 48
  1547 0004 0390     		str	r0, [sp, #12]
- 260:app/src/fault_injection.c ****     stai_return_code ret;
- 261:app/src/fault_injection.c ****     uint32_t t;
- 262:app/src/fault_injection.c **** 
- 263:app/src/fault_injection.c ****     if (fi_layers_ticks == 0U) {                 /* FI_Init non chiamata: inferenza normale */
- 1548              		.loc 1 263 25
+ 262:app/src/fault_injection.c ****     stai_return_code ret;
+ 263:app/src/fault_injection.c ****     uint32_t t;
+ 264:app/src/fault_injection.c **** 
+ 265:app/src/fault_injection.c ****     if (fi_layers_ticks == 0U) {                 /* FI_Init non chiamata: inferenza normale */
+ 1548              		.loc 1 265 25
  1549 0006 4A4B     		ldr	r3, .L93
  1550 0008 1B68     		ldr	r3, [r3]
- 1551              		.loc 1 263 8
+ 1551              		.loc 1 265 8
  1552 000a 002B     		cmp	r3, #0
  1553 000c 04D1     		bne	.L84
- 264:app/src/fault_injection.c ****         return __real_stai_mnetwork_run(network);
- 1554              		.loc 1 264 16
+ 266:app/src/fault_injection.c ****         return __real_stai_mnetwork_run(network);
+ 1554              		.loc 1 266 16
  1555 000e 0398     		ldr	r0, [sp, #12]
  1556 0010 FFF7FEFF 		bl	__real_stai_mnetwork_run
  1557 0014 0346     		mov	r3, r0
  1558 0016 86E0     		b	.L85
  1559              	.L84:
- 265:app/src/fault_injection.c ****     }
- 266:app/src/fault_injection.c ****     t = 1U + (xorshift32() % fi_layers_ticks);   /* 1..fi_layers_ticks */
- 1560              		.loc 1 266 15
+ 267:app/src/fault_injection.c ****     }
+ 268:app/src/fault_injection.c ****     t = 1U + (xorshift32() % fi_layers_ticks);   /* 1..fi_layers_ticks */
+ 1560              		.loc 1 268 15
  1561 0018 FFF7FEFF 		bl	xorshift32
  1562 001c 0246     		mov	r2, r0
- 1563              		.loc 1 266 28 discriminator 1
+ 1563              		.loc 1 268 28 discriminator 1
  1564 001e 444B     		ldr	r3, .L93
  1565 0020 1B68     		ldr	r3, [r3]
  1566 0022 B2FBF3F1 		udiv	r1, r2, r3
  1567 0026 01FB03F3 		mul	r3, r1, r3
  1568 002a D31A     		subs	r3, r2, r3
- 1569              		.loc 1 266 7 discriminator 1
+ 1569              		.loc 1 268 7 discriminator 1
  1570 002c 0133     		adds	r3, r3, #1
  1571 002e 0793     		str	r3, [sp, #28]
- 267:app/src/fault_injection.c **** 
- 268:app/src/fault_injection.c ****     fi_node_idx = 0U;
- 1572              		.loc 1 268 17
+ 269:app/src/fault_injection.c **** 
+ 270:app/src/fault_injection.c ****     fi_node_idx = 0U;
+ 1572              		.loc 1 270 17
  1573 0030 404B     		ldr	r3, .L93+4
  1574 0032 0022     		movs	r2, #0
  1575 0034 1A60     		str	r2, [r3]
- 269:app/src/fault_injection.c ****     fi_stops_done = 0U;
- 1576              		.loc 1 269 19
+ 271:app/src/fault_injection.c ****     fi_stops_done = 0U;
+ 1576              		.loc 1 271 19
  1577 0036 404B     		ldr	r3, .L93+8
  1578 0038 0022     		movs	r2, #0
  1579 003a 1A60     		str	r2, [r3]
- 270:app/src/fault_injection.c ****     fi_record.done        = 0U;
- 1580              		.loc 1 270 27
+ 272:app/src/fault_injection.c ****     fi_record.done        = 0U;
+ 1580              		.loc 1 272 27
  1581 003c 3F4B     		ldr	r3, .L93+12
  1582 003e 0022     		movs	r2, #0
  1583 0040 1A60     		str	r2, [r3]
- 271:app/src/fault_injection.c ****     fi_record.sample      = fi_n_runs;
- 1584              		.loc 1 271 27
+ 273:app/src/fault_injection.c ****     fi_record.sample      = fi_n_runs;
+ 1584              		.loc 1 273 27
  1585 0042 3F4B     		ldr	r3, .L93+16
  1586 0044 1B68     		ldr	r3, [r3]
  1587 0046 3D4A     		ldr	r2, .L93+12
  1588 0048 1362     		str	r3, [r2, #32]
- 272:app/src/fault_injection.c ****     fi_record.delay_ticks = t;
- 1589              		.loc 1 272 27
+ 274:app/src/fault_injection.c ****     fi_record.delay_ticks = t;
+ 1589              		.loc 1 274 27
  1590 004a 3C4A     		ldr	r2, .L93+12
  1591 004c 079B     		ldr	r3, [sp, #28]
  1592 004e D361     		str	r3, [r2, #28]
- 273:app/src/fault_injection.c ****     fi_record.abort_cause = FI_ABORT_NONE;
- 1593              		.loc 1 273 27
+ 275:app/src/fault_injection.c ****     fi_record.abort_cause = FI_ABORT_NONE;
+ 1593              		.loc 1 275 27
  1594 0050 3A4B     		ldr	r3, .L93+12
  1595 0052 0022     		movs	r2, #0
  1596 0054 9A62     		str	r2, [r3, #40]
- 274:app/src/fault_injection.c **** 
- 275:app/src/fault_injection.c ****     fi_log.done        = 0U;
- 1597              		.loc 1 275 24
+ 276:app/src/fault_injection.c **** 
+ 277:app/src/fault_injection.c ****     fi_log.done_and_bit = 0U;
+ 1597              		.loc 1 277 25
  1598 0056 3B4B     		ldr	r3, .L93+20
  1599 0058 0022     		movs	r2, #0
- 1600 005a 5A70     		strb	r2, [r3, #1]
- 276:app/src/fault_injection.c ****     fi_log.delay_ticks = (uint32_t) t;
- 1601              		.loc 1 276 24
+ 1600 005a 1A70     		strb	r2, [r3]
+ 278:app/src/fault_injection.c ****     fi_log.delay_ticks = (uint32_t) t;
+ 1601              		.loc 1 278 24
  1602 005c 394A     		ldr	r2, .L93+20
  1603 005e 079B     		ldr	r3, [sp, #28]
- 1604 0060 9360     		str	r3, [r2, #8]
- 277:app/src/fault_injection.c ****     fi_log.abort_cause = FI_ABORT_NONE;
- 1605              		.loc 1 277 24
+ 1604 0060 5360     		str	r3, [r2, #4]
+ 279:app/src/fault_injection.c ****     fi_log.abort_cause = FI_ABORT_NONE;
+ 1605              		.loc 1 279 24
  1606 0062 384B     		ldr	r3, .L93+20
  1607 0064 0022     		movs	r2, #0
- 1608 0066 5A71     		strb	r2, [r3, #5]
- 278:app/src/fault_injection.c **** 
- 279:app/src/fault_injection.c ****     fi_timer_arm(t);
- 1609              		.loc 1 279 5
+ 1608 0066 DA70     		strb	r2, [r3, #3]
+ 280:app/src/fault_injection.c **** 
+ 281:app/src/fault_injection.c ****     fi_timer_arm(t);
+ 1609              		.loc 1 281 5
  1610 0068 0798     		ldr	r0, [sp, #28]
  1611 006a FFF7FEFF 		bl	fi_timer_arm
- 280:app/src/fault_injection.c ****     fi_phase = FI_WAIT_FLIP;
- 1612              		.loc 1 280 14
+ 282:app/src/fault_injection.c ****     fi_phase = FI_WAIT_FLIP;
+ 1612              		.loc 1 282 14
  1613 006e 364B     		ldr	r3, .L93+24
  1614 0070 0122     		movs	r2, #1
  1615 0072 1A60     		str	r2, [r3]
- 281:app/src/fault_injection.c **** 
- 282:app/src/fault_injection.c ****     if (setjmp(fi_jmp) == 0) {
- 1616              		.loc 1 282 9
+ 283:app/src/fault_injection.c **** 
+ 284:app/src/fault_injection.c ****     if (setjmp(fi_jmp) == 0) {
+ 1616              		.loc 1 284 9
  1617 0074 3548     		ldr	r0, .L93+28
  1618 0076 FFF7FEFF 		bl	setjmp
  1619 007a 0346     		mov	r3, r0
- 1620              		.loc 1 282 8 discriminator 1
+ 1620              		.loc 1 284 8 discriminator 1
  1621 007c 002B     		cmp	r3, #0
  1622 007e 1AD1     		bne	.L87
- 283:app/src/fault_injection.c ****         fi_in_inference = 1U;
- 1623              		.loc 1 283 25
+ 285:app/src/fault_injection.c ****         fi_in_inference = 1U;
+ 1623              		.loc 1 285 25
  1624 0080 334B     		ldr	r3, .L93+32
  1625 0082 0122     		movs	r2, #1
  1626 0084 1A60     		str	r2, [r3]
@@ -3439,146 +3440,146 @@
  1638 008c 059B     		ldr	r3, [sp, #20]
  1639              	.LBE48:
  1640              	.LBE47:
- 284:app/src/fault_injection.c ****         fi_sp_top = (__get_PSP() + 31U) & ~31U;  /* sotto qui: solo frame della rete */
- 1641              		.loc 1 284 34 discriminator 1
+ 286:app/src/fault_injection.c ****         fi_sp_top = (__get_PSP() + 31U) & ~31U;  /* sotto qui: solo frame della rete */
+ 1641              		.loc 1 286 34 discriminator 1
  1642 008e 1F33     		adds	r3, r3, #31
- 1643              		.loc 1 284 41 discriminator 1
+ 1643              		.loc 1 286 41 discriminator 1
  1644 0090 23F01F03 		bic	r3, r3, #31
- 1645              		.loc 1 284 19 discriminator 1
+ 1645              		.loc 1 286 19 discriminator 1
  1646 0094 2F4A     		ldr	r2, .L93+36
  1647 0096 1360     		str	r3, [r2]
- 285:app/src/fault_injection.c ****         /* Regione 4: frame dei chiamanti (sopra fi_sp_top) in sola lettura. MPU spenta qui. */
- 286:app/src/fault_injection.c ****         (void) fi_mpu_cover(4U, fi_sp_top, (uint32_t)__process_stack_end__, ARM_MPU_AP_RO, 0U);
- 1648              		.loc 1 286 9
+ 287:app/src/fault_injection.c ****         /* Regione 4: frame dei chiamanti (sopra fi_sp_top) in sola lettura. MPU spenta qui. */
+ 288:app/src/fault_injection.c ****         (void) fi_mpu_cover(4U, fi_sp_top, (uint32_t)__process_stack_end__, ARM_MPU_AP_RO, 0U);
+ 1648              		.loc 1 288 9
  1649 0098 2E4B     		ldr	r3, .L93+36
  1650 009a 1968     		ldr	r1, [r3]
- 1651              		.loc 1 286 16
+ 1651              		.loc 1 288 16
  1652 009c 2E4A     		ldr	r2, .L93+40
  1653 009e 0023     		movs	r3, #0
  1654 00a0 0093     		str	r3, [sp]
  1655 00a2 0623     		movs	r3, #6
  1656 00a4 0420     		movs	r0, #4
  1657 00a6 FFF7FEFF 		bl	fi_mpu_cover
- 287:app/src/fault_injection.c **** 
- 288:app/src/fault_injection.c ****         ret = __real_stai_mnetwork_run(network);
- 1658              		.loc 1 288 15
+ 289:app/src/fault_injection.c **** 
+ 290:app/src/fault_injection.c ****         ret = __real_stai_mnetwork_run(network);
+ 1658              		.loc 1 290 15
  1659 00aa 0398     		ldr	r0, [sp, #12]
  1660 00ac FFF7FEFF 		bl	__real_stai_mnetwork_run
  1661 00b0 0346     		mov	r3, r0
- 1662              		.loc 1 288 15 is_stmt 0 discriminator 1
+ 1662              		.loc 1 290 15 is_stmt 0 discriminator 1
  1663 00b2 0993     		str	r3, [sp, #36]
  1664 00b4 29E0     		b	.L89
  1665              	.L87:
  1666              	.LBB49:
- 289:app/src/fault_injection.c ****     } else {
- 290:app/src/fault_injection.c ****         /* Qui si arriva solo da fi_abort(): crash o stallo dopo il flip. */
- 291:app/src/fault_injection.c ****         stai_ptr outs[1];
- 292:app/src/fault_injection.c ****         uint32_t idx = fi_node_idx;
- 1667              		.loc 1 292 18 is_stmt 1
+ 291:app/src/fault_injection.c ****     } else {
+ 292:app/src/fault_injection.c ****         /* Qui si arriva solo da fi_abort(): crash o stallo dopo il flip. */
+ 293:app/src/fault_injection.c ****         stai_ptr outs[1];
+ 294:app/src/fault_injection.c ****         uint32_t idx = fi_node_idx;
+ 1667              		.loc 1 294 18 is_stmt 1
  1668 00b6 1F4B     		ldr	r3, .L93+4
  1669 00b8 1B68     		ldr	r3, [r3]
  1670 00ba 0693     		str	r3, [sp, #24]
- 293:app/src/fault_injection.c ****         uint32_t i;
- 294:app/src/fault_injection.c **** 
- 295:app/src/fault_injection.c ****         fi_in_inference = 0U;
- 1671              		.loc 1 295 25
+ 295:app/src/fault_injection.c ****         uint32_t i;
+ 296:app/src/fault_injection.c **** 
+ 297:app/src/fault_injection.c ****         fi_in_inference = 0U;
+ 1671              		.loc 1 297 25
  1672 00bc 244B     		ldr	r3, .L93+32
  1673 00be 0022     		movs	r2, #0
  1674 00c0 1A60     		str	r2, [r3]
- 296:app/src/fault_injection.c ****         fi_phase = FI_IDLE;
- 1675              		.loc 1 296 18
+ 298:app/src/fault_injection.c ****         fi_phase = FI_IDLE;
+ 1675              		.loc 1 298 18
  1676 00c2 214B     		ldr	r3, .L93+24
  1677 00c4 0022     		movs	r2, #0
  1678 00c6 1A60     		str	r2, [r3]
- 297:app/src/fault_injection.c ****         fi_timer_pause();
- 1679              		.loc 1 297 9
+ 299:app/src/fault_injection.c ****         fi_timer_pause();
+ 1679              		.loc 1 299 9
  1680 00c8 FFF7FEFF 		bl	fi_timer_pause
- 298:app/src/fault_injection.c ****         fi_node_idx = 0U;
- 1681              		.loc 1 298 21
+ 300:app/src/fault_injection.c ****         fi_node_idx = 0U;
+ 1681              		.loc 1 300 21
  1682 00cc 194B     		ldr	r3, .L93+4
  1683 00ce 0022     		movs	r2, #0
  1684 00d0 1A60     		str	r2, [r3]
- 299:app/src/fault_injection.c **** 
- 300:app/src/fault_injection.c ****         fi_complete_events(idx);                 /* sequenza completa per l'observer */
- 1685              		.loc 1 300 9
+ 301:app/src/fault_injection.c **** 
+ 302:app/src/fault_injection.c ****         fi_complete_events(idx);                 /* sequenza completa per l'observer */
+ 1685              		.loc 1 302 9
  1686 00d2 0698     		ldr	r0, [sp, #24]
  1687 00d4 FFF7FEFF 		bl	fi_complete_events
- 301:app/src/fault_injection.c ****         if (stai_mnetwork_get_outputs(network, outs) == STAI_SUCCESS) {
- 1688              		.loc 1 301 13
+ 303:app/src/fault_injection.c ****         if (stai_mnetwork_get_outputs(network, outs) == STAI_SUCCESS) {
+ 1688              		.loc 1 303 13
  1689 00d8 04AB     		add	r3, sp, #16
  1690 00da 1946     		mov	r1, r3
  1691 00dc 0398     		ldr	r0, [sp, #12]
  1692 00de FFF7FEFF 		bl	stai_mnetwork_get_outputs
  1693 00e2 0346     		mov	r3, r0
- 1694              		.loc 1 301 12 discriminator 1
+ 1694              		.loc 1 303 12 discriminator 1
  1695 00e4 002B     		cmp	r3, #0
  1696 00e6 0ED1     		bne	.L90
- 302:app/src/fault_injection.c ****             for (i = 0U; i < STAI_NETWORK_OUT_1_SIZE; i++) {
- 1697              		.loc 1 302 20
+ 304:app/src/fault_injection.c ****             for (i = 0U; i < STAI_NETWORK_OUT_1_SIZE; i++) {
+ 1697              		.loc 1 304 20
  1698 00e8 0023     		movs	r3, #0
  1699 00ea 0893     		str	r3, [sp, #32]
- 1700              		.loc 1 302 13
+ 1700              		.loc 1 304 13
  1701 00ec 08E0     		b	.L91
  1702              	.L92:
- 303:app/src/fault_injection.c ****                 ((float *)outs[0])[i] = NAN;     /* sentinella su tutte le classi: inferenza non va
- 1703              		.loc 1 303 31
+ 305:app/src/fault_injection.c ****                 ((float *)outs[0])[i] = NAN;     /* sentinella su tutte le classi: inferenza non va
+ 1703              		.loc 1 305 31
  1704 00ee 049A     		ldr	r2, [sp, #16]
- 1705              		.loc 1 303 35
+ 1705              		.loc 1 305 35
  1706 00f0 089B     		ldr	r3, [sp, #32]
  1707 00f2 9B00     		lsls	r3, r3, #2
  1708 00f4 1344     		add	r3, r3, r2
- 1709              		.loc 1 303 39
+ 1709              		.loc 1 305 39
  1710 00f6 194A     		ldr	r2, .L93+44
  1711 00f8 1A60     		str	r2, [r3]	@ float
- 302:app/src/fault_injection.c ****             for (i = 0U; i < STAI_NETWORK_OUT_1_SIZE; i++) {
- 1712              		.loc 1 302 56 discriminator 3
+ 304:app/src/fault_injection.c ****             for (i = 0U; i < STAI_NETWORK_OUT_1_SIZE; i++) {
+ 1712              		.loc 1 304 56 discriminator 3
  1713 00fa 089B     		ldr	r3, [sp, #32]
  1714 00fc 0133     		adds	r3, r3, #1
  1715 00fe 0893     		str	r3, [sp, #32]
  1716              	.L91:
- 302:app/src/fault_injection.c ****             for (i = 0U; i < STAI_NETWORK_OUT_1_SIZE; i++) {
- 1717              		.loc 1 302 28 discriminator 1
+ 304:app/src/fault_injection.c ****             for (i = 0U; i < STAI_NETWORK_OUT_1_SIZE; i++) {
+ 1717              		.loc 1 304 28 discriminator 1
  1718 0100 089B     		ldr	r3, [sp, #32]
  1719 0102 032B     		cmp	r3, #3
  1720 0104 F3D9     		bls	.L92
  1721              	.L90:
- 304:app/src/fault_injection.c ****             }
- 305:app/src/fault_injection.c ****         }
- 306:app/src/fault_injection.c ****         ret = STAI_SUCCESS;                      /* la validazione prosegue */
- 1722              		.loc 1 306 13
+ 306:app/src/fault_injection.c ****             }
+ 307:app/src/fault_injection.c ****         }
+ 308:app/src/fault_injection.c ****         ret = STAI_SUCCESS;                      /* la validazione prosegue */
+ 1722              		.loc 1 308 13
  1723 0106 0023     		movs	r3, #0
  1724 0108 0993     		str	r3, [sp, #36]
  1725              	.L89:
  1726              	.LBE49:
- 307:app/src/fault_injection.c ****     }
- 308:app/src/fault_injection.c **** 
- 309:app/src/fault_injection.c ****     fi_in_inference = 0U;
- 1727              		.loc 1 309 21
+ 309:app/src/fault_injection.c ****     }
+ 310:app/src/fault_injection.c **** 
+ 311:app/src/fault_injection.c ****     fi_in_inference = 0U;
+ 1727              		.loc 1 311 21
  1728 010a 114B     		ldr	r3, .L93+32
  1729 010c 0022     		movs	r2, #0
  1730 010e 1A60     		str	r2, [r3]
- 310:app/src/fault_injection.c ****     fi_phase = FI_IDLE;
- 1731              		.loc 1 310 14
+ 312:app/src/fault_injection.c ****     fi_phase = FI_IDLE;
+ 1731              		.loc 1 312 14
  1732 0110 0D4B     		ldr	r3, .L93+24
  1733 0112 0022     		movs	r2, #0
  1734 0114 1A60     		str	r2, [r3]
- 311:app/src/fault_injection.c ****     fi_timer_pause();
- 1735              		.loc 1 311 5
+ 313:app/src/fault_injection.c ****     fi_timer_pause();
+ 1735              		.loc 1 313 5
  1736 0116 FFF7FEFF 		bl	fi_timer_pause
- 312:app/src/fault_injection.c ****     fi_n_runs++;
- 1737              		.loc 1 312 14
+ 314:app/src/fault_injection.c ****     fi_n_runs++;
+ 1737              		.loc 1 314 14
  1738 011a 094B     		ldr	r3, .L93+16
  1739 011c 1B68     		ldr	r3, [r3]
  1740 011e 0133     		adds	r3, r3, #1
  1741 0120 074A     		ldr	r2, .L93+16
  1742 0122 1360     		str	r3, [r2]
- 313:app/src/fault_injection.c **** 
- 314:app/src/fault_injection.c ****     return ret;
- 1743              		.loc 1 314 12
+ 315:app/src/fault_injection.c **** 
+ 316:app/src/fault_injection.c ****     return ret;
+ 1743              		.loc 1 316 12
  1744 0124 099B     		ldr	r3, [sp, #36]
  1745              	.L85:
- 315:app/src/fault_injection.c **** }
- 1746              		.loc 1 315 1
+ 317:app/src/fault_injection.c **** }
+ 1746              		.loc 1 317 1
  1747 0126 1846     		mov	r0, r3
  1748 0128 0BB0     		add	sp, sp, #44
  1749              		.cfi_def_cfa_offset 4
@@ -3588,19 +3589,19 @@
  1753 012e 00BF     		.align	2
  1754              	.L93:
  1755 0130 00000000 		.word	fi_layers_ticks
- 1756 0134 58000000 		.word	fi_node_idx
+ 1756 0134 54000000 		.word	fi_node_idx
  1757 0138 00000000 		.word	fi_stops_done
  1758 013c 00000000 		.word	fi_record
  1759 0140 00000000 		.word	fi_n_runs
  1760 0144 00000000 		.word	fi_log
- 1761 0148 48000000 		.word	fi_phase
+ 1761 0148 44000000 		.word	fi_phase
  1762 014c 00000000 		.word	fi_jmp
  1763 0150 00000000 		.word	fi_in_inference
- 1764 0154 50000000 		.word	fi_sp_top
+ 1764 0154 4C000000 		.word	fi_sp_top
  1765 0158 00000000 		.word	__process_stack_end__
  1766 015c 0000C07F 		.word	2143289344
  1767              		.cfi_endproc
- 1768              	.LFE471:
+ 1768              	.LFE474:
  1770              		.section	.text.fi_abort_to_wrapper,"ax",%progbits
  1771              		.align	1
  1772              		.p2align 4,,15
@@ -3608,11 +3609,11 @@
  1774              		.thumb
  1775              		.thumb_func
  1777              	fi_abort_to_wrapper:
- 1778              	.LFB472:
- 316:app/src/fault_injection.c **** 
- 317:app/src/fault_injection.c **** /* Eseguita in thread mode al ritorno dall'eccezione (vedi fi_abort). */
- 318:app/src/fault_injection.c **** __attribute__((noinline, noreturn)) static void fi_abort_to_wrapper(void) {
- 1779              		.loc 1 318 75
+ 1778              	.LFB475:
+ 318:app/src/fault_injection.c **** 
+ 319:app/src/fault_injection.c **** /* Eseguita in thread mode al ritorno dall'eccezione (vedi fi_abort). */
+ 320:app/src/fault_injection.c **** __attribute__((noinline, noreturn)) static void fi_abort_to_wrapper(void) {
+ 1779              		.loc 1 320 75
  1780              		.cfi_startproc
  1781              		@ args = 0, pretend = 0, frame = 0
  1782              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -3620,8 +3621,8 @@
  1784              		.cfi_def_cfa_offset 8
  1785              		.cfi_offset 3, -8
  1786              		.cfi_offset 14, -4
- 319:app/src/fault_injection.c ****     longjmp(fi_jmp, 1);
- 1787              		.loc 1 319 5
+ 321:app/src/fault_injection.c ****     longjmp(fi_jmp, 1);
+ 1787              		.loc 1 321 5
  1788 0002 0121     		movs	r1, #1
  1789 0004 0148     		ldr	r0, .L96
  1790 0006 FFF7FEFF 		bl	longjmp
@@ -3630,7 +3631,7 @@
  1793              	.L96:
  1794 000c 00000000 		.word	fi_jmp
  1795              		.cfi_endproc
- 1796              	.LFE472:
+ 1796              	.LFE475:
  1798              		.section	.text.fi_abort,"ax",%progbits
  1799              		.align	1
  1800              		.p2align 4,,15
@@ -3638,13 +3639,13 @@
  1802              		.thumb
  1803              		.thumb_func
  1805              	fi_abort:
- 1806              	.LFB473:
- 320:app/src/fault_injection.c **** }
- 321:app/src/fault_injection.c **** 
- 322:app/src/fault_injection.c **** /* Fa riprendere il codice interrotto da fi_abort_to_wrapper invece che
- 323:app/src/fault_injection.c ****  * dall'istruzione interrotta. Ritorna 0 se non è possibile. */
- 324:app/src/fault_injection.c **** static uint32_t fi_abort(fi_exc_frame_t *frame, uint32_t exc_ret) {
- 1807              		.loc 1 324 67
+ 1806              	.LFB476:
+ 322:app/src/fault_injection.c **** }
+ 323:app/src/fault_injection.c **** 
+ 324:app/src/fault_injection.c **** /* Fa riprendere il codice interrotto da fi_abort_to_wrapper invece che
+ 325:app/src/fault_injection.c ****  * dall'istruzione interrotta. Ritorna 0 se non è possibile. */
+ 326:app/src/fault_injection.c **** static uint32_t fi_abort(fi_exc_frame_t *frame, uint32_t exc_ret) {
+ 1807              		.loc 1 326 67
  1808              		.cfi_startproc
  1809              		@ args = 0, pretend = 0, frame = 8
  1810              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -3655,62 +3656,62 @@
  1815              		.cfi_def_cfa_offset 16
  1816 0004 0190     		str	r0, [sp, #4]
  1817 0006 0091     		str	r1, [sp]
- 325:app/src/fault_injection.c **** 	fi_mpu_off();                                /* il wrapper riparte con SP sopra fi_sp_top */
- 1818              		.loc 1 325 2
+ 327:app/src/fault_injection.c **** 	fi_mpu_off();                                /* il wrapper riparte con SP sopra fi_sp_top */
+ 1818              		.loc 1 327 2
  1819 0008 FFF7FEFF 		bl	fi_mpu_off
- 326:app/src/fault_injection.c **** 	fi_timer_pause();
- 1820              		.loc 1 326 2
+ 328:app/src/fault_injection.c **** 	fi_timer_pause();
+ 1820              		.loc 1 328 2
  1821 000c FFF7FEFF 		bl	fi_timer_pause
- 327:app/src/fault_injection.c ****     fi_phase = FI_IDLE;
- 1822              		.loc 1 327 14
+ 329:app/src/fault_injection.c ****     fi_phase = FI_IDLE;
+ 1822              		.loc 1 329 14
  1823 0010 0F4B     		ldr	r3, .L102
  1824 0012 0022     		movs	r2, #0
  1825 0014 1A60     		str	r2, [r3]
- 328:app/src/fault_injection.c ****     if (((exc_ret & 0x8U) == 0U) || (fi_in_inference == 0U)) {
- 1826              		.loc 1 328 19
+ 330:app/src/fault_injection.c ****     if (((exc_ret & 0x8U) == 0U) || (fi_in_inference == 0U)) {
+ 1826              		.loc 1 330 19
  1827 0016 009B     		ldr	r3, [sp]
  1828 0018 03F00803 		and	r3, r3, #8
- 1829              		.loc 1 328 8
+ 1829              		.loc 1 330 8
  1830 001c 002B     		cmp	r3, #0
  1831 001e 03D0     		beq	.L99
- 1832              		.loc 1 328 54 discriminator 1
+ 1832              		.loc 1 330 54 discriminator 1
  1833 0020 0C4B     		ldr	r3, .L102+4
  1834 0022 1B68     		ldr	r3, [r3]
- 1835              		.loc 1 328 34 discriminator 1
+ 1835              		.loc 1 330 34 discriminator 1
  1836 0024 002B     		cmp	r3, #0
  1837 0026 01D1     		bne	.L100
  1838              	.L99:
- 329:app/src/fault_injection.c ****         return 0U;                               /* non in thread mode o fuori dall'inferenza */
- 1839              		.loc 1 329 16
+ 331:app/src/fault_injection.c ****         return 0U;                               /* non in thread mode o fuori dall'inferenza */
+ 1839              		.loc 1 331 16
  1840 0028 0023     		movs	r3, #0
  1841 002a 0DE0     		b	.L101
  1842              	.L100:
- 330:app/src/fault_injection.c ****     }
- 331:app/src/fault_injection.c ****     frame->pc   = (uint32_t)&fi_abort_to_wrapper & ~1U;
- 1843              		.loc 1 331 19
+ 332:app/src/fault_injection.c ****     }
+ 333:app/src/fault_injection.c ****     frame->pc   = (uint32_t)&fi_abort_to_wrapper & ~1U;
+ 1843              		.loc 1 333 19
  1844 002c 0A4B     		ldr	r3, .L102+8
- 1845              		.loc 1 331 50
+ 1845              		.loc 1 333 50
  1846 002e 23F00102 		bic	r2, r3, #1
- 1847              		.loc 1 331 17
+ 1847              		.loc 1 333 17
  1848 0032 019B     		ldr	r3, [sp, #4]
  1849 0034 9A61     		str	r2, [r3, #24]
- 332:app/src/fault_injection.c ****     frame->xpsr = (frame->xpsr & (1U << 9)) | (1U << 24);   /* solo bit Thumb (+ allineamento) */
- 1850              		.loc 1 332 25
+ 334:app/src/fault_injection.c ****     frame->xpsr = (frame->xpsr & (1U << 9)) | (1U << 24);   /* solo bit Thumb (+ allineamento) */
+ 1850              		.loc 1 334 25
  1851 0036 019B     		ldr	r3, [sp, #4]
  1852 0038 DB69     		ldr	r3, [r3, #28]
- 1853              		.loc 1 332 32
+ 1853              		.loc 1 334 32
  1854 003a 03F40073 		and	r3, r3, #512
- 1855              		.loc 1 332 45
+ 1855              		.loc 1 334 45
  1856 003e 43F08072 		orr	r2, r3, #16777216
- 1857              		.loc 1 332 17
+ 1857              		.loc 1 334 17
  1858 0042 019B     		ldr	r3, [sp, #4]
  1859 0044 DA61     		str	r2, [r3, #28]
- 333:app/src/fault_injection.c ****     return 1U;
- 1860              		.loc 1 333 12
+ 335:app/src/fault_injection.c ****     return 1U;
+ 1860              		.loc 1 335 12
  1861 0046 0123     		movs	r3, #1
  1862              	.L101:
- 334:app/src/fault_injection.c **** }
- 1863              		.loc 1 334 1
+ 336:app/src/fault_injection.c **** }
+ 1863              		.loc 1 336 1
  1864 0048 1846     		mov	r0, r3
  1865 004a 03B0     		add	sp, sp, #12
  1866              		.cfi_def_cfa_offset 4
@@ -3719,11 +3720,11 @@
  1869              	.L103:
  1870              		.align	2
  1871              	.L102:
- 1872 0050 48000000 		.word	fi_phase
+ 1872 0050 44000000 		.word	fi_phase
  1873 0054 00000000 		.word	fi_in_inference
  1874 0058 00000000 		.word	fi_abort_to_wrapper
  1875              		.cfi_endproc
- 1876              	.LFE473:
+ 1876              	.LFE476:
  1878              		.section	.text.fi_dispatch,"ax",%progbits
  1879              		.align	1
  1880              		.p2align 4,,15
@@ -3732,15 +3733,15 @@
  1883              		.thumb
  1884              		.thumb_func
  1886              	fi_dispatch:
- 1887              	.LFB474:
- 335:app/src/fault_injection.c **** 
- 336:app/src/fault_injection.c **** /* Dispatch call.
- 337:app/src/fault_injection.c ****  * frame : frame HW (R0-R3, R12, LR, PC, xPSR, S0-S15, FPSCR) of interrupted context
- 338:app/src/fault_injection.c ****  * r4_r11: copy of R4..R11
- 339:app/src/fault_injection.c ****  * s16_s31: copy of S16-S31
- 340:app/src/fault_injection.c ****  * exc_ret: EXC_RETURN value (LR at interrupt beginning) */
- 341:app/src/fault_injection.c **** void fi_dispatch(fi_exc_frame_t *frame, uint32_t *r4_r11, uint32_t exc_ret, uint32_t *s16_s31) {
- 1888              		.loc 1 341 96
+ 1887              	.LFB477:
+ 337:app/src/fault_injection.c **** 
+ 338:app/src/fault_injection.c **** /* Dispatch call.
+ 339:app/src/fault_injection.c ****  * frame : frame HW (R0-R3, R12, LR, PC, xPSR, S0-S15, FPSCR) of interrupted context
+ 340:app/src/fault_injection.c ****  * r4_r11: copy of R4..R11
+ 341:app/src/fault_injection.c ****  * s16_s31: copy of S16-S31
+ 342:app/src/fault_injection.c ****  * exc_ret: EXC_RETURN value (LR at interrupt beginning) */
+ 343:app/src/fault_injection.c **** void fi_dispatch(fi_exc_frame_t *frame, uint32_t *r4_r11, uint32_t exc_ret, uint32_t *s16_s31) {
+ 1888              		.loc 1 343 96
  1889              		.cfi_startproc
  1890              		@ args = 0, pretend = 0, frame = 32
  1891              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -3753,156 +3754,156 @@
  1898 0006 0291     		str	r1, [sp, #8]
  1899 0008 0192     		str	r2, [sp, #4]
  1900 000a 0093     		str	r3, [sp]
- 342:app/src/fault_injection.c ****     __tim_serve_interrupt(&DRV_TIM2);            /* ack dell'update */
- 1901              		.loc 1 342 5
+ 344:app/src/fault_injection.c ****     __tim_serve_interrupt(&DRV_TIM2);            /* ack dell'update */
+ 1901              		.loc 1 344 5
  1902 000c 5D48     		ldr	r0, .L117
  1903 000e FFF7FEFF 		bl	__tim_serve_interrupt
- 343:app/src/fault_injection.c **** 
- 344:app/src/fault_injection.c ****     if (fi_phase == FI_WATCHDOG) {               /* FI_TIMEOUT_US di calcolo dopo il flip */
- 1904              		.loc 1 344 18
+ 345:app/src/fault_injection.c **** 
+ 346:app/src/fault_injection.c ****     if (fi_phase == FI_WATCHDOG) {               /* FI_TIMEOUT_US di calcolo dopo il flip */
+ 1904              		.loc 1 346 18
  1905 0012 5D4B     		ldr	r3, .L117+4
  1906 0014 1B68     		ldr	r3, [r3]
- 1907              		.loc 1 344 8
+ 1907              		.loc 1 346 8
  1908 0016 022B     		cmp	r3, #2
  1909 0018 13D1     		bne	.L105
- 345:app/src/fault_injection.c ****         fi_record.abort_cause = FI_ABORT_HANG;
- 1910              		.loc 1 345 31
+ 347:app/src/fault_injection.c ****         fi_record.abort_cause = FI_ABORT_HANG;
+ 1910              		.loc 1 347 31
  1911 001a 5C4B     		ldr	r3, .L117+8
  1912 001c 0222     		movs	r2, #2
  1913 001e 9A62     		str	r2, [r3, #40]
- 346:app/src/fault_injection.c ****         fi_record.fault_pc    = frame->pc;
- 1914              		.loc 1 346 38
+ 348:app/src/fault_injection.c ****         fi_record.fault_pc    = frame->pc;
+ 1914              		.loc 1 348 38
  1915 0020 039B     		ldr	r3, [sp, #12]
  1916 0022 9B69     		ldr	r3, [r3, #24]
- 1917              		.loc 1 346 31
+ 1917              		.loc 1 348 31
  1918 0024 594A     		ldr	r2, .L117+8
  1919 0026 D362     		str	r3, [r2, #44]
- 347:app/src/fault_injection.c ****         fi_n_hang++;
- 1920              		.loc 1 347 18
+ 349:app/src/fault_injection.c ****         fi_n_hang++;
+ 1920              		.loc 1 349 18
  1921 0028 594B     		ldr	r3, .L117+12
  1922 002a 1B68     		ldr	r3, [r3]
  1923 002c 0133     		adds	r3, r3, #1
  1924 002e 584A     		ldr	r2, .L117+12
  1925 0030 1360     		str	r3, [r2]
- 348:app/src/fault_injection.c **** 
- 349:app/src/fault_injection.c ****         fi_log.abort_cause = FI_ABORT_HANG;
- 1926              		.loc 1 349 28
+ 350:app/src/fault_injection.c **** 
+ 351:app/src/fault_injection.c ****         fi_log.abort_cause = FI_ABORT_HANG;
+ 1926              		.loc 1 351 28
  1927 0032 584B     		ldr	r3, .L117+16
  1928 0034 0222     		movs	r2, #2
- 1929 0036 5A71     		strb	r2, [r3, #5]
- 350:app/src/fault_injection.c **** 
- 351:app/src/fault_injection.c ****         (void)fi_abort(frame, exc_ret);
- 1930              		.loc 1 351 15
+ 1929 0036 DA70     		strb	r2, [r3, #3]
+ 352:app/src/fault_injection.c **** 
+ 353:app/src/fault_injection.c ****         (void)fi_abort(frame, exc_ret);
+ 1930              		.loc 1 353 15
  1931 0038 0199     		ldr	r1, [sp, #4]
  1932 003a 0398     		ldr	r0, [sp, #12]
  1933 003c FFF7FEFF 		bl	fi_abort
- 352:app/src/fault_injection.c ****         return;
- 1934              		.loc 1 352 9
+ 354:app/src/fault_injection.c ****         return;
+ 1934              		.loc 1 354 9
  1935 0040 9CE0     		b	.L104
  1936              	.L105:
- 353:app/src/fault_injection.c ****     }
- 354:app/src/fault_injection.c ****     if ((fi_phase != FI_WAIT_FLIP) || (fi_node_idx == 0U)) {
- 1937              		.loc 1 354 19
+ 355:app/src/fault_injection.c ****     }
+ 356:app/src/fault_injection.c ****     if ((fi_phase != FI_WAIT_FLIP) || (fi_node_idx == 0U)) {
+ 1937              		.loc 1 356 19
  1938 0042 514B     		ldr	r3, .L117+4
  1939 0044 1B68     		ldr	r3, [r3]
- 1940              		.loc 1 354 8
+ 1940              		.loc 1 356 8
  1941 0046 012B     		cmp	r3, #1
  1942 0048 40F09780 		bne	.L116
- 1943              		.loc 1 354 52 discriminator 1
+ 1943              		.loc 1 356 52 discriminator 1
  1944 004c 524B     		ldr	r3, .L117+20
  1945 004e 1B68     		ldr	r3, [r3]
- 1946              		.loc 1 354 36 discriminator 1
+ 1946              		.loc 1 356 36 discriminator 1
  1947 0050 002B     		cmp	r3, #0
  1948 0052 00F09280 		beq	.L116
- 355:app/src/fault_injection.c ****         return;                                  /* fuori da un layer: nessun flip */
- 356:app/src/fault_injection.c ****     }
- 357:app/src/fault_injection.c **** 
- 358:app/src/fault_injection.c ****     /* 0..12 = R0..R12, 13..44 = S0..S31. Without FPU context in the frame
- 359:app/src/fault_injection.c ****      * if (EXC_RETURN bit 4 = 1) the choice is between R0..R12 only */
- 360:app/src/fault_injection.c ****     uint32_t reg = xorshift32() % (((exc_ret & 0x10U) == 0U) ? 45U : 13U);
- 1949              		.loc 1 360 20
+ 357:app/src/fault_injection.c ****         return;                                  /* fuori da un layer: nessun flip */
+ 358:app/src/fault_injection.c ****     }
+ 359:app/src/fault_injection.c **** 
+ 360:app/src/fault_injection.c ****     /* 0..12 = R0..R12, 13..44 = S0..S31. Without FPU context in the frame
+ 361:app/src/fault_injection.c ****      * if (EXC_RETURN bit 4 = 1) the choice is between R0..R12 only */
+ 362:app/src/fault_injection.c ****     uint32_t reg = xorshift32() % (((exc_ret & 0x10U) == 0U) ? 45U : 13U);
+ 1949              		.loc 1 362 20
  1950 0056 FFF7FEFF 		bl	xorshift32
  1951 005a 0246     		mov	r2, r0
- 1952              		.loc 1 360 46 discriminator 1
+ 1952              		.loc 1 362 46 discriminator 1
  1953 005c 019B     		ldr	r3, [sp, #4]
  1954 005e 03F01003 		and	r3, r3, #16
- 1955              		.loc 1 360 68 discriminator 1
+ 1955              		.loc 1 362 68 discriminator 1
  1956 0062 002B     		cmp	r3, #0
  1957 0064 01D1     		bne	.L109
  1958 0066 2D23     		movs	r3, #45
  1959 0068 00E0     		b	.L110
  1960              	.L109:
- 1961              		.loc 1 360 68 is_stmt 0 discriminator 2
+ 1961              		.loc 1 362 68 is_stmt 0 discriminator 2
  1962 006a 0D23     		movs	r3, #13
  1963              	.L110:
- 1964              		.loc 1 360 14 is_stmt 1 discriminator 4
+ 1964              		.loc 1 362 14 is_stmt 1 discriminator 4
  1965 006c B2FBF3F1 		udiv	r1, r2, r3
  1966 0070 01FB03F3 		mul	r3, r1, r3
  1967 0074 D31A     		subs	r3, r2, r3
  1968 0076 0693     		str	r3, [sp, #24]
- 361:app/src/fault_injection.c ****     uint32_t bit = xorshift32() & 0x1FU;         /* 0..31   */
- 1969              		.loc 1 361 20
+ 363:app/src/fault_injection.c ****     uint32_t bit = xorshift32() & 0x1FU;         /* 0..31   */
+ 1969              		.loc 1 363 20
  1970 0078 FFF7FEFF 		bl	xorshift32
  1971 007c 0346     		mov	r3, r0
- 1972              		.loc 1 361 14 discriminator 1
+ 1972              		.loc 1 363 14 discriminator 1
  1973 007e 03F01F03 		and	r3, r3, #31
  1974 0082 0593     		str	r3, [sp, #20]
- 362:app/src/fault_injection.c **** 
- 363:app/src/fault_injection.c ****     volatile uint32_t *target;
- 364:app/src/fault_injection.c ****     if (reg <= 3U) {
- 1975              		.loc 1 364 8
+ 364:app/src/fault_injection.c **** 
+ 365:app/src/fault_injection.c ****     volatile uint32_t *target;
+ 366:app/src/fault_injection.c ****     if (reg <= 3U) {
+ 1975              		.loc 1 366 8
  1976 0084 069B     		ldr	r3, [sp, #24]
  1977 0086 032B     		cmp	r3, #3
  1978 0088 05D8     		bhi	.L111
- 365:app/src/fault_injection.c ****         target = &((volatile uint32_t *)frame)[reg];   	/* R0..R3 */
- 1979              		.loc 1 365 47
+ 367:app/src/fault_injection.c ****         target = &((volatile uint32_t *)frame)[reg];   	/* R0..R3 */
+ 1979              		.loc 1 367 47
  1980 008a 069B     		ldr	r3, [sp, #24]
  1981 008c 9B00     		lsls	r3, r3, #2
- 1982              		.loc 1 365 16
+ 1982              		.loc 1 367 16
  1983 008e 039A     		ldr	r2, [sp, #12]
  1984 0090 1344     		add	r3, r3, r2
  1985 0092 0793     		str	r3, [sp, #28]
  1986 0094 23E0     		b	.L112
  1987              	.L111:
- 366:app/src/fault_injection.c ****     } else if (reg == 12U) {
- 1988              		.loc 1 366 15
+ 368:app/src/fault_injection.c ****     } else if (reg == 12U) {
+ 1988              		.loc 1 368 15
  1989 0096 069B     		ldr	r3, [sp, #24]
  1990 0098 0C2B     		cmp	r3, #12
  1991 009a 03D1     		bne	.L113
- 367:app/src/fault_injection.c ****         target = &frame->r12;                          	/* R12 */
- 1992              		.loc 1 367 16
+ 369:app/src/fault_injection.c ****         target = &frame->r12;                          	/* R12 */
+ 1992              		.loc 1 369 16
  1993 009c 039B     		ldr	r3, [sp, #12]
  1994 009e 1033     		adds	r3, r3, #16
  1995 00a0 0793     		str	r3, [sp, #28]
  1996 00a2 1CE0     		b	.L112
  1997              	.L113:
- 368:app/src/fault_injection.c ****     } else if (reg < 12U) {
- 1998              		.loc 1 368 15
+ 370:app/src/fault_injection.c ****     } else if (reg < 12U) {
+ 1998              		.loc 1 370 15
  1999 00a4 069B     		ldr	r3, [sp, #24]
  2000 00a6 0B2B     		cmp	r3, #11
  2001 00a8 07D8     		bhi	.L114
- 369:app/src/fault_injection.c ****         target = &r4_r11[reg - 4U];                    	/* R4..R11 */
- 2002              		.loc 1 369 25
+ 371:app/src/fault_injection.c ****         target = &r4_r11[reg - 4U];                    	/* R4..R11 */
+ 2002              		.loc 1 371 25
  2003 00aa 069A     		ldr	r2, [sp, #24]
  2004 00ac 3B4B     		ldr	r3, .L117+24
  2005 00ae 1344     		add	r3, r3, r2
  2006 00b0 9B00     		lsls	r3, r3, #2
- 2007              		.loc 1 369 16
+ 2007              		.loc 1 371 16
  2008 00b2 029A     		ldr	r2, [sp, #8]
  2009 00b4 1344     		add	r3, r3, r2
  2010 00b6 0793     		str	r3, [sp, #28]
  2011 00b8 11E0     		b	.L112
  2012              	.L114:
- 370:app/src/fault_injection.c ****     } else if (reg < 29U) {
- 2013              		.loc 1 370 15
+ 372:app/src/fault_injection.c ****     } else if (reg < 29U) {
+ 2013              		.loc 1 372 15
  2014 00ba 069B     		ldr	r3, [sp, #24]
  2015 00bc 1C2B     		cmp	r3, #28
  2016 00be 07D8     		bhi	.L115
- 371:app/src/fault_injection.c ****     	target = &frame->s[reg - 13U];                	/* S0..S15   */
- 2017              		.loc 1 371 29
+ 373:app/src/fault_injection.c ****     	target = &frame->s[reg - 13U];                	/* S0..S15   */
+ 2017              		.loc 1 373 29
  2018 00c0 069B     		ldr	r3, [sp, #24]
  2019 00c2 0D3B     		subs	r3, r3, #13
- 2020              		.loc 1 371 13
+ 2020              		.loc 1 373 13
  2021 00c4 0833     		adds	r3, r3, #8
  2022 00c6 9B00     		lsls	r3, r3, #2
  2023 00c8 039A     		ldr	r2, [sp, #12]
@@ -3910,517 +3911,515 @@
  2025 00cc 0793     		str	r3, [sp, #28]
  2026 00ce 06E0     		b	.L112
  2027              	.L115:
- 372:app/src/fault_injection.c ****     } else {
- 373:app/src/fault_injection.c ****     	target = &s16_s31[reg - 29U];					/* S16..S31 */
- 2028              		.loc 1 373 23
+ 374:app/src/fault_injection.c ****     } else {
+ 375:app/src/fault_injection.c ****     	target = &s16_s31[reg - 29U];					/* S16..S31 */
+ 2028              		.loc 1 375 23
  2029 00d0 069A     		ldr	r2, [sp, #24]
  2030 00d2 334B     		ldr	r3, .L117+28
  2031 00d4 1344     		add	r3, r3, r2
  2032 00d6 9B00     		lsls	r3, r3, #2
- 2033              		.loc 1 373 13
+ 2033              		.loc 1 375 13
  2034 00d8 009A     		ldr	r2, [sp]
  2035 00da 1344     		add	r3, r3, r2
  2036 00dc 0793     		str	r3, [sp, #28]
  2037              	.L112:
- 374:app/src/fault_injection.c ****     }
- 375:app/src/fault_injection.c **** 
- 376:app/src/fault_injection.c ****     fi_record.reg          = reg;
- 2038              		.loc 1 376 28
+ 376:app/src/fault_injection.c ****     }
+ 377:app/src/fault_injection.c **** 
+ 378:app/src/fault_injection.c ****     fi_record.reg          = reg;
+ 2038              		.loc 1 378 28
  2039 00de 2B4A     		ldr	r2, .L117+8
  2040 00e0 069B     		ldr	r3, [sp, #24]
  2041 00e2 5360     		str	r3, [r2, #4]
- 377:app/src/fault_injection.c ****     fi_record.bit          = bit;
- 2042              		.loc 1 377 28
+ 379:app/src/fault_injection.c ****     fi_record.bit          = bit;
+ 2042              		.loc 1 379 28
  2043 00e4 294A     		ldr	r2, .L117+8
  2044 00e6 059B     		ldr	r3, [sp, #20]
  2045 00e8 9360     		str	r3, [r2, #8]
- 378:app/src/fault_injection.c ****     fi_record.value_before = *target;
- 2046              		.loc 1 378 30
+ 380:app/src/fault_injection.c ****     fi_record.value_before = *target;
+ 2046              		.loc 1 380 30
  2047 00ea 079B     		ldr	r3, [sp, #28]
  2048 00ec 1B68     		ldr	r3, [r3]
- 2049              		.loc 1 378 28
+ 2049              		.loc 1 380 28
  2050 00ee 274A     		ldr	r2, .L117+8
  2051 00f0 D360     		str	r3, [r2, #12]
- 379:app/src/fault_injection.c ****     *target ^= (1U << bit);
- 2052              		.loc 1 379 5
+ 381:app/src/fault_injection.c ****     *target ^= (1U << bit);
+ 2052              		.loc 1 381 5
  2053 00f2 079B     		ldr	r3, [sp, #28]
  2054 00f4 1A68     		ldr	r2, [r3]
- 2055              		.loc 1 379 20
+ 2055              		.loc 1 381 20
  2056 00f6 0121     		movs	r1, #1
  2057 00f8 059B     		ldr	r3, [sp, #20]
  2058 00fa 01FA03F3 		lsl	r3, r1, r3
- 2059              		.loc 1 379 13
+ 2059              		.loc 1 381 13
  2060 00fe 5A40     		eors	r2, r2, r3
  2061 0100 079B     		ldr	r3, [sp, #28]
  2062 0102 1A60     		str	r2, [r3]
- 380:app/src/fault_injection.c ****     fi_record.value_after  = *target;
- 2063              		.loc 1 380 30
+ 382:app/src/fault_injection.c ****     fi_record.value_after  = *target;
+ 2063              		.loc 1 382 30
  2064 0104 079B     		ldr	r3, [sp, #28]
  2065 0106 1B68     		ldr	r3, [r3]
- 2066              		.loc 1 380 28
+ 2066              		.loc 1 382 28
  2067 0108 204A     		ldr	r2, .L117+8
  2068 010a 1361     		str	r3, [r2, #16]
- 381:app/src/fault_injection.c ****     fi_record.stacked_pc   = frame->pc;
- 2069              		.loc 1 381 35
+ 383:app/src/fault_injection.c ****     fi_record.stacked_pc   = frame->pc;
+ 2069              		.loc 1 383 35
  2070 010c 039B     		ldr	r3, [sp, #12]
  2071 010e 9B69     		ldr	r3, [r3, #24]
- 2072              		.loc 1 381 28
+ 2072              		.loc 1 383 28
  2073 0110 1E4A     		ldr	r2, .L117+8
  2074 0112 5361     		str	r3, [r2, #20]
- 382:app/src/fault_injection.c ****     fi_record.exc_return   = exc_ret;
- 2075              		.loc 1 382 28
+ 384:app/src/fault_injection.c ****     fi_record.exc_return   = exc_ret;
+ 2075              		.loc 1 384 28
  2076 0114 1D4A     		ldr	r2, .L117+8
  2077 0116 019B     		ldr	r3, [sp, #4]
  2078 0118 9361     		str	r3, [r2, #24]
- 383:app/src/fault_injection.c ****     fi_record.done         = 1U;
- 2079              		.loc 1 383 28
+ 385:app/src/fault_injection.c ****     fi_record.done         = 1U;
+ 2079              		.loc 1 385 28
  2080 011a 1C4B     		ldr	r3, .L117+8
  2081 011c 0122     		movs	r2, #1
  2082 011e 1A60     		str	r2, [r3]
- 384:app/src/fault_injection.c ****     fi_record.node         = fi_node_ids[fi_node_idx - 1U];
- 2083              		.loc 1 384 54
+ 386:app/src/fault_injection.c ****     fi_record.node         = fi_node_ids[fi_node_idx - 1U];
+ 2083              		.loc 1 386 54
  2084 0120 1D4B     		ldr	r3, .L117+20
  2085 0122 1B68     		ldr	r3, [r3]
  2086 0124 013B     		subs	r3, r3, #1
- 2087              		.loc 1 384 41
+ 2087              		.loc 1 386 41
  2088 0126 1F4A     		ldr	r2, .L117+32
  2089 0128 D35C     		ldrb	r3, [r2, r3]	@ zero_extendqisi2
  2090 012a 1A46     		mov	r2, r3
- 2091              		.loc 1 384 28
+ 2091              		.loc 1 386 28
  2092 012c 174B     		ldr	r3, .L117+8
  2093 012e 5A62     		str	r2, [r3, #36]
- 385:app/src/fault_injection.c ****     fi_n_injected++;
- 2094              		.loc 1 385 18
+ 387:app/src/fault_injection.c ****     fi_n_injected++;
+ 2094              		.loc 1 387 18
  2095 0130 1D4B     		ldr	r3, .L117+36
  2096 0132 1B68     		ldr	r3, [r3]
  2097 0134 0133     		adds	r3, r3, #1
  2098 0136 1C4A     		ldr	r2, .L117+36
  2099 0138 1360     		str	r3, [r2]
- 386:app/src/fault_injection.c **** 
- 387:app/src/fault_injection.c ****     fi_log.done         = 1;
- 2100              		.loc 1 387 25
- 2101 013a 164B     		ldr	r3, .L117+16
- 2102 013c 0122     		movs	r2, #1
- 2103 013e 5A70     		strb	r2, [r3, #1]
- 388:app/src/fault_injection.c ****     fi_log.reg          = (uint8_t)reg;
- 2104              		.loc 1 388 27
- 2105 0140 069B     		ldr	r3, [sp, #24]
- 2106 0142 DAB2     		uxtb	r2, r3
- 2107              		.loc 1 388 25
- 2108 0144 134B     		ldr	r3, .L117+16
- 2109 0146 9A70     		strb	r2, [r3, #2]
- 389:app/src/fault_injection.c ****     fi_log.bit          = (uint8_t)bit;
- 2110              		.loc 1 389 27
- 2111 0148 059B     		ldr	r3, [sp, #20]
- 2112 014a DAB2     		uxtb	r2, r3
- 2113              		.loc 1 389 25
- 2114 014c 114B     		ldr	r3, .L117+16
- 2115 014e DA70     		strb	r2, [r3, #3]
- 390:app/src/fault_injection.c ****     fi_log.node         = (uint8_t)fi_node_ids[fi_node_idx - 1U];
- 2116              		.loc 1 390 60
- 2117 0150 114B     		ldr	r3, .L117+20
- 2118 0152 1B68     		ldr	r3, [r3]
- 2119 0154 013B     		subs	r3, r3, #1
- 2120              		.loc 1 390 47
- 2121 0156 134A     		ldr	r2, .L117+32
- 2122 0158 D25C     		ldrb	r2, [r2, r3]	@ zero_extendqisi2
- 2123              		.loc 1 390 25
- 2124 015a 0E4B     		ldr	r3, .L117+16
- 2125 015c 1A71     		strb	r2, [r3, #4]
- 391:app/src/fault_injection.c ****     fi_log.abort_cause  = FI_ABORT_NONE;
- 2126              		.loc 1 391 25
- 2127 015e 0D4B     		ldr	r3, .L117+16
- 2128 0160 0022     		movs	r2, #0
- 2129 0162 5A71     		strb	r2, [r3, #5]
- 392:app/src/fault_injection.c **** 
- 393:app/src/fault_injection.c ****     /* Da qui TIM2 fa da watchdog: conta il calcolo dei layer dopo il flip. */
- 394:app/src/fault_injection.c ****     fi_phase = FI_WATCHDOG;
- 2130              		.loc 1 394 14
- 2131 0164 084B     		ldr	r3, .L117+4
- 2132 0166 0222     		movs	r2, #2
- 2133 0168 1A60     		str	r2, [r3]
- 395:app/src/fault_injection.c ****     fi_timer_arm(fi_timeout_ticks);
- 2134              		.loc 1 395 5
- 2135 016a 104B     		ldr	r3, .L117+40
- 2136 016c 1B68     		ldr	r3, [r3]
- 2137 016e 1846     		mov	r0, r3
- 2138 0170 FFF7FEFF 		bl	fi_timer_arm
- 396:app/src/fault_injection.c ****     fi_timer_resume();                           /* siamo dentro un layer */
- 2139              		.loc 1 396 5
- 2140 0174 FFF7FEFF 		bl	fi_timer_resume
- 2141 0178 00E0     		b	.L104
- 2142              	.L116:
- 355:app/src/fault_injection.c ****     }
- 2143              		.loc 1 355 9
- 2144 017a 00BF     		nop
- 2145              	.L104:
- 397:app/src/fault_injection.c **** }
- 2146              		.loc 1 397 1
- 2147 017c 09B0     		add	sp, sp, #36
- 2148              		.cfi_def_cfa_offset 4
- 2149              		@ sp needed
- 2150 017e 5DF804FB 		ldr	pc, [sp], #4
- 2151              	.L118:
- 2152 0182 00BF     		.align	2
- 2153              	.L117:
- 2154 0184 00000000 		.word	DRV_TIM2
- 2155 0188 48000000 		.word	fi_phase
- 2156 018c 00000000 		.word	fi_record
- 2157 0190 00000000 		.word	fi_n_hang
- 2158 0194 00000000 		.word	fi_log
- 2159 0198 58000000 		.word	fi_node_idx
- 2160 019c FCFFFF3F 		.word	1073741820
- 2161 01a0 E3FFFF3F 		.word	1073741795
- 2162 01a4 00000000 		.word	fi_node_ids
- 2163 01a8 00000000 		.word	fi_n_injected
- 2164 01ac 00000000 		.word	fi_timeout_ticks
- 2165              		.cfi_endproc
- 2166              	.LFE474:
- 2168              		.section	.text.fi_fault_dispatch,"ax",%progbits
- 2169              		.align	1
- 2170              		.p2align 4,,15
- 2171              		.global	fi_fault_dispatch
- 2172              		.syntax unified
- 2173              		.thumb
- 2174              		.thumb_func
- 2176              	fi_fault_dispatch:
- 2177              	.LFB475:
- 398:app/src/fault_injection.c **** 
- 399:app/src/fault_injection.c **** /* Fault (BusFault/UsageFault/MemManage escalati a HardFault) durante
- 400:app/src/fault_injection.c ****  * un'inferenza con flip: registra la causa e interrompe l'inferenza. */
- 401:app/src/fault_injection.c **** void fi_fault_dispatch(fi_exc_frame_t *frame, uint32_t exc_ret) {
- 2178              		.loc 1 401 65
- 2179              		.cfi_startproc
- 2180              		@ args = 0, pretend = 0, frame = 16
- 2181              		@ frame_needed = 0, uses_anonymous_args = 0
- 2182 0000 00B5     		push	{lr}
- 2183              		.cfi_def_cfa_offset 4
- 2184              		.cfi_offset 14, -4
- 2185 0002 85B0     		sub	sp, sp, #20
- 2186              		.cfi_def_cfa_offset 24
- 2187 0004 0190     		str	r0, [sp, #4]
- 2188 0006 0091     		str	r1, [sp]
- 402:app/src/fault_injection.c ****     uint32_t cfsr = SCB->CFSR;
- 2189              		.loc 1 402 24
- 2190 0008 184B     		ldr	r3, .L125
- 2191              		.loc 1 402 14
- 2192 000a 9B6A     		ldr	r3, [r3, #40]
- 2193 000c 0393     		str	r3, [sp, #12]
- 403:app/src/fault_injection.c **** 
- 404:app/src/fault_injection.c ****     /* Errori durante il salvataggio/ripristino del frame: frame non affidabile. */
- 405:app/src/fault_injection.c ****     const uint32_t stack_err = (1U << 3) | (1U << 4) | (1U << 5) |      /* MUNSTKERR, MSTKERR, MLSP
- 2194              		.loc 1 405 20
- 2195 000e 43F63803 		movw	r3, #14392
- 2196 0012 0293     		str	r3, [sp, #8]
- 406:app/src/fault_injection.c ****                                (1U << 11) | (1U << 12) | (1U << 13);    /* UNSTKERR, STKERR, LSPERR
- 407:app/src/fault_injection.c **** 
- 408:app/src/fault_injection.c ****     if ((fi_in_inference != 0U) && ((cfsr & stack_err) == 0U)) {
- 2197              		.loc 1 408 26
- 2198 0014 164B     		ldr	r3, .L125+4
- 2199 0016 1B68     		ldr	r3, [r3]
- 2200              		.loc 1 408 8
- 2201 0018 002B     		cmp	r3, #0
- 2202 001a 22D0     		beq	.L120
- 2203              		.loc 1 408 43 discriminator 1
- 2204 001c 039A     		ldr	r2, [sp, #12]
- 2205 001e 029B     		ldr	r3, [sp, #8]
- 2206 0020 1340     		ands	r3, r3, r2
- 2207              		.loc 1 408 33 discriminator 1
- 2208 0022 002B     		cmp	r3, #0
- 2209 0024 1DD1     		bne	.L120
- 409:app/src/fault_injection.c ****         fi_record.abort_cause = FI_ABORT_CRASH;
- 2210              		.loc 1 409 31
- 2211 0026 134B     		ldr	r3, .L125+8
- 2212 0028 0122     		movs	r2, #1
- 2213 002a 9A62     		str	r2, [r3, #40]
- 410:app/src/fault_injection.c ****         fi_record.fault_pc    = frame->pc;
- 2214              		.loc 1 410 38
- 2215 002c 019B     		ldr	r3, [sp, #4]
- 2216 002e 9B69     		ldr	r3, [r3, #24]
- 2217              		.loc 1 410 31
- 2218 0030 104A     		ldr	r2, .L125+8
- 2219 0032 D362     		str	r3, [r2, #44]
- 411:app/src/fault_injection.c **** 
- 412:app/src/fault_injection.c ****         fi_log.abort_cause = FI_ABORT_CRASH;
- 2220              		.loc 1 412 28
- 2221 0034 104B     		ldr	r3, .L125+12
- 2222 0036 0122     		movs	r2, #1
- 2223 0038 5A71     		strb	r2, [r3, #5]
+ 388:app/src/fault_injection.c **** 
+ 389:app/src/fault_injection.c ****     fi_log.done_and_bit = 1 << 7 | (uint8_t)bit;
+ 2100              		.loc 1 389 36
+ 2101 013a 059B     		ldr	r3, [sp, #20]
+ 2102 013c DBB2     		uxtb	r3, r3
+ 2103              		.loc 1 389 25
+ 2104 013e 63F07F03 		orn	r3, r3, #127
+ 2105 0142 DAB2     		uxtb	r2, r3
+ 2106 0144 134B     		ldr	r3, .L117+16
+ 2107 0146 1A70     		strb	r2, [r3]
+ 390:app/src/fault_injection.c ****     fi_log.reg          = (uint8_t)reg;
+ 2108              		.loc 1 390 27
+ 2109 0148 069B     		ldr	r3, [sp, #24]
+ 2110 014a DAB2     		uxtb	r2, r3
+ 2111              		.loc 1 390 25
+ 2112 014c 114B     		ldr	r3, .L117+16
+ 2113 014e 5A70     		strb	r2, [r3, #1]
+ 391:app/src/fault_injection.c ****     fi_log.node         = (uint8_t)fi_node_ids[fi_node_idx - 1U];
+ 2114              		.loc 1 391 60
+ 2115 0150 114B     		ldr	r3, .L117+20
+ 2116 0152 1B68     		ldr	r3, [r3]
+ 2117 0154 013B     		subs	r3, r3, #1
+ 2118              		.loc 1 391 47
+ 2119 0156 134A     		ldr	r2, .L117+32
+ 2120 0158 D25C     		ldrb	r2, [r2, r3]	@ zero_extendqisi2
+ 2121              		.loc 1 391 25
+ 2122 015a 0E4B     		ldr	r3, .L117+16
+ 2123 015c 9A70     		strb	r2, [r3, #2]
+ 392:app/src/fault_injection.c ****     fi_log.abort_cause  = FI_ABORT_NONE;
+ 2124              		.loc 1 392 25
+ 2125 015e 0D4B     		ldr	r3, .L117+16
+ 2126 0160 0022     		movs	r2, #0
+ 2127 0162 DA70     		strb	r2, [r3, #3]
+ 393:app/src/fault_injection.c **** 
+ 394:app/src/fault_injection.c **** 
+ 395:app/src/fault_injection.c ****     /* Da qui TIM2 fa da watchdog: conta il calcolo dei layer dopo il flip. */
+ 396:app/src/fault_injection.c ****     fi_phase = FI_WATCHDOG;
+ 2128              		.loc 1 396 14
+ 2129 0164 084B     		ldr	r3, .L117+4
+ 2130 0166 0222     		movs	r2, #2
+ 2131 0168 1A60     		str	r2, [r3]
+ 397:app/src/fault_injection.c ****     fi_timer_arm(fi_timeout_ticks);
+ 2132              		.loc 1 397 5
+ 2133 016a 104B     		ldr	r3, .L117+40
+ 2134 016c 1B68     		ldr	r3, [r3]
+ 2135 016e 1846     		mov	r0, r3
+ 2136 0170 FFF7FEFF 		bl	fi_timer_arm
+ 398:app/src/fault_injection.c ****     fi_timer_resume();                           /* siamo dentro un layer */
+ 2137              		.loc 1 398 5
+ 2138 0174 FFF7FEFF 		bl	fi_timer_resume
+ 2139 0178 00E0     		b	.L104
+ 2140              	.L116:
+ 357:app/src/fault_injection.c ****     }
+ 2141              		.loc 1 357 9
+ 2142 017a 00BF     		nop
+ 2143              	.L104:
+ 399:app/src/fault_injection.c **** }
+ 2144              		.loc 1 399 1
+ 2145 017c 09B0     		add	sp, sp, #36
+ 2146              		.cfi_def_cfa_offset 4
+ 2147              		@ sp needed
+ 2148 017e 5DF804FB 		ldr	pc, [sp], #4
+ 2149              	.L118:
+ 2150 0182 00BF     		.align	2
+ 2151              	.L117:
+ 2152 0184 00000000 		.word	DRV_TIM2
+ 2153 0188 44000000 		.word	fi_phase
+ 2154 018c 00000000 		.word	fi_record
+ 2155 0190 00000000 		.word	fi_n_hang
+ 2156 0194 00000000 		.word	fi_log
+ 2157 0198 54000000 		.word	fi_node_idx
+ 2158 019c FCFFFF3F 		.word	1073741820
+ 2159 01a0 E3FFFF3F 		.word	1073741795
+ 2160 01a4 00000000 		.word	fi_node_ids
+ 2161 01a8 00000000 		.word	fi_n_injected
+ 2162 01ac 00000000 		.word	fi_timeout_ticks
+ 2163              		.cfi_endproc
+ 2164              	.LFE477:
+ 2166              		.section	.text.fi_fault_dispatch,"ax",%progbits
+ 2167              		.align	1
+ 2168              		.p2align 4,,15
+ 2169              		.global	fi_fault_dispatch
+ 2170              		.syntax unified
+ 2171              		.thumb
+ 2172              		.thumb_func
+ 2174              	fi_fault_dispatch:
+ 2175              	.LFB478:
+ 400:app/src/fault_injection.c **** 
+ 401:app/src/fault_injection.c **** /* Fault (BusFault/UsageFault/MemManage escalati a HardFault) durante
+ 402:app/src/fault_injection.c ****  * un'inferenza con flip: registra la causa e interrompe l'inferenza. */
+ 403:app/src/fault_injection.c **** void fi_fault_dispatch(fi_exc_frame_t *frame, uint32_t exc_ret) {
+ 2176              		.loc 1 403 65
+ 2177              		.cfi_startproc
+ 2178              		@ args = 0, pretend = 0, frame = 16
+ 2179              		@ frame_needed = 0, uses_anonymous_args = 0
+ 2180 0000 00B5     		push	{lr}
+ 2181              		.cfi_def_cfa_offset 4
+ 2182              		.cfi_offset 14, -4
+ 2183 0002 85B0     		sub	sp, sp, #20
+ 2184              		.cfi_def_cfa_offset 24
+ 2185 0004 0190     		str	r0, [sp, #4]
+ 2186 0006 0091     		str	r1, [sp]
+ 404:app/src/fault_injection.c ****     uint32_t cfsr = SCB->CFSR;
+ 2187              		.loc 1 404 24
+ 2188 0008 184B     		ldr	r3, .L125
+ 2189              		.loc 1 404 14
+ 2190 000a 9B6A     		ldr	r3, [r3, #40]
+ 2191 000c 0393     		str	r3, [sp, #12]
+ 405:app/src/fault_injection.c **** 
+ 406:app/src/fault_injection.c ****     /* Errori durante il salvataggio/ripristino del frame: frame non affidabile. */
+ 407:app/src/fault_injection.c ****     const uint32_t stack_err = (1U << 3) | (1U << 4) | (1U << 5) |      /* MUNSTKERR, MSTKERR, MLSP
+ 2192              		.loc 1 407 20
+ 2193 000e 43F63803 		movw	r3, #14392
+ 2194 0012 0293     		str	r3, [sp, #8]
+ 408:app/src/fault_injection.c ****                                (1U << 11) | (1U << 12) | (1U << 13);    /* UNSTKERR, STKERR, LSPERR
+ 409:app/src/fault_injection.c **** 
+ 410:app/src/fault_injection.c ****     if ((fi_in_inference != 0U) && ((cfsr & stack_err) == 0U)) {
+ 2195              		.loc 1 410 26
+ 2196 0014 164B     		ldr	r3, .L125+4
+ 2197 0016 1B68     		ldr	r3, [r3]
+ 2198              		.loc 1 410 8
+ 2199 0018 002B     		cmp	r3, #0
+ 2200 001a 22D0     		beq	.L120
+ 2201              		.loc 1 410 43 discriminator 1
+ 2202 001c 039A     		ldr	r2, [sp, #12]
+ 2203 001e 029B     		ldr	r3, [sp, #8]
+ 2204 0020 1340     		ands	r3, r3, r2
+ 2205              		.loc 1 410 33 discriminator 1
+ 2206 0022 002B     		cmp	r3, #0
+ 2207 0024 1DD1     		bne	.L120
+ 411:app/src/fault_injection.c ****         fi_record.abort_cause = FI_ABORT_CRASH;
+ 2208              		.loc 1 411 31
+ 2209 0026 134B     		ldr	r3, .L125+8
+ 2210 0028 0122     		movs	r2, #1
+ 2211 002a 9A62     		str	r2, [r3, #40]
+ 412:app/src/fault_injection.c ****         fi_record.fault_pc    = frame->pc;
+ 2212              		.loc 1 412 38
+ 2213 002c 019B     		ldr	r3, [sp, #4]
+ 2214 002e 9B69     		ldr	r3, [r3, #24]
+ 2215              		.loc 1 412 31
+ 2216 0030 104A     		ldr	r2, .L125+8
+ 2217 0032 D362     		str	r3, [r2, #44]
  413:app/src/fault_injection.c **** 
- 414:app/src/fault_injection.c ****         SCB->CFSR = cfsr;                        /* azzera i flag per il prossimo fault */
- 2224              		.loc 1 414 12
- 2225 003a 0C4A     		ldr	r2, .L125
- 2226              		.loc 1 414 19
- 2227 003c 039B     		ldr	r3, [sp, #12]
- 2228 003e 9362     		str	r3, [r2, #40]
- 415:app/src/fault_injection.c ****         SCB->HFSR = SCB->HFSR;
- 2229              		.loc 1 415 24
- 2230 0040 0A4B     		ldr	r3, .L125
- 2231              		.loc 1 415 12
- 2232 0042 0A4A     		ldr	r2, .L125
- 2233              		.loc 1 415 24
- 2234 0044 DB6A     		ldr	r3, [r3, #44]
- 2235              		.loc 1 415 19
- 2236 0046 D362     		str	r3, [r2, #44]
- 416:app/src/fault_injection.c ****         fi_n_crash++;
- 2237              		.loc 1 416 19
- 2238 0048 0C4B     		ldr	r3, .L125+16
- 2239 004a 1B68     		ldr	r3, [r3]
- 2240 004c 0133     		adds	r3, r3, #1
- 2241 004e 0B4A     		ldr	r2, .L125+16
- 2242 0050 1360     		str	r3, [r2]
- 417:app/src/fault_injection.c ****         if (fi_abort(frame, exc_ret) != 0U) {
- 2243              		.loc 1 417 13
- 2244 0052 0099     		ldr	r1, [sp]
- 2245 0054 0198     		ldr	r0, [sp, #4]
- 2246 0056 FFF7FEFF 		bl	fi_abort
- 2247 005a 0346     		mov	r3, r0
- 2248              		.loc 1 417 12 discriminator 1
- 2249 005c 002B     		cmp	r3, #0
- 2250 005e 00D0     		beq	.L120
- 418:app/src/fault_injection.c ****             return;                              /* ritorno dall'eccezione -> fi_abort_to_wrapper *
- 2251              		.loc 1 418 13
- 2252 0060 00E0     		b	.L123
- 2253              	.L124:
- 2254              	.L120:
- 419:app/src/fault_injection.c ****         }
- 420:app/src/fault_injection.c ****     }
- 421:app/src/fault_injection.c ****     for (;;) {                                   /* fault non recuperabile: come prima */
- 2255              		.loc 1 421 5
- 2256 0062 FEE7     		b	.L124
- 2257              	.L123:
+ 414:app/src/fault_injection.c ****         fi_log.abort_cause = FI_ABORT_CRASH;
+ 2218              		.loc 1 414 28
+ 2219 0034 104B     		ldr	r3, .L125+12
+ 2220 0036 0122     		movs	r2, #1
+ 2221 0038 DA70     		strb	r2, [r3, #3]
+ 415:app/src/fault_injection.c **** 
+ 416:app/src/fault_injection.c ****         SCB->CFSR = cfsr;                        /* azzera i flag per il prossimo fault */
+ 2222              		.loc 1 416 12
+ 2223 003a 0C4A     		ldr	r2, .L125
+ 2224              		.loc 1 416 19
+ 2225 003c 039B     		ldr	r3, [sp, #12]
+ 2226 003e 9362     		str	r3, [r2, #40]
+ 417:app/src/fault_injection.c ****         SCB->HFSR = SCB->HFSR;
+ 2227              		.loc 1 417 24
+ 2228 0040 0A4B     		ldr	r3, .L125
+ 2229              		.loc 1 417 12
+ 2230 0042 0A4A     		ldr	r2, .L125
+ 2231              		.loc 1 417 24
+ 2232 0044 DB6A     		ldr	r3, [r3, #44]
+ 2233              		.loc 1 417 19
+ 2234 0046 D362     		str	r3, [r2, #44]
+ 418:app/src/fault_injection.c ****         fi_n_crash++;
+ 2235              		.loc 1 418 19
+ 2236 0048 0C4B     		ldr	r3, .L125+16
+ 2237 004a 1B68     		ldr	r3, [r3]
+ 2238 004c 0133     		adds	r3, r3, #1
+ 2239 004e 0B4A     		ldr	r2, .L125+16
+ 2240 0050 1360     		str	r3, [r2]
+ 419:app/src/fault_injection.c ****         if (fi_abort(frame, exc_ret) != 0U) {
+ 2241              		.loc 1 419 13
+ 2242 0052 0099     		ldr	r1, [sp]
+ 2243 0054 0198     		ldr	r0, [sp, #4]
+ 2244 0056 FFF7FEFF 		bl	fi_abort
+ 2245 005a 0346     		mov	r3, r0
+ 2246              		.loc 1 419 12 discriminator 1
+ 2247 005c 002B     		cmp	r3, #0
+ 2248 005e 00D0     		beq	.L120
+ 420:app/src/fault_injection.c ****             return;                              /* ritorno dall'eccezione -> fi_abort_to_wrapper *
+ 2249              		.loc 1 420 13
+ 2250 0060 00E0     		b	.L123
+ 2251              	.L124:
+ 2252              	.L120:
+ 421:app/src/fault_injection.c ****         }
  422:app/src/fault_injection.c ****     }
- 423:app/src/fault_injection.c **** }
- 2258              		.loc 1 423 1
- 2259 0064 05B0     		add	sp, sp, #20
- 2260              		.cfi_def_cfa_offset 4
- 2261              		@ sp needed
- 2262 0066 5DF804FB 		ldr	pc, [sp], #4
- 2263              	.L126:
- 2264 006a 00BF     		.align	2
- 2265              	.L125:
- 2266 006c 00ED00E0 		.word	-536810240
- 2267 0070 00000000 		.word	fi_in_inference
- 2268 0074 00000000 		.word	fi_record
- 2269 0078 00000000 		.word	fi_log
- 2270 007c 00000000 		.word	fi_n_crash
- 2271              		.cfi_endproc
- 2272              	.LFE475:
- 2274              		.section	.text.HardFault_Handler,"ax",%progbits
- 2275              		.align	1
- 2276              		.p2align 4,,15
- 2277              		.global	HardFault_Handler
- 2278              		.syntax unified
- 2279              		.thumb
- 2280              		.thumb_func
- 2282              	HardFault_Handler:
- 2283              	.LFB476:
- 424:app/src/fault_injection.c **** 
- 425:app/src/fault_injection.c **** __attribute__((naked)) void HardFault_Handler(void) {
- 2284              		.loc 1 425 53
- 2285              		.cfi_startproc
- 2286              		@ Naked Function: prologue and epilogue provided by programmer.
- 2287              		@ args = 0, pretend = 0, frame = 0
- 2288              		@ frame_needed = 0, uses_anonymous_args = 0
- 426:app/src/fault_injection.c ****     __asm volatile (
- 2289              		.loc 1 426 5
- 2290              		.syntax unified
- 2291              	@ 426 "app/src/fault_injection.c" 1
- 2292 0000 1EF0040F 		TST    LR, #4          
- 2293 0004 0CBF     	ITE    EQ              
- 2294 0006 EFF30880 	MRSEQ  R0, MSP         
- 2295 000a EFF30980 	MRSNE  R0, PSP         
- 2296 000e 7146     	MOV    R1, LR          
- 2297 0010 FFF7FEBF 	B      fi_fault_dispatch 
- 2298              	
- 2299              	@ 0 "" 2
- 427:app/src/fault_injection.c ****         "TST    LR, #4          \n"   /* fault in codice su MSP o PSP?    */
- 428:app/src/fault_injection.c ****         "ITE    EQ              \n"
- 429:app/src/fault_injection.c ****         "MRSEQ  R0, MSP         \n"   /* R0 = frame HW                    */
- 430:app/src/fault_injection.c ****         "MRSNE  R0, PSP         \n"
- 431:app/src/fault_injection.c ****         "MOV    R1, LR          \n"   /* R1 = EXC_RETURN                  */
- 432:app/src/fault_injection.c ****         "B      fi_fault_dispatch \n" /* il suo return fa da ritorno dall'eccezione */
- 433:app/src/fault_injection.c ****     );
- 434:app/src/fault_injection.c **** }
- 2300              		.loc 1 434 1
- 2301              		.thumb
- 2302              		.syntax unified
- 2303 0014 00BF     		nop
- 2304              		.cfi_endproc
- 2305              	.LFE476:
- 2307 0016 00BF     		.section	.text.VectorB0,"ax",%progbits
- 2308              		.align	1
- 2309              		.p2align 4,,15
- 2310              		.global	VectorB0
- 2311              		.syntax unified
- 2312              		.thumb
- 2313              		.thumb_func
- 2315              	VectorB0:
- 2316              	.LFB477:
- 435:app/src/fault_injection.c **** 
- 436:app/src/fault_injection.c **** /* TIM2 IRQ: save all registers, call the dispatcher, restore all registers
- 437:app/src/fault_injection.c ****  * (one of them has the bit flip). */
- 438:app/src/fault_injection.c **** __attribute__((naked)) void IRQ_TIM2_HANDLER(void) {
- 2317              		.loc 1 438 52
- 2318              		.cfi_startproc
- 2319              		@ Naked Function: prologue and epilogue provided by programmer.
- 2320              		@ args = 0, pretend = 0, frame = 0
- 2321              		@ frame_needed = 0, uses_anonymous_args = 0
- 439:app/src/fault_injection.c ****     __asm volatile (
- 2322              		.loc 1 439 5
- 2323              		.syntax unified
- 2324              	@ 439 "app/src/fault_injection.c" 1
- 2325 0000 1EF0040F 		TST    LR, #4          
- 2326 0004 0CBF     	ITE    EQ              
- 2327 0006 EFF30880 	MRSEQ  R0, MSP         
- 2328 000a EFF30980 	MRSNE  R0, PSP         
- 2329 000e 2DE9F00F 	PUSH   {R4-R11}        
- 2330 0012 6946     	MOV    R1, SP          
- 2331 0014 2DED108A 	VPUSH  {S16-S31}       
- 2332 0018 6B46     	MOV    R3, SP          
- 2333 001a 7246     	MOV    R2, LR          
- 2334 001c 10B5     	PUSH   {R4, LR}        
- 2335 001e FFF7FEFF 	BL     fi_dispatch     
- 2336 0022 BDE81040 	POP    {R4, LR}        
- 2337 0026 BDEC108A 	VPOP	{S16-S31}		
- 2338 002a BDE8F00F 	POP    {R4-R11}        
- 2339 002e 7047     	BX     LR              
- 2340              	
- 2341              	@ 0 "" 2
- 440:app/src/fault_injection.c ****         "TST    LR, #4          \n"   /* Interrupted thread on MSP or PSP?  */
- 441:app/src/fault_injection.c ****         "ITE    EQ              \n"
- 442:app/src/fault_injection.c ****         "MRSEQ  R0, MSP         \n"   /* R0 = frame HW                    */
- 443:app/src/fault_injection.c ****         "MRSNE  R0, PSP         \n"
- 444:app/src/fault_injection.c ****         "PUSH   {R4-R11}        \n"   /* R4..R11 copy */
- 445:app/src/fault_injection.c ****         "MOV    R1, SP          \n"   /* R1 = address of R4..R11 copy */
- 446:app/src/fault_injection.c ****     	"VPUSH  {S16-S31}       \n"   /* S16..S31 copy */
- 447:app/src/fault_injection.c ****     	"MOV    R3, SP          \n"   /* R3 = address of S16..S31 copy */
- 448:app/src/fault_injection.c ****         "MOV    R2, LR          \n"   /* R2 = EXC_RETURN                  */
- 449:app/src/fault_injection.c ****         "PUSH   {R4, LR}        \n"   /* save EXC_RETURN (R4 is just for align SP to 8 byte)  */
- 450:app/src/fault_injection.c ****         "BL     fi_dispatch     \n"	  /* fi_dispatch(frame, r4_r11, exc_ret, s16_31)*/
- 451:app/src/fault_injection.c ****         "POP    {R4, LR}        \n"
- 452:app/src/fault_injection.c ****     	"VPOP	{S16-S31}		\n"	  /* reload S16..S31 from copy */
- 453:app/src/fault_injection.c ****         "POP    {R4-R11}        \n"   /* reload R4..R11 from copy */
- 454:app/src/fault_injection.c ****         "BX     LR              \n"   /* the HW reload R0-R3, R12, S0-S15, FPSCR from frame */
- 455:app/src/fault_injection.c ****     );
- 456:app/src/fault_injection.c **** }
- 2342              		.loc 1 456 1
- 2343              		.thumb
- 2344              		.syntax unified
- 2345 0030 00BF     		nop
- 2346              		.cfi_endproc
- 2347              	.LFE477:
- 2349 0032 00BF     		.text
- 2350              	.Letext0:
- 2351              		.file 4 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
- 2352              		.file 5 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
- 2353              		.file 6 "app/inc/fault_injection.h"
- 2354              		.file 7 "C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Platform/CMSIS/Core/Include/core_cm7
- 2355              		.file 8 "C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Platform/MCU/include/sr5e1/SR5E1_TIM
- 2356              		.file 9 "C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/TIM/include/tim.h"
- 2357              		.file 10 "C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/TIM/include/sr5e1/ti
- 2358              		.file 11 "SR5E1_AI_Demo_7000P/lib/ai/inc/stai.h"
- 2359              		.file 12 "SR5E1_AI_Demo_7000P/lib/ai/inc/stai_events.h"
- 2360              		.file 13 "SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.h"
- 2361              		.file 14 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/in
- 2362              		.file 15 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/in
- 2363              		.file 16 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/in
+ 423:app/src/fault_injection.c ****     for (;;) {                                   /* fault non recuperabile: come prima */
+ 2253              		.loc 1 423 5
+ 2254 0062 FEE7     		b	.L124
+ 2255              	.L123:
+ 424:app/src/fault_injection.c ****     }
+ 425:app/src/fault_injection.c **** }
+ 2256              		.loc 1 425 1
+ 2257 0064 05B0     		add	sp, sp, #20
+ 2258              		.cfi_def_cfa_offset 4
+ 2259              		@ sp needed
+ 2260 0066 5DF804FB 		ldr	pc, [sp], #4
+ 2261              	.L126:
+ 2262 006a 00BF     		.align	2
+ 2263              	.L125:
+ 2264 006c 00ED00E0 		.word	-536810240
+ 2265 0070 00000000 		.word	fi_in_inference
+ 2266 0074 00000000 		.word	fi_record
+ 2267 0078 00000000 		.word	fi_log
+ 2268 007c 00000000 		.word	fi_n_crash
+ 2269              		.cfi_endproc
+ 2270              	.LFE478:
+ 2272              		.section	.text.HardFault_Handler,"ax",%progbits
+ 2273              		.align	1
+ 2274              		.p2align 4,,15
+ 2275              		.global	HardFault_Handler
+ 2276              		.syntax unified
+ 2277              		.thumb
+ 2278              		.thumb_func
+ 2280              	HardFault_Handler:
+ 2281              	.LFB479:
+ 426:app/src/fault_injection.c **** 
+ 427:app/src/fault_injection.c **** __attribute__((naked)) void HardFault_Handler(void) {
+ 2282              		.loc 1 427 53
+ 2283              		.cfi_startproc
+ 2284              		@ Naked Function: prologue and epilogue provided by programmer.
+ 2285              		@ args = 0, pretend = 0, frame = 0
+ 2286              		@ frame_needed = 0, uses_anonymous_args = 0
+ 428:app/src/fault_injection.c ****     __asm volatile (
+ 2287              		.loc 1 428 5
+ 2288              		.syntax unified
+ 2289              	@ 428 "app/src/fault_injection.c" 1
+ 2290 0000 1EF0040F 		TST    LR, #4          
+ 2291 0004 0CBF     	ITE    EQ              
+ 2292 0006 EFF30880 	MRSEQ  R0, MSP         
+ 2293 000a EFF30980 	MRSNE  R0, PSP         
+ 2294 000e 7146     	MOV    R1, LR          
+ 2295 0010 FFF7FEBF 	B      fi_fault_dispatch 
+ 2296              	
+ 2297              	@ 0 "" 2
+ 429:app/src/fault_injection.c ****         "TST    LR, #4          \n"   /* fault in codice su MSP o PSP?    */
+ 430:app/src/fault_injection.c ****         "ITE    EQ              \n"
+ 431:app/src/fault_injection.c ****         "MRSEQ  R0, MSP         \n"   /* R0 = frame HW                    */
+ 432:app/src/fault_injection.c ****         "MRSNE  R0, PSP         \n"
+ 433:app/src/fault_injection.c ****         "MOV    R1, LR          \n"   /* R1 = EXC_RETURN                  */
+ 434:app/src/fault_injection.c ****         "B      fi_fault_dispatch \n" /* il suo return fa da ritorno dall'eccezione */
+ 435:app/src/fault_injection.c ****     );
+ 436:app/src/fault_injection.c **** }
+ 2298              		.loc 1 436 1
+ 2299              		.thumb
+ 2300              		.syntax unified
+ 2301 0014 00BF     		nop
+ 2302              		.cfi_endproc
+ 2303              	.LFE479:
+ 2305 0016 00BF     		.section	.text.VectorB0,"ax",%progbits
+ 2306              		.align	1
+ 2307              		.p2align 4,,15
+ 2308              		.global	VectorB0
+ 2309              		.syntax unified
+ 2310              		.thumb
+ 2311              		.thumb_func
+ 2313              	VectorB0:
+ 2314              	.LFB480:
+ 437:app/src/fault_injection.c **** 
+ 438:app/src/fault_injection.c **** /* TIM2 IRQ: save all registers, call the dispatcher, restore all registers
+ 439:app/src/fault_injection.c ****  * (one of them has the bit flip). */
+ 440:app/src/fault_injection.c **** __attribute__((naked)) void IRQ_TIM2_HANDLER(void) {
+ 2315              		.loc 1 440 52
+ 2316              		.cfi_startproc
+ 2317              		@ Naked Function: prologue and epilogue provided by programmer.
+ 2318              		@ args = 0, pretend = 0, frame = 0
+ 2319              		@ frame_needed = 0, uses_anonymous_args = 0
+ 441:app/src/fault_injection.c ****     __asm volatile (
+ 2320              		.loc 1 441 5
+ 2321              		.syntax unified
+ 2322              	@ 441 "app/src/fault_injection.c" 1
+ 2323 0000 1EF0040F 		TST    LR, #4          
+ 2324 0004 0CBF     	ITE    EQ              
+ 2325 0006 EFF30880 	MRSEQ  R0, MSP         
+ 2326 000a EFF30980 	MRSNE  R0, PSP         
+ 2327 000e 2DE9F00F 	PUSH   {R4-R11}        
+ 2328 0012 6946     	MOV    R1, SP          
+ 2329 0014 2DED108A 	VPUSH  {S16-S31}       
+ 2330 0018 6B46     	MOV    R3, SP          
+ 2331 001a 7246     	MOV    R2, LR          
+ 2332 001c 10B5     	PUSH   {R4, LR}        
+ 2333 001e FFF7FEFF 	BL     fi_dispatch     
+ 2334 0022 BDE81040 	POP    {R4, LR}        
+ 2335 0026 BDEC108A 	VPOP	{S16-S31}		
+ 2336 002a BDE8F00F 	POP    {R4-R11}        
+ 2337 002e 7047     	BX     LR              
+ 2338              	
+ 2339              	@ 0 "" 2
+ 442:app/src/fault_injection.c ****         "TST    LR, #4          \n"   /* Interrupted thread on MSP or PSP?  */
+ 443:app/src/fault_injection.c ****         "ITE    EQ              \n"
+ 444:app/src/fault_injection.c ****         "MRSEQ  R0, MSP         \n"   /* R0 = frame HW                    */
+ 445:app/src/fault_injection.c ****         "MRSNE  R0, PSP         \n"
+ 446:app/src/fault_injection.c ****         "PUSH   {R4-R11}        \n"   /* R4..R11 copy */
+ 447:app/src/fault_injection.c ****         "MOV    R1, SP          \n"   /* R1 = address of R4..R11 copy */
+ 448:app/src/fault_injection.c ****     	"VPUSH  {S16-S31}       \n"   /* S16..S31 copy */
+ 449:app/src/fault_injection.c ****     	"MOV    R3, SP          \n"   /* R3 = address of S16..S31 copy */
+ 450:app/src/fault_injection.c ****         "MOV    R2, LR          \n"   /* R2 = EXC_RETURN                  */
+ 451:app/src/fault_injection.c ****         "PUSH   {R4, LR}        \n"   /* save EXC_RETURN (R4 is just for align SP to 8 byte)  */
+ 452:app/src/fault_injection.c ****         "BL     fi_dispatch     \n"	  /* fi_dispatch(frame, r4_r11, exc_ret, s16_31)*/
+ 453:app/src/fault_injection.c ****         "POP    {R4, LR}        \n"
+ 454:app/src/fault_injection.c ****     	"VPOP	{S16-S31}		\n"	  /* reload S16..S31 from copy */
+ 455:app/src/fault_injection.c ****         "POP    {R4-R11}        \n"   /* reload R4..R11 from copy */
+ 456:app/src/fault_injection.c ****         "BX     LR              \n"   /* the HW reload R0-R3, R12, S0-S15, FPSCR from frame */
+ 457:app/src/fault_injection.c ****     );
+ 458:app/src/fault_injection.c **** }
+ 2340              		.loc 1 458 1
+ 2341              		.thumb
+ 2342              		.syntax unified
+ 2343 0030 00BF     		nop
+ 2344              		.cfi_endproc
+ 2345              	.LFE480:
+ 2347 0032 00BF     		.text
+ 2348              	.Letext0:
+ 2349              		.file 4 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
+ 2350              		.file 5 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
+ 2351              		.file 6 "app/inc/fault_injection.h"
+ 2352              		.file 7 "C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Platform/CMSIS/Core/Include/core_cm7
+ 2353              		.file 8 "C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Platform/MCU/include/sr5e1/SR5E1_TIM
+ 2354              		.file 9 "C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/TIM/include/tim.h"
+ 2355              		.file 10 "C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Timers/TIM/include/sr5e1/ti
+ 2356              		.file 11 "SR5E1_AI_Demo_7000P/lib/ai/inc/stai.h"
+ 2357              		.file 12 "SR5E1_AI_Demo_7000P/lib/ai/inc/stai_events.h"
+ 2358              		.file 13 "SR5E1_AI_Demo_7000P/cfg/app_stellar-studio-ai.h"
+ 2359              		.file 14 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/in
+ 2360              		.file 15 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/in
+ 2361              		.file 16 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/in
 DEFINED SYMBOLS
                             *ABS*:00000000 fault_injection.c
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:20     .text.ARM_MPU_ClrRegion:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:26     .text.ARM_MPU_ClrRegion:00000000 ARM_MPU_ClrRegion
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:56     .text.ARM_MPU_ClrRegion:00000018 $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:61     .text.ARM_MPU_SetRegion:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:67     .text.ARM_MPU_SetRegion:00000000 ARM_MPU_SetRegion
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:97     .text.ARM_MPU_SetRegion:00000018 $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:102    .bss.fi_act:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:105    .bss.fi_act:00000000 fi_act
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:108    .rodata.fi_node_ids:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:111    .rodata.fi_node_ids:00000000 fi_node_ids
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:118    .dtcm:00000000 fi_record
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:115    .dtcm:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:124    .dtcm:00000030 fi_log
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:130    .dtcm:0000003c fi_n_injected
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:136    .dtcm:00000040 fi_n_crash
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:142    .dtcm:00000044 fi_n_hang
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:147    .dtcm:00000048 fi_phase
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:152    .dtcm:0000004c xs_state
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:157    .dtcm:00000050 fi_sp_top
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:163    .dtcm:00000054 fi_in_inference
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:168    .dtcm:00000058 fi_node_idx
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:174    .dtcm:0000005c fi_n_runs
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:177    .bss.fi_layers_ticks:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:180    .bss.fi_layers_ticks:00000000 fi_layers_ticks
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:183    .bss.fi_timeout_ticks:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:186    .bss.fi_timeout_ticks:00000000 fi_timeout_ticks
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:189    .bss.fi_jmp:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:192    .bss.fi_jmp:00000000 fi_jmp
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:195    .bss.fi_stops_done:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:198    .bss.fi_stops_done:00000000 fi_stops_done
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:201    .bss.fi_user_cb:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:204    .bss.fi_user_cb:00000000 fi_user_cb
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:207    .bss.fi_user_cookie:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:210    .bss.fi_user_cookie:00000000 fi_user_cookie
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:213    .text.xorshift32:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:219    .text.xorshift32:00000000 xorshift32
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:279    .text.xorshift32:00000044 $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:285    .text.fi_mpu_cover:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:291    .text.fi_mpu_cover:00000000 fi_mpu_cover
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:507    .text.fi_mpu_cover:00000140 $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:512    .text.fi_mpu_cover_rw2:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:518    .text.fi_mpu_cover_rw2:00000000 fi_mpu_cover_rw2
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:617    .text.fi_mpu_init:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:623    .text.fi_mpu_init:00000000 fi_mpu_init
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:733    .text.fi_mpu_init:00000098 $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:744    .text.fi_mpu_on:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:750    .text.fi_mpu_on:00000000 fi_mpu_on
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:881    .text.fi_mpu_on:00000070 $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:890    .text.fi_mpu_off:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:896    .text.fi_mpu_off:00000000 fi_mpu_off
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:961    .text.fi_mpu_off:00000028 $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:966    .text.fi_timer_pause:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:972    .text.fi_timer_pause:00000000 fi_timer_pause
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:992    .text.fi_timer_pause:00000010 $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:997    .text.fi_timer_resume:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1003   .text.fi_timer_resume:00000000 fi_timer_resume
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1023   .text.fi_timer_resume:00000010 $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1028   .text.fi_timer_arm:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1034   .text.fi_timer_arm:00000000 fi_timer_arm
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1074   .text.fi_timer_arm:00000028 $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1079   .text.FI_Init:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1086   .text.FI_Init:00000000 FI_Init
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1157   .text.FI_Init:00000070 $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1167   .text.fi_event_cb:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1173   .text.fi_event_cb:00000000 fi_event_cb
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1297   .text.fi_event_cb:00000098 $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1306   .text.__wrap_stai_mnetwork_set_callback:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1313   .text.__wrap_stai_mnetwork_set_callback:00000000 __wrap_stai_mnetwork_set_callback
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1365   .text.__wrap_stai_mnetwork_set_callback:00000040 $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1373   .text.fi_send_event:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1379   .text.fi_send_event:00000000 fi_send_event
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1430   .text.fi_send_event:00000038 $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1437   .text.fi_complete_events:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1443   .text.fi_complete_events:00000000 fi_complete_events
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1523   .text.fi_complete_events:00000064 $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1529   .text.__wrap_stai_mnetwork_run:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1536   .text.__wrap_stai_mnetwork_run:00000000 __wrap_stai_mnetwork_run
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1755   .text.__wrap_stai_mnetwork_run:00000130 $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1771   .text.fi_abort_to_wrapper:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1777   .text.fi_abort_to_wrapper:00000000 fi_abort_to_wrapper
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1794   .text.fi_abort_to_wrapper:0000000c $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1799   .text.fi_abort:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1805   .text.fi_abort:00000000 fi_abort
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1872   .text.fi_abort:00000050 $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1879   .text.fi_dispatch:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:1886   .text.fi_dispatch:00000000 fi_dispatch
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:2154   .text.fi_dispatch:00000184 $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:2169   .text.fi_fault_dispatch:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:2176   .text.fi_fault_dispatch:00000000 fi_fault_dispatch
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:2266   .text.fi_fault_dispatch:0000006c $d
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:2275   .text.HardFault_Handler:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:2282   .text.HardFault_Handler:00000000 HardFault_Handler
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:2308   .text.VectorB0:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:2315   .text.VectorB0:00000000 VectorB0
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:20     .text.ARM_MPU_ClrRegion:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:26     .text.ARM_MPU_ClrRegion:00000000 ARM_MPU_ClrRegion
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:56     .text.ARM_MPU_ClrRegion:00000018 $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:61     .text.ARM_MPU_SetRegion:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:67     .text.ARM_MPU_SetRegion:00000000 ARM_MPU_SetRegion
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:97     .text.ARM_MPU_SetRegion:00000018 $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:102    .bss.fi_act:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:105    .bss.fi_act:00000000 fi_act
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:108    .rodata.fi_node_ids:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:111    .rodata.fi_node_ids:00000000 fi_node_ids
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:118    .dtcm:00000000 fi_record
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:115    .dtcm:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:124    .dtcm:00000030 fi_log
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:130    .dtcm:00000038 fi_n_injected
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:136    .dtcm:0000003c fi_n_crash
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:142    .dtcm:00000040 fi_n_hang
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:147    .dtcm:00000044 fi_phase
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:152    .dtcm:00000048 xs_state
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:157    .dtcm:0000004c fi_sp_top
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:163    .dtcm:00000050 fi_in_inference
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:168    .dtcm:00000054 fi_node_idx
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:174    .dtcm:00000058 fi_n_runs
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:177    .bss.fi_layers_ticks:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:180    .bss.fi_layers_ticks:00000000 fi_layers_ticks
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:183    .bss.fi_timeout_ticks:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:186    .bss.fi_timeout_ticks:00000000 fi_timeout_ticks
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:189    .bss.fi_jmp:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:192    .bss.fi_jmp:00000000 fi_jmp
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:195    .bss.fi_stops_done:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:198    .bss.fi_stops_done:00000000 fi_stops_done
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:201    .bss.fi_user_cb:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:204    .bss.fi_user_cb:00000000 fi_user_cb
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:207    .bss.fi_user_cookie:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:210    .bss.fi_user_cookie:00000000 fi_user_cookie
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:213    .text.xorshift32:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:219    .text.xorshift32:00000000 xorshift32
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:279    .text.xorshift32:00000044 $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:285    .text.fi_mpu_cover:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:291    .text.fi_mpu_cover:00000000 fi_mpu_cover
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:507    .text.fi_mpu_cover:00000140 $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:512    .text.fi_mpu_cover_rw2:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:518    .text.fi_mpu_cover_rw2:00000000 fi_mpu_cover_rw2
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:617    .text.fi_mpu_init:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:623    .text.fi_mpu_init:00000000 fi_mpu_init
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:733    .text.fi_mpu_init:00000098 $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:744    .text.fi_mpu_on:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:750    .text.fi_mpu_on:00000000 fi_mpu_on
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:881    .text.fi_mpu_on:00000070 $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:890    .text.fi_mpu_off:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:896    .text.fi_mpu_off:00000000 fi_mpu_off
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:961    .text.fi_mpu_off:00000028 $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:966    .text.fi_timer_pause:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:972    .text.fi_timer_pause:00000000 fi_timer_pause
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:992    .text.fi_timer_pause:00000010 $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:997    .text.fi_timer_resume:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1003   .text.fi_timer_resume:00000000 fi_timer_resume
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1023   .text.fi_timer_resume:00000010 $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1028   .text.fi_timer_arm:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1034   .text.fi_timer_arm:00000000 fi_timer_arm
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1074   .text.fi_timer_arm:00000028 $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1079   .text.FI_Init:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1086   .text.FI_Init:00000000 FI_Init
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1157   .text.FI_Init:00000070 $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1167   .text.fi_event_cb:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1173   .text.fi_event_cb:00000000 fi_event_cb
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1297   .text.fi_event_cb:00000098 $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1306   .text.__wrap_stai_mnetwork_set_callback:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1313   .text.__wrap_stai_mnetwork_set_callback:00000000 __wrap_stai_mnetwork_set_callback
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1365   .text.__wrap_stai_mnetwork_set_callback:00000040 $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1373   .text.fi_send_event:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1379   .text.fi_send_event:00000000 fi_send_event
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1430   .text.fi_send_event:00000038 $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1437   .text.fi_complete_events:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1443   .text.fi_complete_events:00000000 fi_complete_events
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1523   .text.fi_complete_events:00000064 $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1529   .text.__wrap_stai_mnetwork_run:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1536   .text.__wrap_stai_mnetwork_run:00000000 __wrap_stai_mnetwork_run
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1755   .text.__wrap_stai_mnetwork_run:00000130 $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1771   .text.fi_abort_to_wrapper:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1777   .text.fi_abort_to_wrapper:00000000 fi_abort_to_wrapper
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1794   .text.fi_abort_to_wrapper:0000000c $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1799   .text.fi_abort:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1805   .text.fi_abort:00000000 fi_abort
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1872   .text.fi_abort:00000050 $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1879   .text.fi_dispatch:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:1886   .text.fi_dispatch:00000000 fi_dispatch
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:2152   .text.fi_dispatch:00000184 $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:2167   .text.fi_fault_dispatch:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:2174   .text.fi_fault_dispatch:00000000 fi_fault_dispatch
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:2264   .text.fi_fault_dispatch:0000006c $d
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:2273   .text.HardFault_Handler:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:2280   .text.HardFault_Handler:00000000 HardFault_Handler
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:2306   .text.VectorB0:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccGbcFSO.s:2313   .text.VectorB0:00000000 VectorB0
                            .group:00000000 wm4.0.5030deb6392b4db6a7ac5ffd5733b4a1
                            .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
                            .group:00000000 wm4.features.h.33.5ea28ceb8be6621901b9d58b4c3ee651
@@ -4503,6 +4502,12 @@ C:\Users\danie\AppData\Local\Temp\ccDEtqFN.s:2315   .text.VectorB0:00000000 Vect
                            .group:00000000 wm4.math.h.13.47cfc34cae8a1153323939c4d32cf7c2
                            .group:00000000 wm4.errno.h.2.ba016d646105af6cad23be83630b6a3f
                            .group:00000000 wm4.errno.h.9.ae5ea2b0ff9ea6e39e585807e35200d3
+                           .group:00000000 wm4.stdio.h.27.3fc80220048df77954e38daec3bb9670
+                           .group:00000000 wm4.stddef.h.158.eec8bf00b5213f43d095cb984c5f22e3
+                           .group:00000000 wm4.stdarg.h.34.3a23a216c0c293b3d2ea2e89281481e6
+                           .group:00000000 wm4.stdio.h.47.dc31ec4674d7bcb103c9f08809549f45
+                           .group:00000000 wm4.stdio.h.2.4aa87247282eca6c8f36f9de33d8df1a
+                           .group:00000000 wm4.stdio.h.87.a1e20d2651f9bfb66e51bfbe849db00a
 
 UNDEFINED SYMBOLS
 __errno

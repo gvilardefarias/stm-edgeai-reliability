@@ -44,10 +44,9 @@ typedef struct {
 } fi_record_t;
 
 typedef struct {
-    volatile uint8_t dummy;
-    volatile uint8_t done;          /* 1 = Flip executed in this inference */
+    volatile uint8_t done_and_bit;  /* bit 7 = 1: flip executed in this inference;
+                                       bits 0..4 = index of the flipped bit (0..31) */
     volatile uint8_t reg;           /* 0..12 = R0..R12, 13..44 = S0..S31 */
-    volatile uint8_t bit;           /* 0..31                          */
     volatile uint8_t node;          /* node id: 3 = conv2d, 4 = conv2d_1, 5 = global_max_pooling2d_pool,
                                         7 = dense, 8 = activation (softmax) */
     volatile uint8_t abort_cause;   /* FI_ABORT_NONE / FI_ABORT_CRASH / FI_ABORT_HANG */
