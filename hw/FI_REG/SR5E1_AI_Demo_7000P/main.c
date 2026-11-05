@@ -105,7 +105,7 @@ int main(void) {
   SystemInit();
 
   FI_Init();	// Inizialize Timer and Protected Memory
-  FI_Start();	// Enable timer
+
 
   aiValidateStart();
 

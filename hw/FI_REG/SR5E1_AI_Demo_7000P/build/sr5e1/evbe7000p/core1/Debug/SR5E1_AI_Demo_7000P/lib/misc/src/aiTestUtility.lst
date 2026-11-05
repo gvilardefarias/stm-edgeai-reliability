@@ -3370,69 +3370,69 @@
  1760              		.file 12 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/in
 DEFINED SYMBOLS
                             *ABS*:00000000 aiTestUtility.c
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:20     .text.port_io_get:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:26     .text.port_io_get:00000000 port_io_get
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:61     .text.port_io_get:00000028 $d
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:66     .text.port_io_write:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:72     .text.port_io_write:00000000 port_io_write
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:111    .text.port_io_write:00000030 $d
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:116    .text.port_io_read:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:122    .text.port_io_read:00000000 port_io_read
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:161    .text.port_io_read:00000030 $d
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:168    .data._ioWriteAllowed:00000000 _ioWriteAllowed
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:171    .text.ioRawGetUint8:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:178    .text.ioRawGetUint8:00000000 ioRawGetUint8
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:216    .text.ioRawWriteBuffer:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:223    .text.ioRawWriteBuffer:00000000 ioRawWriteBuffer
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:251    .text.ioRawReadBuffer:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:258    .text.ioRawReadBuffer:00000000 ioRawReadBuffer
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:286    .text.ioRawDisableLLWrite:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:293    .text.ioRawDisableLLWrite:00000000 ioRawDisableLLWrite
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:310    .text.ioRawDisableLLWrite:0000000c $d
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:315    .bss.bfr:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:318    .bss.bfr:00000000 bfr
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:322    .text.uint64ToDecimal:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:329    .text.uint64ToDecimal:00000000 uint64ToDecimal
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:414    .text.uint64ToDecimal:00000088 $d
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:419    .text.uint32_to_str:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:426    .text.uint32_to_str:00000000 uint32_to_str
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:542    .bss.io_malloc:00000000 io_malloc
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:539    .bss.io_malloc:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:545    .text.__wrap_malloc:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:552    .text.__wrap_malloc:00000000 __wrap_malloc
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:673    .text.__wrap_malloc:000000a0 $d
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:679    .text.__wrap_free:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:686    .text.__wrap_free:00000000 __wrap_free
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:785    .text.__wrap_free:00000080 $d
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:795    .bss.io_stack:00000000 io_stack
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:792    .bss.io_stack:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:798    .rodata:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:806    .text.stackMonInit:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:813    .text.stackMonInit:00000000 stackMonInit
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:929    .text.stackMonInit:0000009c $d
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:941    .bss.cyclesCount:00000000 cyclesCount
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:938    .bss.cyclesCount:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:944    .text.dwtCyclesToTime:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:951    .text.dwtCyclesToTime:00000000 dwtCyclesToTime
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:1291   .text.dwtCyclesToTime:0000031c $d
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:1297   .text.dwtCyclesToFloatMs:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:1304   .text.dwtCyclesToFloatMs:00000000 dwtCyclesToFloatMs
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:1343   .text.dwtCyclesToFloatMs:0000003c $d
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:1356   .text.devIdToStr:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:1362   .text.devIdToStr:00000000 devIdToStr
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:1399   .text.devIdToStr:00000028 $d
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:1412   .text.bitToStr:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:1418   .text.bitToStr:00000000 bitToStr
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:1448   .text.bitToStr:00000018 $d
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:1454   .text.getSysConf:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:1461   .text.getSysConf:00000000 getSysConf
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:1531   .text.getFlashCacheConf:00000000 getFlashCacheConf
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:1519   .text.getSysConf:00000048 $d
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:1524   .text.getFlashCacheConf:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:1589   .text.getFlashCacheConf:00000048 $d
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:1626   .text.systemSettingLog:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:1633   .text.systemSettingLog:00000000 systemSettingLog
-C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:1734   .text.systemSettingLog:000000b0 $d
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:20     .text.port_io_get:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:26     .text.port_io_get:00000000 port_io_get
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:61     .text.port_io_get:00000028 $d
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:66     .text.port_io_write:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:72     .text.port_io_write:00000000 port_io_write
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:111    .text.port_io_write:00000030 $d
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:116    .text.port_io_read:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:122    .text.port_io_read:00000000 port_io_read
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:161    .text.port_io_read:00000030 $d
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:168    .data._ioWriteAllowed:00000000 _ioWriteAllowed
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:171    .text.ioRawGetUint8:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:178    .text.ioRawGetUint8:00000000 ioRawGetUint8
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:216    .text.ioRawWriteBuffer:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:223    .text.ioRawWriteBuffer:00000000 ioRawWriteBuffer
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:251    .text.ioRawReadBuffer:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:258    .text.ioRawReadBuffer:00000000 ioRawReadBuffer
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:286    .text.ioRawDisableLLWrite:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:293    .text.ioRawDisableLLWrite:00000000 ioRawDisableLLWrite
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:310    .text.ioRawDisableLLWrite:0000000c $d
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:315    .bss.bfr:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:318    .bss.bfr:00000000 bfr
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:322    .text.uint64ToDecimal:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:329    .text.uint64ToDecimal:00000000 uint64ToDecimal
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:414    .text.uint64ToDecimal:00000088 $d
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:419    .text.uint32_to_str:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:426    .text.uint32_to_str:00000000 uint32_to_str
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:542    .bss.io_malloc:00000000 io_malloc
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:539    .bss.io_malloc:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:545    .text.__wrap_malloc:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:552    .text.__wrap_malloc:00000000 __wrap_malloc
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:673    .text.__wrap_malloc:000000a0 $d
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:679    .text.__wrap_free:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:686    .text.__wrap_free:00000000 __wrap_free
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:785    .text.__wrap_free:00000080 $d
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:795    .bss.io_stack:00000000 io_stack
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:792    .bss.io_stack:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:798    .rodata:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:806    .text.stackMonInit:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:813    .text.stackMonInit:00000000 stackMonInit
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:929    .text.stackMonInit:0000009c $d
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:941    .bss.cyclesCount:00000000 cyclesCount
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:938    .bss.cyclesCount:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:944    .text.dwtCyclesToTime:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:951    .text.dwtCyclesToTime:00000000 dwtCyclesToTime
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:1291   .text.dwtCyclesToTime:0000031c $d
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:1297   .text.dwtCyclesToFloatMs:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:1304   .text.dwtCyclesToFloatMs:00000000 dwtCyclesToFloatMs
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:1343   .text.dwtCyclesToFloatMs:0000003c $d
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:1356   .text.devIdToStr:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:1362   .text.devIdToStr:00000000 devIdToStr
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:1399   .text.devIdToStr:00000028 $d
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:1412   .text.bitToStr:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:1418   .text.bitToStr:00000000 bitToStr
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:1448   .text.bitToStr:00000018 $d
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:1454   .text.getSysConf:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:1461   .text.getSysConf:00000000 getSysConf
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:1531   .text.getFlashCacheConf:00000000 getFlashCacheConf
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:1519   .text.getSysConf:00000048 $d
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:1524   .text.getFlashCacheConf:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:1589   .text.getFlashCacheConf:00000048 $d
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:1626   .text.systemSettingLog:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:1633   .text.systemSettingLog:00000000 systemSettingLog
+C:\Users\danie\AppData\Local\Temp\ccxehH4p.s:1734   .text.systemSettingLog:000000b0 $d
                            .group:00000000 wm4.0.5030deb6392b4db6a7ac5ffd5733b4a1
                            .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
                            .group:00000000 wm4.newlib.h.27.4b972ceed5d01f491020c20f1e546cab
@@ -3467,7 +3467,7 @@ C:\Users\danie\AppData\Local\Temp\ccOf4BTz.s:1734   .text.systemSettingLog:00000
                            .group:00000000 wm4.stellar_ai_cfg.h.22.b8366a3a45f39e9e09a10028cf2dd2bf
                            .group:00000000 wm4.stai.h.24.edb2caeb75093402e355d2c517240f7a
                            .group:00000000 wm4.stai_debug.h.37.4be079c70c66033549ba26b63a31db94
-                           .group:00000000 wm4.network.h.26.b7847d442a108daf4406804071fbba60
+                           .group:00000000 wm4.network.h.26.4a5f2db7edc3f11345f0347442b5c47d
                            .group:00000000 wm4.app_stellarstudioai.h.34.09d4d4538ab8661d6d0406dbdedd94c9
                            .group:00000000 wm4.sr5e1xx.h.22.e5c808533cc52ed19fb0830cd7d98924
                            .group:00000000 wm4.cmsis_version.h.32.0f826810625204eca22a19868bdc7586

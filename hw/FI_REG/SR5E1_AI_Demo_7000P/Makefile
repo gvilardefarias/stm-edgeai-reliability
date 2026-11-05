@@ -52,7 +52,7 @@ C_INCS += app/inc
 
 include ./stellar_ai.mk
 
-# Fault injection: intercetta run e set_callback dell'API multi-network
+# Fault injection: interception of run and set_callback of multi-network API and apply a renaming rule
 ifeq ($(TOOLCHAIN), ARM)
 L_OPTS += -Wl,--wrap=stai_mnetwork_run -Wl,--wrap=stai_mnetwork_set_callback
 endif

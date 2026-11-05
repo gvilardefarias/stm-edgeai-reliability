@@ -2,6 +2,8 @@
 <projectDescription>
 	<name>SR5E1_AI_Demo_7000P</name>
 	<comment></comment>
+	<projects>
+	</projects>
 	<buildSpec>
 		<buildCommand>
 			<name>org.eclipse.xtext.ui.shared.xtextBuilder</name>
@@ -44,6 +46,21 @@
 			<name>Modules</name>
 			<type>2</type>
 			<locationURI>PARENT-2-PROJECT_LOC/SDKS/StellarESDK-1.10.0/Modules</locationURI>
+		</link>
+		<link>
+			<name>source/model_gmp/gmp_wl_24.h5</name>
+			<type>1</type>
+			<location>C:/Users/danie/Desktop/ERHS_ST/Models/gmp_wl_24/gmp_wl_24.h5</location>
+		</link>
+		<link>
+			<name>source/validation_gmp/val_data.npy</name>
+			<type>1</type>
+			<location>C:/StellarStudio-9.1/workspace/SR5E1_AI_Demo_7000P/source/validation_gmp/val_data.npy</location>
+		</link>
+		<link>
+			<name>source/validation_gmp/val_inputs.npy</name>
+			<type>1</type>
+			<location>C:/StellarStudio-9.1/workspace/SR5E1_AI_Demo_7000P/source/validation_gmp/val_inputs.npy</location>
 		</link>
 	</linkedResources>
 </projectDescription>

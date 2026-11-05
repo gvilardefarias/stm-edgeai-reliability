@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    network.h
   * @author  AST Embedded Analytics Research Platform
-  * @date    2026-10-12T12:12:02+0200
+  * @date    2026-11-05T15:21:16+0100
   * @brief   ST.AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * @attention
@@ -23,12 +23,12 @@
 
 /*****************************************************************************/
 /*  Original model name and signature  */
-#define STAI_NETWORK_ORIGIN_MODEL_NAME         "cnn_lstm"
-#define STAI_NETWORK_ORIGIN_MODEL_SIGNATURE    "0x240f2f740ba9d67d1fa2fba7b2357b41"
+#define STAI_NETWORK_ORIGIN_MODEL_NAME         "gmp_wl_24"
+#define STAI_NETWORK_ORIGIN_MODEL_SIGNATURE    "0x4fc493cda42347f37425c3f89b4aa13d"
 
 /*  Generated model name and signature  */
 #define STAI_NETWORK_MODEL_NAME                "network"
-#define STAI_NETWORK_MODEL_SIGNATURE           (0x82d24e6c2a19d373)
+#define STAI_NETWORK_MODEL_SIGNATURE           (0x32c08c5a7d45e607)
 
 
 /*****************************************************************************/
@@ -43,11 +43,11 @@
 #define STAI_NETWORK_NODES_NUM           (5)
 
 /*  Macro to declare number macc for generated network model  */
-#define STAI_NETWORK_MACC_NUM            (95105)
+#define STAI_NETWORK_MACC_NUM            (67168)
 
 /*  Macros to declare input buffers characteristics  */
 #define STAI_NETWORK_IN_NUM              (1)
-#define STAI_NETWORK_IN_SIZE_BYTES       (324)
+#define STAI_NETWORK_IN_SIZE_BYTES       (292)
 
 #define STAI_NETWORK_IN_ALIGNMENTS \
   { 4}
@@ -56,26 +56,27 @@
 #define STAI_NETWORK_IN_FORMATS \
   { STAI_FORMAT_FLOAT32}
 #define STAI_NETWORK_IN_SIZES \
-  {80}
+  {72}
 #define STAI_NETWORK_IN_SIZES_BYTES \
-  {320}
+  {288}
 
 #define STAI_NETWORK_IN_1_ALIGNMENT   4
 #define STAI_NETWORK_IN_1_NAME        (NULL)
 #define STAI_NETWORK_IN_1_FLAGS       (STAI_FLAG_INPUTS|STAI_FLAG_PREALLOCATED|STAI_FLAG_CHANNEL_LAST|STAI_FLAG_HAS_BATCH)
 #define STAI_NETWORK_IN_1_FORMAT      (STAI_FORMAT_FLOAT32)
-#define STAI_NETWORK_IN_1_SHAPE       {1,20,4}
+#define STAI_NETWORK_IN_1_SHAPE       {1,24,3,1}
 #define STAI_NETWORK_IN_1_BATCH       (1)
-#define STAI_NETWORK_IN_1_HEIGHT      (20)
-#define STAI_NETWORK_IN_1_CHANNEL     (4)
-#define STAI_NETWORK_IN_1_RANK        (2)
-#define STAI_NETWORK_IN_1_SIZE        (80)
-#define STAI_NETWORK_IN_1_SIZE_BYTES  (320)
+#define STAI_NETWORK_IN_1_HEIGHT      (24)
+#define STAI_NETWORK_IN_1_WIDTH       (3)
+#define STAI_NETWORK_IN_1_CHANNEL     (1)
+#define STAI_NETWORK_IN_1_RANK        (3)
+#define STAI_NETWORK_IN_1_SIZE        (72)
+#define STAI_NETWORK_IN_1_SIZE_BYTES  (288)
 
 /*****************************************************************************/
 /*  Macros to declare output buffers characteristics  */
 #define STAI_NETWORK_OUT_NUM             (1)
-#define STAI_NETWORK_OUT_SIZE_BYTES      (8)
+#define STAI_NETWORK_OUT_SIZE_BYTES      (20)
 #define STAI_NETWORK_OUT_ALIGNMENTS \
   { 4}
 #define STAI_NETWORK_OUT_NAMES \
@@ -83,48 +84,48 @@
 #define STAI_NETWORK_OUT_FORMATS \
   { STAI_FORMAT_FLOAT32}
 #define STAI_NETWORK_OUT_SIZES \
-  { 1}
+  { 4}
 #define STAI_NETWORK_OUT_SIZES_BYTES \
-  {4}
+  {16}
 
 #define STAI_NETWORK_OUT_1_ALIGNMENT   4
 #define STAI_NETWORK_OUT_1_NAME        (NULL)
 #define STAI_NETWORK_OUT_1_FLAGS       (STAI_FLAG_OUTPUTS|STAI_FLAG_PREALLOCATED|STAI_FLAG_CHANNEL_LAST|STAI_FLAG_HAS_BATCH)
 #define STAI_NETWORK_OUT_1_FORMAT      (STAI_FORMAT_FLOAT32)
-#define STAI_NETWORK_OUT_1_SHAPE       {1,1}
+#define STAI_NETWORK_OUT_1_SHAPE       {1,4}
 #define STAI_NETWORK_OUT_1_BATCH       (1)
-#define STAI_NETWORK_OUT_1_CHANNEL     (1)
+#define STAI_NETWORK_OUT_1_CHANNEL     (4)
 #define STAI_NETWORK_OUT_1_RANK        (1)
-#define STAI_NETWORK_OUT_1_SIZE        ((1))
-#define STAI_NETWORK_OUT_1_SIZE_BYTES  (4)
+#define STAI_NETWORK_OUT_1_SIZE        ((4))
+#define STAI_NETWORK_OUT_1_SIZE_BYTES  (16)
 
 /*****************************************************************************/
 /*  Macros to declare activations buffers characteristics  */
-#define STAI_NETWORK_ACTIVATIONS_SIZE              (2944)
-#define STAI_NETWORK_ACTIVATIONS_SIZE_BYTES        (2944)
+#define STAI_NETWORK_ACTIVATIONS_SIZE              (4352)
+#define STAI_NETWORK_ACTIVATIONS_SIZE_BYTES        (4352)
 #define STAI_NETWORK_ACTIVATIONS_ALIGNMENTS \
   { 4}
 #define STAI_NETWORK_ACTIVATIONS_SIZES \
-  { 2944}
+  { 4352}
 #define STAI_NETWORK_ACTIVATIONS_NUM               (1)
 
 #define STAI_NETWORK_ACTIVATION_1_FLAGS      (STAI_FLAG_ACTIVATIONS)
-#define STAI_NETWORK_ACTIVATION_1_SIZE       (2944)
-#define STAI_NETWORK_ACTIVATION_1_SIZE_BYTES (2944)
+#define STAI_NETWORK_ACTIVATION_1_SIZE       (4352)
+#define STAI_NETWORK_ACTIVATION_1_SIZE_BYTES (4352)
 #define STAI_NETWORK_ACTIVATION_1_ALIGNMENT  4
 /*  Macros to declare weights buffers characteristics  */
 
 #define STAI_NETWORK_WEIGHTS_NUM                  (1)
-#define STAI_NETWORK_WEIGHTS_SIZE                  (35980)
-#define STAI_NETWORK_WEIGHTS_SIZE_BYTES            (35980)
+#define STAI_NETWORK_WEIGHTS_SIZE                  (5840)
+#define STAI_NETWORK_WEIGHTS_SIZE_BYTES            (5840)
 #define STAI_NETWORK_WEIGHTS_ALIGNMENTS \
   { 4}
 #define STAI_NETWORK_WEIGHTS_SIZES \
-  { 35980}
+  { 5840}
 #define STAI_NETWORK_WEIGHTS_NUM        (1)
 #define STAI_NETWORK_WEIGHT_1_FLAGS       ((STAI_FLAG_PREALLOCATED))
-#define STAI_NETWORK_WEIGHT_1_SIZE        (35980)
-#define STAI_NETWORK_WEIGHT_1_SIZE_BYTES  (35980)
+#define STAI_NETWORK_WEIGHT_1_SIZE        (5840)
+#define STAI_NETWORK_WEIGHT_1_SIZE_BYTES  (5840)
 
 
 /*****************************************************************************/

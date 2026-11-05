@@ -1,130 +1,121 @@
 ST Edge AI Core v4.0.0-20500 359356bb0
-Created date          : 2026-10-28 17:18:34
-Parameters            : validate --target sr5e1 --c-api st-ai -m C:/StellarStudio-9.1/workspace/SR5E1_AI_Demo_7000P\source/model_lstm\CNN_LSTM.h5 --name network --type keras --compression none --workspace C:/StellarStudio-9.1/workspace/SR5E1_AI_Demo_7000P\SR5E1_AI_Demo_7000P\ws\ --output C:/StellarStudio-9.1/workspace/SR5E1_AI_Demo_7000P\SR5E1_AI_Demo_7000P\cfg\ --mode target -d serial:115200 -vi C:/StellarStudio-9.1/workspace/SR5E1_AI_Demo_7000P\source/validation_lstm/Validate_set.npz
+Created date          : 2026-11-05 16:28:45
+Parameters            : validate --target sr5e1 --c-api st-ai -m C:/StellarStudio-9.1/workspace/SR5E1_AI_Demo_7000P\source/model_gmp\gmp_wl_24.h5 --name network --type keras --compression none --workspace C:/StellarStudio-9.1/workspace/SR5E1_AI_Demo_7000P\SR5E1_AI_Demo_7000P\ws\ --output C:/StellarStudio-9.1/workspace/SR5E1_AI_Demo_7000P\SR5E1_AI_Demo_7000P\cfg\ --mode target -d serial:115200
 
 Exec/report summary (validate)
---------------------------------------------------------------------------------------------------------------------
-model file         :   C:\StellarStudio-9.1\workspace\SR5E1_AI_Demo_7000P\source\model_lstm\CNN_LSTM.h5             
-type               :   keras                                                                                        
-c_name             :   network                                                                                      
-compression        :   none                                                                                         
-options            :   allocate-inputs, allocate-outputs, use-lite-runtime, use-st-ai                               
-optimization       :   balanced                                                                                     
-target/series      :   sr5e1                                                                                        
-workspace dir      :   C:\StellarStudio-9.1\workspace\SR5E1_AI_Demo_7000P\SR5E1_AI_Demo_7000P\ws                    
-output dir         :   C:\StellarStudio-9.1\workspace\SR5E1_AI_Demo_7000P\SR5E1_AI_Demo_7000P\cfg                   
-vinput files       :   C:\StellarStudio-9.1\workspace\SR5E1_AI_Demo_7000P\source\validation_lstm\Validate_set.npz   
-model_fmt          :   float                                                                                        
-model_name         :   CNN_LSTM                                                                                     
-model_hash         :   0x240f2f740ba9d67d1fa2fba7b2357b41                                                           
-params #           :   8,963 items (35.01 KiB)                                                                      
---------------------------------------------------------------------------------------------------------------------
-input 1/1          :   'input_0', f32(1x20x4), 320 Bytes, activations                                               
-output 1/1         :   'dense_1', f32(1x1), 4 Bytes, activations                                                    
-macc               :   95,105                                                                                       
-weights (ro)       :   35,980 B (35.14 KiB) (1 segment) / +128(+0.4%) vs float model                                
-activations (rw)   :   2,944 B (2.88 KiB) (1 segment) *                                                             
-ram (total)        :   2,944 B (2.88 KiB) = 2,944 + 0 + 0                                                           
---------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+model file         :   C:\StellarStudio-9.1\workspace\SR5E1_AI_Demo_7000P\source\model_gmp\gmp_wl_24.h5   
+type               :   keras                                                                              
+c_name             :   network                                                                            
+compression        :   none                                                                               
+options            :   allocate-inputs, allocate-outputs, use-lite-runtime, use-st-ai                     
+optimization       :   balanced                                                                           
+target/series      :   sr5e1                                                                              
+workspace dir      :   C:\StellarStudio-9.1\workspace\SR5E1_AI_Demo_7000P\SR5E1_AI_Demo_7000P\ws          
+output dir         :   C:\StellarStudio-9.1\workspace\SR5E1_AI_Demo_7000P\SR5E1_AI_Demo_7000P\cfg         
+model_fmt          :   float                                                                              
+model_name         :   gmp_wl_24                                                                          
+model_hash         :   0x4fc493cda42347f37425c3f89b4aa13d                                                 
+params #           :   1,494 items (5.84 KiB)                                                             
+----------------------------------------------------------------------------------------------------------
+input 1/1          :   'input_1', f32(1x24x3x1), 288 Bytes, activations                                   
+output 1/1         :   'activation', f32(1x4), 16 Bytes, activations                                      
+macc               :   67,168                                                                             
+weights (ro)       :   5,840 B (5.70 KiB) (1 segment) / -136(-2.3%) vs float model                        
+activations (rw)   :   4,352 B (4.25 KiB) (1 segment) *                                                   
+ram (total)        :   4,352 B (4.25 KiB) = 4,352 + 0 + 0                                                 
+----------------------------------------------------------------------------------------------------------
 (*) 'input'/'output' buffers are allocated in the activations buffer
 
-Model name - CNN_LSTM
------- ------------------------------------------------------- ----------------- -------------- -------- ----------------------- --- ----------------- ------------------ ------------------ 
-m_id   layer (type,original)                                   oshape            param/size         macc            connected to   | c_size            c_macc             c_type             
------- ------------------------------------------------------- ----------------- -------------- -------- ----------------------- --- ----------------- ------------------ ------------------ 
-0      input_0 (Input, None)                                   [b:1,h:20,c:4]                                                      |                                      
-       conv1d_1 (Conv2D, Conv1D)                               [b:1,h:20,c:32]   544/2,176        10,272                 input_0   | -2,176(-100.0%)   -10,272(-100.0%)   
------- ------------------------------------------------------- ----------------- -------------- -------- ----------------------- --- ----------------- ------------------ ------------------ 
-1      batch_normalization_1 (ScaleBias, BatchNormalization)   [b:1,h:20,c:32]   64/256            1,280                conv1d_1   | +1,920(+750.0%)   +8,992(+702.5%)    Conv2D_[0]         
------- ------------------------------------------------------- ----------------- -------------- -------- ----------------------- --- ----------------- ------------------ ------------------ 
-2      activation_1 (Nonlinearity, Activation)                 [b:1,h:20,c:32]                       640   batch_normalization_1   |                                      Nonlinearity_[1]   
------- ------------------------------------------------------- ----------------- -------------- -------- ----------------------- --- ----------------- ------------------ ------------------ 
-3      max_pooling1d_1 (Pool, MaxPooling1D)                    [b:1,h:10,c:32]                       640            activation_1   |                                      Pool_[2]           
------- ------------------------------------------------------- ----------------- -------------- -------- ----------------------- --- ----------------- ------------------ ------------------ 
-4      lstm_1 (LSTM, LSTM)                                     [b:1,c:32]        8,322/33,288     83,520         max_pooling1d_1   | +384(+1.2%)                          LSTM_[3]           
------- ------------------------------------------------------- ----------------- -------------- -------- ----------------------- --- ----------------- ------------------ ------------------ 
-5      dense_1 (Dense, Dense)                                  [b:1,c:1]         33/132               33                  lstm_1   |                                      Dense_[o][4]       
------- ------------------------------------------------------- ----------------- -------------- -------- ----------------------- --- ----------------- ------------------ ------------------ 
-model/c-model: macc=96,385/95,105 -1,280(-1.3%) weights=35,852/35,980 +128(+0.4%) activations=--/2,944 io=--/0
+Model name - gmp_wl_24
+------ ------------------------------------------------------- --------------------- ------------- -------- --------------------------- --- --------------- ----------------- --------------------- 
+m_id   layer (type,original)                                   oshape                param/size        macc                connected to   | c_size          c_macc            c_type                
+------ ------------------------------------------------------- --------------------- ------------- -------- --------------------------- --- --------------- ----------------- --------------------- 
+0      input_1 (Input, InputLayer)                             [b:1,h:24,w:3,c:1]                                                         |                                   
+------ ------------------------------------------------------- --------------------- ------------- -------- --------------------------- --- --------------- ----------------- --------------------- 
+1      batch_normalization (ScaleBias, BatchNormalization)     [b:1,h:24,w:3,c:1]    2/8                144                     input_1   | -8(-100.0%)     -144(-100.0%)     
+------ ------------------------------------------------------- --------------------- ------------- -------- --------------------------- --- --------------- ----------------- --------------------- 
+2      conv2d (Conv2D, Conv2D)                                 [b:1,h:20,w:3,c:16]   96/384           4,816         batch_normalization   | -384(-100.0%)   -4,816(-100.0%)   
+------ ------------------------------------------------------- --------------------- ------------- -------- --------------------------- --- --------------- ----------------- --------------------- 
+3      batch_normalization_1 (ScaleBias, BatchNormalization)   [b:1,h:20,w:3,c:16]   32/128           1,920                      conv2d   | +256(+200.0%)   +2,896(+150.8%)   Conv2D_[0]            
+------ ------------------------------------------------------- --------------------- ------------- -------- --------------------------- --- --------------- ----------------- --------------------- 
+4      conv2d_1 (Conv2D, Conv2D)                               [b:1,h:16,w:3,c:16]   1,296/5,184     61,456       batch_normalization_1   |                                   Conv2D_[1]            
+------ ------------------------------------------------------- --------------------- ------------- -------- --------------------------- --- --------------- ----------------- --------------------- 
+5      global_max_pooling2d_pool (Pool, GlobalMaxPooling2D)    [b:1,h:1,w:1,c:16]                       768                    conv2d_1   |                                   Pool_[2]              
+       global_max_pooling2d (Reshape, GlobalMaxPooling2D)      [b:1,c:16]                                     global_max_pooling2d_pool   |                                   
+------ ------------------------------------------------------- --------------------- ------------- -------- --------------------------- --- --------------- ----------------- --------------------- 
+7      dense (Dense, Dense)                                    [b:1,c:4]             68/272              68        global_max_pooling2d   |                                   Dense_[3]             
+------ ------------------------------------------------------- --------------------- ------------- -------- --------------------------- --- --------------- ----------------- --------------------- 
+8      activation (Nonlinearity, Activation)                   [b:1,c:4]                                 60                       dense   |                                   Nonlinearity_[o][4]   
+------ ------------------------------------------------------- --------------------- ------------- -------- --------------------------- --- --------------- ----------------- --------------------- 
+model/c-model: macc=69,232/67,168 -2,064(-3.0%) weights=5,976/5,840 -136(-2.3%) activations=--/4,352 io=--/0
 
 
 
 Generated C-graph summary
 ------------------------------------------------------------------------------------------------------------------------
-model name            : CNN_LSTM
+model name            : gmp_wl_24
 c-name                : network
 c-node #              : 5
-c-array #             : 17
-activations size      : 2944 (1 segment)
-weights size          : 35980 (1 segment)
-macc                  : 95105
-inputs                : ['input_0_output']
-outputs               : ['dense_1_output']
+c-array #             : 14
+activations size      : 4352 (1 segment)
+weights size          : 5840 (1 segment)
+macc                  : 67168
+inputs                : ['input_1_output']
+outputs               : ['activation_output']
 
-C-Arrays (17)
------- ------------------------- ------------ ------------------------- ------------- --------- 
-c_id   name (*_array)            item/size    domain/mem-pool           c-type        comment   
------- ------------------------- ------------ ------------------------- ------------- --------- 
-0      activation_1_output       640/2560     activations/**default**   float                   
-1      conv1d_1_bias             32/128       weights/weights           const float             
-2      conv1d_1_output           640/2560     activations/**default**   float                   
-3      conv1d_1_scratch0         16/64        activations/**default**   float                   
-4      conv1d_1_weights          512/2048     weights/weights           const float             
-5      dense_1_bias              1/4          weights/weights           const float             
-6      dense_1_output            1/4          activations/**default**   float         /output   
-7      dense_1_weights           32/128       weights/weights           const float             
-8      input_0_output            80/320       activations/**default**   float         /input    
-9      lstm_1_bias               128/512      weights/weights           const float             
-10     lstm_1_kernel             4096/16384   weights/weights           const float             
-11     lstm_1_output0            32/128       activations/**default**   float                   
-12     lstm_1_peepholes          96/384       weights/weights           const float             
-13     lstm_1_recurrent          4096/16384   weights/weights           const float             
-14     lstm_1_recurrent_params   2/8          weights/weights           const float             
-15     lstm_1_scratch0           224/896      activations/**default**   float                   
-16     max_pooling1d_1_output    320/1280     activations/**default**   float                   
------- ------------------------- ------------ ------------------------- ------------- --------- 
+C-Arrays (14)
+------ ---------------------------------- ----------- ------------------------- ------------- --------- 
+c_id   name (*_array)                     item/size   domain/mem-pool           c-type        comment   
+------ ---------------------------------- ----------- ------------------------- ------------- --------- 
+0      activation_output                  4/16        activations/**default**   float         /output   
+1      conv2d_1_bias                      16/64       weights/weights           const float             
+2      conv2d_1_output                    768/3072    activations/**default**   float                   
+3      conv2d_1_scratch0                  80/320      activations/**default**   float                   
+4      conv2d_1_weights                   1280/5120   weights/weights           const float             
+5      conv2d_bias                        16/64       weights/weights           const float             
+6      conv2d_output                      960/3840    activations/**default**   float                   
+7      conv2d_scratch0                    5/20        activations/**default**   float                   
+8      conv2d_weights                     80/320      weights/weights           const float             
+9      dense_bias                         4/16        weights/weights           const float             
+10     dense_output                       4/16        activations/**default**   float                   
+11     dense_weights                      64/256      weights/weights           const float             
+12     global_max_pooling2d_pool_output   16/64       activations/**default**   float                   
+13     input_1_output                     72/288      activations/**default**   float         /input    
+------ ---------------------------------- ----------- ------------------------- ------------- --------- 
 
 C-Layers (5)
------- ----------------- ---- --------------- ------- ------- ---------------------------- -------------------- 
-c_id   name (*_layer)    id   layer_type      macc    rom     tensors                      shape (array id)     
------- ----------------- ---- --------------- ------- ------- ---------------------------- -------------------- 
-0      conv1d_1          1    Conv2D          10272   2176    I: input_0_output            f32(1x20x4) (8)      
-                                                              S: conv1d_1_scratch0                              
-                                                              W: conv1d_1_weights          f32(32x4x1x4) (4)    
-                                                              W: conv1d_1_bias             f32(32) (1)          
-                                                              O: conv1d_1_output           f32(1x20x32) (2)     
------- ----------------- ---- --------------- ------- ------- ---------------------------- -------------------- 
-1      activation_1      2    Nonlinearity    640     0       I: conv1d_1_output           f32(1x20x32) (2)     
-                                                              O: activation_1_output       f32(1x20x32) (0)     
------- ----------------- ---- --------------- ------- ------- ---------------------------- -------------------- 
-2      max_pooling1d_1   3    Pool            640     0       I: activation_1_output       f32(1x20x32) (0)     
-                                                              O: max_pooling1d_1_output    f32(1x10x32) (16)    
------- ----------------- ---- --------------- ------- ------- ---------------------------- -------------------- 
-3      lstm_1            4    LSTM            83520   33672   I: max_pooling1d_1_output    f32(1x10x32) (16)    
-                                                              S: lstm_1_scratch0                                
-                                                              W: lstm_1_kernel             f32(128x32) (10)     
-                                                              W: lstm_1_recurrent          f32(128x32) (13)     
-                                                              W: lstm_1_recurrent_params   f32(2) (14)          
-                                                              W: lstm_1_bias               f32(128) (9)         
-                                                              W: lstm_1_peepholes          f32(96x1x1x1) (12)   
-                                                              O: lstm_1_output0            f32(1x32) (11)       
------- ----------------- ---- --------------- ------- ------- ---------------------------- -------------------- 
-4      dense_1           5    Dense           33      132     I: lstm_1_output0            f32(1x32) (11)       
-                                                              W: dense_1_weights           f32(1x32) (7)        
-                                                              W: dense_1_bias              f32(1) (5)           
-                                                              O: dense_1_output            f32(1x1) (6)         
------- ----------------- ---- --------------- ------- ------- ---------------------------- -------------------- 
+------ --------------------------- ---- --------------- ------- ------ ------------------------------------- -------------------- 
+c_id   name (*_layer)              id   layer_type      macc    rom    tensors                               shape (array id)     
+------ --------------------------- ---- --------------- ------- ------ ------------------------------------- -------------------- 
+0      conv2d                      3    Conv2D          4816    384    I: input_1_output                     f32(1x24x3x1) (13)   
+                                                                       S: conv2d_scratch0                                         
+                                                                       W: conv2d_weights                     f32(16x5x1x1) (8)    
+                                                                       W: conv2d_bias                        f32(16) (5)          
+                                                                       O: conv2d_output                      f32(1x20x3x16) (6)   
+------ --------------------------- ---- --------------- ------- ------ ------------------------------------- -------------------- 
+1      conv2d_1                    4    Conv2D          61456   5184   I: conv2d_output                      f32(1x20x3x16) (6)   
+                                                                       S: conv2d_1_scratch0                                       
+                                                                       W: conv2d_1_weights                   f32(16x5x1x16) (4)   
+                                                                       W: conv2d_1_bias                      f32(16) (1)          
+                                                                       O: conv2d_1_output                    f32(1x16x3x16) (2)   
+------ --------------------------- ---- --------------- ------- ------ ------------------------------------- -------------------- 
+2      global_max_pooling2d_pool   5    Pool            768     0      I: conv2d_1_output                    f32(1x16x3x16) (2)   
+                                                                       O: global_max_pooling2d_pool_output   f32(1x1x1x16) (12)   
+------ --------------------------- ---- --------------- ------- ------ ------------------------------------- -------------------- 
+3      dense                       7    Dense           68      272    I: global_max_pooling2d_pool_output   f32(1x1x1x16) (12)   
+                                                                       W: dense_weights                      f32(4x16) (11)       
+                                                                       W: dense_bias                         f32(4) (9)           
+                                                                       O: dense_output                       f32(1x4) (10)        
+------ --------------------------- ---- --------------- ------- ------ ------------------------------------- -------------------- 
+4      activation                  8    Nonlinearity    60      0      I: dense_output                       f32(1x4) (10)        
+                                                                       O: activation_output                  f32(1x4) (0)         
+------ --------------------------- ---- --------------- ------- ------ ------------------------------------- -------------------- 
  
 Setting validation data...
- loading file: C:\StellarStudio-9.1\workspace\SR5E1_AI_Demo_7000P\source\validation_lstm\Validate_set.npz
-  available entries: ['in_0', 'out_0'] selector="None"
-  selected entries: in_X/out_X
-   'in_0' (305, 20, 4)/float64, min/max=[-0.000487, 1.003852], mean/std=[0.516940, 0.334368]
-   'out_0' (305, 1)/float64, min/max=[1.123711, 1.856487], mean/std=[1.539881, 0.218578]
-   samples are reshaped: (305, 20, 4) -> (305, 20, 1, 4)
-   samples are reshaped: (305, 1) -> (305, 1, 1, 1)
-   I[1]: (305, 20, 1, 4)/float32, min/max=[-0.000487, 1.003852], mean/std=[0.516940, 0.334368]
-   O[1]: (305, 1, 1, 1)/float32, min/max=[1.123711, 1.856487], mean/std=[1.539881, 0.218578]
+ generating random data, size=10, seed=42, range=(0, 1)
+   I[1]: (10, 24, 3, 1)/float32, min/max=[0.005062, 0.999718], mean/std=[0.493493, 0.295012]
+ no output/reference samples are provided
  
 Running the ST.AI c-model (AI RUNNER)...(name=network, mode=TARGET)
 
@@ -132,14 +123,14 @@ Running the ST.AI c-model (AI RUNNER)...(name=network, mode=TARGET)
   
   Summary 'network' - ['network']
   -------------------------------------------------------------------------------------------------
-  I[1/1] 'input_1'    :   f32[1,20,4], 320 Bytes, activations                                      
-  O[1/1] 'output_1'   :   f32[1,1], 4 Bytes, activations                                           
+  I[1/1] 'input_1'    :   f32[1,24,3,1], 288 Bytes, activations                                    
+  O[1/1] 'output_1'   :   f32[1,4], 16 Bytes, activations                                          
   n_nodes             :   5                                                                        
-  activations         :   2944                                                                     
-  weights             :   35980                                                                    
-  macc                :   95105                                                                    
-  hash                :   0x240f2f740ba9d67d1fa2fba7b2357b41                                       
-  compile_datetime    :   Oct 12 2026 12:20:47                                                     
+  activations         :   4352                                                                     
+  weights             :   5840                                                                     
+  macc                :   67168                                                                    
+  hash                :   0x4fc493cda42347f37425c3f89b4aa13d                                       
+  compile_datetime    :   Nov  5 2026 15:21:43                                                     
   -------------------------------------------------------------------------------------------------
   protocol            :   Proto-buffer driver v2.1 (msg v3.2) (Serial driver v1.0 - COM8:115200)   
   tools               :   ST.AI (st-ai api) v4.0.0                                                 
@@ -150,108 +141,97 @@ Running the ST.AI c-model (AI RUNNER)...(name=network, mode=TARGET)
   -------------------------------------------------------------------------------------------------
   
   ST.AI Profiling results v2.0 - "network"
-  --------------------------------------------------------------------------------------------------------------------
-  nb sample(s)                   :   305                                                                              
-  duration                       :   13709055670442.512 ms by sample (0.055/122978293514240.016/32045486795325.812)   
-  macc                           :   95105                                                                            
-  cycles/MACC                    :   43243958794308.96                                                                
-  CPU cycles                     :   [4,112,716,710,558,924,306]                                                      
-  network initialize time (ms)   :   0.004                                                                            
-  --------------------------------------------------------------------------------------------------------------------
+  ----------------------------------------------------------------------------
+  nb sample(s)                   :   10                                       
+  duration                       :   1.493 ms by sample (1.489/1.497/0.003)   
+  macc                           :   67168                                    
+  cycles/MACC                    :   6.67                                     
+  CPU cycles                     :   [447,806]                                
+  network initialize time (ms)   :   0.004                                    
+  ----------------------------------------------------------------------------
    
    Inference time per node
-   ---------------------------------------------------------------------------------------------------------------------------------------
-   c_id    m_id   type                                           dur (ms)        %     cumul  CPU cycles                      name        
-   ---------------------------------------------------------------------------------------------------------------------------------------
-   0       1      Conv2D (0x103) - Conv2D               5443301516204.497   39.71%    39.71%  [ 1,632,990,458,604,057,088 ]   ai_node_0   
-   1       2      NL (0x107) - Nonlinearity (relu)                  0.010    0.00%    39.71%  [                     3,061 ]   ai_node_1   
-   2       3      Pool (0x10b) - Pool_Max                           0.023    0.00%    39.71%  [                     6,889 ]   ai_node_2   
-   3       4      LSTM (0x181) - LSTM                   8265754154237.979   60.29%   100.00%  [ 2,479,726,251,954,856,448 ]   ai_node_3   
-   4       5      Dense (0x104) - Dense                             0.003    0.00%   100.00%  [                       820 ]   ai_node_4   
-   ---------------------------------------------------------------------------------------------------------------------------------------
-   total                                               13709055670442.510                     [ 4,112,716,710,558,924,306 ]               
-   ---------------------------------------------------------------------------------------------------------------------------------------
+   -------------------------------------------------------------------------------------------------------------------
+   c_id    m_id   type                                         dur (ms)        %     cumul  CPU cycles    name        
+   -------------------------------------------------------------------------------------------------------------------
+   0       3      Conv2D (0x103) - Conv2D                         0.367   24.58%    24.58%  [ 110,051 ]   ai_node_0   
+   1       4      Conv2D (0x103) - Conv2D                         1.098   73.58%    98.15%  [ 329,486 ]   ai_node_1   
+   2       5      Pool (0x10b) - Pool_Max                         0.019    1.24%    99.40%  [   5,570 ]   ai_node_2   
+   3       7      Dense (0x104) - Dense                           0.004    0.30%    99.69%  [   1,325 ]   ai_node_3   
+   4       8      Softmax (0x10c) - Nonlinearity (softmax)        0.005    0.31%   100.00%  [   1,374 ]   ai_node_4   
+   -------------------------------------------------------------------------------------------------------------------
+   total                                                          1.493                     [ 447,806 ]               
+   -------------------------------------------------------------------------------------------------------------------
    
    Statistic per tensor
-   ---------------------------------------------------------------------------------
-   tensor   #     type[shape]:size        min     max     mean      std  name       
-   ---------------------------------------------------------------------------------
-   I.0      305   f32[1,20,4]:320      -0.000   1.004    0.517    0.334  input_1    
-   O.0      305   f32[1,1]:4              nan     nan      nan      nan  output_1   
-   ---------------------------------------------------------------------------------
+   --------------------------------------------------------------------------------
+   tensor   #    type[shape]:size        min     max     mean      std  name       
+   --------------------------------------------------------------------------------
+   I.0      10   f32[1,24,3,1]:288     0.005   1.000    0.493    0.295  input_1    
+   O.0      10   f32[1,4]:16           0.000   0.996    0.250    0.430  output_1   
+   --------------------------------------------------------------------------------
  
 Saving validation data...
  output directory: C:\StellarStudio-9.1\workspace\SR5E1_AI_Demo_7000P\SR5E1_AI_Demo_7000P\cfg
  creating C:\StellarStudio-9.1\workspace\SR5E1_AI_Demo_7000P\SR5E1_AI_Demo_7000P\cfg\network_val_io.npz
- m_outputs_1: (305, 1)/float32, min/max=[1.319921, 2.116236], mean/std=[1.741444, 0.216675], dense_1
- c_outputs_1: (305, 1, 1, 1)/float32, min/max=[nan, nan], mean/std=[nan, nan], dense_1
+ m_outputs_1: (10, 4)/float32, min/max=[0.000000, 0.996436], mean/std=[0.250000, 0.430460], activation
+ c_outputs_1: (10, 1, 1, 4)/float32, min/max=[0.000000, 0.996436], mean/std=[0.250000, 0.430460], activation
 
  
 Computing the metrics...
 
- Accuracy report #1 for the generated TARGET C-model
- ----------------------------------------------------------------------------------------------------
- notes: - p/ - nan/inf values are set to zeros
-        - computed against the provided ground truth values
-        - 305 samples (1 items per sample)
-
-  acc=n.a. rmse=nan mae=nan l2r=nan mean=nan std=nan snr=nan nse=nan cos=nan 
-
- Accuracy report #1 for the reference model
- ----------------------------------------------------------------------------------------------------
- notes: - computed against the provided ground truth values
-        - 305 samples (1 items per sample)
-
-  acc=n.a. rmse=0.221435294 mae=0.201626927 l2r=0.126183137 mean=-0.201564 std=0.091833 snr=16.931438 nse=-0.022948 cos=0.998313 
-
  Cross accuracy report #1 (reference vs C-model)
  ----------------------------------------------------------------------------------------------------
- notes: - p/ - nan/inf values are set to zeros
-        - the output of the reference model is used as ground truth/reference value
-        - 305 samples (1 items per sample)
+ notes: - the output of the reference model is used as ground truth/reference value
+        - 10 samples (4 items per sample)
 
-  acc=n.a. rmse=nan mae=nan l2r=nan mean=nan std=nan snr=nan nse=nan cos=nan 
+  acc=100.00% rmse=0.000000019 mae=0.000000004 l2r=0.000000038 mean=-0.000000 std=0.000000 snr=148.402185 nse=1.000000 cos=1.000000 
+ 
+  Confusion matrix (axis=-1) - 4 classes (10 samples)
+  ----------------------------
+  C0        0    .    .    .  
+  C1        .   10    .    .  
+  C2        .    .    0    .  
+  C3        .    .    .    0  
 
 
 Number of operations per c-layer
-------- ------ ------------------------------ -------- -------------- 
-c_id    m_id   name (type)                         #op           type 
-------- ------ ------------------------------ -------- -------------- 
-0       1      conv1d_1 (Conv2D)                10,272   smul_f32_f32 
-1       2      activation_1 (Nonlinearity)         640     op_f32_f32 
-2       3      max_pooling1d_1 (Pool_Max)          640   smul_f32_f32 
-3       4      lstm_1 (LSTM)                    83,520   smul_f32_f32 
-4       5      dense_1 (Dense)                      33   smul_f32_f32 
-------- ------ ------------------------------ -------- -------------- 
-total                                           95,105 
+------- ------ --------------------------------------- -------- -------------- 
+c_id    m_id   name (type)                                  #op           type 
+------- ------ --------------------------------------- -------- -------------- 
+0       3      conv2d (Conv2D)                            4,816   smul_f32_f32 
+1       4      conv2d_1 (Conv2D)                         61,456   smul_f32_f32 
+2       5      global_max_pooling2d_pool (Pool_Max)         768   smul_f32_f32 
+3       7      dense (Dense)                                 68   smul_f32_f32 
+4       8      activation (Nonlinearity)                     60     op_f32_f32 
+------- ------ --------------------------------------- -------- -------------- 
+total                                                    67,168 
 
 Number of operation types
 ---------------- -------- ----------- 
 operation type          #           % 
 ---------------- -------- ----------- 
-smul_f32_f32       94,465       99.3% 
-op_f32_f32            640        0.7% 
+smul_f32_f32       67,108       99.9% 
+op_f32_f32             60        0.1% 
 
 Complexity report (model)
------- ----------------------- ------------------------- ------------------------- ------ -------- --------------- 
-m_id   name                    c_macc                    c_rom                     c_id   c_dur    l2r (X-CROSS)   
------- ----------------------- ------------------------- ------------------------- ------ -------- --------------- 
-1      batch_normalization_1   ||                10.8%   |                  6.0%   [0]     39.7%                   
-2      activation_1            |                  0.7%   |                  0.0%   [1]      0.0%                   
-3      max_pooling1d_1         |                  0.7%   |                  0.0%   [2]      0.0%                   
-4      lstm_1                  ||||||||||||||||  87.8%   ||||||||||||||||  93.6%   [3]     60.3%                   
-5      dense_1                 |                  0.0%   |                  0.4%   [4]      0.0%   nan             
------- ----------------------- ------------------------- ------------------------- ------ -------- --------------- 
-macc=95,105 weights=35,980 act=2,944 ram_io=0
+------ --------------------------- ------------------------- ------------------------- ------ -------- ------------------ 
+m_id   name                        c_macc                    c_rom                     c_id   c_dur    l2r (X-CROSS)      
+------ --------------------------- ------------------------- ------------------------- ------ -------- ------------------ 
+3      batch_normalization_1       ||                 7.2%   ||                 6.6%   [0]     24.6%                      
+4      conv2d_1                    ||||||||||||||||  91.5%   ||||||||||||||||  88.8%   [1]     73.6%                      
+5      global_max_pooling2d_pool   |                  1.1%   |                  0.0%   [2]      1.2%                      
+7      dense                       |                  0.1%   |                  4.7%   [3]      0.3%                      
+8      activation                  |                  0.1%   |                  0.0%   [4]      0.3%   3.80093539e-08 *   
+------ --------------------------- ------------------------- ------------------------- ------ -------- ------------------ 
+macc=67,168 weights=5,840 act=4,352 ram_io=0
 
 Evaluation report (summary)
----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Output              acc    rmse          mae           l2r           mean        std        snr         nse         cos        tensor                                
----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-TARGET c-model #1   n.a.   nan           nan           nan           nan         nan        nan         nan         nan        'dense_1', 305 x f32(1x1), m_id=[5]   
-original model #1   n.a.   0.221435294   0.201626927   0.126183137   -0.201564   0.091833   16.931438   -0.022948   0.998313   'dense_1', 305 x f32(1x1), m_id=[5]   
-X-cross #1          n.a.   nan           nan           nan           nan         nan        nan         nan         nan        'dense_1', 305 x f32(1x1), m_id=[5]   
----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Output       acc       rmse          mae           l2r           mean        std        snr          nse        cos        tensor                                  
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+X-cross #1   100.00%   0.000000019   0.000000004   0.000000038   -0.000000   0.000000   148.402185   1.000000   1.000000   'activation', 10 x f32(1x4), m_id=[8]   
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
  acc  : Accuracy (class, axis=-1)
  rmse : Root Mean Squared Error

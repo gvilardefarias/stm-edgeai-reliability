@@ -230,11 +230,11 @@
  133              		.file 6 "C:/StellarStudio-9.1/SDKS/StellarESDK-1.10.0/Modules/Drivers/Comms/UART/include/sr5e1/uar
 DEFINED SYMBOLS
                             *ABS*:00000000 stellar_ai_validate.c
-C:\Users\danie\AppData\Local\Temp\ccDsECb8.s:20     .bss.sr5e1_rxbuf:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccDsECb8.s:23     .bss.sr5e1_rxbuf:00000000 sr5e1_rxbuf
-C:\Users\danie\AppData\Local\Temp\ccDsECb8.s:26     .text.SR5E1_UART_Init:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccDsECb8.s:33     .text.SR5E1_UART_Init:00000000 SR5E1_UART_Init
-C:\Users\danie\AppData\Local\Temp\ccDsECb8.s:122    .text.SR5E1_UART_Init:00000090 $d
+C:\Users\danie\AppData\Local\Temp\ccAww336.s:20     .bss.sr5e1_rxbuf:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccAww336.s:23     .bss.sr5e1_rxbuf:00000000 sr5e1_rxbuf
+C:\Users\danie\AppData\Local\Temp\ccAww336.s:26     .text.SR5E1_UART_Init:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccAww336.s:33     .text.SR5E1_UART_Init:00000000 SR5E1_UART_Init
+C:\Users\danie\AppData\Local\Temp\ccAww336.s:122    .text.SR5E1_UART_Init:00000090 $d
                            .group:00000000 wm4.0.5030deb6392b4db6a7ac5ffd5733b4a1
                            .group:00000000 wm4.stellar_ai_cfg.h.22.b8366a3a45f39e9e09a10028cf2dd2bf
                            .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
@@ -248,7 +248,7 @@ C:\Users\danie\AppData\Local\Temp\ccDsECb8.s:122    .text.SR5E1_UART_Init:000000
                            .group:00000000 wm4.stdbool.h.29.c08aa3eec75cf5b9b5003883f43253f0
                            .group:00000000 wm4.stai.h.38.8b7b3b20574e05eb8d4bb79c3a135768
                            .group:00000000 wm4.stai_debug.h.37.4be079c70c66033549ba26b63a31db94
-                           .group:00000000 wm4.network.h.26.b7847d442a108daf4406804071fbba60
+                           .group:00000000 wm4.network.h.26.4a5f2db7edc3f11345f0347442b5c47d
                            .group:00000000 wm4.app_stellarstudioai.h.34.09d4d4538ab8661d6d0406dbdedd94c9
                            .group:00000000 wm4.sr5e1xx.h.22.e5c808533cc52ed19fb0830cd7d98924
                            .group:00000000 wm4.cmsis_version.h.32.0f826810625204eca22a19868bdc7586

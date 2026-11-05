@@ -37,7 +37,7 @@
   45              		.section	.bss.activations_1,"aw",%nobits
   46              		.align	5
   49              	activations_1:
-  50 0000 00000000 		.space	2944
+  50 0000 00000000 		.space	4352
   50      00000000 
   50      00000000 
   50      00000000 
@@ -2175,81 +2175,81 @@
  1670              		.file 8 "SR5E1_AI_Demo_7000P/cfg/inc/network.h"
 DEFINED SYMBOLS
                             *ABS*:00000000 app_stellar-studio-ai.c
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:20     .bss.data_in_1:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:23     .bss.data_in_1:00000000 data_in_1
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:30     .data.data_ins:00000000 data_ins
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:27     .data.data_ins:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:33     .bss.data_out_1:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:36     .bss.data_out_1:00000000 data_out_1
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:43     .data.data_outs:00000000 data_outs
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:40     .data.data_outs:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:46     .bss.activations_1:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:49     .bss.activations_1:00000000 activations_1
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:56     .data.data_activations:00000000 data_activations
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:53     .data.data_activations:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:59     .bss.states_1:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:62     .bss.states_1:00000000 states_1
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:69     .data.data_states:00000000 data_states
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:66     .data.data_states:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:76     .bss._context_network:00000000 _context_network
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:73     .bss._context_network:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:83     .bss.stai_network_weights_addr:00000000 stai_network_weights_addr
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:80     .bss.stai_network_weights_addr:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:86     .rodata:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:90     .rodata.networks:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:93     .rodata.networks:00000000 networks
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:121    .bss.gnetworks:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:124    .bss.gnetworks:00000000 gnetworks
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:127    .text._stai_mnetwork_is_valid:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:133    .text._stai_mnetwork_is_valid:00000000 _stai_mnetwork_is_valid
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:201    .text._stai_mnetwork_handle:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:207    .text._stai_mnetwork_handle:00000000 _stai_mnetwork_handle
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:281    .text._stai_mnetwork_handle:00000054 $d
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:286    .text._stai_mnetwork_release_handle:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:292    .text._stai_mnetwork_release_handle:00000000 _stai_mnetwork_release_handle
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:349    .text._stai_mnetwork_release_handle:0000003c $d
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:354    .text.stai_mnetwork_get_internal_handle:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:361    .text.stai_mnetwork_get_internal_handle:00000000 stai_mnetwork_get_internal_handle
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:399    .text.stai_mnetwork_find:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:406    .text.stai_mnetwork_find:00000000 stai_mnetwork_find
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:480    .text.stai_mnetwork_find:00000058 $d
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:485    .text.stai_mnetwork_init:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:492    .text.stai_mnetwork_init:00000000 stai_mnetwork_init
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:636    .text.stai_mnetwork_init:000000b4 $d
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:641    .text.stai_mnetwork_set_activations:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:648    .text.stai_mnetwork_set_activations:00000000 stai_mnetwork_set_activations
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:703    .text.stai_mnetwork_set_states:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:710    .text.stai_mnetwork_set_states:00000000 stai_mnetwork_set_states
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:765    .text.stai_mnetwork_set_weights:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:772    .text.stai_mnetwork_set_weights:00000000 stai_mnetwork_set_weights
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:846    .text.stai_mnetwork_set_inputs:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:853    .text.stai_mnetwork_set_inputs:00000000 stai_mnetwork_set_inputs
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:908    .text.stai_mnetwork_set_outputs:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:915    .text.stai_mnetwork_set_outputs:00000000 stai_mnetwork_set_outputs
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:970    .text.stai_mnetwork_set_callback:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:977    .text.stai_mnetwork_set_callback:00000000 stai_mnetwork_set_callback
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1029   .text.stai_mnetwork_get_details:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1036   .text.stai_mnetwork_get_details:00000000 stai_mnetwork_get_details
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1076   .text.stai_mnetwork_get_activations:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1083   .text.stai_mnetwork_get_activations:00000000 stai_mnetwork_get_activations
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1136   .text.stai_mnetwork_get_states:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1143   .text.stai_mnetwork_get_states:00000000 stai_mnetwork_get_states
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1196   .text.stai_mnetwork_get_weights:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1203   .text.stai_mnetwork_get_weights:00000000 stai_mnetwork_get_weights
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1256   .text.stai_mnetwork_get_weights_ext:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1263   .text.stai_mnetwork_get_weights_ext:00000000 stai_mnetwork_get_weights_ext
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1303   .text.stai_mnetwork_get_inputs:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1310   .text.stai_mnetwork_get_inputs:00000000 stai_mnetwork_get_inputs
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1363   .text.stai_mnetwork_get_outputs:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1370   .text.stai_mnetwork_get_outputs:00000000 stai_mnetwork_get_outputs
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1423   .text.stai_mnetwork_deinit:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1430   .text.stai_mnetwork_deinit:00000000 stai_mnetwork_deinit
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1486   .text.stai_mnetwork_get_info:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1493   .text.stai_mnetwork_get_info:00000000 stai_mnetwork_get_info
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1546   .text.stai_mnetwork_get_error:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1553   .text.stai_mnetwork_get_error:00000000 stai_mnetwork_get_error
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1604   .text.stai_mnetwork_run:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1611   .text.stai_mnetwork_run:00000000 stai_mnetwork_run
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:20     .bss.data_in_1:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:23     .bss.data_in_1:00000000 data_in_1
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:30     .data.data_ins:00000000 data_ins
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:27     .data.data_ins:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:33     .bss.data_out_1:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:36     .bss.data_out_1:00000000 data_out_1
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:43     .data.data_outs:00000000 data_outs
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:40     .data.data_outs:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:46     .bss.activations_1:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:49     .bss.activations_1:00000000 activations_1
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:56     .data.data_activations:00000000 data_activations
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:53     .data.data_activations:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:59     .bss.states_1:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:62     .bss.states_1:00000000 states_1
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:69     .data.data_states:00000000 data_states
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:66     .data.data_states:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:76     .bss._context_network:00000000 _context_network
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:73     .bss._context_network:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:83     .bss.stai_network_weights_addr:00000000 stai_network_weights_addr
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:80     .bss.stai_network_weights_addr:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:86     .rodata:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:90     .rodata.networks:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:93     .rodata.networks:00000000 networks
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:121    .bss.gnetworks:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:124    .bss.gnetworks:00000000 gnetworks
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:127    .text._stai_mnetwork_is_valid:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:133    .text._stai_mnetwork_is_valid:00000000 _stai_mnetwork_is_valid
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:201    .text._stai_mnetwork_handle:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:207    .text._stai_mnetwork_handle:00000000 _stai_mnetwork_handle
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:281    .text._stai_mnetwork_handle:00000054 $d
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:286    .text._stai_mnetwork_release_handle:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:292    .text._stai_mnetwork_release_handle:00000000 _stai_mnetwork_release_handle
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:349    .text._stai_mnetwork_release_handle:0000003c $d
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:354    .text.stai_mnetwork_get_internal_handle:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:361    .text.stai_mnetwork_get_internal_handle:00000000 stai_mnetwork_get_internal_handle
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:399    .text.stai_mnetwork_find:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:406    .text.stai_mnetwork_find:00000000 stai_mnetwork_find
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:480    .text.stai_mnetwork_find:00000058 $d
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:485    .text.stai_mnetwork_init:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:492    .text.stai_mnetwork_init:00000000 stai_mnetwork_init
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:636    .text.stai_mnetwork_init:000000b4 $d
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:641    .text.stai_mnetwork_set_activations:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:648    .text.stai_mnetwork_set_activations:00000000 stai_mnetwork_set_activations
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:703    .text.stai_mnetwork_set_states:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:710    .text.stai_mnetwork_set_states:00000000 stai_mnetwork_set_states
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:765    .text.stai_mnetwork_set_weights:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:772    .text.stai_mnetwork_set_weights:00000000 stai_mnetwork_set_weights
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:846    .text.stai_mnetwork_set_inputs:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:853    .text.stai_mnetwork_set_inputs:00000000 stai_mnetwork_set_inputs
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:908    .text.stai_mnetwork_set_outputs:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:915    .text.stai_mnetwork_set_outputs:00000000 stai_mnetwork_set_outputs
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:970    .text.stai_mnetwork_set_callback:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:977    .text.stai_mnetwork_set_callback:00000000 stai_mnetwork_set_callback
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:1029   .text.stai_mnetwork_get_details:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:1036   .text.stai_mnetwork_get_details:00000000 stai_mnetwork_get_details
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:1076   .text.stai_mnetwork_get_activations:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:1083   .text.stai_mnetwork_get_activations:00000000 stai_mnetwork_get_activations
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:1136   .text.stai_mnetwork_get_states:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:1143   .text.stai_mnetwork_get_states:00000000 stai_mnetwork_get_states
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:1196   .text.stai_mnetwork_get_weights:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:1203   .text.stai_mnetwork_get_weights:00000000 stai_mnetwork_get_weights
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:1256   .text.stai_mnetwork_get_weights_ext:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:1263   .text.stai_mnetwork_get_weights_ext:00000000 stai_mnetwork_get_weights_ext
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:1303   .text.stai_mnetwork_get_inputs:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:1310   .text.stai_mnetwork_get_inputs:00000000 stai_mnetwork_get_inputs
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:1363   .text.stai_mnetwork_get_outputs:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:1370   .text.stai_mnetwork_get_outputs:00000000 stai_mnetwork_get_outputs
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:1423   .text.stai_mnetwork_deinit:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:1430   .text.stai_mnetwork_deinit:00000000 stai_mnetwork_deinit
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:1486   .text.stai_mnetwork_get_info:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:1493   .text.stai_mnetwork_get_info:00000000 stai_mnetwork_get_info
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:1546   .text.stai_mnetwork_get_error:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:1553   .text.stai_mnetwork_get_error:00000000 stai_mnetwork_get_error
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:1604   .text.stai_mnetwork_run:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccDpbCrL.s:1611   .text.stai_mnetwork_run:00000000 stai_mnetwork_run
                            .group:00000000 wm4.0.5030deb6392b4db6a7ac5ffd5733b4a1
                            .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
                            .group:00000000 wm4.newlib.h.27.4b972ceed5d01f491020c20f1e546cab
@@ -2275,7 +2275,7 @@ C:\Users\danie\AppData\Local\Temp\ccIuI604.s:1611   .text.stai_mnetwork_run:0000
                            .group:00000000 wm4.stdbool.h.29.c08aa3eec75cf5b9b5003883f43253f0
                            .group:00000000 wm4.stai.h.38.8b7b3b20574e05eb8d4bb79c3a135768
                            .group:00000000 wm4.stai_debug.h.37.4be079c70c66033549ba26b63a31db94
-                           .group:00000000 wm4.network.h.26.b7847d442a108daf4406804071fbba60
+                           .group:00000000 wm4.network.h.26.4a5f2db7edc3f11345f0347442b5c47d
                            .group:00000000 wm4.app_stellarstudioai.h.34.09d4d4538ab8661d6d0406dbdedd94c9
                            .group:00000000 wm4.stellar_ai_cfg.h.22.b8366a3a45f39e9e09a10028cf2dd2bf
                            .group:00000000 wm4.sr5e1xx.h.22.e5c808533cc52ed19fb0830cd7d98924

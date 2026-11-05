@@ -1669,30 +1669,30 @@
  1289              		.file 7 "C:/StellarStudio-9.1/SDKS/TOOLS/Toolchain/ARM/MINGW64_NT/13.3.1-2024.06/arm-none-eabi/inc
 DEFINED SYMBOLS
                             *ABS*:00000000 aiTestHelper_ST_AI.c
-C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:20     .rodata:00000000 $d
-C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:40     .text.stai_platform_version:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:47     .text.stai_platform_version:00000000 stai_platform_version
-C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:108    .text.stai_platform_version:0000006c $d
-C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:125    .text.stai_log_err:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:132    .text.stai_log_err:00000000 stai_log_err
-C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:171    .text.stai_log_err:0000002c $d
-C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:199    .text.stai_log_data_type:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:205    .text.stai_log_data_type:00000000 stai_log_data_type
-C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:308    .text.stai_log_data_type:000000a4 $d
-C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:344    .text.stai_log_tensor:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:351    .text.stai_log_tensor:00000000 stai_log_tensor
-C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:482    .text.stai_log_tensor:000000c8 $d
-C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:498    .text.stai_log_io_tensor:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:505    .text.stai_log_io_tensor:00000000 stai_log_io_tensor
-C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:638    .text.stai_log_io_tensor:000000cc $d
-C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:650    .text._stai_log_tensor_data:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:656    .text._stai_log_tensor_data:00000000 _stai_log_tensor_data
-C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:694    .text._stai_log_tensor_data:00000030 $d
-C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:769    .text.stai_log_network_info:00000000 $t
-C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:776    .text.stai_log_network_info:00000000 stai_log_network_info
-C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:1200   .text.stai_log_network_info:00000284 $d
-C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:1225   .text.stai_log_network_info:000002e0 $t
-C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:1277   .text.stai_log_network_info:0000032c $d
+C:\Users\danie\AppData\Local\Temp\ccLdtf0l.s:20     .rodata:00000000 $d
+C:\Users\danie\AppData\Local\Temp\ccLdtf0l.s:40     .text.stai_platform_version:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccLdtf0l.s:47     .text.stai_platform_version:00000000 stai_platform_version
+C:\Users\danie\AppData\Local\Temp\ccLdtf0l.s:108    .text.stai_platform_version:0000006c $d
+C:\Users\danie\AppData\Local\Temp\ccLdtf0l.s:125    .text.stai_log_err:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccLdtf0l.s:132    .text.stai_log_err:00000000 stai_log_err
+C:\Users\danie\AppData\Local\Temp\ccLdtf0l.s:171    .text.stai_log_err:0000002c $d
+C:\Users\danie\AppData\Local\Temp\ccLdtf0l.s:199    .text.stai_log_data_type:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccLdtf0l.s:205    .text.stai_log_data_type:00000000 stai_log_data_type
+C:\Users\danie\AppData\Local\Temp\ccLdtf0l.s:308    .text.stai_log_data_type:000000a4 $d
+C:\Users\danie\AppData\Local\Temp\ccLdtf0l.s:344    .text.stai_log_tensor:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccLdtf0l.s:351    .text.stai_log_tensor:00000000 stai_log_tensor
+C:\Users\danie\AppData\Local\Temp\ccLdtf0l.s:482    .text.stai_log_tensor:000000c8 $d
+C:\Users\danie\AppData\Local\Temp\ccLdtf0l.s:498    .text.stai_log_io_tensor:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccLdtf0l.s:505    .text.stai_log_io_tensor:00000000 stai_log_io_tensor
+C:\Users\danie\AppData\Local\Temp\ccLdtf0l.s:638    .text.stai_log_io_tensor:000000cc $d
+C:\Users\danie\AppData\Local\Temp\ccLdtf0l.s:650    .text._stai_log_tensor_data:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccLdtf0l.s:656    .text._stai_log_tensor_data:00000000 _stai_log_tensor_data
+C:\Users\danie\AppData\Local\Temp\ccLdtf0l.s:694    .text._stai_log_tensor_data:00000030 $d
+C:\Users\danie\AppData\Local\Temp\ccLdtf0l.s:769    .text.stai_log_network_info:00000000 $t
+C:\Users\danie\AppData\Local\Temp\ccLdtf0l.s:776    .text.stai_log_network_info:00000000 stai_log_network_info
+C:\Users\danie\AppData\Local\Temp\ccLdtf0l.s:1200   .text.stai_log_network_info:00000284 $d
+C:\Users\danie\AppData\Local\Temp\ccLdtf0l.s:1225   .text.stai_log_network_info:000002e0 $t
+C:\Users\danie\AppData\Local\Temp\ccLdtf0l.s:1277   .text.stai_log_network_info:0000032c $d
                            .group:00000000 wm4.0.5030deb6392b4db6a7ac5ffd5733b4a1
                            .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
                            .group:00000000 wm4.newlib.h.27.4b972ceed5d01f491020c20f1e546cab
@@ -1727,7 +1727,7 @@ C:\Users\danie\AppData\Local\Temp\ccoMfEtv.s:1277   .text.stai_log_network_info:
                            .group:00000000 wm4.ai_device_adaptor.h.109.a7e609accf0e2d1179889371c58a4000
                            .group:00000000 wm4.stellar_ai_cfg.h.22.b8366a3a45f39e9e09a10028cf2dd2bf
                            .group:00000000 wm4.stai_debug.h.37.4be079c70c66033549ba26b63a31db94
-                           .group:00000000 wm4.network.h.26.b7847d442a108daf4406804071fbba60
+                           .group:00000000 wm4.network.h.26.4a5f2db7edc3f11345f0347442b5c47d
                            .group:00000000 wm4.app_stellarstudioai.h.34.09d4d4538ab8661d6d0406dbdedd94c9
                            .group:00000000 wm4.sr5e1xx.h.22.e5c808533cc52ed19fb0830cd7d98924
                            .group:00000000 wm4.cmsis_version.h.32.0f826810625204eca22a19868bdc7586
