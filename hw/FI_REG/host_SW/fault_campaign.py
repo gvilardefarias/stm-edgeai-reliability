@@ -641,7 +641,7 @@ def run(args, logger):
         logger.info('Starting fault injection campaign')
         f_campaign_results = {}
 
-        ai_outputs, ai_profiler = session.invoke(inputs, mode=mode, FI_enable=True, f_w_size=args.f_w_size)
+        ai_outputs, ai_profiler = session.invoke(inputs, mode=mode, FI_enable=True, f_nb=args.f_nb)
         
         if warm_started:
             ...
@@ -700,7 +700,7 @@ def main():
     parser.add_argument('--f-bit-range', type=int, default=16, help="Fault injection bit range")
     parser.add_argument('--f-bit-start', type=int, default=63, help="Fault injection start bit")
     parser.add_argument('--f-bit-step', type=int, default=32, help="Fault injection bit step")
-    parser.add_argument('--f-w-size', type=int, default=730, help="Fault injection weigth size")
+    parser.add_argument('--f-nb', type=int, default=3, help="Fault injection weigth size")
     parser.add_argument('--f-inject', action='store_true', help="Enable fault injection")
     args = parser.parse_args()
     logging.basicConfig(format='%(message)s', stream=sys.stdout,

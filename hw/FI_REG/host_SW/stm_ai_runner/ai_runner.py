@@ -764,7 +764,7 @@ class AiRunner:
         FI_enable = kwargs.pop('FI_enable', False)
 
         if FI_enable:
-            f_nb = kwargs.pop('f_nb', 4)
+            f_nb = kwargs.pop('f_nb', 3)
         else:
             f_nb = None
 

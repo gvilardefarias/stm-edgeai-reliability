@@ -40,10 +40,9 @@ typedef struct {
 } fi_record_t;
 
 typedef struct {
-    volatile uint8_t dummy;
-    volatile uint8_t done;          /* 1 = flip eseguito in questa inferenza */
+    volatile uint8_t done_and_bit;      /* MSB 1 = flip eseguito in questa inferenza */
+                                        /*LSB = bit idx of the fault*/
     volatile uint8_t reg;           /* 0..12 = R0..R12, 13..44 = S0..S31 */
-    volatile uint8_t bit;           /* 0..31                          */
     volatile uint8_t node;          /* 1 = conv1d_1, 2 = activation_1, 3 = max_pooling1d_1,
                                         4 = lstm_1, 5 = dense_1 */
     volatile uint8_t abort_cause;   /* FI_ABORT_NONE / FI_ABORT_CRASH / FI_ABORT_HANG */

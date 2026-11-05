@@ -27,7 +27,7 @@
 
 #define FI_CAMPAIGN 1
 
-#define FC_F_NB 730
+#define FC_F_NB 3
 
 #if !defined(USE_OBSERVER)
 #define USE_OBSERVER         1 /* 0: remove the registration of the user CB to evaluate the inference time by layer */
@@ -80,6 +80,9 @@
 #endif
 
 #if FI_CAMPAIGN == 1
+// Custom Includes
+#include "fault_injection.h"
+
 extern fi_log_t fi_log;			        // struct with important info on the injection
 #endif
 

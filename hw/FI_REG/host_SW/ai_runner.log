@@ -1,0 +1,305 @@
+[D:AiRunner] creating "AiRunner" object (v3.2)
+[D:AiRunner] resolving('desc' parameter: 'serial')..
+[D:AiRunner] creating <stm_ai_runner.pb_mgr_drv.AiPbMsg object at 0x0000023BFC0FB080> (v2.1)
+[D:AiRunner] creating <stm_ai_runner.serial_hw_drv.SerialHwDriver object at 0x0000023BFBE00830>
+[D:AiRunner] 'desc' parameter for 'AiPbMsg' driver: ''
+[D:AiRunner] connecting..
+[D:AiRunner] baud=115200 device=None timeout=0.1 io_hw_log=None
+[D:AiRunner] 0: {'type': 'serial', 'device': 'COM3', 'desc': 'StellarLINK USB Serial Port (COM3)', 'hwid': 'USB VID:PID=0483:0499 SER=0442327010B'}
+[D:AiRunner] is_alive() STM32 - read timeout 562.0ms/500ms
+[D:AiRunner] 1: {'type': 'serial', 'device': 'COM4', 'desc': 'USB Serial Port (COM4)', 'hwid': 'USB VID:PID=0403:6010 SER=5'}
+[D:AiRunner] -> [sync msg]
+[D:AiRunner]    version: 770
+[D:AiRunner]    capability: 1
+[D:AiRunner]    rtid: 65793
+[D:AiRunner] <- [sync msg]
+[D:AiRunner] CMD_SYNC v3.2
+[D:AiRunner] connection successful
+[D:AiRunner] -> [sys_info msg]
+[D:AiRunner]    devid: 9489
+[D:AiRunner]    sclock: 300000000
+[D:AiRunner]    hclock: 300000000
+[D:AiRunner]    cache: 50400256
+[D:AiRunner]    com_param: 0
+[D:AiRunner] <- [sys_info msg]
+[D:AiRunner] set packet size to 32/32 bytes
+[D:AiRunner] -> [model_info msg]
+[D:AiRunner]    name: "network"
+[D:AiRunner]    rtid: 65793
+[D:AiRunner]    signature: "0x4fc493cda42347f37425c3f89b4aa13d"
+[D:AiRunner]    compile_datetime: "Nov  4 2026 16:07:45"
+[D:AiRunner]    runtime_version: 184549376
+[D:AiRunner]    tool_version: 50331648
+[D:AiRunner]    n_macc: 67168
+[D:AiRunner]    n_nodes: 5
+[D:AiRunner]    n_inputs: 1
+[D:AiRunner]    inputs {
+[D:AiRunner]      name: ""
+[D:AiRunner]      format: 8523840
+[D:AiRunner]      size: 72
+[D:AiRunner]      n_dims: 1677721604
+[D:AiRunner]      dims: 1
+[D:AiRunner]      dims: 24
+[D:AiRunner]      dims: 3
+[D:AiRunner]      dims: 1
+[D:AiRunner]      scale: 0.0
+[D:AiRunner]      zeropoint: 0
+[D:AiRunner]      addr: 603989056
+[D:AiRunner]      flags: 1
+[D:AiRunner]    }
+[D:AiRunner]    n_outputs: 1
+[D:AiRunner]    outputs {
+[D:AiRunner]      name: ""
+[D:AiRunner]      format: 8523840
+[D:AiRunner]      size: 4
+[D:AiRunner]      n_dims: 1677721602
+[D:AiRunner]      dims: 1
+[D:AiRunner]      dims: 4
+[D:AiRunner]      scale: 0.0
+[D:AiRunner]      zeropoint: 0
+[D:AiRunner]      addr: 603989392
+[D:AiRunner]      flags: 1026
+[D:AiRunner]    }
+[D:AiRunner]    n_activations: 1
+[D:AiRunner]    activations {
+[D:AiRunner]      name: ""
+[D:AiRunner]      format: 263232
+[D:AiRunner]      size: 4352
+[D:AiRunner]      n_dims: 67108865
+[D:AiRunner]      dims: 4352
+[D:AiRunner]      scale: 0.0
+[D:AiRunner]      zeropoint: 0
+[D:AiRunner]      addr: 603989376
+[D:AiRunner]      flags: 8
+[D:AiRunner]    }
+[D:AiRunner]    n_params: 1
+[D:AiRunner]    params {
+[D:AiRunner]      name: ""
+[D:AiRunner]      format: 263232
+[D:AiRunner]      size: 5840
+[D:AiRunner]      n_dims: 67108865
+[D:AiRunner]      dims: 5840
+[D:AiRunner]      scale: 0.0
+[D:AiRunner]      zeropoint: 0
+[D:AiRunner]      addr: 603979864
+[D:AiRunner]      flags: 1032
+[D:AiRunner]    }
+[D:AiRunner]    runtime_desc: "GCC 13.3.1 DE8FEC9B"
+[D:AiRunner]    n_install_time: 0.0
+[D:AiRunner]    n_init_time: 0.0047533335
+[D:AiRunner] <- [model_info msg]
+[D:AiRunner] RT_DECODER: ST.AI (st-ai api), id=0x10101, compiler=GCC, act=True, params=True, macc=True
+[D:AiRunner] DEV_DECODER: stellar family - 0x2511 - SR5E1 @300/300MHz, ['fpu', 'art_lat=0', 'core_icache', 'core_dcache']
+[D:AiRunner] discover() found="network"
+[D:AiRunner] -> Requested RUN mode: Mode.PER_LAYER (param=0b11, option=0x1)
+[D:AiRunner]    SEND INPUT TENSOR #0 ((1, 24, 3, 1)/float32) last=True..
+[D:AiRunner]    Running FI at index 0
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.663ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner]    Running FI at index 1
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.659ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner]    Running FI at index 2
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.660ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner] <- done (target dur=1.660ms)
+[D:AiRunner] -> Requested RUN mode: Mode.PER_LAYER (param=0b11, option=0x0)
+[D:AiRunner]    SEND INPUT TENSOR #0 ((1, 24, 3, 1)/float32) last=True..
+[D:AiRunner]    Running FI at index 0
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.660ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner]    Running FI at index 1
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.664ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner]    Running FI at index 2
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.663ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner] <- done (target dur=1.663ms)
+[D:AiRunner] -> Requested RUN mode: Mode.PER_LAYER (param=0b11, option=0x0)
+[D:AiRunner]    SEND INPUT TENSOR #0 ((1, 24, 3, 1)/float32) last=True..
+[D:AiRunner]    Running FI at index 0
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.660ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner]    Running FI at index 1
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.660ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner]    Running FI at index 2
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.662ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner] <- done (target dur=1.662ms)
+[D:AiRunner] -> Requested RUN mode: Mode.PER_LAYER (param=0b11, option=0x0)
+[D:AiRunner]    SEND INPUT TENSOR #0 ((1, 24, 3, 1)/float32) last=True..
+[D:AiRunner]    Running FI at index 0
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.662ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner]    Running FI at index 1
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.663ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner]    Running FI at index 2
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.664ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner] <- done (target dur=1.664ms)
+[D:AiRunner] -> Requested RUN mode: Mode.PER_LAYER (param=0b11, option=0x0)
+[D:AiRunner]    SEND INPUT TENSOR #0 ((1, 24, 3, 1)/float32) last=True..
+[D:AiRunner]    Running FI at index 0
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.661ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner]    Running FI at index 1
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.658ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner]    Running FI at index 2
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.658ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner] <- done (target dur=1.658ms)
+[D:AiRunner] -> Requested RUN mode: Mode.PER_LAYER (param=0b11, option=0x0)
+[D:AiRunner]    SEND INPUT TENSOR #0 ((1, 24, 3, 1)/float32) last=True..
+[D:AiRunner]    Running FI at index 0
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.658ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner]    Running FI at index 1
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.662ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner]    Running FI at index 2
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.665ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner] <- done (target dur=1.665ms)
+[D:AiRunner] -> Requested RUN mode: Mode.PER_LAYER (param=0b11, option=0x0)
+[D:AiRunner]    SEND INPUT TENSOR #0 ((1, 24, 3, 1)/float32) last=True..
+[D:AiRunner]    Running FI at index 0
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.661ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner]    Running FI at index 1
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.663ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner]    Running FI at index 2
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.660ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner] <- done (target dur=1.660ms)
+[D:AiRunner] -> Requested RUN mode: Mode.PER_LAYER (param=0b11, option=0x0)
+[D:AiRunner]    SEND INPUT TENSOR #0 ((1, 24, 3, 1)/float32) last=True..
+[D:AiRunner]    Running FI at index 0
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.662ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner]    Running FI at index 1
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.658ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner]    Running FI at index 2
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.659ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner] <- done (target dur=1.659ms)
+[D:AiRunner] -> Requested RUN mode: Mode.PER_LAYER (param=0b11, option=0x0)
+[D:AiRunner]    SEND INPUT TENSOR #0 ((1, 24, 3, 1)/float32) last=True..
+[D:AiRunner]    Running FI at index 0
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.659ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner]    Running FI at index 1
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.660ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner]    Running FI at index 2
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.656ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner] <- done (target dur=1.656ms)
+[D:AiRunner] -> Requested RUN mode: Mode.PER_LAYER (param=0b11, option=0x0)
+[D:AiRunner]    SEND INPUT TENSOR #0 ((1, 24, 3, 1)/float32) last=True..
+[D:AiRunner]    Running FI at index 0
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.660ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner]    Running FI at index 1
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.658ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner]    Running FI at index 2
+[D:AiRunner]    ----------------------------------------
+[D:AiRunner]    INFERENCE DONE
+[D:AiRunner]     name="network" counters="CPU cycles"[0] dur=1.658ms id=0.0 type=0x0/NONE,"Output (0x0)"
+[D:AiRunner]    RECEIVE OUTPUT TENSOR #0 last=True..
+[D:AiRunner]     IOTensor: O_0, , 0x24002590 f32[1,4], 16 Bytes
+[D:AiRunner] <- done (target dur=1.658ms)
+[D:AiRunner] -> Requested RUN mode: Mode.PER_LAYER (param=0b11, option=0x0)
+[D:AiRunner]    SEND INPUT TENSOR #0 ((1, 24, 3, 1)/float32) last=True..
