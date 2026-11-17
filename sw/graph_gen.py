@@ -46,3 +46,21 @@ def per_layer_sta_ov(acc_drop_df):
     plt.tight_layout()
     #plt.subplots_adjust(bottom=0.2)
     plt.show()
+
+def per_layer_sta_ov_norm(acc_drop_df):
+    plot_mean_drop_df = acc_drop_df.set_index('layer_name')[['norm']]
+    
+    for layer_name in plot_mean_drop_df.index:
+        layer_name_short = layer_name.replace('_array','')
+        plot_mean_drop_df = plot_mean_drop_df.rename(index={layer_name: layer_name_short})
+
+    plt.figure(figsize=(8, 6))
+    ax = plot_mean_drop_df.plot(kind='bar', figsize=(10, 6), width=0.6, legend=False)
+
+    ax.set_xlabel('Layer', fontsize=18)
+    ax.set_ylabel('Mean Accuracy drop (Normalized)', fontsize=18)
+    ax.set_ylim(0, 6)
+    ax.tick_params(axis='both', labelsize=14)
+    plt.xticks(rotation=45, ha='right')
+    plt.tight_layout()
+    plt.show()

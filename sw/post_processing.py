@@ -6,13 +6,32 @@ import stm_edgeai_lib as stm
 import fault_campaign as FC
 import graph_gen as gg
 
-#in_file = "out_files/out_dict_16b.txt"
-#in_file = "out_dict.txt"
+in_file = "out_dict.txt"
+#network_info = "./hardening/c_code_validete/ign/original/st_ai_ws/network_c_graph.json"
+#weights_file = "./hardening/c_code_validete/ign/original/st_ai_output/src/network_data_params.c"
+#in_file = "out_files/gmp/TMR_conv2d_1/out_dict.txt"
 #network_info = "./hardening/c_code_validete/gmp/tmr_voter/st_ai_ws/network_c_graph.json"
-#weights_file = "./st_ai_output/src/network_data_params.c"
-in_file = "out_files/gmp/out_dict_16bof32_dataset.txt"
+#weights_file = "./hardening/c_code_validete/gmp/tmr_voter/st_ai_output/src/network_data_params.c"
+in_file = "out_files/gmp/original/out_dict_16bof32_dataset.txt"
 network_info = "./hardening/c_code_validete/gmp/original/st_ai_ws/network_c_graph.json"
 weights_file = "./hardening/c_code_validete/gmp/original/st_ai_output/src/network_data_params.c"
+#in_file = "out_files/handposture/original/out_dict_16bof32_dataset.txt"
+#network_info = "./hardening/c_code_validete/hand_posture/original/st_ai_ws/network_c_graph.json"
+#weights_file = "./hardening/c_code_validete/hand_posture/original/st_ai_output/src/network_data_params.c"
+#in_file = "out_files/handposture/TMR/out_dict_16bof32_dataset.txt"
+#network_info = "./hardening/c_code_validete/hand_posture/tmr_voter/st_ai_ws/network_c_graph.json"
+#weights_file = "./hardening/c_code_validete/hand_posture/tmr_voter/st_ai_output/src/network_data_params.c"
+#in_file = "out_files/handposture/clipping/out_dict_16bof32_dataset.txt"
+#network_info = "./hardening/c_code_validete/hand_posture/adaptive_clipper/st_ai_ws/network_c_graph.json"
+#weights_file = "./hardening/c_code_validete/hand_posture/adaptive_clipper/st_ai_output/src/network_data_params.c"
+#in_file = "out_files/miniresnet/out_dict_16bof32_dataset.txt"
+#network_info = "./hardening/c_code_validete/miniresnet/original/st_ai_ws/network_c_graph.json"
+#weights_file = "./hardening/c_code_validete/miniresnet/original/st_ai_output/src/network_data_params.c"
+#in_file = "out_files/miniresnet/sTMR/out_dict_16bof32_dataset.txt"
+#network_info = "./hardening/c_code_validete/miniresnet/tmr_voter/st_ai_ws/network_c_graph.json"
+#weights_file = "./hardening/c_code_validete/miniresnet/tmr_voter/st_ai_output/src/network_data_params.c"
+#network_info = "./hardening/c_code_validete/miniresnet/adaptive_clipper/st_ai_ws/network_c_graph.json"
+#weights_file = "./hardening/c_code_validete/miniresnet/adaptive_clipper/st_ai_output/src/network_data_params.c"
 
 def dict_to_df_sta(data_dict):
     sta0 = pd.DataFrame.from_dict(data_dict['sta0'], orient='index')
@@ -113,18 +132,21 @@ def compute_per_layer_acc(df, layers_info):
         layer_acc = layer_df['Acc'].mean()
         layer_acc_drop_norm = (100 - layer_df['Acc']).sum() / df['Acc'].count()
         layer_std = layer_df['Acc'].std()
-        layer['reliability'] = {'accuracy_drop': {'mean': 100 - layer_acc, 'std': layer_std, 'norm': layer_acc_drop_norm}}
+        layer_std_norm = (layer_df['Acc'] / df['Acc'].count()).std()
+        layer['reliability'] = {'accuracy_drop': {'mean': 100 - layer_acc, 'std': layer_std, 'norm': layer_acc_drop_norm, 'std_norm': layer_std_norm}}
 
         acc_drop.append({
             'layer_name': layer['buffer_name'],
             'mean': 100 - layer_acc,
             'std': layer_std,
-            'norm': layer_acc_drop_norm
+            'norm': layer_acc_drop_norm,
+            'std_norm': layer_std_norm
         })  
 
     layers_df = pd.DataFrame(acc_drop)
     print(layers_df)
     print(f"Overall accuracy drop: {layers_df['norm'].sum()}")
+    print(f"Std: {df['Acc'].std()}")
     return layers_df
 
 def plot_per_layer_acc(data_dict):
@@ -138,7 +160,8 @@ def plot_per_layer_acc(data_dict):
     stm.set_layers_info(layers_info)
 
     #gg.per_layer_sta_bd(layers_df)
-    gg.per_layer_sta_ov(layers_df)
+    #gg.per_layer_sta_ov(layers_df)
+    gg.per_layer_sta_ov_norm(layers_df)
 
 def get_unsimulated_faults(data_dict):
     unsimulated_faults = []
@@ -170,6 +193,9 @@ if __name__ == "__main__":
         data = f.read()
         data_dict = eval(data)
 
-    data_dict = sta_to_bf(data_dict, weights_file)
+    if "bf" not in data_dict:
+        data_dict = sta_to_bf(data_dict, weights_file)
+        with open("bf.out", "w") as f:
+            f.write(str(data_dict))
     plot_per_layer_acc(data_dict)
 #    unsimulated_faults = get_unsimulated_faults(data_dict)

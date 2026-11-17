@@ -5,7 +5,7 @@ import stm_edgeai_lib
 import argparse
 import post_processing
 
-n_th = 64
+n_th = 100
 WEIGHTS = None
 golden_acc = "100.00%"
 golden_report = None
@@ -85,8 +85,8 @@ def sta_fault_campaign(f_bit_positions = gen_f_bit_positions(), fault_model = ['
     runing_futures = set()
     WEIGHTS = stm_edgeai_lib.weights_parser()
 
-#    with ProcessPoolExecutor(max_workers=n_th) as executor:
-    with ProcessPoolExecutor() as executor:
+    with ProcessPoolExecutor(max_workers=n_th) as executor:
+#    with ProcessPoolExecutor() as executor:
         for f_type in fault_model:
             campaign_results[f_type] = {}
             report_results[f_type] = {}
