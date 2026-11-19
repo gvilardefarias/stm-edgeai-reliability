@@ -765,8 +765,10 @@ class AiRunner:
 
         if FI_enable:
             f_nb = kwargs.pop('f_nb', 3)
+            batch_exec = kwargs.pop('batch_exec', 0)
         else:
             f_nb = None
+            batch_exec = 0
 
         if name_ is None:
             return [], {}
@@ -813,7 +815,8 @@ class AiRunner:
         outputs = []
         prog_bar = None
         cont = True
-        for batch in range(batch_size):
+        error = False
+        for batch in range(batch_exec, batch_size):
             if not prog_bar and not disable_pb and (t.perf_counter() - start_time) > 1:
                 prog_bar = tqdm.tqdm(total=batch_size, file=sys.stdout, desc='STAI.IO',
                                      unit_scale=False,
@@ -829,21 +832,15 @@ class AiRunner:
             if callback:
                 callback.on_sample_begin(batch)
             try:
-                if FI_enable:
-                    s_outputs, s_dur = self._drv.invoke_sample(s_inputs, name=name_,
-                                                               profiler=profiler, mode=mode,
-                                                               io_extra_bytes=io_extra_bytes,
-                                                               sample_idx=batch,
-                                                               option=option,
-                                                               callback=callback, ms_outputs=ms_outputs, FI_enable=FI_enable, f_nb=f_nb, batch=batch)
-                else:
-                    s_outputs, s_dur = self._drv.invoke_sample(s_inputs, name=name_,
-                                                               profiler=profiler, mode=mode,
-                                                               io_extra_bytes=io_extra_bytes,
-                                                               sample_idx=batch,
-                                                               option=option,
-                                                               callback=callback, ms_outputs=ms_outputs, FI_enable=False)
+                s_outputs, s_dur = self._drv.invoke_sample(s_inputs, name=name_,
+                                                           profiler=profiler, mode=mode,
+                                                           io_extra_bytes=io_extra_bytes,
+                                                           sample_idx=batch,
+                                                           option=option,
+                                                           callback=callback, ms_outputs=ms_outputs, FI_enable=FI_enable, f_nb=f_nb)
             except:
+                print("Error during invoke_sample()")
+                error = True
                 break
 
             if batch == 0:
@@ -862,7 +859,10 @@ class AiRunner:
         if not FI_enable:
             outputs = self._check_outputs(outputs, out_desc, io_mode)
 
-        return outputs, profiler
+        if not FI_enable:
+            return outputs, profiler
+        else:
+            return outputs, error
 
     def generate_rnd_inputs(self, name=None, batch_size=4, rng=np.random.RandomState(42), val=None):
         """Generate input data with random values"""  # noqa: DAR101,DAR201,DAR401

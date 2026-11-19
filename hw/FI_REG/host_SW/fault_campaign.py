@@ -630,24 +630,26 @@ def run(args, logger):
         if os.path.exists('checkpoint.npy'):
             logger.info('Loading checkpoint data...')
             ai_outputs_s = np.load('checkpoint.npy', allow_pickle=True)
-            batch_exec = ai_outputs_s[0].shape[0]
-            inputs_s = inputs
-            inputs[0] = inputs[0][batch_exec:]
+            batch_exec = ai_outputs_s[-1]["batch"] + 1
             warm_started = True
         else:
-            inputs_s = inputs
+            batch_exec = 0
             warm_started = False
 
         logger.info('Starting fault injection campaign')
-        f_campaign_results = {}
 
-        ai_outputs, ai_profiler = session.invoke(inputs, mode=mode, FI_enable=True, f_nb=args.f_nb)
-        
-        if warm_started:
-            ...
+        ai_outputs, error = session.invoke(inputs, mode=mode, FI_enable=True, f_nb=args.f_nb, batch_exec=batch_exec)
 
         ai_outputs = np.array(ai_outputs, dtype=object)
-        np.save('results.npy', ai_outputs, allow_pickle=True)
+        
+        if warm_started:
+            ai_outputs = np.concatenate((ai_outputs_s, ai_outputs), axis=0)
+
+        if error:
+            print("Error")
+            np.save('checkpoint.npy', ai_outputs, allow_pickle=True)
+        else:
+            np.save('results.npy', ai_outputs, allow_pickle=True)
 
     return 0
 

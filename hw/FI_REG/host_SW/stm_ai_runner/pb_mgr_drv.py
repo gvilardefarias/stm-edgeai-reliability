@@ -1190,7 +1190,6 @@ class AiPbMsg(AiRunnerDriver):
 
         if FI_enable:
             f_nb = kwargs.pop('f_nb', 4)
-            batch = kwargs.pop('batch', -1)
 
         if name is None or name not in self._models:
             raise InvalidParamError('Invalid requested model name: ' + name)
@@ -1271,7 +1270,7 @@ class AiPbMsg(AiRunnerDriver):
                 counters_ = model['rt_decoder'].counter_to_fault_log(resp.op.counter_type, resp.op.counters) # Counters is an array of 2 integers with the data from the FI in the target
 
                 counters_["output"] = []
-                counters_['batch'] = batch
+                counters_['batch'] = sample_idx
 
     
                 # TODO fix this calcule
