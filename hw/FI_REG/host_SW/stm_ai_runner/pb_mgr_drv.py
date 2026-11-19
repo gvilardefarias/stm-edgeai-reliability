@@ -157,7 +157,6 @@ class AiRunTimeDecoder():
     def counter_to_fault_log(self, counter_type, counters):
         """return perf counters"""  # noqa: DAR101,DAR201,DAR401
         counters = self.counter_decode(counter_type, counters)
-        print(f'counters={counters}')
 
         counters = int(counters[0])
 
@@ -169,7 +168,6 @@ class AiRunTimeDecoder():
             "abort_cause": (counters >> 24) & 0xFF,
             "delay_ticks": (counters >> 32) & 0xFFFF,
         }
-#        print(f'fault_log={fault_log}')
 
         return fault_log
 
@@ -1234,11 +1232,9 @@ class AiPbMsg(AiRunnerDriver):
         self._target_msg = []
 
         # start a RUN task
-        print(f'RUNNING MODEL {name} with param={param} and option={option}')
         self._cmd_run(timeout=1000, c_name=name, param=param, opt=option)
 
         # send the inputs
-        print(f'SENDING {len(s_inputs)} INPUTS TO MODEL {name}...')
         for idx, input_ in enumerate(s_inputs):
             is_last = (idx + 1) == model['info'].n_inputs
             target_addr = model['tens_inputs'][idx].c_addr
@@ -1272,13 +1268,10 @@ class AiPbMsg(AiRunnerDriver):
                 self._logger.debug('INFERENCE DONE')
                 self._logger.debug(op_msg_to_str(resp.op, model['rt_decoder']))
                 counter_type_ = model['rt_decoder'].counter_desc(resp.op.counter_type)
-                print(counter_type_)
                 counters_ = model['rt_decoder'].counter_to_fault_log(resp.op.counter_type, resp.op.counters) # Counters is an array of 2 integers with the data from the FI in the target
 
                 counters_["output"] = []
                 counters_['batch'] = batch
-#                print("---------------------------------------------------------------------------------------------")
-#                print(counters_)
 
     
                 # TODO fix this calcule
@@ -1290,7 +1283,6 @@ class AiPbMsg(AiRunnerDriver):
                     profiler['debug']['heap_usage'] = resp.op.heap_used
     
                 # receive outputs of the model
-                print(f'RECEIVING {model["info"].n_outputs} OUTPUTS FROM MODEL {name}...')
                 for idx in range(model['info'].n_outputs):
                     is_last = (idx + 1) == model['info'].n_outputs
                     self._logger.debug('RECEIVE OUTPUT TENSOR #{} last={}..'.format(idx, is_last))
@@ -1299,16 +1291,12 @@ class AiPbMsg(AiRunnerDriver):
                     tag = 'O_{}'.format(idx)
                     output, io_tens_, tens_is_last = _decode_tensor_msg(resp, '', tag)
                     counters_["output"].append(output)
-                    print(f'Output tensor #{idx} received with shape {output.shape} and dtype {output.dtype}')
-                    print(output)
                     if is_last != tens_is_last:
                         msg = 'Number of received output tensor is not valid'
                         raise HwIOError(msg)
                     self._logger.debug(' {}'.format(io_tens_.desc(full=True)))
                     # if not is_last:
                     #    self._send_ack()
-                print("Done")
-                print(counters_)
 
                 s_outputs.append(counters_)
         else:
