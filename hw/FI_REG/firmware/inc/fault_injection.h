@@ -14,8 +14,9 @@
 #define FI_ABORT_HANG      2U
 
 /* Time period for layer computation per inference (us). (1.483-1.494 ms)
- * The flip instant is uniformely extracted in [1, FI_LAYERS_US]. */
-#define FI_LAYERS_US       1483U
+ * The flip instant is uniformely extracted in [1, FI_LAYERS_US].
+ * YOU NEED TO CHANGE FOR EACH NEURAL NETWORK */
+#define FI_LAYERS_US       1497U
 
 /* Saved Hardware frame at Interrupt beginning. */
 typedef struct {

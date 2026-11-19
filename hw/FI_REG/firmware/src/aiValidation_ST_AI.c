@@ -27,7 +27,7 @@
 
 #define FI_CAMPAIGN 1
 
-#define FC_F_NB 3
+#define FC_F_NB 1000
 
 #if !defined(USE_OBSERVER)
 #define USE_OBSERVER         1 /* 0: remove the registration of the user CB to evaluate the inference time by layer */
@@ -84,13 +84,6 @@
 #include "fault_injection.h"
 
 extern fi_log_t fi_log;			        // struct with important info on the injection
-
-/* The network is generated with allocate-inputs: the input lives inside the
- * activations and a later layer reuses that area as scratch (gmp_wl_24: conv2d_1).
- * After the first run the input is overwritten, so it is saved once and
- * restored before every run of the campaign loop. */
-#define FI_IN_COPY_MAX  1024U
-static uint8_t fi_in_copy[FI_IN_COPY_MAX];
 #endif
 
 /* -----------------------------------------------------------------------------
@@ -955,29 +948,8 @@ void aiPbCmdNNRun(const reqMsg *req, respMsg *resp, void *param)
   PB_LC_PRINT(ctx->debug, "RUN: %ld ticks to download %d input(s)\r\n", tick, ctx->report.n_inputs);
 
 #if FI_CAMPAIGN == 1
-  /* Save the received inputs (see fi_in_copy). */
-  size_t fi_in_size = 0;
-  for (int i = 0; i < ctx->report.n_inputs; i++) {
-    size_t sz = _get_tensor_size_bytes(&ai_input[i]);
-    if ((fi_in_size + sz) > FI_IN_COPY_MAX) {
-      aiPbMgrSendAck(req, resp, EnumState_S_ERROR,
-          EnumError_E_GENERIC, EnumError_E_GENERIC);
-      return;
-    }
-    memcpy(&fi_in_copy[fi_in_size], (const void *)ctx->inputs.address[i], sz);
-    fi_in_size += sz;
-  }
-
   for(int f_idx = 0; f_idx < FC_F_NB; f_idx++) {
     PB_LC_PRINT(ctx->debug, "Fault %d injected\r\n", f_idx);
-
-    /* Restore the inputs: the previous run overwrote them. */
-    fi_in_size = 0;
-    for (int i = 0; i < ctx->report.n_inputs; i++) {
-      size_t sz = _get_tensor_size_bytes(&ai_input[i]);
-      memcpy((void *)ctx->inputs.address[i], &fi_in_copy[fi_in_size], sz);
-      fi_in_size += sz;
-    }
 #endif
 
   _reset_states(req, ctx);
