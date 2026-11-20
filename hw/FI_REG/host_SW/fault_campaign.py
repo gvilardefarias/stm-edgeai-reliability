@@ -525,12 +525,12 @@ def calc_acc(ref, pred):
 def restart_target(logger):
     """Reload and reset the target firmware with OpenOCD."""
     command = [
-        r'C:\StellarStudio-9.0\openocd\bin\openocd.exe',
+        r'C:\StellarStudio-8.0\openocd\bin\openocd.exe',
         '-d0',
-        '-s', r'C:\StellarStudio-9.0\openocd\scripts',
+        '-s', r'C:\StellarStudio-8.0\openocd\scripts',
         '-f', r'board\sr5e1_evb.cfg',
         '-c',
-        'init; reset run; exit',
+        r'program C:/Users/user/Documents/SR5E1_AI_Demo_7000P.elf reset exit',
     ]
 
     logger.info('Restarting the target firmware with OpenOCD...')
@@ -547,6 +547,8 @@ def run(args, logger):
     """Main processing function"""  # noqa: DAR101,DAR201,DAR401
 
     logger.info(f'Running ai_checker v{__VERSION__}..')
+
+#    restart_target(logger)
 
     inputs = None
     if args.valinput and os.path.isfile(args.valinput):
