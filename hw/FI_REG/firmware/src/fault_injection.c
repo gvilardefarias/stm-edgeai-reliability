@@ -196,10 +196,11 @@ static void fi_event_cb(void *cookie, const stai_event_type type, const void *pa
     const stai_event_node_start_stop *ev = (const stai_event_node_start_stop *)payload;
 
     if (type == STAI_EVENT_NODE_STOP) {
-    	fi_mpu_off();						/* prima di tutto: l'observer deve poter scrivere */
-
-        fi_timer_pause();                        /* prima: l'observer non conta */
-        fi_node_idx = 0U;
+        fi_node_idx = 0U;                        /* prima: impedisce qualsiasi flip in fi_dispatch() */
+        __DSB();
+        fi_timer_pause();                        /* ferma TIM2 mentre la MPU è ancora attiva */
+        __DSB();
+        fi_mpu_off();                            /* ora l'observer può scrivere in sicurezza */
     }
     if (fi_user_cb != NULL) {
         fi_user_cb(cookie, type, payload);
@@ -219,8 +220,8 @@ static void fi_event_cb(void *cookie, const stai_event_type type, const void *pa
         }
 
         if (fi_phase != FI_IDLE) {
-            fi_timer_resume();                  /* conta anche durante il watchdog */
-            fi_mpu_on();						/* ultima cosa: da qui solo il layer */
+            fi_mpu_on();                         /* prima abilita MPU e maschera IRQ */
+            fi_timer_resume();                   /* poi avvia il conteggio TIM2 (anche in watchdog) */
         }
     }
 }
@@ -300,6 +301,7 @@ stai_return_code __wrap_stai_mnetwork_run(stai_ptr network) {
         fi_in_inference = 0U;
         fi_phase = FI_IDLE;
         fi_timer_pause();
+        fi_mpu_off();
         fi_node_idx = 0U;
 
         fi_complete_events(idx);                 /* sequenza completa per l'observer */
@@ -311,9 +313,13 @@ stai_return_code __wrap_stai_mnetwork_run(stai_ptr network) {
         ret = STAI_SUCCESS;                      /* la validazione prosegue */
     }
 
-    fi_in_inference = 0U;
     fi_phase = FI_IDLE;
+    fi_node_idx = 0U;
+    fi_in_inference = 0U;
+    __DSB();
     fi_timer_pause();
+    TIM2->SR = 0U;
+    fi_mpu_off();
     fi_n_runs++;
 
     return ret;
@@ -346,6 +352,9 @@ static uint32_t fi_abort(fi_exc_frame_t *frame, uint32_t exc_ret) {
 void fi_dispatch(fi_exc_frame_t *frame, uint32_t *r4_r11, uint32_t exc_ret, uint32_t *s16_s31) {
     __tim_serve_interrupt(&DRV_TIM2);            /* ack dell'update */
 
+    if (fi_in_inference == 0U) {
+        return;                                  /* inferenza terminata: nessun flip né abort */
+    }
     if (fi_phase == FI_WATCHDOG) {               /* FI_TIMEOUT_US di calcolo dopo il flip */
         fi_record.abort_cause = FI_ABORT_HANG;
         fi_record.fault_pc    = frame->pc;

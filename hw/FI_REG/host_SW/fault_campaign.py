@@ -22,7 +22,7 @@ import re
 import multiprocessing
 import pathlib
 
-from time import perf_counter
+from time import perf_counter, sleep
 
 import numpy as np
 
@@ -543,6 +543,35 @@ def restart_target(logger):
     logger.info('Target firmware reloaded and reset successfully.')
     return True
 
+
+def connect_target(args, logger):
+    """Open a connection to the ST.AI runtime and return (runner, session)."""
+    logger.info(f'\nOpening st.ai runtime "{args.desc}" (AiRunner v{__version__})..')
+
+    runner = AiRunner(debug=args.debug, verbosity=args.verbosity)
+    runner.connect(args.desc)
+
+    if not runner.is_connected:
+        logger.error('!!! connection to st.ai runtime has failed..')
+        logger.error(' {}'.format(runner.get_error()))
+        return None, None
+
+    logger.debug(runner)
+    if not runner.names:
+        logger.error('!!! no c-model found on st.ai runtime..')
+        runner.disconnect()
+        return None, None
+
+    c_name = runner.names[0] if not args.name else args.name
+    session = runner.session(c_name)
+    if session is None:
+        logger.error(f'!!! unable to open session for model "{c_name}"..')
+        runner.disconnect()
+        return None, None
+
+    return runner, session
+
+
 def run(args, logger):
     """Main processing function"""  # noqa: DAR101,DAR201,DAR401
 
@@ -585,21 +614,11 @@ def run(args, logger):
     else:        
         h5_model = None
 
-
-    logger.info(f'\nOpening st.ai runtime "{args.desc}" (AiRunner v{__version__})..')
-
-    verbosity = args.verbosity
-    runner = AiRunner(debug=args.debug, verbosity=verbosity)
-    runner.connect(args.desc)
-
-    if not runner.is_connected:
-        logger.error('!!! connection to st.ai runtime has failed..')
-        logger.error(' {}'.format(runner.get_error()))
+    runner, session = connect_target(args, logger)
+    if runner is None or session is None:
         return 1
-    
-    logger.debug(runner)
-    c_name = runner.names[0] if not args.name else args.name
-    session = runner.session(c_name)
+
+    c_name = session.name
 
     if args.list:
         for c_name in runner.names:
@@ -639,6 +658,7 @@ def run(args, logger):
     logger.info('Invoking STM AI model... (requested mode: {})'.format(mode))
 
     ai_outputs_s = None
+    error = False
     if args.f_inject:
         os.makedirs("./fault_campaign", exist_ok=True)
         os.makedirs("./fault_campaign/ref", exist_ok=True)
@@ -661,23 +681,49 @@ def run(args, logger):
             batch_exec = 0
             warm_started = False
 
-        error = False
         ai_outputs = []
-        while error is False:
-            logger.info('Starting fault injection campaign')
+        while True:
+            logger.info(f'Starting fault injection campaign at batch {batch_exec}')
 
             outputs, error = session.invoke(inputs, mode=mode, FI_enable=True, f_nb=args.f_nb, batch_exec=batch_exec)
             ai_outputs.extend(outputs)
-            batch_exec = ai_outputs[-1]["batch"] + 1
+            if ai_outputs:
+                batch_exec = ai_outputs[-1]["batch"] + 1
 
-            if restart_target(logger):
-                logger.info('Target restarted successfully.')
-                print(f'Target restarted successfully. Continuing fault injection campaign at batch {batch_exec}.')
-            else:
+            if not error:
+                break
+
+            logger.warning(f'Invoke failed at batch {batch_exec}. Restarting target and reconnecting...')
+            try:
+                runner.disconnect()
+            except Exception as exc:
+                logger.warning(f'Error while disconnecting runner: {exc}')
+
+            if not restart_target(logger):
                 logger.error('Failed to restart the target.')
                 print('Error: Failed to restart the target. Exiting fault injection campaign.')
-                error = True
+                break
 
+            logger.info('Target restarted successfully.')
+            print(f'Target restarted successfully. Reconnecting to continue fault injection campaign at batch {batch_exec}.')
+
+            runner, session = None, None
+            max_reconnect_attempts = 3
+            for attempt in range(1, max_reconnect_attempts + 1):
+                sleep(1)
+                runner, session = connect_target(args, logger)
+                if runner is not None and session is not None:
+                    break
+                logger.warning(f'Reconnect attempt {attempt}/{max_reconnect_attempts} failed.')
+
+            if runner is None or session is None:
+                logger.error('Failed to reconnect to the target after restart.')
+                print('Error: Failed to reconnect to the target. Exiting fault injection campaign.')
+                break
+
+            if args.ihex:
+                logger.info('Loading data... ihex={}'.format(args.ihex))
+                session.extension(name=session.name, cmd='write', ihex=args.ihex)
 
         ai_outputs = np.array(ai_outputs, dtype=object)
         
@@ -686,11 +732,15 @@ def run(args, logger):
 
         if error:
             print("Error")
-            np.save('checkpoint.npy', ai_outputs, allow_pickle=True)
+            if ai_outputs.size > 0:
+                np.save('checkpoint.npy', ai_outputs, allow_pickle=True)
         else:
             np.save('results.npy', ai_outputs, allow_pickle=True)
 
-    return 0
+    if runner is not None and runner.is_connected:
+        runner.disconnect()
+
+    return 1 if (args.f_inject and error) else 0
 
 
 def main():
