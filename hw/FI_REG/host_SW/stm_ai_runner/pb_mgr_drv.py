@@ -630,8 +630,12 @@ class AiPbMsg(AiRunnerDriver):
         self._models = dict()
         self._sys_info = None
         self._sync = None
-        self._cmd_disconnect()
-        self._io_drv.disconnect()
+        try:
+            self._cmd_disconnect()
+        except Exception as exc:
+            self._logger.debug('disconnect PB command failed: %s', exc)
+        finally:
+            self._io_drv.disconnect()
 
     def short_desc(self) -> str:
         """Return human readable description"""  # noqa: DAR101,DAR201,DAR401

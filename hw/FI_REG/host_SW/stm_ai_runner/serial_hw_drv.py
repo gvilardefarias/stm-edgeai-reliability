@@ -210,10 +210,18 @@ class SerialHwDriver(AiHwDriver):
 
     def _disconnect(self):
         """Close the connection"""  # noqa: DAR101,DAR201,DAR401
-        self._hdl.reset_input_buffer()
-        self._hdl.reset_output_buffer()
-        self._hdl.close()
-        self._hdl = None
+        if self._hdl is None:
+            return
+        try:
+            self._hdl.reset_input_buffer()
+            self._hdl.reset_output_buffer()
+        except SerialException:
+            pass
+        finally:
+            try:
+                self._hdl.close()
+            finally:
+                self._hdl = None
 
     def _read(self, size, timeout=0):
         """Read data from the connected device"""  # noqa: DAR101,DAR201,DAR401

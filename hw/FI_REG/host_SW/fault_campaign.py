@@ -698,6 +698,8 @@ def run(args, logger):
                 runner.disconnect()
             except Exception as exc:
                 logger.warning(f'Error while disconnecting runner: {exc}')
+            runner, session = None, None
+            sleep(0.5)
 
             if not restart_target(logger):
                 logger.error('Failed to restart the target.')
@@ -707,10 +709,9 @@ def run(args, logger):
             logger.info('Target restarted successfully.')
             print(f'Target restarted successfully. Reconnecting to continue fault injection campaign at batch {batch_exec}.')
 
-            runner, session = None, None
-            max_reconnect_attempts = 3
+            max_reconnect_attempts = 10
             for attempt in range(1, max_reconnect_attempts + 1):
-                sleep(1)
+                sleep(2)
                 runner, session = connect_target(args, logger)
                 if runner is not None and session is not None:
                     break

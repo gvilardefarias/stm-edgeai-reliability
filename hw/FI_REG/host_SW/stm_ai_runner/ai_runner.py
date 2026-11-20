@@ -838,8 +838,8 @@ class AiRunner:
                                                            sample_idx=batch,
                                                            option=option,
                                                            callback=callback, ms_outputs=ms_outputs, FI_enable=FI_enable, f_nb=f_nb)
-            except:
-                print("Error during invoke_sample()")
+            except Exception as exc:
+                print(f"Error during invoke_sample(): {exc}")
                 error = True
                 break
 
