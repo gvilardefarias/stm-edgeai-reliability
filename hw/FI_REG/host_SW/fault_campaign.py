@@ -13,6 +13,7 @@
 Typical ai_runner example
 """
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import subprocess
 import sys
 import os
 import argparse
@@ -520,6 +521,28 @@ def calc_acc(ref, pred):
     right_pred = np.sum((ref == pred))
     return f"{(right_pred / ref.size):.2%}"
 
+# TODO: need to change to the version of stellar studio
+def restart_target(logger):
+    """Reload and reset the target firmware with OpenOCD."""
+    command = [
+        r'C:\StellarStudio-9.0\openocd\bin\openocd.exe',
+        '-d0',
+        '-s', r'C:\StellarStudio-9.0\openocd\scripts',
+        '-f', r'board\sr5e1_evb.cfg',
+        '-c',
+        'init; reset run; exit',
+    ]
+
+    logger.info('Restarting the target firmware with OpenOCD...')
+    try:
+        subprocess.run(command, check=True)
+    except (OSError, subprocess.CalledProcessError) as exc:
+        logger.error(f'Failed to restart the target with OpenOCD: {exc}')
+        return False
+
+    logger.info('Target firmware reloaded and reset successfully.')
+    return True
+
 def run(args, logger):
     """Main processing function"""  # noqa: DAR101,DAR201,DAR401
 
@@ -636,9 +659,23 @@ def run(args, logger):
             batch_exec = 0
             warm_started = False
 
-        logger.info('Starting fault injection campaign')
+        error = False
+        ai_outputs = []
+        while error is False:
+            logger.info('Starting fault injection campaign')
 
-        ai_outputs, error = session.invoke(inputs, mode=mode, FI_enable=True, f_nb=args.f_nb, batch_exec=batch_exec)
+            outputs, error = session.invoke(inputs, mode=mode, FI_enable=True, f_nb=args.f_nb, batch_exec=batch_exec)
+            ai_outputs.extend(outputs)
+            batch_exec = ai_outputs[-1]["batch"] + 1
+
+            if restart_target(logger):
+                logger.info('Target restarted successfully.')
+                print(f'Target restarted successfully. Continuing fault injection campaign at batch {batch_exec}.')
+            else:
+                logger.error('Failed to restart the target.')
+                print('Error: Failed to restart the target. Exiting fault injection campaign.')
+                error = True
+
 
         ai_outputs = np.array(ai_outputs, dtype=object)
         
