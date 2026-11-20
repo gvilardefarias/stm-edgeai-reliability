@@ -13,10 +13,13 @@
 #define FI_ABORT_CRASH     1U
 #define FI_ABORT_HANG      2U
 
-/* Time period for layer computation per inference (us). (1.483-1.494 ms)
- * The flip instant is uniformely extracted in [1, FI_LAYERS_US].
+/* Time window for fault injection during layer computation (us).
+ * The flip instant is uniformly extracted in (FI_LAYERS_MIN_US, FI_LAYERS_US].
+ * Set FI_LAYERS_MIN_US to 0U for a full-inference campaign, or to the previous
+ * FI_LAYERS_US (e.g. 1497U) to inject only in the previously unstimulated tail.
  * YOU NEED TO CHANGE FOR EACH NEURAL NETWORK */
-#define FI_LAYERS_US       1497U
+#define FI_LAYERS_MIN_US   1497U
+#define FI_LAYERS_US       1700U
 
 /* Saved Hardware frame at Interrupt beginning. */
 typedef struct {

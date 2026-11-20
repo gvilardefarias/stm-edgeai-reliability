@@ -40,6 +40,7 @@ __attribute__((aligned(FI_ACT_ALIGN))) static uint8_t fi_act[FI_ACT_N_SUB * FI_A
 
 static const uint8_t fi_node_ids[FI_N_NODES] = FI_NODE_IDS;
 _Static_assert(FI_N_NODES == STAI_NETWORK_NODES_NUM, "numero di layer cambiato: aggiornare FI_NODE_IDS");
+_Static_assert(FI_LAYERS_US > FI_LAYERS_MIN_US, "FI_LAYERS_US must be greater than FI_LAYERS_MIN_US");
 
 // Variables
 __attribute__((section(".dtcm"))) fi_record_t fi_record;
@@ -53,6 +54,7 @@ __attribute__((section(".dtcm"))) static uint32_t fi_sp_top = 0U;  				/* PSP at
 __attribute__((section(".dtcm"))) volatile uint32_t fi_in_inference = 0U;  		/* 1 during stai_mnetwork_run */
 __attribute__((section(".dtcm"))) static volatile uint32_t fi_node_idx = 0U; 	/* posizione 1..FI_N_NODES (0 = tra layer) */
 __attribute__((section(".dtcm"))) volatile uint32_t fi_n_runs = 0U;        		/* inferenze completate */
+static uint32_t fi_layers_min_ticks = 0U; /* FI_LAYERS_MIN_US convertito in tick di TIM2 */
 static uint32_t fi_layers_ticks = 0U;     /* FI_LAYERS_US convertito in tick di TIM2 */
 static uint32_t fi_timeout_ticks = 0U;    /* FI_TIMEOUT_US convertito in tick di TIM2 */
 
@@ -171,9 +173,10 @@ void FI_Init(void) {
 	tim_init(&DRV_TIM2);
 
 	/* tick = 1 ciclo di TIMCLK2 (150 MHz) */
-	ticks_per_us     = tim_get_clock(&DRV_TIM2) / 1000000U;
-	fi_layers_ticks  = ticks_per_us * FI_LAYERS_US;
-	fi_timeout_ticks = ticks_per_us * FI_TIMEOUT_US;
+	ticks_per_us        = tim_get_clock(&DRV_TIM2) / 1000000U;
+	fi_layers_min_ticks = ticks_per_us * FI_LAYERS_MIN_US;
+	fi_layers_ticks     = ticks_per_us * FI_LAYERS_US;
+	fi_timeout_ticks    = ticks_per_us * FI_TIMEOUT_US;
 
     tim_set_prio(&DRV_TIM2, 2);
     tim_set_presc(&DRV_TIM2, TIM_DIVIDE_BY(1U));		/* PSC = 0: nessuna divisione */
@@ -265,7 +268,7 @@ stai_return_code __wrap_stai_mnetwork_run(stai_ptr network) {
     if (fi_layers_ticks == 0U) {                 /* FI_Init non chiamata: inferenza normale */
         return __real_stai_mnetwork_run(network);
     }
-    t = 1U + (xorshift32() % fi_layers_ticks);   /* 1..fi_layers_ticks */
+    t = fi_layers_min_ticks + 1U + (xorshift32() % (fi_layers_ticks - fi_layers_min_ticks)); /* (fi_layers_min_ticks .. fi_layers_ticks] */
 
     fi_node_idx = 0U;
     fi_stops_done = 0U;
