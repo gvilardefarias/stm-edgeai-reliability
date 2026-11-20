@@ -166,7 +166,7 @@ class AiRunTimeDecoder():
             "reg":         (counters >> 8) & 0xFF,
             "node":        (counters >> 16) & 0xFF,
             "abort_cause": (counters >> 24) & 0xFF,
-            "delay_ticks": (counters >> 32) & 0xFFFF,
+            "delay_ticks": (counters >> 32) & 0xFFFFFFFF,
         }
 
         return fault_log
