@@ -766,9 +766,13 @@ class AiRunner:
         if FI_enable:
             f_nb = kwargs.pop('f_nb', 3)
             batch_exec = kwargs.pop('batch_exec', 0)
+            n_inputs = kwargs.pop('n_inputs', None)
+            rng = kwargs.pop('rng', None)
         else:
             f_nb = None
             batch_exec = 0
+            n_inputs = None
+            rng = None
 
         if name_ is None:
             return [], {}
@@ -797,6 +801,9 @@ class AiRunner:
         m_outputs = kwargs.pop('m_outputs', None)
 
         batch_size = inputs[0].shape[0]
+        total_batches = n_inputs if (FI_enable and n_inputs is not None) else batch_size
+        if FI_enable and rng is None:
+            rng = np.random.RandomState()
         profiler = {
             'info': {},
             'mode': mode,  # Used AiRunner.Mode
@@ -816,26 +823,27 @@ class AiRunner:
         prog_bar = None
         cont = True
         error = False
-        for batch in range(batch_exec, batch_size):
+        for step in range(batch_exec, total_batches):
             if not prog_bar and not disable_pb and (t.perf_counter() - start_time) > 1:
-                prog_bar = tqdm.tqdm(total=batch_size, file=sys.stdout, desc='STAI.IO',
+                prog_bar = tqdm.tqdm(total=total_batches, file=sys.stdout, desc='STAI.IO',
                                      unit_scale=False,
                                      leave=False)
-                prog_bar.update(batch)
+                prog_bar.update(step)
             elif prog_bar:
                 prog_bar.update(1)
-            s_inputs = [np.expand_dims(in_[batch], axis=0) for in_ in inputs]
+            sample_idx = int(rng.randint(0, batch_size)) if FI_enable else step
+            s_inputs = [np.expand_dims(in_[sample_idx], axis=0) for in_ in inputs]
             if m_outputs:
-                ms_outputs = [np.expand_dims(out_[batch], axis=0) for out_ in m_outputs]
+                ms_outputs = [np.expand_dims(out_[sample_idx], axis=0) for out_ in m_outputs]
             else:
                 ms_outputs = None
             if callback:
-                callback.on_sample_begin(batch)
+                callback.on_sample_begin(sample_idx)
             try:
                 s_outputs, s_dur = self._drv.invoke_sample(s_inputs, name=name_,
                                                            profiler=profiler, mode=mode,
                                                            io_extra_bytes=io_extra_bytes,
-                                                           sample_idx=batch,
+                                                           sample_idx=sample_idx,
                                                            option=option,
                                                            callback=callback, ms_outputs=ms_outputs, FI_enable=FI_enable, f_nb=f_nb)
             except Exception as exc:
@@ -843,12 +851,14 @@ class AiRunner:
                 error = True
                 break
 
-            if batch == 0:
+            if FI_enable:
+                outputs.extend(s_outputs)
+            elif step == 0:
                 outputs = s_outputs
             else:
                 outputs.extend(s_outputs)
             if callback:
-                cont = callback.on_sample_end(batch, s_outputs, logs={'dur': s_dur})
+                cont = callback.on_sample_end(sample_idx, s_outputs, logs={'dur': s_dur})
             if not cont:
                 break
         profiler['debug']['host_duration'] = (t.perf_counter() - start_time) * 1000.0

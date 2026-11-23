@@ -672,10 +672,13 @@ def run(args, logger):
 
             logger.info(f'first5 ref - {ref[:5]}')
         
+        n_inputs = args.f_inputs if args.f_inputs is not None else inputs[0].shape[0]
+        fi_rng = np.random.RandomState(args.seed)
+
         if os.path.exists('checkpoint.npy'):
             logger.info('Loading checkpoint data...')
             ai_outputs_s = np.load('checkpoint.npy', allow_pickle=True)
-            batch_exec = ai_outputs_s[-1]["batch"] + 1
+            batch_exec = len(ai_outputs_s) // args.f_nb if args.f_nb > 0 else 0
             warm_started = True
         else:
             batch_exec = 0
@@ -683,17 +686,19 @@ def run(args, logger):
 
         ai_outputs = []
         while True:
-            logger.info(f'Starting fault injection campaign at batch {batch_exec}')
+            logger.info(f'Starting fault injection campaign at step {batch_exec}/{n_inputs}')
 
-            outputs, error = session.invoke(inputs, mode=mode, FI_enable=True, f_nb=args.f_nb, batch_exec=batch_exec)
+            outputs, error = session.invoke(inputs, mode=mode, FI_enable=True,
+                                            f_nb=args.f_nb, batch_exec=batch_exec,
+                                            n_inputs=n_inputs, rng=fi_rng)
             ai_outputs.extend(outputs)
-            if ai_outputs:
-                batch_exec = ai_outputs[-1]["batch"] + 1
+            if args.f_nb > 0:
+                batch_exec += len(outputs) // args.f_nb
 
             if not error:
                 break
 
-            logger.warning(f'Invoke failed at batch {batch_exec}. Restarting target and reconnecting...')
+            logger.warning(f'Invoke failed at step {batch_exec}/{n_inputs}. Restarting target and reconnecting...')
             try:
                 runner.disconnect()
             except Exception as exc:
@@ -707,7 +712,7 @@ def run(args, logger):
                 break
 
             logger.info('Target restarted successfully.')
-            print(f'Target restarted successfully. Reconnecting to continue fault injection campaign at batch {batch_exec}.')
+            print(f'Target restarted successfully. Reconnecting to continue fault injection campaign at step {batch_exec}/{n_inputs}.')
 
             max_reconnect_attempts = 10
             for attempt in range(1, max_reconnect_attempts + 1):
@@ -793,6 +798,8 @@ def main():
     parser.add_argument('--f-bit-start', type=int, default=63, help="Fault injection start bit")
     parser.add_argument('--f-bit-step', type=int, default=32, help="Fault injection bit step")
     parser.add_argument('--f-nb', type=int, default=3, help="Fault injection weigth size")
+    parser.add_argument('--f-inputs', type=int, default=None,
+                        help="Number of input batches to randomly sample (with replacement) during fault injection")
     parser.add_argument('--f-inject', action='store_true', help="Enable fault injection")
     args = parser.parse_args()
     logging.basicConfig(format='%(message)s', stream=sys.stdout,
