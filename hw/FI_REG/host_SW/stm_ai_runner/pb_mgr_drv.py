@@ -1276,6 +1276,18 @@ class AiPbMsg(AiRunnerDriver):
                 counters_["output"] = []
                 counters_['batch'] = sample_idx
 
+                reg_idx = counters_['reg']
+                reg_name = f"R{reg_idx}" if reg_idx <= 12 else f"S{reg_idx - 13}"
+                abort_names = {0: 'NONE', 1: 'CRASH', 2: 'HANG'}
+                abort_str = abort_names.get(counters_['abort_cause'], f"UNKNOWN({counters_['abort_cause']})")
+                self._logger.debug(
+                    f" FI LOG [batch={sample_idx}, f_idx={f_idx}]: "
+                    f"done={counters_['done']}, reg={reg_idx}({reg_name}), "
+                    f"bit={counters_['bit']}, layer/node={counters_['node']}, "
+                    f"abort={counters_['abort_cause']}({abort_str}), "
+                    f"delay_ticks={counters_['delay_ticks']}"
+                )
+
     
                 # TODO fix this calcule
                 inference_dur = resp.op.duration
