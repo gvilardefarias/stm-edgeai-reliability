@@ -7,7 +7,6 @@
 #define FI_N_NODES         5U
 #define FI_NODE_IDS        { 3U, 4U, 5U, 7U, 8U }   /* conv2d, conv2d_1, global_max_pooling2d_pool, dense, activation
 													(softmax) */
-#define FI_INPUT_NODE_ID   3U    					/* only layer that reads the input*/
 
 #define FI_ABORT_NONE      0U
 #define FI_ABORT_CRASH     1U
