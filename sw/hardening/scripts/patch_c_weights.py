@@ -37,3 +37,4 @@ if __name__ == "__main__":
                 weights[start_weight:end_weight] = golden_weights
 
     stm.weights_file_gen(weights, weights_file=args.weights_file)
+    print(f"Patched weights file saved to: {args.weights_file}")

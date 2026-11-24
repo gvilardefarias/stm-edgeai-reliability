@@ -99,15 +99,15 @@ if __name__ == "__main__":
         output_h5 = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/ign/avg_tmr.h5")
     elif args.model == 'hand_posture':
         base_model = os.path.join(PRJ_ROOT, "sw/hardening/base_models/hand_posture/CNN2D_ST_HandPosture_8classes.h5")
-        target = "conv2d" 
+        target = "dense" 
         output_h5 = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/hand_posture/avg_tmr.h5")
     elif args.model == 'miniresnet':
         base_model = os.path.join(PRJ_ROOT, "sw/hardening/base_models/miniresnet/miniresnet_1stacks_64x50_tl.h5")
-        target = "conv2_block1_1_conv" 
-        output_h5 = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/gmp/avg_tmr.h5")
+        target = "conv2_block2_2_conv" 
+        output_h5 = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/miniresnet/avg_tmr.h5")
     elif args.model == 'gmp':
         base_model = os.path.join(PRJ_ROOT, "sw/hardening/base_models/gmp/gmp_wl_24.h5")
-        target = "conv2_block1_1_conv" 
+        target = "conv2d_1" 
         output_h5 = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/gmp/avg_tmr.h5")
 
     os.makedirs(os.path.dirname(output_h5), exist_ok=True)

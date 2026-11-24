@@ -113,10 +113,6 @@ if __name__ == "__main__":
         target = "conv2_block2_2_conv" 
         output_h5 = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/miniresnet/voter_tmr.h5")
         output_h5_golden = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/miniresnet/voter_tmr_golden.h5")
-    elif args.model == 'gmp':
-        base_model = os.path.join(PRJ_ROOT, "sw/hardening/base_models/gmp/gmp_wl_24.h5")
-        target = "conv2d" 
-        output_h5 = os.path.join(PRJ_ROOT, "sw/hardening/hardened_models/gmp/voter_tmr.h5")
 
     os.makedirs(os.path.dirname(output_h5), exist_ok=True)
     if os.path.exists(base_model):
