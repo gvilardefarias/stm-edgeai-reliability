@@ -27,7 +27,7 @@
 
 #define FI_CAMPAIGN 1
 
-#define FC_F_NB 3
+#define FC_F_NB 1000
 
 #if !defined(USE_OBSERVER)
 #define USE_OBSERVER         1 /* 0: remove the registration of the user CB to evaluate the inference time by layer */
@@ -85,12 +85,14 @@
 
 extern fi_log_t fi_log;			        // struct with important info on the injection
 
+#if defined(STAI_NETWORK_FLAGS) && ((STAI_NETWORK_FLAGS & STAI_FLAG_INPUTS) != 0U)
 /* With allocate-inputs the input lives inside the activations and a later layer
  * can reuse that area (gmp_wl_24: conv2d_1, miniresnet: pool1_pad). After the
  * first run the input is overwritten, so it is saved once and restored before
  * every run of the campaign loop. Placed in DTCM: the SRAM is almost full. */
 #define FI_IN_COPY_MAX  16384U
 __attribute__((section(".dtcm"))) static uint8_t fi_in_copy[FI_IN_COPY_MAX];
+#endif
 #endif
 
 /* -----------------------------------------------------------------------------
@@ -955,6 +957,7 @@ void aiPbCmdNNRun(const reqMsg *req, respMsg *resp, void *param)
   PB_LC_PRINT(ctx->debug, "RUN: %ld ticks to download %d input(s)\r\n", tick, ctx->report.n_inputs);
 
 #if FI_CAMPAIGN == 1
+#if defined(STAI_NETWORK_FLAGS) && ((STAI_NETWORK_FLAGS & STAI_FLAG_INPUTS) != 0U)
   /* Save the received inputs (see fi_in_copy). */
   size_t fi_in_size = 0;
   for (int i = 0; i < ctx->report.n_inputs; i++) {
@@ -967,10 +970,12 @@ void aiPbCmdNNRun(const reqMsg *req, respMsg *resp, void *param)
     memcpy(&fi_in_copy[fi_in_size], (const void *)ctx->inputs.address[i], sz);
     fi_in_size += sz;
   }
+#endif
 
   for(int f_idx = 0; f_idx < FC_F_NB; f_idx++) {
     PB_LC_PRINT(ctx->debug, "Fault %d injected\r\n", f_idx);
 
+#if defined(STAI_NETWORK_FLAGS) && ((STAI_NETWORK_FLAGS & STAI_FLAG_INPUTS) != 0U)
     /* Restore the inputs: the previous run overwrote them. */
     fi_in_size = 0;
     for (int i = 0; i < ctx->report.n_inputs; i++) {
@@ -978,6 +983,7 @@ void aiPbCmdNNRun(const reqMsg *req, respMsg *resp, void *param)
       memcpy((void *)ctx->inputs.address[i], &fi_in_copy[fi_in_size], sz);
       fi_in_size += sz;
     }
+#endif
 #endif
 
   _reset_states(req, ctx);

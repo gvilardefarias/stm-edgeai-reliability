@@ -1,5 +1,6 @@
 #include "fault_injection.h"
 #include "tim.h"
+#include <irq.h>               /* IRQ_TIM2_VECTOR */
 #include <platform.h>          /* TIM2, TIM_CR1_CEN, TIM_EGR_UG */
 #include "core_cm7.h"
 #include "stai.h"
@@ -17,9 +18,19 @@
 #define FI_WAIT_FLIP       1U        /* TIM2 counts until bit flip instant */
 #define FI_WATCHDOG        2U        /* flip done: TIM2 counts until timeout */
 
-/* Assumptions on the generated network (see app/ReadMe.txt). */
+/* Assumptions on the generated network (see app/ReadMe.txt).
+ *  - Outputs live inside activations (writable under MPU regions 1-2).
+ *  - Inputs live either inside activations (allocate-inputs, protected by MPU
+ *    region 7 during input-reading layers and restored via fi_in_copy) or in
+ *    user SRAM (--no-inputs-allocation, protected read-only across all layers). */
 _Static_assert(STAI_NETWORK_ACTIVATIONS_NUM == 1, "FI supports a single activations buffer");
 _Static_assert(STAI_NETWORK_IN_NUM == 1, "FI protects a single input");
+_Static_assert((STAI_NETWORK_FLAGS & STAI_FLAG_OUTPUTS) != 0U,
+               "Network output must remain allocated in activations (allocate-outputs)");
+#if (STAI_NETWORK_FLAGS & STAI_FLAG_INPUTS) == 0U
+_Static_assert(STAI_MNETWORK_IN_1_SIZE_BYTES >= STAI_NETWORK_IN_1_SIZE_BYTES,
+               "app_stellar-studio-ai.h: set STAI_MNETWORK_IN_1_SIZE_BYTES to STAI_NETWORK_IN_1_SIZE_BYTES");
+#endif
 _Static_assert(FI_LAYERS_US > FI_LAYERS_MIN_US, "FI_LAYERS_US must be greater than FI_LAYERS_MIN_US");
 
 #define FI_SRAM_BASE       0x24000000U
@@ -186,10 +197,20 @@ static inline void fi_timer_resume(void) { TIM2->CR1 |=  TIM_CR1_CEN; }
 
 /* Clears the counter and sets the update after 't' ticks, timer stopped. */
 static void fi_timer_arm(uint32_t t) {
+    if (t < 2U) { t = 2U; }      /* ARR = 0 disables counting on TIM2 */
     fi_timer_pause();
     TIM2->ARR = t - 1U;
     TIM2->EGR = TIM_EGR_UG;      /* CNT = 0, loads ARR/PSC (with URS=1 no IRQ) */
     TIM2->SR  = 0U;
+    __DSB();
+    NVIC_ClearPendingIRQ((IRQn_Type)IRQ_TIM2_VECTOR);
+}
+
+static void fi_timer_disarm(void) {
+    fi_timer_pause();
+    TIM2->SR = 0U;
+    __DSB();
+    NVIC_ClearPendingIRQ((IRQn_Type)IRQ_TIM2_VECTOR);
 }
 
 void FI_Init(void) {
@@ -214,10 +235,17 @@ void FI_Init(void) {
     fi_timer_pause();                    /* counts only inside the layers */
 }
 
-/* 1 if one of the buffers passed to NODE_START (= inputs of the layer) is the network input.
- * The input is protected only in the first consecutive layers that read it: after the
- * first layer that does not read it, its area can be reused by other buffers. */
+/* 1 if the network input must stay read-only during this layer.
+ * With --no-inputs-allocation the input lives outside activations and is never
+ * reused, so it stays protected across all layers.
+ * With allocate-inputs the input is protected only in the first consecutive
+ * layers that read it: after the first layer that does not read it, its area
+ * can be reused by other buffers. */
 static uint32_t fi_reads_input(const stai_event_node_start_stop *ev) {
+#if (STAI_NETWORK_FLAGS & STAI_FLAG_INPUTS) == 0U
+    (void)ev;
+    return (fi_in_rasr != 0U) ? 1U : 0U;
+#else
     stai_size i;
     if ((fi_in_alive != 0U) && (fi_in_rasr != 0U)) {
         for (i = 0; i < ev->buffers.size; i++) {
@@ -228,27 +256,30 @@ static uint32_t fi_reads_input(const stai_event_node_start_stop *ev) {
     }
     fi_in_alive = 0U;
     return 0U;
+#endif
 }
 
 /* Callback on layer events: It updates the running layer and sends
  * the event to validation callback (observer), if present. */
 static void fi_event_cb(void *cookie, const stai_event_type type, const void *payload) {
     const stai_event_node_start_stop *ev = (const stai_event_node_start_stop *)payload;
+    const uint32_t was_in_node = fi_node_idx;
 
-    if (type == STAI_EVENT_NODE_STOP) {
-        fi_node_idx = 0U;                        /* first: prevents any flip in fi_dispatch() */
-        __DSB();
-        fi_timer_pause();                        /* stops TIM2 while the MPU is still on */
-        __DSB();
-        fi_mpu_off();                            /* now the observer can write */
-    }
+    /* Unconditionally stop FI before inspecting 'type': even if a late flip at
+     * layer exit corrupts 'type', TIM2 and MPU are still cleanly turned off. */
+    fi_node_idx = 0U;                            /* first: prevents any flip in fi_dispatch() */
+    __DSB();
+    fi_timer_pause();                            /* stops TIM2 while the MPU is still on */
+    __DSB();
+    fi_mpu_off();                                /* now the observer can write */
+
     if (fi_user_cb != NULL) {
         fi_user_cb(cookie, type, payload);
     }
-    if (type == STAI_EVENT_NODE_STOP) {
+    if ((type == STAI_EVENT_NODE_STOP) || (was_in_node != 0U)) {
         fi_stops_done++;                         /* layer closed for the observer too */
     }
-    if (type == STAI_EVENT_NODE_START) {
+    if ((type == STAI_EVENT_NODE_START) && (was_in_node == 0U)) {
         fi_starts++;                             /* position in execution order (ids can repeat) */
         fi_node_id  = (uint32_t)ev->node_id;
         fi_in_read  = fi_reads_input(ev);
@@ -291,7 +322,7 @@ static void fi_complete_events(uint32_t idx) {
     if ((fi_user_cb == NULL) || (fi_details == NULL)) {
         return;                                  /* no observer (campaign) or no layer list */
     }
-    if (idx != 0U) {
+    if ((idx != 0U) && (idx <= fi_details->n_nodes)) {
         fi_send_event(STAI_EVENT_NODE_STOP, (uint32_t)fi_details->nodes[idx - 1U].id);
         k = idx;
     }
@@ -315,6 +346,44 @@ static void fi_input_init(stai_ptr network) {
 }
 
 extern stai_return_code __real_stai_mnetwork_run(stai_ptr network);
+
+/* Runs the network with MPU region 5 protecting the caller stack above fi_sp_top
+ * (including R4..R11 and S16..S31 saved by fi_run_isolated). Non-static so the
+ * naked trampoline can branch to the exact symbol name at any optimization level. */
+__attribute__((noinline, used))
+stai_return_code fi_run_protected(stai_ptr network) {
+    stai_return_code ret;
+
+    fi_sp_top = (__get_PSP() + 31U) & ~31U;      /* below here: only frames of the network */
+    /* Region 5: frames of the callers (above fi_sp_top) read-only. MPU off here. */
+    (void) fi_mpu_cover(5U, fi_sp_top, (uint32_t)__process_stack_end__, ARM_MPU_AP_RO, 0U);
+
+    ret = __real_stai_mnetwork_run(network);
+
+    /* Ensure TIM2 and MPU are off before returning to caller stack frames. */
+    fi_phase = FI_IDLE;
+    fi_node_idx = 0U;
+    __DSB();
+    fi_timer_disarm();
+    fi_mpu_off();
+
+    return ret;
+}
+
+/* Preserves all callee-saved registers (R4..R11 and S16..S31) across the
+ * inference so a bit flip in a small layer that does not push/pop them cannot
+ * leak into __wrap_stai_mnetwork_run() or aiPbCmdNNRun(). */
+__attribute__((naked, noinline))
+static stai_return_code fi_run_isolated(stai_ptr network) {
+    __asm volatile (
+        "PUSH   {R3, R4-R11, LR} \n"   /* 40 B: 8-byte aligned */
+        "VPUSH  {S16-S31}        \n"   /* 64 B: 8-byte aligned */
+        "BL     fi_run_protected \n"
+        "VPOP   {S16-S31}        \n"
+        "POP    {R3, R4-R11, PC} \n"
+    );
+}
+
 stai_return_code __wrap_stai_mnetwork_run(stai_ptr network) {
     stai_return_code ret;
     uint32_t t;
@@ -326,41 +395,60 @@ stai_return_code __wrap_stai_mnetwork_run(stai_ptr network) {
         fi_input_init(network);
     }
     t = fi_layers_min_ticks + 1U + (xorshift32() % (fi_layers_ticks - fi_layers_min_ticks)); /* (fi_layers_min_ticks .. fi_layers_ticks] */
+    if (t < 2U) { t = 2U; }                      /* ARR = 0 disables counting on TIM2 */
 
     fi_node_idx = 0U;
+    fi_node_id  = 0U;
     fi_starts = 0U;
     fi_in_alive = 1U;
     fi_stops_done = 0U;
     fi_record.done        = 0U;
+    fi_record.reg         = 0U;
+    fi_record.bit         = 0U;
+    fi_record.node        = 0U;
+    fi_record.node_pos    = 0U;
+    fi_record.fault_pc    = 0U;
     fi_record.sample      = fi_n_runs;
     fi_record.delay_ticks = t;
     fi_record.abort_cause = FI_ABORT_NONE;
 
     fi_log.done_and_bit = 0U;
-    fi_log.delay_ticks = (uint32_t) t;
-    fi_log.abort_cause = FI_ABORT_NONE;
+    fi_log.reg          = 0U;
+    fi_log.node         = 0U;
+    fi_log.delay_ticks  = (uint32_t) t;
+    fi_log.abort_cause  = FI_ABORT_NONE;
 
     fi_timer_arm(t);
     fi_phase = FI_WAIT_FLIP;
 
     if (setjmp(fi_jmp) == 0) {
         fi_in_inference = 1U;
-        fi_sp_top = (__get_PSP() + 31U) & ~31U;  /* below here: only frames of the network */
-        /* Region 5: frames of the callers (above fi_sp_top) read-only. MPU off here. */
-        (void) fi_mpu_cover(5U, fi_sp_top, (uint32_t)__process_stack_end__, ARM_MPU_AP_RO, 0U);
+        ret = fi_run_isolated(network);
 
-        ret = __real_stai_mnetwork_run(network);
+        /* If a flip corrupted the network return code without crashing, mark the
+         * output invalid instead of letting aiPbCmdNNRun() abort the batch loop. */
+        if ((ret != STAI_SUCCESS) && (fi_record.done != 0U)) {
+            stai_ptr outs[1];
+            uint32_t i;
+            if (stai_mnetwork_get_outputs(network, outs) == STAI_SUCCESS) {
+                for (i = 0U; i < STAI_NETWORK_OUT_1_SIZE; i++) {
+                    ((float *)outs[0])[i] = NAN;
+                }
+            }
+            ret = STAI_SUCCESS;
+        }
     } else {
         /* Only from fi_abort(): crash or hang after the flip. */
         stai_ptr outs[1];
         uint32_t idx = fi_node_idx;
         uint32_t i;
 
-        fi_in_inference = 0U;
         fi_phase = FI_IDLE;
-        fi_timer_pause();
-        fi_mpu_off();
         fi_node_idx = 0U;
+        __DSB();
+        fi_timer_disarm();
+        fi_mpu_off();
+        fi_in_inference = 0U;
 
         fi_complete_events(idx);                 /* complete sequence for the observer */
         if (stai_mnetwork_get_outputs(network, outs) == STAI_SUCCESS) {
@@ -371,13 +459,14 @@ stai_return_code __wrap_stai_mnetwork_run(stai_ptr network) {
         ret = STAI_SUCCESS;                      /* the validation goes on */
     }
 
+    /* Stop TIM2 and disable MPU before clearing fi_in_inference so any late
+     * fault while MPU is still enabled is recovered rather than halting. */
     fi_phase = FI_IDLE;
     fi_node_idx = 0U;
-    fi_in_inference = 0U;
     __DSB();
-    fi_timer_pause();
-    TIM2->SR = 0U;
+    fi_timer_disarm();
     fi_mpu_off();
+    fi_in_inference = 0U;
     fi_n_runs++;
 
     return ret;
@@ -392,7 +481,7 @@ __attribute__((noinline, noreturn)) static void fi_abort_to_wrapper(void) {
  * interrupted instruction. Returns 0 if not possible. */
 static uint32_t fi_abort(fi_exc_frame_t *frame, uint32_t exc_ret) {
 	fi_mpu_off();                                /* the wrapper restarts with SP above fi_sp_top */
-	fi_timer_pause();
+	fi_timer_disarm();
     fi_phase = FI_IDLE;
     if (((exc_ret & 0x8U) == 0U) || (fi_in_inference == 0U)) {
         return 0U;                               /* not in thread mode or outside the inference */
