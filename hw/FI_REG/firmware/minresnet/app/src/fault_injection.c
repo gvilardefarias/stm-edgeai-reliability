@@ -113,63 +113,104 @@ static uint32_t fi_mpu_cover(uint32_t rnr, uint32_t a, uint32_t b, uint32_t ap, 
     return 0xFFFFFFFFU;
 }
 
-/* [a, b) read/write with 2 regions, split at the most aligned boundary inside (unaligned buffers). */
-static uint32_t fi_mpu_cover_rw2(uint32_t rnr_lo, uint32_t rnr_hi, uint32_t a, uint32_t b) {
-    int32_t k;
-    for (k = 31; k >= 5; k--) {
-        uint32_t m = b & ~((1U << (uint32_t)k) - 1U);
-        if ((m > a) && (m < b)) {
-            return fi_mpu_cover(rnr_lo, a, m, ARM_MPU_AP_FULL, 1U) +
-                   fi_mpu_cover(rnr_hi, m, b, ARM_MPU_AP_FULL, 1U);
-        }
-    }
-    ARM_MPU_ClrRegion(rnr_hi);
-    return fi_mpu_cover(rnr_lo, a, b, ARM_MPU_AP_FULL, 1U);
-}
+/* Finds the single MPU region STRICTLY inside [a, b) with maximum byte coverage.
+ * Returns the RASR value (0 if nothing fits) and outputs base and [cov_lo, cov_hi). */
+static uint32_t fi_mpu_best_in(uint32_t a, uint32_t b, uint32_t ap,
+                               uint32_t *out_base, uint32_t *out_lo, uint32_t *out_hi) {
+    uint32_t g, best = 0U, best_base = 0U, best_rasr = 0U, best_lo = 0U, best_hi = 0U;
 
-/* One region STRICTLY inside [a, b) (never outside on either edge), with the largest
- * coverage: among all blocks of 8 x g bytes that overlap [a, b), the subregions fully
- * inside are enabled. Returns the region attributes (RASR, 0 if nothing fits) and
- * leaves the region programmed but DISABLED: fi_mpu_on() enables it. */
-static uint32_t fi_mpu_cover_in(uint32_t rnr, uint32_t a, uint32_t b, uint32_t ap) {
-    uint32_t g, best = 0U, best_base = 0U, best_rasr = 0U;
-
-    for (g = 32U; (8U * g) <= 0x40000U; g <<= 1) {
-        uint32_t size = 8U * g;
-        uint32_t base;
-        for (base = a & ~(size - 1U); base < b; base += size) {
-            uint32_t lo = (a > base) ? ((a - base + g - 1U) / g) : 0U;
-            uint32_t hi = ((b - base) / g < 8U) ? ((b - base) / g) : 8U;
-            if ((hi > lo) && (((hi - lo) * g) > best)) {
-                uint32_t srd = ~(((1U << hi) - 1U) & ~((1U << lo) - 1U)) & 0xFFU;
-                best      = (hi - lo) * g;
-                best_base = base;
-                best_rasr = ARM_MPU_RASR(0U, ap, 1U, 0U, 1U, 1U, srd, fi_mpu_size_field(size));
+    if (a < b) {
+        for (g = 32U; (8U * g) <= 0x40000U; g <<= 1) {
+            uint32_t size = 8U * g;
+            uint32_t base;
+            for (base = a & ~(size - 1U); base < b; base += size) {
+                uint32_t lo = (a > base) ? ((a - base + g - 1U) / g) : 0U;
+                uint32_t hi = ((b - base) / g < 8U) ? ((b - base) / g) : 8U;
+                if ((hi > lo) && (((hi - lo) * g) > best)) {
+                    uint32_t srd = ~(((1U << hi) - 1U) & ~((1U << lo) - 1U)) & 0xFFU;
+                    best      = (hi - lo) * g;
+                    best_base = base;
+                    best_lo   = base + lo * g;
+                    best_hi   = base + hi * g;
+                    best_rasr = ARM_MPU_RASR(0U, ap, 1U, 0U, 1U, 1U, srd, fi_mpu_size_field(size));
+                }
             }
         }
     }
-    ARM_MPU_SetRegion(ARM_MPU_RBAR(rnr, best_base), 0U);   /* base only, disabled */
+    *out_base = best_base;
+    *out_lo   = best_lo;
+    *out_hi   = best_hi;
     return best_rasr;
+}
+
+/* One region STRICTLY inside [a, b) (never outside on either edge), with the largest
+ * coverage. Returns the region attributes (RASR, 0 if nothing fits) and leaves the
+ * region programmed but DISABLED: fi_mpu_on() enables it. */
+static uint32_t fi_mpu_cover_in(uint32_t rnr, uint32_t a, uint32_t b, uint32_t ap) {
+    uint32_t base, lo, hi;
+    uint32_t rasr = fi_mpu_best_in(a, b, ap, &base, &lo, &hi);
+    ARM_MPU_SetRegion(ARM_MPU_RBAR(rnr, base), 0U);   /* base only, disabled */
+    return rasr;
+}
+
+/* Up to 2 enabled regions STRICTLY inside [a, b) with permission 'ap'.
+ * When prefer_lo != 0, the second region prioritizes the lower uncovered gap
+ * [a, lo1) (e.g. _context_network immediately after activations_1) unless the
+ * upper gap is substantially larger (> 512 B). */
+static void fi_mpu_cover_in2(uint32_t rnr_a, uint32_t rnr_b, uint32_t a, uint32_t b,
+                             uint32_t ap, uint32_t prefer_lo) {
+    uint32_t base1, lo1, hi1, rasr1;
+    uint32_t base_l, lo_l, hi_l, rasr_l;
+    uint32_t base_r, lo_r, hi_r, rasr_r;
+    uint32_t cov_l, cov_r;
+
+    rasr1 = fi_mpu_best_in(a, b, ap, &base1, &lo1, &hi1);
+    if (rasr1 == 0U) {
+        ARM_MPU_ClrRegion(rnr_a);
+        ARM_MPU_ClrRegion(rnr_b);
+        return;
+    }
+    ARM_MPU_SetRegion(ARM_MPU_RBAR(rnr_a, base1), rasr1);
+
+    rasr_l = fi_mpu_best_in(a, lo1, ap, &base_l, &lo_l, &hi_l);
+    rasr_r = fi_mpu_best_in(hi1, b, ap, &base_r, &lo_r, &hi_r);
+    cov_l  = (rasr_l != 0U) ? (hi_l - lo_l) : 0U;
+    cov_r  = (rasr_r != 0U) ? (hi_r - lo_r) : 0U;
+
+    if ((prefer_lo != 0U) && (cov_l > 0U) && (cov_r <= 512U)) {
+        ARM_MPU_SetRegion(ARM_MPU_RBAR(rnr_b, base_l), rasr_l);
+    } else if ((cov_l >= cov_r) && (cov_l > 0U)) {
+        ARM_MPU_SetRegion(ARM_MPU_RBAR(rnr_b, base_l), rasr_l);
+    } else if (cov_r > 0U) {
+        ARM_MPU_SetRegion(ARM_MPU_RBAR(rnr_b, base_r), rasr_r);
+    } else {
+        ARM_MPU_ClrRegion(rnr_b);
+    }
 }
 
 /* MPU regions active only inside the layers (the highest number wins).
  * Attributes = default SRAM: Normal, write-back write-allocate (TEX=1,C=1,B=1), not shareable.
- *   0: whole SRAM, read-only
- *   1-2: activations buffer (generated, data_activations[0]), read/write
- *   3-4: MSP + PSP stacks, read/write
- *   5: PSP frames above fi_sp_top (callers of the network), read-only - set by the wrapper
- *   6: errno (written by math functions)
- *   7: network input, read-only only in the layers that read it - set by the wrapper */
+ * Large activations (~233 KB in 256 KB SRAM) would cause outward RW regions to bleed across
+ * .data/.bss; instead region 0 leaves SRAM RW and regions 1-4 carve strictly-inside RO
+ * protection over .data/.bss on both sides of activations:
+ *   0: whole SRAM, read/write (covers activations_1 and MSP/PSP stacks)
+ *   1-2: [FI_SRAM_BASE, act), read-only (.data and pre-activation .bss)
+ *   3-4: [act_end, __main_stack_base__), read-only (post-activation .bss: _context_network,
+ *        gnetworks, UART/TIM/SYSTICK drivers)
+ *   5: PSP frames above fi_sp_top (callers of the network), read-only - set by fi_run_protected
+ *   6: errno (written by math functions), read/write (overrides regions 3-4)
+ *   7: network input, read-only (overrides region 0) - enabled by fi_mpu_on */
 static void fi_mpu_init(void) {
-    const uint32_t act = (uint32_t)data_activations[0];
+    const uint32_t act     = (uint32_t)data_activations[0];
+    const uint32_t act_end = act + STAI_NETWORK_ACTIVATION_1_SIZE_BYTES;
 
     MPU->CTRL = 0U;
     __DSB(); __ISB();
 
     ARM_MPU_SetRegion(ARM_MPU_RBAR(0U, FI_SRAM_BASE),
-        ARM_MPU_RASR(0U, ARM_MPU_AP_RO,   1U, 0U, 1U, 1U, 0x00U, ARM_MPU_REGION_SIZE_256KB));
-    (void) fi_mpu_cover_rw2(1U, 2U, act, act + STAI_NETWORK_ACTIVATION_1_SIZE_BYTES);
-    (void) fi_mpu_cover_rw2(3U, 4U, (uint32_t)__main_stack_base__, (uint32_t)__process_stack_end__);
+        ARM_MPU_RASR(0U, ARM_MPU_AP_FULL, 1U, 0U, 1U, 1U, 0x00U, ARM_MPU_REGION_SIZE_256KB));
+    fi_mpu_cover_in2(1U, 2U, FI_SRAM_BASE, act, ARM_MPU_AP_RO, 0U);
+    fi_mpu_cover_in2(3U, 4U, act_end, (uint32_t)__main_stack_base__, ARM_MPU_AP_RO, 1U);
     ARM_MPU_ClrRegion(5U);
     (void) fi_mpu_cover(6U, (uint32_t)&errno, (uint32_t)&errno + sizeof(errno), ARM_MPU_AP_FULL, 1U);
     ARM_MPU_ClrRegion(7U);
@@ -266,11 +307,15 @@ static void fi_event_cb(void *cookie, const stai_event_type type, const void *pa
     const uint32_t was_in_node = fi_node_idx;
 
     /* Unconditionally stop FI before inspecting 'type': even if a late flip at
-     * layer exit corrupts 'type', TIM2 and MPU are still cleanly turned off. */
+     * layer exit corrupts 'type', TIM2 (when waiting for flip) and MPU are still
+     * cleanly turned off. In campaign mode (fi_user_cb == NULL), keep the watchdog
+     * running across layer boundaries so hangs between layers are also caught. */
     fi_node_idx = 0U;                            /* first: prevents any flip in fi_dispatch() */
     __DSB();
-    fi_timer_pause();                            /* stops TIM2 while the MPU is still on */
-    __DSB();
+    if ((fi_phase != FI_WATCHDOG) || (fi_user_cb != NULL)) {
+        fi_timer_pause();                        /* stops TIM2 while the MPU is still on */
+        __DSB();
+    }
     fi_mpu_off();                                /* now the observer can write */
 
     if (fi_user_cb != NULL) {
